@@ -158,14 +158,14 @@ function DashboardPage() {
                                 <span className="font-medium">Find Leads</span>
                             </Link>
                             <Link
-                                href="/contacts"
+                                href="/contacts?action=add"
                                 className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
                             >
                                 <span className="text-xl">➕</span>
                                 <span className="font-medium">Add Contacts</span>
                             </Link>
                             <Link
-                                href="/templates"
+                                href="/templates?action=add"
                                 className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
                             >
                                 <span className="text-xl">📝</span>

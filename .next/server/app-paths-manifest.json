@@ -5,5 +5,9 @@
   "/pipeline/page": "app/pipeline/page.js",
   "/settings/page": "app/settings/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/templates/page": "app/templates/page.js"
+  "/templates/page": "app/templates/page.js",
+  "/campaigns/page": "app/campaigns/page.js",
+  "/sequences/page": "app/sequences/page.js",
+  "/insights/page": "app/insights/page.js",
+  "/analytics/page": "app/analytics/page.js"
 }
