@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         contactId,
         campaignId,
         timestamp: new Date().toISOString(),
-        ip: request.headers.get("x-forwarded-for") || request.ip,
+        ip: request.headers.get("x-forwarded-for") || "unknown",
         userAgent: request.headers.get("user-agent"),
     });
 

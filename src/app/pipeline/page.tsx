@@ -101,7 +101,7 @@ function PipelinePage() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
-            <AppHeader currentPage="contacts" />
+            <AppHeader />
 
             <main className="px-4 sm:px-6 lg:px-8 py-6">
                 {/* Header */}
@@ -132,8 +132,8 @@ function PipelinePage() {
                         <div
                             key={stage.id}
                             className={`flex-shrink-0 w-72 snap-start transition-all duration-200 ${dragOverStage === stage.id
-                                    ? "scale-[1.02]"
-                                    : ""
+                                ? "scale-[1.02]"
+                                : ""
                                 }`}
                             onDragOver={(e) => handleDragOver(e, stage.id)}
                             onDragLeave={handleDragLeave}
@@ -161,8 +161,8 @@ function PipelinePage() {
                             {/* Cards Container */}
                             <div
                                 className={`bg-[#12121f] rounded-b-xl border border-white/10 min-h-[400px] p-2 space-y-2 transition-colors ${dragOverStage === stage.id
-                                        ? "border-2"
-                                        : ""
+                                    ? "border-2"
+                                    : ""
                                     }`}
                                 style={{
                                     borderColor: dragOverStage === stage.id ? stage.color : undefined
@@ -176,8 +176,8 @@ function PipelinePage() {
                                         onDragEnd={handleDragEnd}
                                         onClick={() => setViewContactId(contact._id)}
                                         className={`bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${draggedContact === contact._id
-                                                ? "opacity-50 scale-95"
-                                                : ""
+                                            ? "opacity-50 scale-95"
+                                            : ""
                                             }`}
                                     >
                                         {/* Avatar + Name */}
