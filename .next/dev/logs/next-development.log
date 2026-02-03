@@ -1,0 +1,1360 @@
+[00:00:01.129] Server  LOG     ✓ Ready in 815ms
+[00:00:27.787] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:27.952] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:31.227] Server  LOG     ✓ Compiled in 35ms
+[00:13:33.141] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:13:46.508] Server  LOG     ✓ Compiled in 17ms
+[00:13:46.627] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/templates/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/templates/page.tsx [Client Component Browser]
+    ./src/app/templates/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/templates/page.tsx [Client Component SSR]
+    ./src/app/templates/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/templates/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/templates/page.tsx [Client Component Browser]
+    ./src/app/templates/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/templates/page.tsx [Client Component SSR]
+    ./src/app/templates/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:13:46.627] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/templates/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/templates/page.tsx [Client Component Browser]
+    ./src/app/templates/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/templates/page.tsx [Client Component SSR]
+    ./src/app/templates/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/templates/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/templates/page.tsx [Client Component Browser]
+    ./src/app/templates/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/templates/page.tsx [Client Component SSR]
+    ./src/app/templates/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:13:47.459] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:16.809] Server  LOG     ✓ Compiled in 23ms
+[00:14:17.458] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:17.458] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery } from "convex/react";
+  4 | import { api } from "../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 |
+  7 | export default function Dashboard() {
+  8 |   const contactStats = useQuery(api.contacts.getStats);
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/page.tsx [Client Component Browser]
+    ./src/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/page.tsx [Client Component SSR]
+    ./src/app/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:17.459] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:46.635] Server  LOG     ✓ Compiled in 11ms
+[00:14:46.750] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:46.750] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:46.750] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:46.750] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:46.750] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:46.750] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/campaigns/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/campaigns/page.tsx [Client Component Browser]
+    ./src/app/campaigns/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/campaigns/page.tsx [Client Component SSR]
+    ./src/app/campaigns/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:14:47.458] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:15:18.653] Server  LOG     ✓ Compiled in 25ms
+[00:15:18.770] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:15:18.770] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:15:18.770] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:15:18.770] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:15:19.460] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:15:19.460] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:15:19.460] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:15:19.460] Browser ERROR   ./src/app/contacts/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState, useRef } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/contacts/page.tsx [Client Component Browser]
+    ./src/app/contacts/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/contacts/page.tsx [Client Component SSR]
+    ./src/app/contacts/page.tsx [Server Component]
+[00:16:01.598] Server  LOG     ✓ Compiled in 19ms
+[00:16:01.703] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:16:01.703] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:16:02.453] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:16:02.453] Browser ERROR   ./src/app/senders/page.tsx:5:1
+Export Navigation doesn't exist in target module
+  3 | import { useQuery, useMutation, useAction } from "convex/react";
+  4 | import { api } from "../../../convex/_generated/api";
+> 5 | import { Navigation } from "@/components/Navigation";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { useState } from "react";
+  7 | import { Id } from "../../../convex/_generated/dataModel";
+  8 |
+
+The export Navigation was not found in module [project]/src/components/Navigation.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/senders/page.tsx [Client Component Browser]
+    ./src/app/senders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/senders/page.tsx [Client Component SSR]
+    ./src/app/senders/page.tsx [Server Component]
+[00:16:46.033] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./src/components/Navigation.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:16:46.044] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./src/app/page.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[00:16:46.823] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:16:47.118] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:03.016] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:23:29.475] Server  LOG     ✓ Compiled in 395ms
+[00:23:30.203] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:30.527] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:23:50.872] Server  LOG     ✓ Compiled in 28ms
+[00:30:32.653] Server  LOG     ✓ Compiled in 23ms
+[00:30:46.072] Server  LOG     ✓ Compiled in 13ms
+[00:36:54.200] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:36:56.437] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:41:27.131] Server  LOG     ✓ Compiled in 9ms
+[00:52:47.097] Server  LOG     ✓ Compiled in 31ms
+[00:56:11.584] Server  LOG     ✓ Compiled in 20ms
+[00:59:02.872] Server  LOG     ✓ Compiled in 16ms
+[01:00:09.718] Server  LOG     ✓ Compiled in 15ms
+[01:01:44.442] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[01:05:46.390] Server  LOG     ✓ Compiled in 12ms
+[01:10:03.638] Server  LOG     ✓ Compiled in 16ms
+[01:10:04.454] Browser ERROR   uncaughtError: ReferenceError: STARTER_TEMPLATES is not defined
+[01:10:47.483] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[01:10:47.501] Server  LOG     ✓ Compiled in 22ms
+[01:10:48.412] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:12:18.196] Server  LOG     ✓ Compiled in 17ms
+[01:14:21.413] Server  LOG     ✓ Compiled in 12ms
+[01:14:59.759] Server  LOG     ✓ Compiled in 9ms
+[01:16:44.989] Server  LOG     ✓ Compiled in 14ms
+[01:27:47.229] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold

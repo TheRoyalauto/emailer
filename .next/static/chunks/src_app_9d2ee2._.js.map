@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/swizz/Desktop/Emailer/emailer/src/app/ConvexClientProvider.tsx"],"sourcesContent":["\"use client\";\r\n\r\nimport { ConvexProvider, ConvexReactClient } from \"convex/react\";\r\nimport { ConvexAuthProvider } from \"@convex-dev/auth/react\";\r\nimport { ReactNode } from \"react\";\r\n\r\nconst convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);\r\n\r\nexport function ConvexClientProvider({ children }: { children: ReactNode }) {\r\n    return (\r\n        <ConvexAuthProvider client={convex}>\r\n            {children}\r\n        </ConvexAuthProvider>\r\n    );\r\n}\r\n"],"names":[],"mappings":";;;;AAEA;AAAA;AAIqC;AAHrC;AAHA;;;;AAMA,MAAM,SAAS,IAAI,2JAAA,CAAA,oBAAiB;AAE7B,SAAS,qBAAqB,EAAE,QAAQ,EAA2B;IACtE,qBACI,6LAAC,oKAAA,CAAA,qBAAkB;QAAC,QAAQ;kBACvB;;;;;;AAGb;KANgB"}},
+    {"offset": {"line": 36, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
