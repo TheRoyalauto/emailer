@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { scrapeLeads, ScrapedLead } from "@/lib/scraper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface ScrapedContact {
@@ -23,14 +24,48 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        console.log('[API] Lead scraping request:', prompt);
+
+        // Try real scraping first
+        try {
+            const result = await scrapeLeads(prompt, 25);
+
+            if (result.leads.length > 0) {
+                console.log(`[API] Real scraper found ${result.leads.length} leads`);
+
+                const contacts: ScrapedContact[] = result.leads.map(lead => ({
+                    email: lead.email,
+                    name: lead.name,
+                    company: lead.company,
+                    phone: lead.phone,
+                    location: lead.location,
+                    website: lead.website,
+                    address: lead.address,
+                    leadScore: lead.leadScore,
+                }));
+
+                return NextResponse.json({
+                    contacts,
+                    count: contacts.length,
+                    source: 'real_scraper',
+                    errors: result.errors.length > 0 ? result.errors : undefined,
+                });
+            }
+
+            console.log('[API] Real scraper found no leads, falling back to AI');
+        } catch (scrapeError) {
+            console.error('[API] Real scraper failed:', scrapeError);
+        }
+
+        // Fallback to AI generation if real scraping fails
         if (!process.env.GOOGLE_AI_API_KEY) {
             return NextResponse.json(
-                { error: "Lead generation service unavailable. Please check API configuration." },
+                { error: "Lead generation service unavailable. Real scraper found no results and AI API is not configured." },
                 { status: 500 }
             );
         }
 
-        // Initialize inside handler to avoid build-time errors
+        // AI fallback
         const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
@@ -75,7 +110,6 @@ Example output:
             } catch (err) {
                 lastError = err;
                 if (err instanceof Error && err.message.includes("429")) {
-                    // Wait before retry (exponential backoff)
                     await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 2000));
                     continue;
                 }
@@ -92,7 +126,6 @@ Example output:
         // Parse the JSON response
         let contacts: ScrapedContact[] = [];
         try {
-            // Try to extract JSON from the response
             const jsonMatch = responseText.match(/\[[\s\S]*\]/);
             if (jsonMatch) {
                 contacts = JSON.parse(jsonMatch[0]);
@@ -122,6 +155,7 @@ Example output:
         return NextResponse.json({
             contacts: validContacts,
             count: validContacts.length,
+            source: 'ai_generated',
         });
     } catch (error) {
         console.error("Scrape leads error:", error);
