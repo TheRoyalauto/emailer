@@ -24,12 +24,17 @@ interface ScrapedContact {
     address?: string;
     leadScore?: number;
     isDuplicate?: boolean;
+    verified?: boolean;
 }
+
+// Track data source
+type DataSource = 'real_scraper' | 'ai_generated' | 'unknown';
 
 function ScraperPage() {
     const [prompt, setPrompt] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const [results, setResults] = useState<ScrapedContact[]>([]);
+    const [dataSource, setDataSource] = useState<DataSource>('unknown');
     const [selectedContacts, setSelectedContacts] = useState<Set<number>>(new Set());
     const [importing, setImporting] = useState(false);
     const [importSuccess, setImportSuccess] = useState<number | null>(null);
@@ -86,6 +91,9 @@ function ScraperPage() {
             if (!response.ok) {
                 throw new Error(data.error || "Failed to scrape leads");
             }
+
+            // Track source
+            setDataSource(data.source || 'unknown');
 
             // Mark duplicates in results
             const contactsWithDuplicates = (data.contacts || []).map((c: ScrapedContact) => ({
@@ -346,6 +354,14 @@ function ScraperPage() {
                                 <span className="text-white/50 text-sm">
                                     ({selectedContacts.size} selected)
                                 </span>
+                                {/* Source Badge */}
+                                <span className={`px-2 py-0.5 rounded text-xs font-medium ${dataSource === 'real_scraper'
+                                    ? 'bg-green-500/20 text-green-400'
+                                    : dataSource === 'ai_generated'
+                                        ? 'bg-orange-500/20 text-orange-400'
+                                        : 'bg-gray-500/20 text-gray-400'}`}>
+                                    {dataSource === 'real_scraper' ? '✓ Real Data' : dataSource === 'ai_generated' ? '⚡ AI Generated' : 'Unknown'}
+                                </span>
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -448,13 +464,14 @@ function ScraperPage() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium truncate">
-                                                {contact.name || contact.email.split("@")[0]}
+                                            <span className={`font-medium truncate ${!contact.name ? 'italic text-white/40' : ''}`}>
+                                                {contact.name || 'Name not found'}
                                             </span>
-                                            {contact.company && (
-                                                <span className="text-white/50 text-sm truncate">
-                                                    • {contact.company}
-                                                </span>
+                                            <span className={`text-sm truncate ${contact.company ? 'text-white/50' : 'text-white/30 italic'}`}>
+                                                • {contact.company || 'Company not found'}
+                                            </span>
+                                            {contact.verified && (
+                                                <span className="px-1 py-0.5 bg-green-500/20 text-green-400 text-xs rounded">✓</span>
                                             )}
                                             {contact.isDuplicate && (
                                                 <span className="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded">
@@ -475,12 +492,12 @@ function ScraperPage() {
                                             {contact.leadScore}
                                         </div>
                                     )}
-                                    <div className="text-right text-sm text-white/40 hidden md:block flex-shrink-0">
-                                        {contact.phone && <div>{contact.phone}</div>}
-                                        {contact.location && <div>{contact.location}</div>}
-                                        {contact.website && (
+                                    <div className="text-right text-sm hidden md:block flex-shrink-0 min-w-[150px]">
+                                        <div className={contact.phone ? 'text-white/40' : 'text-white/20 italic text-xs'}>📞 {contact.phone || 'No phone'}</div>
+                                        <div className={contact.location ? 'text-white/40' : 'text-white/20 italic text-xs'}>📍 {contact.location || 'No location'}</div>
+                                        {contact.website ? (
                                             <a
-                                                href={contact.website}
+                                                href={contact.website.startsWith('http') ? contact.website : `https://${contact.website}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 onClick={(e) => e.stopPropagation()}
@@ -488,6 +505,8 @@ function ScraperPage() {
                                             >
                                                 🌐 Website
                                             </a>
+                                        ) : (
+                                            <div className="text-white/20 italic text-xs">🌐 No website</div>
                                         )}
                                     </div>
                                 </div>
