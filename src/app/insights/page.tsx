@@ -86,8 +86,8 @@ function InsightsPage() {
                                         key={range}
                                         onClick={() => setTimeRange(range)}
                                         className={`px-4 py-2 rounded-lg font-medium transition-all ${timeRange === range
-                                                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                                : "bg-white/5 text-white/60 hover:bg-white/10"
+                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
+                                            : "bg-white/5 text-white/60 hover:bg-white/10"
                                             }`}
                                     >
                                         {range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : "90 Days"}
@@ -105,8 +105,8 @@ function InsightsPage() {
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`px-4 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id
-                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                            : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-transparent"
+                                        ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
+                                        : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-transparent"
                                         }`}
                                 >
                                     <span>{tab.icon}</span>
@@ -276,10 +276,8 @@ function InsightsPage() {
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-amber-500/10 to-amber-500/5 rounded-2xl border border-amber-500/20">
                                         <div className="text-sm text-white/50 mb-2">Reply Rate</div>
-                                        <div className="text-4xl font-bold text-amber-400">
-                                            {stats?.rates?.replyRate ? Number(stats.rates.replyRate).toFixed(1) : 0}%
-                                        </div>
-                                        <div className="text-xs text-white/40 mt-2">Great: 5%+</div>
+                                        <div className="text-4xl font-bold text-amber-400">—</div>
+                                        <div className="text-xs text-white/40 mt-2">Coming soon</div>
                                     </div>
                                 </div>
                             </div>
@@ -354,7 +352,7 @@ function InsightsPage() {
                                         </div>
                                         <div className="text-xs text-white/50 mt-1">Complaints</div>
                                         <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
-                                            <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min((stats?.rates?.complaintRate || 0) * 100, 100)}%` }} />
+                                            <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min(Number(stats?.rates?.complaintRate || 0) * 100, 100)}%` }} />
                                         </div>
                                     </div>
                                 </div>
