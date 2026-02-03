@@ -19,6 +19,8 @@ interface ScrapedContact {
     company?: string;
     phone?: string;
     location?: string;
+    website?: string;
+    address?: string;
 }
 
 function ScraperPage() {
@@ -33,7 +35,10 @@ function ScraperPage() {
     // For batch assignment
     const batches = useQuery(api.batches.list);
     const [selectedBatchId, setSelectedBatchId] = useState<string>("");
+    const [showNewBatchInput, setShowNewBatchInput] = useState(false);
+    const [newBatchName, setNewBatchName] = useState("");
     const createContacts = useMutation(api.contacts.bulkCreate);
+    const createBatch = useMutation(api.batches.create);
 
     const handleSearch = async () => {
         if (!prompt.trim()) return;
@@ -97,6 +102,14 @@ function ScraperPage() {
         setError(null);
 
         try {
+            // Create new batch if needed
+            let batchId: Id<"batches"> | undefined = undefined;
+            if (showNewBatchInput && newBatchName.trim()) {
+                batchId = await createBatch({ name: newBatchName.trim() });
+            } else if (selectedBatchId) {
+                batchId = selectedBatchId as Id<"batches">;
+            }
+
             const contactsToImport = results
                 .filter((_, i) => selectedContacts.has(i))
                 .map(c => ({
@@ -105,17 +118,21 @@ function ScraperPage() {
                     company: c.company,
                     phone: c.phone,
                     location: c.location,
+                    website: c.website,
+                    address: c.address,
                 }));
 
             await createContacts({
                 contacts: contactsToImport,
-                batchId: selectedBatchId ? selectedBatchId as Id<"batches"> : undefined,
+                batchId,
             });
 
             setImportSuccess(contactsToImport.length);
             setResults([]);
             setSelectedContacts(new Set());
             setPrompt("");
+            setNewBatchName("");
+            setShowNewBatchInput(false);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to import contacts");
         } finally {
@@ -235,23 +252,53 @@ function ScraperPage() {
 
                             <div className="flex items-center gap-3">
                                 {/* Batch Selector */}
-                                <select
-                                    value={selectedBatchId}
-                                    onChange={(e) => setSelectedBatchId(e.target.value)}
-                                    className="px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm"
-                                >
-                                    <option value="">No batch</option>
-                                    {batches?.map((batch) => (
-                                        <option key={batch._id} value={batch._id}>
-                                            {batch.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                {showNewBatchInput ? (
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            value={newBatchName}
+                                            onChange={(e) => setNewBatchName(e.target.value)}
+                                            placeholder="New batch name..."
+                                            className="px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm w-40"
+                                            autoFocus
+                                        />
+                                        <button
+                                            onClick={() => {
+                                                setShowNewBatchInput(false);
+                                                setNewBatchName("");
+                                            }}
+                                            className="text-white/50 hover:text-white text-sm"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <select
+                                        value={selectedBatchId}
+                                        onChange={(e) => {
+                                            if (e.target.value === "__new__") {
+                                                setShowNewBatchInput(true);
+                                                setSelectedBatchId("");
+                                            } else {
+                                                setSelectedBatchId(e.target.value);
+                                            }
+                                        }}
+                                        className="px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm"
+                                    >
+                                        <option value="">No batch</option>
+                                        <option value="__new__">➕ Create New Batch</option>
+                                        {batches?.map((batch) => (
+                                            <option key={batch._id} value={batch._id}>
+                                                {batch.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
 
                                 {/* Import Button */}
                                 <button
                                     onClick={handleImport}
-                                    disabled={selectedContacts.size === 0 || importing}
+                                    disabled={selectedContacts.size === 0 || importing || (showNewBatchInput && !newBatchName.trim())}
                                     className="px-4 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     {importing ? "Importing..." : `Import ${selectedContacts.size}`}
@@ -292,9 +339,20 @@ function ScraperPage() {
                                             {contact.email}
                                         </div>
                                     </div>
-                                    <div className="text-right text-sm text-white/40 hidden md:block">
+                                    <div className="text-right text-sm text-white/40 hidden md:block flex-shrink-0">
                                         {contact.phone && <div>{contact.phone}</div>}
                                         {contact.location && <div>{contact.location}</div>}
+                                        {contact.website && (
+                                            <a
+                                                href={contact.website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="text-indigo-400 hover:text-indigo-300 truncate block max-w-[200px]"
+                                            >
+                                                🌐 Website
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             ))}

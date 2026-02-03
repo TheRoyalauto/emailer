@@ -429,7 +429,10 @@ function ScraperPage() {
     // For batch assignment
     const batches = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["api"].batches.list);
     const [selectedBatchId, setSelectedBatchId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [showNewBatchInput, setShowNewBatchInput] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [newBatchName, setNewBatchName] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const createContacts = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMutation"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["api"].contacts.bulkCreate);
+    const createBatch = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMutation"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["api"].batches.create);
     const handleSearch = async ()=>{
         if (!prompt.trim()) return;
         setIsSearching(true);
@@ -486,21 +489,34 @@ function ScraperPage() {
         setImporting(true);
         setError(null);
         try {
+            // Create new batch if needed
+            let batchId = undefined;
+            if (showNewBatchInput && newBatchName.trim()) {
+                batchId = await createBatch({
+                    name: newBatchName.trim()
+                });
+            } else if (selectedBatchId) {
+                batchId = selectedBatchId;
+            }
             const contactsToImport = results.filter((_, i)=>selectedContacts.has(i)).map((c)=>({
                     email: c.email,
                     name: c.name,
                     company: c.company,
                     phone: c.phone,
-                    location: c.location
+                    location: c.location,
+                    website: c.website,
+                    address: c.address
                 }));
             await createContacts({
                 contacts: contactsToImport,
-                batchId: selectedBatchId ? selectedBatchId : undefined
+                batchId
             });
             setImportSuccess(contactsToImport.length);
             setResults([]);
             setSelectedContacts(new Set());
             setPrompt("");
+            setNewBatchName("");
+            setShowNewBatchInput(false);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to import contacts");
         } finally{
@@ -512,7 +528,7 @@ function ScraperPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AppHeader"], {}, void 0, false, {
                 fileName: "[project]/src/app/scraper/page.tsx",
-                lineNumber: 128,
+                lineNumber: 145,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -528,12 +544,12 @@ function ScraperPage() {
                                     children: "AI Lead Scraper"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/scraper/page.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 151,
                                     columnNumber: 25
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 133,
+                                lineNumber: 150,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -541,13 +557,13 @@ function ScraperPage() {
                                 children: "Describe the leads you want and AI will find them for you"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 138,
+                                lineNumber: 155,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 132,
+                        lineNumber: 149,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -568,7 +584,7 @@ function ScraperPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 146,
+                                        lineNumber: 163,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -576,13 +592,13 @@ function ScraperPage() {
                                         children: "⌘ + Enter to search"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 174,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 145,
+                                lineNumber: 162,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -593,7 +609,7 @@ function ScraperPage() {
                                         children: "Try these:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 164,
+                                        lineNumber: 181,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -604,18 +620,18 @@ function ScraperPage() {
                                                 children: example
                                             }, i, false, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 167,
+                                                lineNumber: 184,
                                                 columnNumber: 33
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 165,
+                                        lineNumber: 182,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 163,
+                                lineNumber: 180,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -629,25 +645,25 @@ function ScraperPage() {
                                             className: "w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/scraper/page.tsx",
-                                            lineNumber: 186,
+                                            lineNumber: 203,
                                             columnNumber: 33
                                         }, this),
                                         "Searching with AI..."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/scraper/page.tsx",
-                                    lineNumber: 185,
+                                    lineNumber: 202,
                                     columnNumber: 29
                                 }, this) : "🔍 Find Leads"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 179,
+                                lineNumber: 196,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 144,
+                        lineNumber: 161,
                         columnNumber: 17
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -657,14 +673,14 @@ function ScraperPage() {
                                 children: "⚠️"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 198,
+                                lineNumber: 215,
                                 columnNumber: 25
                             }, this),
                             error
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 197,
+                        lineNumber: 214,
                         columnNumber: 21
                     }, this),
                     importSuccess && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -674,7 +690,7 @@ function ScraperPage() {
                                 children: "✅"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 206,
+                                lineNumber: 223,
                                 columnNumber: 25
                             }, this),
                             "Successfully imported ",
@@ -683,7 +699,7 @@ function ScraperPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 205,
+                        lineNumber: 222,
                         columnNumber: 21
                     }, this),
                     results.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -705,12 +721,12 @@ function ScraperPage() {
                                                     className: "w-4 h-4 rounded bg-white/10 border-white/20 text-indigo-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/scraper/page.tsx",
-                                                    lineNumber: 221,
+                                                    lineNumber: 238,
                                                     columnNumber: 37
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 217,
+                                                lineNumber: 234,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -722,7 +738,7 @@ function ScraperPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 228,
+                                                lineNumber: 245,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -734,21 +750,60 @@ function ScraperPage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 231,
+                                                lineNumber: 248,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 216,
+                                        lineNumber: 233,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex items-center gap-3",
                                         children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
+                                            showNewBatchInput ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "flex items-center gap-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        type: "text",
+                                                        value: newBatchName,
+                                                        onChange: (e)=>setNewBatchName(e.target.value),
+                                                        placeholder: "New batch name...",
+                                                        className: "px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm w-40",
+                                                        autoFocus: true
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/scraper/page.tsx",
+                                                        lineNumber: 257,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                        onClick: ()=>{
+                                                            setShowNewBatchInput(false);
+                                                            setNewBatchName("");
+                                                        },
+                                                        className: "text-white/50 hover:text-white text-sm",
+                                                        children: "✕"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/scraper/page.tsx",
+                                                        lineNumber: 265,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/app/scraper/page.tsx",
+                                                lineNumber: 256,
+                                                columnNumber: 37
+                                            }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                 value: selectedBatchId,
-                                                onChange: (e)=>setSelectedBatchId(e.target.value),
+                                                onChange: (e)=>{
+                                                    if (e.target.value === "__new__") {
+                                                        setShowNewBatchInput(true);
+                                                        setSelectedBatchId("");
+                                                    } else {
+                                                        setSelectedBatchId(e.target.value);
+                                                    }
+                                                },
                                                 className: "px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -756,43 +811,51 @@ function ScraperPage() {
                                                         children: "No batch"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                                        lineNumber: 243,
-                                                        columnNumber: 37
+                                                        lineNumber: 288,
+                                                        columnNumber: 41
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
+                                                        value: "__new__",
+                                                        children: "➕ Create New Batch"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/scraper/page.tsx",
+                                                        lineNumber: 289,
+                                                        columnNumber: 41
                                                     }, this),
                                                     batches?.map((batch)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                             value: batch._id,
                                                             children: batch.name
                                                         }, batch._id, false, {
                                                             fileName: "[project]/src/app/scraper/page.tsx",
-                                                            lineNumber: 245,
-                                                            columnNumber: 41
+                                                            lineNumber: 291,
+                                                            columnNumber: 45
                                                         }, this))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 238,
-                                                columnNumber: 33
+                                                lineNumber: 276,
+                                                columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: handleImport,
-                                                disabled: selectedContacts.size === 0 || importing,
+                                                disabled: selectedContacts.size === 0 || importing || showNewBatchInput && !newBatchName.trim(),
                                                 className: "px-4 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors",
                                                 children: importing ? "Importing..." : `Import ${selectedContacts.size}`
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 252,
+                                                lineNumber: 299,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 236,
+                                        lineNumber: 253,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 215,
+                                lineNumber: 232,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -808,7 +871,7 @@ function ScraperPage() {
                                                 className: "w-4 h-4 rounded bg-white/10 border-white/20 text-indigo-500"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 271,
+                                                lineNumber: 318,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -816,7 +879,7 @@ function ScraperPage() {
                                                 children: (contact.name || contact.email).charAt(0).toUpperCase()
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 277,
+                                                lineNumber: 324,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -830,7 +893,7 @@ function ScraperPage() {
                                                                 children: contact.name || contact.email.split("@")[0]
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                                lineNumber: 282,
+                                                                lineNumber: 329,
                                                                 columnNumber: 45
                                                             }, this),
                                                             contact.company && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -841,13 +904,13 @@ function ScraperPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                                lineNumber: 286,
+                                                                lineNumber: 333,
                                                                 columnNumber: 49
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                                        lineNumber: 281,
+                                                        lineNumber: 328,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -855,53 +918,65 @@ function ScraperPage() {
                                                         children: contact.email
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                                        lineNumber: 291,
+                                                        lineNumber: 338,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 280,
+                                                lineNumber: 327,
                                                 columnNumber: 37
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "text-right text-sm text-white/40 hidden md:block",
+                                                className: "text-right text-sm text-white/40 hidden md:block flex-shrink-0",
                                                 children: [
                                                     contact.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         children: contact.phone
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                                        lineNumber: 296,
+                                                        lineNumber: 343,
                                                         columnNumber: 59
                                                     }, this),
                                                     contact.location && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         children: contact.location
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                                        lineNumber: 297,
+                                                        lineNumber: 344,
                                                         columnNumber: 62
+                                                    }, this),
+                                                    contact.website && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                                        href: contact.website,
+                                                        target: "_blank",
+                                                        rel: "noopener noreferrer",
+                                                        onClick: (e)=>e.stopPropagation(),
+                                                        className: "text-indigo-400 hover:text-indigo-300 truncate block max-w-[200px]",
+                                                        children: "🌐 Website"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/scraper/page.tsx",
+                                                        lineNumber: 346,
+                                                        columnNumber: 45
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                                lineNumber: 295,
+                                                lineNumber: 342,
                                                 columnNumber: 37
                                             }, this)
                                         ]
                                     }, i, true, {
                                         fileName: "[project]/src/app/scraper/page.tsx",
-                                        lineNumber: 265,
+                                        lineNumber: 312,
                                         columnNumber: 33
                                     }, this))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 263,
+                                lineNumber: 310,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 213,
+                        lineNumber: 230,
                         columnNumber: 21
                     }, this),
                     !isSearching && results.length === 0 && !importSuccess && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -912,32 +987,32 @@ function ScraperPage() {
                                 children: "🤖"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 308,
+                                lineNumber: 366,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                 children: "Enter a prompt above to start finding leads"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/scraper/page.tsx",
-                                lineNumber: 309,
+                                lineNumber: 367,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/scraper/page.tsx",
-                        lineNumber: 307,
+                        lineNumber: 365,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/scraper/page.tsx",
-                lineNumber: 130,
+                lineNumber: 147,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/scraper/page.tsx",
-        lineNumber: 127,
+        lineNumber: 144,
         columnNumber: 9
     }, this);
 }
@@ -945,12 +1020,12 @@ function ScraperPageWrapper() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthGuard"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ScraperPage, {}, void 0, false, {
             fileName: "[project]/src/app/scraper/page.tsx",
-            lineNumber: 320,
+            lineNumber: 378,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/scraper/page.tsx",
-        lineNumber: 319,
+        lineNumber: 377,
         columnNumber: 9
     }, this);
 }

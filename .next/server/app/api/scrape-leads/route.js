@@ -1,6 +1,6 @@
 const CHUNK_PUBLIC_PATH = "server/app/api/scrape-leads/route.js";
 const runtime = require("../../../chunks/[turbopack]_runtime.js");
-runtime.loadChunk("server/chunks/node_modules_57c2f7._.js");
+runtime.loadChunk("server/chunks/node_modules_55a4d6._.js");
 runtime.loadChunk("server/chunks/[root of the server]__6a22ea._.js");
 runtime.loadChunk("server/chunks/_41811e._.js");
 runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/api/scrape-leads/route/actions.js [app-rsc] (ecmascript)", CHUNK_PUBLIC_PATH);
