@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Use Kimi K2.5 (Moonshot AI) - OpenAI compatible API
-const kimi = new OpenAI({
-    apiKey: process.env.KIMI_API_KEY,
-    baseURL: "https://api.moonshot.cn/v1",
-});
+// Use Google Gemini Flash
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || "");
 
 interface ScrapedContact {
     email: string;
@@ -13,6 +10,8 @@ interface ScrapedContact {
     company?: string;
     phone?: string;
     location?: string;
+    website?: string;
+    address?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -26,20 +25,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (!process.env.KIMI_API_KEY) {
+        if (!process.env.GOOGLE_AI_API_KEY) {
             return NextResponse.json(
-                { error: "Kimi API key not configured" },
+                { error: "Google AI API key not configured" },
                 { status: 500 }
             );
         }
 
-        // Use Kimi K2.5 to generate realistic business contacts
-        const completion = await kimi.chat.completions.create({
-            model: "moonshot-v1-128k",
-            messages: [
-                {
-                    role: "system",
-                    content: `You are a lead generation assistant. Given a user's request, generate a list of realistic business contacts that match their criteria.
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+        const systemPrompt = `You are a lead generation assistant. Given a user's request, generate a list of realistic business contacts that match their criteria.
 
 For each contact, provide:
 - email (required): A realistic business email
@@ -47,6 +42,8 @@ For each contact, provide:
 - company: Company/business name
 - phone: Phone number with area code
 - location: City, State
+- website: Company website URL (e.g., https://example.com)
+- address: Full street address
 
 Generate contacts that would realistically exist based on the user's query. Make emails realistic (using common business domain patterns like @gmail.com, @yahoo.com, or company domains).
 
@@ -54,20 +51,36 @@ IMPORTANT: Return ONLY a valid JSON array of contacts. No explanation, no markdo
 
 Example output:
 [
-  {"email": "john.smith@autobodyshop.com", "name": "John Smith", "company": "Smith's Auto Body", "phone": "555-123-4567", "location": "Los Angeles, CA"},
-  {"email": "sarah@collisionrepair.net", "name": "Sarah Johnson", "company": "Johnson Collision Center", "phone": "555-234-5678", "location": "Los Angeles, CA"}
-]`
-                },
-                {
-                    role: "user",
-                    content: prompt
-                }
-            ],
-            temperature: 0.8,
-            max_tokens: 4000,
-        });
+  {"email": "john.smith@smithsautobody.com", "name": "John Smith", "company": "Smith's Auto Body", "phone": "310-555-1234", "location": "Los Angeles, CA", "website": "https://smithsautobody.com", "address": "1234 Main St, Los Angeles, CA 90001"},
+  {"email": "sarah@johnsoncollision.net", "name": "Sarah Johnson", "company": "Johnson Collision Center", "phone": "213-555-5678", "location": "Los Angeles, CA", "website": "https://johnsoncollision.net", "address": "5678 Oak Ave, Los Angeles, CA 90012"}
+]`;
 
-        const responseText = completion.choices[0]?.message?.content || "[]";
+        // Retry logic for rate limits
+        let result;
+        let lastError;
+        for (let attempt = 0; attempt < 3; attempt++) {
+            try {
+                result = await model.generateContent([
+                    { text: systemPrompt },
+                    { text: `User request: ${prompt}` }
+                ]);
+                break;
+            } catch (err) {
+                lastError = err;
+                if (err instanceof Error && err.message.includes("429")) {
+                    // Wait before retry (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 2000));
+                    continue;
+                }
+                throw err;
+            }
+        }
+
+        if (!result) {
+            throw lastError || new Error("Failed after retries");
+        }
+
+        const responseText = result.response.text() || "[]";
 
         // Parse the JSON response
         let contacts: ScrapedContact[] = [];
@@ -94,6 +107,8 @@ Example output:
                 company: c.company?.trim(),
                 phone: c.phone?.trim(),
                 location: c.location?.trim(),
+                website: c.website?.trim(),
+                address: c.address?.trim(),
             }));
 
         return NextResponse.json({
@@ -102,8 +117,9 @@ Example output:
         });
     } catch (error) {
         console.error("Scrape leads error:", error);
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
         return NextResponse.json(
-            { error: "Failed to generate leads" },
+            { error: `Failed to generate leads: ${errorMessage}` },
             { status: 500 }
         );
     }

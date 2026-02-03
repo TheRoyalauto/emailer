@@ -46,6 +46,8 @@ export default defineSchema({
         company: v.optional(v.string()),
         location: v.optional(v.string()),
         phone: v.optional(v.string()),
+        website: v.optional(v.string()),
+        address: v.optional(v.string()),
         tags: v.optional(v.array(v.string())),
         batchId: v.optional(v.id("batches")),
         status: v.union(
