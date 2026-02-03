@@ -48,6 +48,7 @@ const NAV_ITEMS = [
     { href: "/sequences", label: "Sequences", icon: "🔄", mobileIcon: "🔄" },
     { href: "/calls", label: "Calls", icon: "📞", mobileIcon: "📞" },
     { href: "/analytics", label: "Analytics", icon: "📈", mobileIcon: "📈" },
+    { href: "/reputation", label: "Reputation", icon: "🛡️", mobileIcon: "🛡️" },
     { href: "/ab-tests", label: "A/B Tests", icon: "🧪", mobileIcon: "🧪" },
     { href: "/scraper", label: "AI Scraper", icon: "🤖", mobileIcon: "🤖" },
     { href: "/templates", label: "Templates", icon: "📝", mobileIcon: "📝" },

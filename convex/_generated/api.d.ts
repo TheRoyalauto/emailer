@@ -19,6 +19,7 @@ import type * as http from "../http.js";
 import type * as lists from "../lists.js";
 import type * as seed from "../seed.js";
 import type * as senders from "../senders.js";
+import type * as sequenceScheduler from "../sequenceScheduler.js";
 import type * as sequences from "../sequences.js";
 import type * as smtpConfigs from "../smtpConfigs.js";
 import type * as templates from "../templates.js";
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   lists: typeof lists;
   seed: typeof seed;
   senders: typeof senders;
+  sequenceScheduler: typeof sequenceScheduler;
   sequences: typeof sequences;
   smtpConfigs: typeof smtpConfigs;
   templates: typeof templates;

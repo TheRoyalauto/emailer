@@ -44,17 +44,25 @@ export const get = query({
 export const create = mutation({
     args: {
         name: v.string(),
-        host: v.string(),
-        port: v.number(),
-        secure: v.boolean(),
-        username: v.string(),
-        password: v.string(),
+        provider: v.optional(v.union(
+            v.literal("smtp"),
+            v.literal("resend"),
+            v.literal("sendgrid"),
+            v.literal("mailgun")
+        )),
+        host: v.optional(v.string()),
+        port: v.optional(v.number()),
+        secure: v.optional(v.boolean()),
+        username: v.optional(v.string()),
+        password: v.optional(v.string()),
+        apiKey: v.optional(v.string()),
         fromEmail: v.string(),
         fromName: v.optional(v.string()),
         isDefault: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
 
         // If setting as default, unset other defaults
         if (args.isDefault) {
@@ -72,11 +80,13 @@ export const create = mutation({
         return await ctx.db.insert("smtpConfigs", {
             userId,
             name: args.name,
+            provider: args.provider || "smtp",
             host: args.host,
             port: args.port,
             secure: args.secure,
             username: args.username,
             password: args.password,
+            apiKey: args.apiKey,
             fromEmail: args.fromEmail,
             fromName: args.fromName,
             isDefault: args.isDefault ?? false,
@@ -84,6 +94,7 @@ export const create = mutation({
         });
     },
 });
+
 
 // Update SMTP config
 export const update = mutation({

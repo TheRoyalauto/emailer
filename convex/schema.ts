@@ -309,11 +309,18 @@ export default defineSchema({
     smtpConfigs: defineTable({
         userId: v.id("users"),
         name: v.string(), // e.g., "Gmail", "Outlook", "Custom"
-        host: v.string(),
-        port: v.number(),
-        secure: v.boolean(), // true for 465, false for other ports
-        username: v.string(),
-        password: v.string(), // In production, encrypt this
+        provider: v.optional(v.union(
+            v.literal("smtp"),
+            v.literal("resend"),
+            v.literal("sendgrid"),
+            v.literal("mailgun")
+        )), // API provider or SMTP
+        host: v.optional(v.string()), // For SMTP
+        port: v.optional(v.number()), // For SMTP
+        secure: v.optional(v.boolean()), // For SMTP
+        username: v.optional(v.string()), // For SMTP
+        password: v.optional(v.string()), // For SMTP or API key
+        apiKey: v.optional(v.string()), // For API providers
         fromEmail: v.string(),
         fromName: v.optional(v.string()),
         isDefault: v.boolean(),
@@ -335,4 +342,44 @@ export default defineSchema({
         createdAt: v.number(),
     })
         .index("by_user", ["userId"]),
+
+    // Email Stats for Domain Reputation Monitoring
+    emailStats: defineTable({
+        userId: v.id("users"),
+        date: v.string(), // YYYY-MM-DD
+        sent: v.number(),
+        delivered: v.number(),
+        opened: v.number(),
+        clicked: v.number(),
+        bounced: v.number(),
+        complained: v.number(), // Spam complaints
+        unsubscribed: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_date", ["userId", "date"]),
+
+    // Email Events Log (for debugging and detailed tracking)
+    emailEvents: defineTable({
+        userId: v.id("users"),
+        contactId: v.optional(v.id("contacts")),
+        campaignId: v.optional(v.id("campaigns")),
+        sequenceId: v.optional(v.id("sequences")),
+        event: v.union(
+            v.literal("sent"),
+            v.literal("delivered"),
+            v.literal("opened"),
+            v.literal("clicked"),
+            v.literal("bounced"),
+            v.literal("complained"),
+            v.literal("unsubscribed")
+        ),
+        email: v.string(),
+        metadata: v.optional(v.string()), // JSON for extra data like click URL
+        timestamp: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_campaign", ["campaignId"])
+        .index("by_event", ["event"]),
 });
+
