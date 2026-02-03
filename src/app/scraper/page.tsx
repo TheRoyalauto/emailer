@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import LeadSearchAnimation from "@/components/LeadSearchAnimation";
 
 const EXAMPLE_PROMPTS = [
     "Find me 20 auto body shops in Los Angeles, California",
@@ -178,6 +179,9 @@ function ScraperPage() {
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+            {/* Robot Animation Overlay */}
+            <LeadSearchAnimation isActive={isSearching} prompt={prompt} />
+
             <AppHeader />
 
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -465,8 +469,8 @@ function ScraperPage() {
                                     {/* Lead Score Badge */}
                                     {contact.leadScore && (
                                         <div className={`px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${contact.leadScore >= 80 ? 'bg-green-500/20 text-green-400' :
-                                                contact.leadScore >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
-                                                    'bg-red-500/20 text-red-400'
+                                            contact.leadScore >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
+                                                'bg-red-500/20 text-red-400'
                                             }`}>
                                             {contact.leadScore}
                                         </div>
