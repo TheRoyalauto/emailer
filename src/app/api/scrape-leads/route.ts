@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+// Use Kimi K2.5 (Moonshot AI) - OpenAI compatible API
+const kimi = new OpenAI({
+    apiKey: process.env.KIMI_API_KEY,
+    baseURL: "https://api.moonshot.cn/v1",
 });
 
 interface ScrapedContact {
@@ -24,16 +26,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.KIMI_API_KEY) {
             return NextResponse.json(
-                { error: "OpenAI API key not configured" },
+                { error: "Kimi API key not configured" },
                 { status: 500 }
             );
         }
 
-        // Use GPT-4 to generate realistic business contacts based on the prompt
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+        // Use Kimi K2.5 to generate realistic business contacts
+        const completion = await kimi.chat.completions.create({
+            model: "moonshot-v1-128k",
             messages: [
                 {
                     role: "system",
