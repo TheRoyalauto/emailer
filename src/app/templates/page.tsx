@@ -373,19 +373,16 @@ function TemplatesPage() {
 
     // Template List View
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white">
-            <header className="border-b border-white/10 bg-black/40 sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                            Emailer
-                        </Link>
-                        <nav className="flex gap-4">
-                            <Link href="/campaigns" className="text-white/60 hover:text-white transition-colors">Campaigns</Link>
-                            <Link href="/templates" className="text-white font-medium">Templates</Link>
-                            <Link href="/contacts" className="text-white/60 hover:text-white transition-colors">Contacts</Link>
-                            <Link href="/senders" className="text-white/60 hover:text-white transition-colors">Senders</Link>
-                        </nav>
+        <div className="min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0">
+            <AppHeader />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Email Templates
+                        </h1>
+                        <p className="text-white/50 mt-1">Create and manage your email templates</p>
                     </div>
                     <button
                         onClick={handleStartNew}
@@ -393,15 +390,6 @@ function TemplatesPage() {
                     >
                         <span className="text-lg">+</span> New Template
                     </button>
-                </div>
-            </header>
-
-            <main className="max-w-7xl mx-auto px-6 py-8">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold">Email Templates</h1>
-                        <p className="text-white/50 mt-1">Create and manage your email templates</p>
-                    </div>
                 </div>
 
                 {templates === undefined ? (

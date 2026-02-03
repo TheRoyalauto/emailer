@@ -4,8 +4,9 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
+import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 
-export default function ListsPage() {
+function ListsPage() {
     const lists = useQuery(api.lists.list);
     const createList = useMutation(api.lists.create);
     const deleteList = useMutation(api.lists.remove);
@@ -25,19 +26,17 @@ export default function ListsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white">
-            <header className="border-b border-white/10 bg-black/40 sticky top-0 z-50 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                            Emailer
-                        </Link>
-                        <nav className="flex gap-4">
-                            <Link href="/campaigns" className="text-white/60 hover:text-white transition-colors">Campaigns</Link>
-                            <Link href="/contacts" className="text-white/60 hover:text-white transition-colors">Contacts</Link>
-                            <Link href="/lists" className="text-white font-medium">Lists</Link>
-                            <Link href="/senders" className="text-white/60 hover:text-white transition-colors">Senders</Link>
-                        </nav>
+        <div className="min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0">
+            <AppHeader />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                {/* Page Header */}
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Mailing Lists
+                        </h1>
+                        <p className="text-white/50 mt-1">Organize contacts into mailing lists</p>
                     </div>
                     <button
                         onClick={() => setIsCreating(true)}
@@ -46,10 +45,6 @@ export default function ListsPage() {
                         + New List
                     </button>
                 </div>
-            </header>
-
-            <main className="max-w-7xl mx-auto px-6 py-8">
-                <h1 className="text-3xl font-bold mb-8">Mailing Lists</h1>
 
                 {isCreating && (
                     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={() => setIsCreating(false)}>
@@ -126,5 +121,13 @@ export default function ListsPage() {
                 )}
             </main>
         </div>
+    );
+}
+
+export default function ListsPageWrapper() {
+    return (
+        <AuthGuard>
+            <ListsPage />
+        </AuthGuard>
     );
 }
