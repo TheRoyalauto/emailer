@@ -16,6 +16,7 @@ import type * as batches from "../batches.js";
 import type * as campaigns from "../campaigns.js";
 import type * as contacts from "../contacts.js";
 import type * as http from "../http.js";
+import type * as leadSearches from "../leadSearches.js";
 import type * as lists from "../lists.js";
 import type * as seed from "../seed.js";
 import type * as senders from "../senders.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   campaigns: typeof campaigns;
   contacts: typeof contacts;
   http: typeof http;
+  leadSearches: typeof leadSearches;
   lists: typeof lists;
   seed: typeof seed;
   senders: typeof senders;

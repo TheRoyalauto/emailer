@@ -12,6 +12,7 @@ interface ScrapedContact {
     location?: string;
     website?: string;
     address?: string;
+    leadScore?: number;
 }
 
 export async function POST(request: NextRequest) {
@@ -44,15 +45,22 @@ For each contact, provide:
 - location: City, State
 - website: Company website URL (e.g., https://example.com)
 - address: Full street address
+- leadScore: A score from 1-100 indicating lead quality (100 = perfect match, highly valuable)
 
 Generate contacts that would realistically exist based on the user's query. Make emails realistic (using common business domain patterns like @gmail.com, @yahoo.com, or company domains).
+
+Score leads higher if they:
+- Match the exact industry/business type requested
+- Include complete contact information
+- Appear to be decision makers (owners, managers)
+- Are in the specific geographic area requested
 
 IMPORTANT: Return ONLY a valid JSON array of contacts. No explanation, no markdown, just the JSON array.
 
 Example output:
 [
-  {"email": "john.smith@smithsautobody.com", "name": "John Smith", "company": "Smith's Auto Body", "phone": "310-555-1234", "location": "Los Angeles, CA", "website": "https://smithsautobody.com", "address": "1234 Main St, Los Angeles, CA 90001"},
-  {"email": "sarah@johnsoncollision.net", "name": "Sarah Johnson", "company": "Johnson Collision Center", "phone": "213-555-5678", "location": "Los Angeles, CA", "website": "https://johnsoncollision.net", "address": "5678 Oak Ave, Los Angeles, CA 90012"}
+  {"email": "john.smith@smithsautobody.com", "name": "John Smith", "company": "Smith's Auto Body", "phone": "310-555-1234", "location": "Los Angeles, CA", "website": "https://smithsautobody.com", "address": "1234 Main St, Los Angeles, CA 90001", "leadScore": 85},
+  {"email": "sarah@johnsoncollision.net", "name": "Sarah Johnson", "company": "Johnson Collision Center", "phone": "213-555-5678", "location": "Los Angeles, CA", "website": "https://johnsoncollision.net", "address": "5678 Oak Ave, Los Angeles, CA 90012", "leadScore": 92}
 ]`;
 
         // Retry logic for rate limits
@@ -109,6 +117,7 @@ Example output:
                 location: c.location?.trim(),
                 website: c.website?.trim(),
                 address: c.address?.trim(),
+                leadScore: typeof c.leadScore === 'number' ? c.leadScore : 50,
             }));
 
         return NextResponse.json({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
@@ -21,6 +21,8 @@ interface ScrapedContact {
     location?: string;
     website?: string;
     address?: string;
+    leadScore?: number;
+    isDuplicate?: boolean;
 }
 
 function ScraperPage() {
@@ -31,6 +33,7 @@ function ScraperPage() {
     const [importing, setImporting] = useState(false);
     const [importSuccess, setImportSuccess] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showSearchHistory, setShowSearchHistory] = useState(false);
 
     // For batch assignment
     const batches = useQuery(api.batches.list);
@@ -39,6 +42,22 @@ function ScraperPage() {
     const [newBatchName, setNewBatchName] = useState("");
     const createContacts = useMutation(api.contacts.bulkCreate);
     const createBatch = useMutation(api.batches.create);
+
+    // Search history
+    const searchHistory = useQuery(api.leadSearches.list);
+    const saveSearch = useMutation(api.leadSearches.create);
+    const clearSearchHistory = useMutation(api.leadSearches.clearAll);
+
+    // Existing contacts for duplicate detection
+    const existingContacts = useQuery(api.contacts.list, {});
+    const existingEmails = useMemo(() => {
+        return new Set(existingContacts?.map(c => c.email.toLowerCase()) || []);
+    }, [existingContacts]);
+
+    // Check for duplicates in results
+    const duplicateCount = useMemo(() => {
+        return results.filter(r => existingEmails.has(r.email.toLowerCase())).length;
+    }, [results, existingEmails]);
 
     const handleSearch = async () => {
         if (!prompt.trim()) return;
@@ -67,10 +86,27 @@ function ScraperPage() {
                 throw new Error(data.error || "Failed to scrape leads");
             }
 
-            setResults(data.contacts || []);
+            // Mark duplicates in results
+            const contactsWithDuplicates = (data.contacts || []).map((c: ScrapedContact) => ({
+                ...c,
+                isDuplicate: existingEmails.has(c.email.toLowerCase()),
+            }));
 
-            // Auto-select all results
-            setSelectedContacts(new Set(data.contacts.map((_: ScrapedContact, i: number) => i)));
+            setResults(contactsWithDuplicates);
+
+            // Auto-select non-duplicates only
+            const nonDuplicateIndices = contactsWithDuplicates
+                .map((c: ScrapedContact, i: number) => c.isDuplicate ? -1 : i)
+                .filter((i: number) => i >= 0);
+            setSelectedContacts(new Set(nonDuplicateIndices));
+
+            // Save search to history
+            if (data.contacts?.length > 0) {
+                await saveSearch({
+                    prompt: prompt.trim(),
+                    resultsCount: data.contacts.length,
+                });
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to scrape leads");
         } finally {
@@ -176,21 +212,68 @@ function ScraperPage() {
                         </div>
                     </div>
 
-                    {/* Example Prompts */}
-                    <div className="mt-4">
-                        <div className="text-xs text-white/40 mb-2">Try these:</div>
-                        <div className="flex flex-wrap gap-2">
-                            {EXAMPLE_PROMPTS.map((example, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setPrompt(example)}
-                                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-sm text-white/60 hover:text-white transition-colors"
-                                >
-                                    {example}
-                                </button>
-                            ))}
+                    {/* Example Prompts & History Toggle */}
+                    <div className="mt-4 flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                            <div className="text-xs text-white/40 mb-2">Try these:</div>
+                            <div className="flex flex-wrap gap-2">
+                                {EXAMPLE_PROMPTS.map((example, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setPrompt(example)}
+                                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-sm text-white/60 hover:text-white transition-colors"
+                                    >
+                                        {example}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
+                        {searchHistory && searchHistory.length > 0 && (
+                            <button
+                                onClick={() => setShowSearchHistory(!showSearchHistory)}
+                                className="px-3 py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg text-sm text-indigo-400 transition-colors flex items-center gap-1"
+                            >
+                                🕐 History ({searchHistory.length})
+                            </button>
+                        )}
                     </div>
+
+                    {/* Search History Panel */}
+                    {showSearchHistory && searchHistory && searchHistory.length > 0 && (
+                        <div className="mt-4 p-4 bg-black/40 rounded-xl border border-white/10">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-sm font-medium text-white/70">Recent Searches</span>
+                                <button
+                                    onClick={async () => {
+                                        await clearSearchHistory({});
+                                        setShowSearchHistory(false);
+                                    }}
+                                    className="text-xs text-red-400 hover:text-red-300"
+                                >
+                                    Clear All
+                                </button>
+                            </div>
+                            <div className="space-y-2 max-h-40 overflow-y-auto">
+                                {searchHistory.map((search) => (
+                                    <button
+                                        key={search._id}
+                                        onClick={() => {
+                                            setPrompt(search.prompt);
+                                            setShowSearchHistory(false);
+                                        }}
+                                        className="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                                    >
+                                        <div className="text-sm truncate">{search.prompt}</div>
+                                        <div className="text-xs text-white/40 flex items-center gap-2 mt-1">
+                                            <span>{search.resultsCount} leads found</span>
+                                            <span>•</span>
+                                            <span>{new Date(search.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Search Button */}
                     <button
@@ -208,6 +291,17 @@ function ScraperPage() {
                         )}
                     </button>
                 </div>
+
+                {/* Duplicate Warning */}
+                {results.length > 0 && duplicateCount > 0 && (
+                    <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-400 flex items-center gap-2">
+                        <span>⚠️</span>
+                        <span>
+                            <strong>{duplicateCount}</strong> of {results.length} leads already exist in your contacts.
+                            Duplicates are deselected by default.
+                        </span>
+                    </div>
+                )}
 
                 {/* Error */}
                 {error && (
@@ -295,6 +389,30 @@ function ScraperPage() {
                                     </select>
                                 )}
 
+                                {/* Export CSV Button */}
+                                <button
+                                    onClick={() => {
+                                        const csv = [
+                                            ["Name", "Email", "Company", "Phone", "Location", "Website", "Address"].join(","),
+                                            ...results.filter((_, i) => selectedContacts.has(i)).map(c =>
+                                                [c.name, c.email, c.company, c.phone, c.location, c.website, c.address]
+                                                    .map(v => `"${(v || "").replace(/"/g, '""')}"`)
+                                                    .join(",")
+                                            )
+                                        ].join("\n");
+                                        const blob = new Blob([csv], { type: "text/csv" });
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement("a");
+                                        a.href = url;
+                                        a.download = `leads-${new Date().toISOString().split("T")[0]}.csv`;
+                                        a.click();
+                                    }}
+                                    disabled={selectedContacts.size === 0}
+                                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    📥 Export CSV
+                                </button>
+
                                 {/* Import Button */}
                                 <button
                                     onClick={handleImport}
@@ -334,11 +452,25 @@ function ScraperPage() {
                                                     • {contact.company}
                                                 </span>
                                             )}
+                                            {contact.isDuplicate && (
+                                                <span className="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded">
+                                                    Duplicate
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="text-sm text-white/50 truncate">
                                             {contact.email}
                                         </div>
                                     </div>
+                                    {/* Lead Score Badge */}
+                                    {contact.leadScore && (
+                                        <div className={`px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${contact.leadScore >= 80 ? 'bg-green-500/20 text-green-400' :
+                                                contact.leadScore >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
+                                                    'bg-red-500/20 text-red-400'
+                                            }`}>
+                                            {contact.leadScore}
+                                        </div>
+                                    )}
                                     <div className="text-right text-sm text-white/40 hidden md:block flex-shrink-0">
                                         {contact.phone && <div>{contact.phone}</div>}
                                         {contact.location && <div>{contact.location}</div>}
