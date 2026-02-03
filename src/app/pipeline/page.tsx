@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
@@ -31,23 +31,218 @@ interface Contact {
     callCount?: number;
 }
 
+// Compact contact card for pipeline
+function ContactCard({
+    contact,
+    stage,
+    isDragging,
+    onDragStart,
+    onDragEnd,
+    onClick
+}: {
+    contact: Contact;
+    stage: typeof PIPELINE_STAGES[number];
+    isDragging: boolean;
+    onDragStart: (e: React.DragEvent) => void;
+    onDragEnd: () => void;
+    onClick: () => void;
+}) {
+    return (
+        <div
+            draggable
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onClick={onClick}
+            className={`bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${isDragging ? "opacity-50 scale-95" : ""
+                }`}
+        >
+            <div className="flex items-center gap-2">
+                <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ backgroundColor: `${stage.color}30`, color: stage.color }}
+                >
+                    {(contact.name || contact.email).charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                    <div className="font-medium text-sm truncate">
+                        {contact.name || contact.email.split("@")[0]}
+                    </div>
+                    <div className="text-xs text-white/40 truncate">
+                        {contact.company || contact.email}
+                    </div>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-white/50">
+                    {(contact.emailCount ?? 0) > 0 && <span>📧{contact.emailCount}</span>}
+                    {(contact.callCount ?? 0) > 0 && <span>📞{contact.callCount}</span>}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// Stage column with search and scrolling
+function StageColumn({
+    stage,
+    contacts,
+    searchQuery,
+    onSearchChange,
+    dragOverStage,
+    draggedContact,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+    onDragStart,
+    onDragEnd,
+    onContactClick,
+}: {
+    stage: typeof PIPELINE_STAGES[number];
+    contacts: Contact[];
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
+    dragOverStage: string | null;
+    draggedContact: Id<"contacts"> | null;
+    onDragOver: (e: React.DragEvent) => void;
+    onDragLeave: () => void;
+    onDrop: (e: React.DragEvent) => void;
+    onDragStart: (e: React.DragEvent, id: Id<"contacts">) => void;
+    onDragEnd: () => void;
+    onContactClick: (id: Id<"contacts">) => void;
+}) {
+    // Filter contacts by search
+    const filteredContacts = useMemo(() => {
+        if (!searchQuery.trim()) return contacts;
+        const q = searchQuery.toLowerCase();
+        return contacts.filter(c =>
+            c.name?.toLowerCase().includes(q) ||
+            c.email.toLowerCase().includes(q) ||
+            c.company?.toLowerCase().includes(q)
+        );
+    }, [contacts, searchQuery]);
+
+    const isDragTarget = dragOverStage === stage.id;
+
+    return (
+        <div
+            className={`flex-shrink-0 w-72 flex flex-col transition-all duration-200 ${isDragTarget ? "scale-[1.01]" : ""
+                }`}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+        >
+            {/* Stage Header */}
+            <div
+                className="rounded-t-xl p-3 flex items-center justify-between"
+                style={{ backgroundColor: `${stage.color}20` }}
+            >
+                <div className="flex items-center gap-2">
+                    <span>{stage.icon}</span>
+                    <span className="font-medium text-sm" style={{ color: stage.color }}>
+                        {stage.label}
+                    </span>
+                </div>
+                <span
+                    className="px-2 py-0.5 rounded-full text-xs font-bold"
+                    style={{ backgroundColor: stage.color, color: "#000" }}
+                >
+                    {contacts.length}
+                </span>
+            </div>
+
+            {/* Search Bar */}
+            {contacts.length > 5 && (
+                <div className="bg-[#12121f] border-x border-white/10 px-2 py-2">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="w-full px-3 py-1.5 text-xs bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500/50"
+                    />
+                </div>
+            )}
+
+            {/* Cards Container - Fixed Height with Scroll */}
+            <div
+                className={`bg-[#12121f] rounded-b-xl border border-white/10 flex-1 p-2 space-y-2 overflow-y-auto transition-colors ${isDragTarget ? "border-2" : ""
+                    }`}
+                style={{
+                    borderColor: isDragTarget ? stage.color : undefined,
+                    maxHeight: "calc(100vh - 280px)",
+                    minHeight: "200px"
+                }}
+            >
+                {filteredContacts.length > 0 ? (
+                    filteredContacts.map((contact) => (
+                        <ContactCard
+                            key={contact._id}
+                            contact={contact}
+                            stage={stage}
+                            isDragging={draggedContact === contact._id}
+                            onDragStart={(e) => onDragStart(e, contact._id)}
+                            onDragEnd={onDragEnd}
+                            onClick={() => onContactClick(contact._id)}
+                        />
+                    ))
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-24 text-white/20 text-sm">
+                        {searchQuery ? (
+                            <>
+                                <span className="text-xl mb-1">🔍</span>
+                                <span>No matches</span>
+                            </>
+                        ) : (
+                            <>
+                                <span className="text-xl mb-1">{stage.icon}</span>
+                                <span>Drop contacts here</span>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Show filtered count if searching */}
+            {searchQuery && filteredContacts.length !== contacts.length && (
+                <div className="text-center text-xs text-white/30 py-1 bg-[#12121f] border-x border-b border-white/10 rounded-b-xl -mt-2">
+                    Showing {filteredContacts.length} of {contacts.length}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function PipelinePage() {
     const [viewContactId, setViewContactId] = useState<Id<"contacts"> | null>(null);
     const [draggedContact, setDraggedContact] = useState<Id<"contacts"> | null>(null);
     const [dragOverStage, setDragOverStage] = useState<string | null>(null);
+    const [globalSearch, setGlobalSearch] = useState("");
+    const [stageSearches, setStageSearches] = useState<Record<string, string>>({});
 
     // Queries
     const allContacts = useQuery(api.contacts.list, {});
     const updateStage = useMutation(api.activities.updateSalesStage);
 
     // Group contacts by stage
-    const contactsByStage = PIPELINE_STAGES.reduce((acc, stage) => {
-        acc[stage.id] = (allContacts || []).filter(c => {
-            const contactStage = c.salesStage || "new";
-            return contactStage === stage.id;
-        });
-        return acc;
-    }, {} as Record<string, Contact[]>);
+    const contactsByStage = useMemo(() => {
+        return PIPELINE_STAGES.reduce((acc, stage) => {
+            let stageContacts = (allContacts || []).filter(c => {
+                const contactStage = c.salesStage || "new";
+                return contactStage === stage.id;
+            });
+
+            // Apply global search
+            if (globalSearch.trim()) {
+                const q = globalSearch.toLowerCase();
+                stageContacts = stageContacts.filter(c =>
+                    c.name?.toLowerCase().includes(q) ||
+                    c.email.toLowerCase().includes(q) ||
+                    c.company?.toLowerCase().includes(q)
+                );
+            }
+
+            acc[stage.id] = stageContacts;
+            return acc;
+        }, {} as Record<string, Contact[]>);
+    }, [allContacts, globalSearch]);
 
     // Drag handlers
     const handleDragStart = (e: React.DragEvent, contactId: Id<"contacts">) => {
@@ -88,16 +283,10 @@ function PipelinePage() {
         setDragOverStage(null);
     };
 
-    const formatRelativeTime = (timestamp: number) => {
-        const diff = Date.now() - timestamp;
-        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-        return `${Math.floor(diff / 86400000)}d ago`;
-    };
-
     const totalContacts = allContacts?.length || 0;
     const wonCount = contactsByStage["closed_won"]?.length || 0;
     const lostCount = contactsByStage["closed_lost"]?.length || 0;
+    const filteredTotal = Object.values(contactsByStage).reduce((sum, arr) => sum + arr.length, 0);
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
@@ -105,158 +294,63 @@ function PipelinePage() {
 
             <main className="px-4 sm:px-6 lg:px-8 py-6">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <div>
                         <h1 className="text-2xl font-bold">Sales Pipeline</h1>
                         <p className="text-white/50 text-sm">Drag contacts to move through stages</p>
                     </div>
-                    <div className="flex items-center gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                            <span className="text-white/50">Total:</span>
-                            <span className="font-medium">{totalContacts}</span>
+
+                    <div className="flex flex-wrap items-center gap-4">
+                        {/* Global Search */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search all contacts..."
+                                value={globalSearch}
+                                onChange={(e) => setGlobalSearch(e.target.value)}
+                                className="w-64 px-4 py-2 pl-9 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-indigo-500/50"
+                            />
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">🔍</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-green-400">Won:</span>
-                            <span className="font-medium text-green-400">{wonCount}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-red-400">Lost:</span>
-                            <span className="font-medium text-red-400">{lostCount}</span>
+
+                        {/* Stats */}
+                        <div className="flex items-center gap-4 text-sm">
+                            <div className="flex items-center gap-2">
+                                <span className="text-white/50">Total:</span>
+                                <span className="font-medium">
+                                    {globalSearch ? `${filteredTotal} / ${totalContacts}` : totalContacts}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-green-400">Won:</span>
+                                <span className="font-medium text-green-400">{wonCount}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-red-400">Lost:</span>
+                                <span className="font-medium text-red-400">{lostCount}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Kanban Board */}
-                <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
+                <div className="flex gap-4 overflow-x-auto pb-4">
                     {PIPELINE_STAGES.map((stage) => (
-                        <div
+                        <StageColumn
                             key={stage.id}
-                            className={`flex-shrink-0 w-72 snap-start transition-all duration-200 ${dragOverStage === stage.id
-                                ? "scale-[1.02]"
-                                : ""
-                                }`}
+                            stage={stage}
+                            contacts={contactsByStage[stage.id] || []}
+                            searchQuery={stageSearches[stage.id] || ""}
+                            onSearchChange={(q) => setStageSearches(prev => ({ ...prev, [stage.id]: q }))}
+                            dragOverStage={dragOverStage}
+                            draggedContact={draggedContact}
                             onDragOver={(e) => handleDragOver(e, stage.id)}
                             onDragLeave={handleDragLeave}
                             onDrop={(e) => handleDrop(e, stage.id)}
-                        >
-                            {/* Stage Header */}
-                            <div
-                                className="rounded-t-xl p-3 flex items-center justify-between"
-                                style={{ backgroundColor: `${stage.color}20` }}
-                            >
-                                <div className="flex items-center gap-2">
-                                    <span>{stage.icon}</span>
-                                    <span className="font-medium" style={{ color: stage.color }}>
-                                        {stage.label}
-                                    </span>
-                                </div>
-                                <span
-                                    className="px-2 py-0.5 rounded-full text-xs font-bold"
-                                    style={{ backgroundColor: stage.color, color: "#000" }}
-                                >
-                                    {contactsByStage[stage.id]?.length || 0}
-                                </span>
-                            </div>
-
-                            {/* Cards Container */}
-                            <div
-                                className={`bg-[#12121f] rounded-b-xl border border-white/10 min-h-[400px] p-2 space-y-2 transition-colors ${dragOverStage === stage.id
-                                    ? "border-2"
-                                    : ""
-                                    }`}
-                                style={{
-                                    borderColor: dragOverStage === stage.id ? stage.color : undefined
-                                }}
-                            >
-                                {contactsByStage[stage.id]?.map((contact) => (
-                                    <div
-                                        key={contact._id}
-                                        draggable
-                                        onDragStart={(e) => handleDragStart(e, contact._id)}
-                                        onDragEnd={handleDragEnd}
-                                        onClick={() => setViewContactId(contact._id)}
-                                        className={`bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${draggedContact === contact._id
-                                            ? "opacity-50 scale-95"
-                                            : ""
-                                            }`}
-                                    >
-                                        {/* Avatar + Name */}
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div
-                                                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                                                style={{ backgroundColor: `${stage.color}30`, color: stage.color }}
-                                            >
-                                                {(contact.name || contact.email).charAt(0).toUpperCase()}
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <div className="font-medium text-sm truncate">
-                                                    {contact.name || contact.email.split("@")[0]}
-                                                </div>
-                                                {contact.company && (
-                                                    <div className="text-xs text-white/50 truncate">
-                                                        {contact.company}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Email */}
-                                        <div className="text-xs text-white/40 truncate mb-2">
-                                            {contact.email}
-                                        </div>
-
-                                        {/* Stats Row */}
-                                        <div className="flex items-center gap-3 text-xs text-white/50">
-                                            {(contact.emailCount ?? 0) > 0 && (
-                                                <span className="flex items-center gap-1">
-                                                    📧 {contact.emailCount}
-                                                </span>
-                                            )}
-                                            {(contact.callCount ?? 0) > 0 && (
-                                                <span className="flex items-center gap-1">
-                                                    📞 {contact.callCount}
-                                                </span>
-                                            )}
-                                            {contact.lastEmailAt && (
-                                                <span className="text-white/30">
-                                                    {formatRelativeTime(contact.lastEmailAt)}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* Quick Actions */}
-                                        <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/5">
-                                            {contact.phone && (
-                                                <a
-                                                    href={`tel:${contact.phone}`}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    className="p-1.5 hover:bg-green-500/20 rounded text-green-400 transition-colors"
-                                                    title="Call"
-                                                >
-                                                    📞
-                                                </a>
-                                            )}
-                                            <a
-                                                href={`mailto:${contact.email}`}
-                                                onClick={(e) => e.stopPropagation()}
-                                                className="p-1.5 hover:bg-blue-500/20 rounded text-blue-400 transition-colors"
-                                                title="Email"
-                                            >
-                                                ✉️
-                                            </a>
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {/* Empty State */}
-                                {(!contactsByStage[stage.id] || contactsByStage[stage.id].length === 0) && (
-                                    <div className="flex flex-col items-center justify-center h-32 text-white/20 text-sm">
-                                        <span className="text-2xl mb-1">{stage.icon}</span>
-                                        <span>Drop contacts here</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                            onContactClick={setViewContactId}
+                        />
                     ))}
                 </div>
             </main>
