@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Use Google Gemini Flash
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || "");
-
 interface ScrapedContact {
     email: string;
     name?: string;
@@ -28,11 +25,13 @@ export async function POST(request: NextRequest) {
 
         if (!process.env.GOOGLE_AI_API_KEY) {
             return NextResponse.json(
-                { error: "Google AI API key not configured" },
+                { error: "Lead generation service unavailable. Please check API configuration." },
                 { status: 500 }
             );
         }
 
+        // Initialize inside handler to avoid build-time errors
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
         const systemPrompt = `You are a lead generation assistant. Given a user's request, generate a list of realistic business contacts that match their criteria.
