@@ -165,21 +165,27 @@ export default defineSchema({
 
     // Email events (opens, clicks, etc.)
     emailEvents: defineTable({
-        campaignId: v.id("campaigns"),
-        contactId: v.id("contacts"),
-        eventType: v.union(
+        userId: v.id("users"),
+        campaignId: v.optional(v.id("campaigns")),
+        contactId: v.optional(v.id("contacts")),
+        sequenceId: v.optional(v.id("sequences")),
+        event: v.union(
             v.literal("sent"),
             v.literal("delivered"),
             v.literal("opened"),
             v.literal("clicked"),
             v.literal("bounced"),
+            v.literal("complained"),
             v.literal("unsubscribed")
         ),
+        email: v.string(),
         metadata: v.optional(v.any()),
+        timestamp: v.number(),
     })
+        .index("by_user", ["userId"])
         .index("by_campaign", ["campaignId"])
         .index("by_contact", ["contactId"])
-        .index("by_type", ["eventType"]),
+        .index("by_event", ["event"]),
 
     // Contact activity log (calls, emails, notes)
     contactActivities: defineTable({
@@ -368,29 +374,5 @@ export default defineSchema({
     })
         .index("by_user", ["userId"])
         .index("by_user_date", ["userId", "date"]),
-
-    // Email Events Log (for debugging and detailed tracking)
-    emailEvents: defineTable({
-        userId: v.id("users"),
-        contactId: v.optional(v.id("contacts")),
-        campaignId: v.optional(v.id("campaigns")),
-        sequenceId: v.optional(v.id("sequences")),
-        event: v.union(
-            v.literal("sent"),
-            v.literal("delivered"),
-            v.literal("opened"),
-            v.literal("clicked"),
-            v.literal("bounced"),
-            v.literal("complained"),
-            v.literal("unsubscribed")
-        ),
-        email: v.string(),
-        metadata: v.optional(v.string()), // JSON for extra data like click URL
-        timestamp: v.number(),
-    })
-        .index("by_user", ["userId"])
-        .index("by_contact", ["contactId"])
-        .index("by_campaign", ["campaignId"])
-        .index("by_event", ["event"]),
 });
 
