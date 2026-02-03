@@ -1,136 +1,246 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-interface BulkEmailRequest {
-    emails: Array<{
-        to: string;
-        subject: string;
-        html: string;
-        contactId?: string;
-    }>;
-    from: {
-        name: string;
-        email: string;
-    };
-    replyTo?: string;
-    smtp: {
-        host: string;
-        port: number;
-        secure: boolean;
-        user: string;
-        pass: string;
-    };
-    // Sending options
-    delayBetweenMs?: number; // Delay between emails (default: 500ms)
-    campaignId?: string;
-}
-
-interface SendResult {
-    email: string;
-    success: boolean;
-    messageId?: string;
-    error?: string;
+interface EmailPayload {
+    to: string;
+    subject: string;
+    html: string;
     contactId?: string;
 }
 
-export async function POST(request: NextRequest) {
+interface SmtpConfig {
+    provider?: "smtp" | "resend" | "sendgrid" | "mailgun";
+    host?: string;
+    port?: number;
+    secure?: boolean;
+    user?: string;
+    pass?: string;
+    apiKey?: string;
+}
+
+interface SendBulkRequest {
+    emails: EmailPayload[];
+    from: { name: string; email: string };
+    smtp: SmtpConfig;
+    delayBetweenMs?: number;
+}
+
+// Send via Resend API
+async function sendWithResend(
+    apiKey: string,
+    from: { name: string; email: string },
+    email: EmailPayload
+): Promise<{ success: boolean; error?: string }> {
     try {
-        const body: BulkEmailRequest = await request.json();
-
-        // Validate
-        if (!body.emails || body.emails.length === 0) {
-            return NextResponse.json(
-                { error: "No emails to send" },
-                { status: 400 }
-            );
-        }
-
-        if (!body.from || !body.smtp) {
-            return NextResponse.json(
-                { error: "Missing from or smtp configuration" },
-                { status: 400 }
-            );
-        }
-
-        // Create transporter
-        const transporter = nodemailer.createTransport({
-            host: body.smtp.host,
-            port: body.smtp.port,
-            secure: body.smtp.secure,
-            auth: {
-                user: body.smtp.user,
-                pass: body.smtp.pass,
-            },
-            pool: true, // Use connection pooling for bulk sending
-            maxConnections: 5,
-            maxMessages: 100,
+        const resend = new Resend(apiKey);
+        const { error } = await resend.emails.send({
+            from: `${from.name} <${from.email}>`,
+            to: email.to,
+            subject: email.subject,
+            html: email.html,
         });
 
-        // Verify connection
-        try {
-            await transporter.verify();
-        } catch {
-            return NextResponse.json(
-                { error: "SMTP connection failed. Check credentials." },
-                { status: 400 }
-            );
+        if (error) {
+            return { success: false, error: error.message };
+        }
+        return { success: true };
+    } catch (err: any) {
+        return { success: false, error: err.message || "Resend error" };
+    }
+}
+
+// Send via SendGrid API
+async function sendWithSendGrid(
+    apiKey: string,
+    from: { name: string; email: string },
+    email: EmailPayload
+): Promise<{ success: boolean; error?: string }> {
+    try {
+        const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                personalizations: [{ to: [{ email: email.to }] }],
+                from: { email: from.email, name: from.name },
+                subject: email.subject,
+                content: [{ type: "text/html", value: email.html }],
+            }),
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            return { success: false, error: errText };
+        }
+        return { success: true };
+    } catch (err: any) {
+        return { success: false, error: err.message || "SendGrid error" };
+    }
+}
+
+// Send via Mailgun API
+async function sendWithMailgun(
+    apiKey: string,
+    domain: string,
+    from: { name: string; email: string },
+    email: EmailPayload
+): Promise<{ success: boolean; error?: string }> {
+    try {
+        const auth = Buffer.from(`api:${apiKey}`).toString("base64");
+        const formData = new URLSearchParams({
+            from: `${from.name} <${from.email}>`,
+            to: email.to,
+            subject: email.subject,
+            html: email.html,
+        });
+
+        const response = await fetch(
+            `https://api.mailgun.net/v3/${domain}/messages`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Basic ${auth}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData,
+            }
+        );
+
+        if (!response.ok) {
+            const errText = await response.text();
+            return { success: false, error: errText };
+        }
+        return { success: true };
+    } catch (err: any) {
+        return { success: false, error: err.message || "Mailgun error" };
+    }
+}
+
+// Send via SMTP (Nodemailer)
+async function sendWithSmtp(
+    config: SmtpConfig,
+    from: { name: string; email: string },
+    email: EmailPayload
+): Promise<{ success: boolean; error?: string }> {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: config.host,
+            port: config.port || 587,
+            secure: config.secure || false,
+            auth: {
+                user: config.user,
+                pass: config.pass,
+            },
+        });
+
+        await transporter.sendMail({
+            from: `"${from.name}" <${from.email}>`,
+            to: email.to,
+            subject: email.subject,
+            html: email.html,
+        });
+
+        return { success: true };
+    } catch (err: any) {
+        return { success: false, error: err.message || "SMTP error" };
+    }
+}
+
+// Delay helper
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function POST(request: NextRequest) {
+    try {
+        const body: SendBulkRequest = await request.json();
+        const { emails, from, smtp, delayBetweenMs = 1000 } = body;
+
+        if (!emails || emails.length === 0) {
+            return NextResponse.json({ error: "No emails to send" }, { status: 400 });
         }
 
-        const delay = body.delayBetweenMs || 500;
-        const results: SendResult[] = [];
+        const results: Array<{
+            email: string;
+            success: boolean;
+            error?: string;
+            contactId?: string;
+        }> = [];
 
-        // Send emails with throttling
-        for (let i = 0; i < body.emails.length; i++) {
-            const email = body.emails[i];
+        for (let i = 0; i < emails.length; i++) {
+            const email = emails[i];
+            let result: { success: boolean; error?: string };
 
-            try {
-                const info = await transporter.sendMail({
-                    from: `"${body.from.name}" <${body.from.email}>`,
-                    to: email.to,
-                    replyTo: body.replyTo || body.from.email,
-                    subject: email.subject,
-                    html: email.html,
-                    text: email.html.replace(/<[^>]*>/g, ""),
-                });
+            // Choose provider
+            const provider = smtp.provider || "smtp";
 
-                results.push({
-                    email: email.to,
-                    success: true,
-                    messageId: info.messageId,
-                    contactId: email.contactId,
-                });
-            } catch (error) {
-                results.push({
-                    email: email.to,
-                    success: false,
-                    error: error instanceof Error ? error.message : "Send failed",
-                    contactId: email.contactId,
-                });
+            switch (provider) {
+                case "resend":
+                    if (!smtp.apiKey) {
+                        result = { success: false, error: "Resend API key required" };
+                    } else {
+                        result = await sendWithResend(smtp.apiKey, from, email);
+                    }
+                    break;
+
+                case "sendgrid":
+                    if (!smtp.apiKey) {
+                        result = { success: false, error: "SendGrid API key required" };
+                    } else {
+                        result = await sendWithSendGrid(smtp.apiKey, from, email);
+                    }
+                    break;
+
+                case "mailgun":
+                    if (!smtp.apiKey) {
+                        result = { success: false, error: "Mailgun API key required" };
+                    } else {
+                        // Extract domain from from email
+                        const domain = from.email.split("@")[1];
+                        result = await sendWithMailgun(smtp.apiKey, domain, from, email);
+                    }
+                    break;
+
+                case "smtp":
+                default:
+                    if (!smtp.host || !smtp.user || !smtp.pass) {
+                        result = { success: false, error: "SMTP config incomplete" };
+                    } else {
+                        result = await sendWithSmtp(smtp, from, email);
+                    }
+                    break;
             }
 
-            // Throttle between emails to avoid rate limiting
-            if (i < body.emails.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, delay));
+            results.push({
+                email: email.to,
+                success: result.success,
+                error: result.error,
+                contactId: email.contactId,
+            });
+
+            // Delay between emails (except for last one)
+            if (i < emails.length - 1 && delayBetweenMs > 0) {
+                await delay(delayBetweenMs);
             }
         }
 
-        // Close the connection pool
-        transporter.close();
-
-        const successful = results.filter(r => r.success).length;
-        const failed = results.filter(r => !r.success).length;
+        const successful = results.filter((r) => r.success).length;
+        const failed = results.filter((r) => !r.success).length;
 
         return NextResponse.json({
             success: true,
-            total: body.emails.length,
-            successful,
-            failed,
             results,
+            summary: {
+                total: emails.length,
+                sent: successful,
+                failed,
+            },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("Bulk send error:", error);
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : "Bulk send failed" },
+            { error: error.message || "Failed to send emails" },
             { status: 500 }
         );
     }

@@ -9,5 +9,9 @@
   "/login/page": "app/login/page.js",
   "/register/page": "app/register/page.js",
   "/scraper/page": "app/scraper/page.js",
-  "/api/scrape-leads/route": "app/api/scrape-leads/route.js"
+  "/api/scrape-leads/route": "app/api/scrape-leads/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/pipeline/page": "app/pipeline/page.js",
+  "/sequences/page": "app/sequences/page.js",
+  "/calls/page": "app/calls/page.js"
 }
