@@ -39,22 +39,15 @@ export function AuthGuard({ children }: AuthGuardProps) {
     return <>{children}</>;
 }
 
-// Navigation items - single source of truth
+// Navigation items - consolidated to core hubs
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: "🏠", mobileIcon: "🏠" },
     { href: "/campaigns", label: "Campaigns", icon: "📧", mobileIcon: "📧" },
     { href: "/contacts", label: "Contacts", icon: "👥", mobileIcon: "👥" },
     { href: "/pipeline", label: "Pipeline", icon: "📊", mobileIcon: "📊" },
     { href: "/sequences", label: "Sequences", icon: "🔄", mobileIcon: "🔄" },
-    { href: "/calls", label: "Calls", icon: "📞", mobileIcon: "📞" },
-    { href: "/analytics", label: "Analytics", icon: "📈", mobileIcon: "📈" },
-    { href: "/reputation", label: "Reputation", icon: "🛡️", mobileIcon: "🛡️" },
-    { href: "/ab-tests", label: "A/B Tests", icon: "🧪", mobileIcon: "🧪" },
-    { href: "/scraper", label: "AI Scraper", icon: "🤖", mobileIcon: "🤖" },
-    { href: "/templates", label: "Templates", icon: "📝", mobileIcon: "📝" },
-    { href: "/senders", label: "Senders", icon: "✉️", mobileIcon: "✉️" },
-    { href: "/smtp-settings", label: "SMTP", icon: "⚙️", mobileIcon: "⚙️" },
-    { href: "/unsubscribes", label: "Unsubs", icon: "🚫", mobileIcon: "🚫" },
+    { href: "/insights", label: "Insights", icon: "📈", mobileIcon: "📈" },
+    { href: "/settings", label: "Settings", icon: "⚙️", mobileIcon: "⚙️" },
 ];
 
 // Mobile bottom nav items (first 5)

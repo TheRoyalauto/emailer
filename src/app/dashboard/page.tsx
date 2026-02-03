@@ -4,6 +4,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import Link from "next/link";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { FadeInContainer, StaggeredList, StaggeredItem } from "@/components/PageTransition";
 
 function DashboardPage() {
     // Queries
@@ -55,14 +56,16 @@ function DashboardPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {/* Welcome Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold mb-2">
-                        <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            Dashboard
-                        </span>
-                    </h1>
-                    <p className="text-white/50">Your sales outreach command center</p>
-                </div>
+                <FadeInContainer>
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold mb-2">
+                            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                Dashboard
+                            </span>
+                        </h1>
+                        <p className="text-white/50">Your sales outreach command center</p>
+                    </div>
+                </FadeInContainer>
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

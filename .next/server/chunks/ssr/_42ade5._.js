@@ -1256,7 +1256,7 @@ function AuthGuard({ children }) {
         children: children
     }, void 0, false);
 }
-// Navigation items - single source of truth
+// Navigation items - consolidated to core hubs
 const NAV_ITEMS = [
     {
         href: "/dashboard",
@@ -1289,58 +1289,16 @@ const NAV_ITEMS = [
         mobileIcon: "🔄"
     },
     {
-        href: "/calls",
-        label: "Calls",
-        icon: "📞",
-        mobileIcon: "📞"
-    },
-    {
-        href: "/analytics",
-        label: "Analytics",
+        href: "/insights",
+        label: "Insights",
         icon: "📈",
         mobileIcon: "📈"
     },
     {
-        href: "/reputation",
-        label: "Reputation",
-        icon: "🛡️",
-        mobileIcon: "🛡️"
-    },
-    {
-        href: "/ab-tests",
-        label: "A/B Tests",
-        icon: "🧪",
-        mobileIcon: "🧪"
-    },
-    {
-        href: "/scraper",
-        label: "AI Scraper",
-        icon: "🤖",
-        mobileIcon: "🤖"
-    },
-    {
-        href: "/templates",
-        label: "Templates",
-        icon: "📝",
-        mobileIcon: "📝"
-    },
-    {
-        href: "/senders",
-        label: "Senders",
-        icon: "✉️",
-        mobileIcon: "✉️"
-    },
-    {
-        href: "/smtp-settings",
-        label: "SMTP",
+        href: "/settings",
+        label: "Settings",
         icon: "⚙️",
         mobileIcon: "⚙️"
-    },
-    {
-        href: "/unsubscribes",
-        label: "Unsubs",
-        icon: "🚫",
-        mobileIcon: "🚫"
     }
 ];
 // Mobile bottom nav items (first 5)
@@ -1372,7 +1330,7 @@ function AppHeader() {
                                     children: "Emailer"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 85,
+                                    lineNumber: 78,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1386,7 +1344,7 @@ function AppHeader() {
                                                     children: item.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                                    lineNumber: 103,
+                                                    lineNumber: 96,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1394,24 +1352,24 @@ function AppHeader() {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                                    lineNumber: 104,
+                                                    lineNumber: 97,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, item.href, true, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 95,
+                                            lineNumber: 88,
                                             columnNumber: 33
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 93,
+                                    lineNumber: 86,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 83,
+                            lineNumber: 76,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1420,18 +1378,18 @@ function AppHeader() {
                             children: "Sign Out"
                         }, void 0, false, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 110,
+                            lineNumber: 103,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/AuthGuard.tsx",
-                    lineNumber: 82,
+                    lineNumber: 75,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 81,
+                lineNumber: 74,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
@@ -1446,7 +1404,7 @@ function AppHeader() {
                                 children: "Emailer"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 122,
+                                lineNumber: 115,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1457,18 +1415,18 @@ function AppHeader() {
                                     children: showMobileMenu ? "✕" : "☰"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 131,
+                                    lineNumber: 124,
                                     columnNumber: 25
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 129,
+                                lineNumber: 122,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AuthGuard.tsx",
-                        lineNumber: 121,
+                        lineNumber: 114,
                         columnNumber: 17
                     }, this),
                     showMobileMenu && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1484,7 +1442,7 @@ function AppHeader() {
                                             children: item.icon
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 153,
+                                            lineNumber: 146,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1492,20 +1450,20 @@ function AppHeader() {
                                             children: item.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 154,
+                                            lineNumber: 147,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, item.href, true, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 144,
+                                    lineNumber: 137,
                                     columnNumber: 29
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("hr", {
                                 className: "border-white/10 my-3"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 157,
+                                lineNumber: 150,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1517,7 +1475,7 @@ function AppHeader() {
                                         children: "🚪"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AuthGuard.tsx",
-                                        lineNumber: 162,
+                                        lineNumber: 155,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1525,25 +1483,25 @@ function AppHeader() {
                                         children: "Sign Out"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AuthGuard.tsx",
-                                        lineNumber: 163,
+                                        lineNumber: 156,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 158,
+                                lineNumber: 151,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AuthGuard.tsx",
-                        lineNumber: 142,
+                        lineNumber: 135,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 120,
+                lineNumber: 113,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -1559,7 +1517,7 @@ function AppHeader() {
                                     children: item.mobileIcon
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 181,
+                                    lineNumber: 174,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1567,23 +1525,23 @@ function AppHeader() {
                                     children: item.label
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 182,
+                                    lineNumber: 175,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, item.href, true, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 173,
+                            lineNumber: 166,
                             columnNumber: 25
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/AuthGuard.tsx",
-                    lineNumber: 171,
+                    lineNumber: 164,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 170,
+                lineNumber: 163,
                 columnNumber: 13
             }, this)
         ]
