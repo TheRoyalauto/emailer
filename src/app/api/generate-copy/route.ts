@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(request: NextRequest) {
     try {
+        // Initialize client inside handler to avoid build-time errors
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+
         const { prompt, tone, includeSubject } = await request.json();
 
         if (!prompt) {
@@ -62,3 +63,4 @@ Use HTML for the body with <p>, <strong>, <br> tags. Keep it simple and mobile-f
         );
     }
 }
+
