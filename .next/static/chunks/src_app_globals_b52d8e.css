@@ -1077,6 +1077,10 @@ img, video {
   border-color: #ffffff0d;
 }
 
+.border-yellow-500\/20 {
+  border-color: #eab30833;
+}
+
 .border-t-indigo-500 {
   --tw-border-opacity: 1;
   border-top-color: rgb(99 102 241 / var(--tw-border-opacity, 1));
@@ -1272,6 +1276,10 @@ img, video {
 .bg-zinc-700 {
   --tw-bg-opacity: 1;
   background-color: rgb(63 63 70 / var(--tw-bg-opacity, 1));
+}
+
+.bg-yellow-500\/10 {
+  background-color: #eab3081a;
 }
 
 .bg-gradient-to-br {
@@ -1634,6 +1642,11 @@ img, video {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+
+.px-1\.5 {
+  padding-left: .375rem;
+  padding-right: .375rem;
 }
 
 .pb-1 {
@@ -2265,6 +2278,11 @@ body {
 
 .hover\:text-white\/60:hover {
   color: #fff9;
+}
+
+.hover\:text-red-300:hover {
+  --tw-text-opacity: 1;
+  color: rgb(252 165 165 / var(--tw-text-opacity, 1));
 }
 
 .hover\:underline:hover {

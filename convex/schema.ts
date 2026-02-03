@@ -70,6 +70,7 @@ export default defineSchema({
         emailCount: v.optional(v.number()),
         callCount: v.optional(v.number()),
         nextFollowUpAt: v.optional(v.number()),
+        leadScore: v.optional(v.number()), // 1-100 AI-generated score
         metadata: v.optional(v.any()),
     })
         .index("by_email", ["email"])
@@ -98,6 +99,14 @@ export default defineSchema({
         name: v.string(),
         description: v.optional(v.string()),
         contactCount: v.number(),
+    }).index("by_user", ["userId"]),
+
+    // Lead search history (user-scoped)
+    leadSearches: defineTable({
+        userId: v.id("users"),
+        prompt: v.string(),
+        resultsCount: v.number(),
+        createdAt: v.number(),
     }).index("by_user", ["userId"]),
 
     // List memberships (many-to-many)
