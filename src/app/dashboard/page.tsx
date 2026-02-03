@@ -1,12 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
+import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import ContactDetail from "@/components/ContactDetail";
 import { FadeInContainer, StaggeredList, StaggeredItem } from "@/components/PageTransition";
 
 function DashboardPage() {
+    // State for viewing contact from activity
+    const [viewContactId, setViewContactId] = useState<Id<"contacts"> | null>(null);
+
     // Queries
     const contacts = useQuery(api.contacts.list, {});
     const templates = useQuery(api.templates.list, {});
@@ -196,13 +202,22 @@ function DashboardPage() {
                     ) : (
                         <div className="divide-y divide-white/5">
                             {recentActivity.map((activity) => (
-                                <div key={activity._id} className="py-3 flex items-center gap-3">
+                                <div
+                                    key={activity._id}
+                                    onClick={() => setViewContactId(activity.contactId)}
+                                    className="py-3 flex items-center gap-3 cursor-pointer hover:bg-white/5 rounded-lg transition-colors px-2 -mx-2"
+                                >
                                     <span className="text-xl">{getActivityIcon(activity.type)}</span>
                                     <div className="flex-1 min-w-0">
                                         <div className="text-sm truncate">
                                             <span className="font-medium">
                                                 {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                             </span>
+                                            {activity.contact && (
+                                                <span className="text-white/50 ml-2">
+                                                    • {activity.contact.name || activity.contact.email}
+                                                </span>
+                                            )}
                                         </div>
                                         {activity.notes && (
                                             <div className="text-xs text-white/40 truncate">
@@ -239,6 +254,14 @@ function DashboardPage() {
                     </div>
                 </div>
             </main>
+
+            {/* Contact Detail Modal */}
+            {viewContactId && (
+                <ContactDetail
+                    contactId={viewContactId}
+                    onClose={() => setViewContactId(null)}
+                />
+            )}
         </div>
     );
 }
