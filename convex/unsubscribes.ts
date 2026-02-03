@@ -44,6 +44,7 @@ export const unsubscribe = mutation({
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
 
         // Check if already unsubscribed
         const existing = await ctx.db
@@ -115,6 +116,7 @@ export const resubscribe = mutation({
     args: { email: v.string() },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
 
         // Find and delete unsubscribe record
         const unsub = await ctx.db
