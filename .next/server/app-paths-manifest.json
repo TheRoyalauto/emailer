@@ -13,5 +13,9 @@
   "/dashboard/page": "app/dashboard/page.js",
   "/pipeline/page": "app/pipeline/page.js",
   "/sequences/page": "app/sequences/page.js",
-  "/calls/page": "app/calls/page.js"
+  "/calls/page": "app/calls/page.js",
+  "/insights/page": "app/insights/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/smtp-settings/page": "app/smtp-settings/page.js",
+  "/analytics/page": "app/analytics/page.js"
 }

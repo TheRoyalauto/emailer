@@ -100,7 +100,7 @@ function AuthGuard({ children }) {
         children: children
     }, void 0, false);
 }
-// Navigation items - single source of truth
+// Navigation items - consolidated to core hubs
 const NAV_ITEMS = [
     {
         href: "/dashboard",
@@ -127,28 +127,22 @@ const NAV_ITEMS = [
         mobileIcon: "📊"
     },
     {
-        href: "/calls",
-        label: "Calls",
-        icon: "📞",
-        mobileIcon: "📞"
+        href: "/sequences",
+        label: "Sequences",
+        icon: "🔄",
+        mobileIcon: "🔄"
     },
     {
-        href: "/scraper",
-        label: "AI Scraper",
-        icon: "🤖",
-        mobileIcon: "🤖"
+        href: "/insights",
+        label: "Insights",
+        icon: "📈",
+        mobileIcon: "📈"
     },
     {
-        href: "/templates",
-        label: "Templates",
-        icon: "📝",
-        mobileIcon: "📝"
-    },
-    {
-        href: "/senders",
-        label: "Senders",
-        icon: "✉️",
-        mobileIcon: "✉️"
+        href: "/settings",
+        label: "Settings",
+        icon: "⚙️",
+        mobileIcon: "⚙️"
     }
 ];
 // Mobile bottom nav items (first 5)
@@ -180,7 +174,7 @@ function AppHeader() {
                                     children: "Emailer"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 79,
+                                    lineNumber: 78,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -194,7 +188,7 @@ function AppHeader() {
                                                     children: item.icon
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                                    lineNumber: 97,
+                                                    lineNumber: 96,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -202,24 +196,24 @@ function AppHeader() {
                                                     children: item.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                                    lineNumber: 98,
+                                                    lineNumber: 97,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, item.href, true, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 89,
+                                            lineNumber: 88,
                                             columnNumber: 33
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 87,
+                                    lineNumber: 86,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 77,
+                            lineNumber: 76,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -228,18 +222,18 @@ function AppHeader() {
                             children: "Sign Out"
                         }, void 0, false, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 104,
+                            lineNumber: 103,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/AuthGuard.tsx",
-                    lineNumber: 76,
+                    lineNumber: 75,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 75,
+                lineNumber: 74,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
@@ -254,7 +248,7 @@ function AppHeader() {
                                 children: "Emailer"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 116,
+                                lineNumber: 115,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -265,18 +259,18 @@ function AppHeader() {
                                     children: showMobileMenu ? "✕" : "☰"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 125,
+                                    lineNumber: 124,
                                     columnNumber: 25
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 123,
+                                lineNumber: 122,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AuthGuard.tsx",
-                        lineNumber: 115,
+                        lineNumber: 114,
                         columnNumber: 17
                     }, this),
                     showMobileMenu && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -292,7 +286,7 @@ function AppHeader() {
                                             children: item.icon
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 147,
+                                            lineNumber: 146,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -300,20 +294,20 @@ function AppHeader() {
                                             children: item.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/AuthGuard.tsx",
-                                            lineNumber: 148,
+                                            lineNumber: 147,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, item.href, true, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 138,
+                                    lineNumber: 137,
                                     columnNumber: 29
                                 }, this)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("hr", {
                                 className: "border-white/10 my-3"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 151,
+                                lineNumber: 150,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -325,7 +319,7 @@ function AppHeader() {
                                         children: "🚪"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AuthGuard.tsx",
-                                        lineNumber: 156,
+                                        lineNumber: 155,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -333,25 +327,25 @@ function AppHeader() {
                                         children: "Sign Out"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/AuthGuard.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 156,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/AuthGuard.tsx",
-                                lineNumber: 152,
+                                lineNumber: 151,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/AuthGuard.tsx",
-                        lineNumber: 136,
+                        lineNumber: 135,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 114,
+                lineNumber: 113,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
@@ -367,7 +361,7 @@ function AppHeader() {
                                     children: item.mobileIcon
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 175,
+                                    lineNumber: 174,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -375,23 +369,23 @@ function AppHeader() {
                                     children: item.label
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/AuthGuard.tsx",
-                                    lineNumber: 176,
+                                    lineNumber: 175,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, item.href, true, {
                             fileName: "[project]/src/components/AuthGuard.tsx",
-                            lineNumber: 167,
+                            lineNumber: 166,
                             columnNumber: 25
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/src/components/AuthGuard.tsx",
-                    lineNumber: 165,
+                    lineNumber: 164,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/AuthGuard.tsx",
-                lineNumber: 164,
+                lineNumber: 163,
                 columnNumber: 13
             }, this)
         ]
@@ -409,12 +403,10 @@ __turbopack_esm__({
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_import__("[project]/node_modules/convex/dist/esm/react/index.js [app-ssr] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/convex/_generated/api.js [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/link.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/AuthGuard.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/convex/dist/esm/react/client.js [app-ssr] (ecmascript)");
 "use client";
-;
 ;
 ;
 ;
@@ -449,105 +441,56 @@ function SendersPage() {
         });
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "min-h-screen bg-[#0a0a0f] text-white",
+        className: "min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0",
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                className: "border-b border-white/10 bg-black/40 sticky top-0 z-50 backdrop-blur-sm",
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "max-w-7xl mx-auto px-6 py-4 flex items-center justify-between",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex items-center gap-6",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                    href: "/",
-                                    className: "text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent",
-                                    children: "Emailer"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 42,
-                                    columnNumber: 25
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
-                                    className: "flex gap-4",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                            href: "/campaigns",
-                                            className: "text-white/60 hover:text-white transition-colors",
-                                            children: "Campaigns"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 46,
-                                            columnNumber: 29
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                            href: "/templates",
-                                            className: "text-white/60 hover:text-white transition-colors",
-                                            children: "Templates"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 47,
-                                            columnNumber: 29
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                            href: "/contacts",
-                                            className: "text-white/60 hover:text-white transition-colors",
-                                            children: "Contacts"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 48,
-                                            columnNumber: 29
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                            href: "/senders",
-                                            className: "text-white font-medium",
-                                            children: "Senders"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 49,
-                                            columnNumber: 29
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 45,
-                                    columnNumber: 25
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/senders/page.tsx",
-                            lineNumber: 41,
-                            columnNumber: 21
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                            onClick: ()=>setIsCreating(true),
-                            className: "px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity",
-                            children: "+ Add Sender"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/senders/page.tsx",
-                            lineNumber: 52,
-                            columnNumber: 21
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/app/senders/page.tsx",
-                    lineNumber: 40,
-                    columnNumber: 17
-                }, this)
-            }, void 0, false, {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AppHeader"], {}, void 0, false, {
                 fileName: "[project]/src/app/senders/page.tsx",
                 lineNumber: 39,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
-                className: "max-w-7xl mx-auto px-6 py-8",
+                className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "text-3xl font-bold mb-8",
-                        children: "Sender Identities"
-                    }, void 0, false, {
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center justify-between mb-8",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                        className: "text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent",
+                                        children: "Sender Identities"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/senders/page.tsx",
+                                        lineNumber: 45,
+                                        columnNumber: 25
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-white/50 mt-1",
+                                        children: "Configure your email sender profiles"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/senders/page.tsx",
+                                        lineNumber: 48,
+                                        columnNumber: 25
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/senders/page.tsx",
+                                lineNumber: 44,
+                                columnNumber: 21
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                onClick: ()=>setIsCreating(true),
+                                className: "px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity",
+                                children: "+ Add Sender"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/senders/page.tsx",
+                                lineNumber: 50,
+                                columnNumber: 21
+                            }, this)
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/app/senders/page.tsx",
-                        lineNumber: 62,
+                        lineNumber: 43,
                         columnNumber: 17
                     }, this),
                     isCreating && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -562,7 +505,7 @@ function SendersPage() {
                                     children: "Add Sender"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 67,
+                                    lineNumber: 61,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -577,7 +520,7 @@ function SendersPage() {
                                             autoFocus: true
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 69,
+                                            lineNumber: 63,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -588,7 +531,7 @@ function SendersPage() {
                                             className: "w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 77,
+                                            lineNumber: 71,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -599,13 +542,13 @@ function SendersPage() {
                                             className: "w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 84,
+                                            lineNumber: 78,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 68,
+                                    lineNumber: 62,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -617,7 +560,7 @@ function SendersPage() {
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 93,
+                                            lineNumber: 87,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -626,24 +569,24 @@ function SendersPage() {
                                             children: "Add Sender"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 96,
+                                            lineNumber: 90,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 92,
+                                    lineNumber: 86,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/senders/page.tsx",
-                            lineNumber: 66,
+                            lineNumber: 60,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/senders/page.tsx",
-                        lineNumber: 65,
+                        lineNumber: 59,
                         columnNumber: 21
                     }, this),
                     senders === undefined ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -651,7 +594,7 @@ function SendersPage() {
                         children: "Loading senders..."
                     }, void 0, false, {
                         fileName: "[project]/src/app/senders/page.tsx",
-                        lineNumber: 105,
+                        lineNumber: 99,
                         columnNumber: 21
                     }, this) : senders.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "text-center py-20",
@@ -661,7 +604,7 @@ function SendersPage() {
                                 children: "No senders configured yet"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/senders/page.tsx",
-                                lineNumber: 108,
+                                lineNumber: 102,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -670,13 +613,13 @@ function SendersPage() {
                                 children: "Add your first sender →"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/senders/page.tsx",
-                                lineNumber: 109,
+                                lineNumber: 103,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/senders/page.tsx",
-                        lineNumber: 107,
+                        lineNumber: 101,
                         columnNumber: 21
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid gap-4",
@@ -693,7 +636,7 @@ function SendersPage() {
                                                     children: "✉️"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 116,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -706,7 +649,7 @@ function SendersPage() {
                                                                     children: sender.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                                    lineNumber: 127,
+                                                                    lineNumber: 121,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 sender.isDefault && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -714,7 +657,7 @@ function SendersPage() {
                                                                     children: "Default"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                                    lineNumber: 129,
+                                                                    lineNumber: 123,
                                                                     columnNumber: 53
                                                                 }, this),
                                                                 sender.verified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -722,13 +665,13 @@ function SendersPage() {
                                                                     children: "Verified"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                                    lineNumber: 134,
+                                                                    lineNumber: 128,
                                                                     columnNumber: 53
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/senders/page.tsx",
-                                                            lineNumber: 126,
+                                                            lineNumber: 120,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -736,7 +679,7 @@ function SendersPage() {
                                                             children: sender.email
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/senders/page.tsx",
-                                                            lineNumber: 139,
+                                                            lineNumber: 133,
                                                             columnNumber: 45
                                                         }, this),
                                                         sender.replyTo && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -747,19 +690,19 @@ function SendersPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/senders/page.tsx",
-                                                            lineNumber: 141,
+                                                            lineNumber: 135,
                                                             columnNumber: 49
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                    lineNumber: 125,
+                                                    lineNumber: 119,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 121,
+                                            lineNumber: 115,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -771,7 +714,7 @@ function SendersPage() {
                                                     children: "Set Default"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                    lineNumber: 147,
+                                                    lineNumber: 141,
                                                     columnNumber: 45
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -782,35 +725,35 @@ function SendersPage() {
                                                     children: "🗑️"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/senders/page.tsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 148,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/senders/page.tsx",
-                                            lineNumber: 145,
+                                            lineNumber: 139,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/senders/page.tsx",
-                                    lineNumber: 120,
+                                    lineNumber: 114,
                                     columnNumber: 33
                                 }, this)
                             }, sender._id, false, {
                                 fileName: "[project]/src/app/senders/page.tsx",
-                                lineNumber: 116,
+                                lineNumber: 110,
                                 columnNumber: 29
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/senders/page.tsx",
-                        lineNumber: 114,
+                        lineNumber: 108,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/senders/page.tsx",
-                lineNumber: 61,
+                lineNumber: 41,
                 columnNumber: 13
             }, this)
         ]
@@ -824,12 +767,12 @@ function SendersPageWrapper() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthGuard"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(SendersPage, {}, void 0, false, {
             fileName: "[project]/src/app/senders/page.tsx",
-            lineNumber: 175,
+            lineNumber: 169,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/senders/page.tsx",
-        lineNumber: 174,
+        lineNumber: 168,
         columnNumber: 9
     }, this);
 }
