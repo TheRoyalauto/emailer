@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,6 +12,8 @@ export default function CampaignsPage() {
     const senders = useQuery(api.senders.list);
     const batches = useQuery(api.batches.list);
     const contacts = useQuery(api.contacts.list, {});
+    const seedTemplates = useMutation(api.seed.seedTemplates);
+    const [isSeeding, setIsSeeding] = useState(false);
 
     // Campaign creation state
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
@@ -60,11 +62,29 @@ export default function CampaignsPage() {
                                     <div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : templates.length === 0 ? (
-                                <div className="py-4 text-center">
-                                    <p className="text-white/50 mb-3">No templates yet</p>
-                                    <Link href="/templates" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-                                        Create your first template →
-                                    </Link>
+                                <div className="py-6 text-center space-y-4">
+                                    <p className="text-white/50">No templates yet</p>
+                                    <div className="flex items-center justify-center gap-4">
+                                        <button
+                                            onClick={async () => {
+                                                setIsSeeding(true);
+                                                try {
+                                                    await seedTemplates({});
+                                                } catch (err) {
+                                                    console.error(err);
+                                                } finally {
+                                                    setIsSeeding(false);
+                                                }
+                                            }}
+                                            disabled={isSeeding}
+                                            className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                                        >
+                                            {isSeeding ? "Creating..." : "✨ Quick Start (6 Templates)"}
+                                        </button>
+                                        <Link href="/templates" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                                            Create from scratch →
+                                        </Link>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-3 gap-3 max-h-[240px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
