@@ -1,19 +1,26 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { auth } from "./auth";
 
-// List all templates
+// List all templates for the current user
 export const list = query({
     args: {
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) return [];
+
+        const allTemplates = await ctx.db
+            .query("templates")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .order("desc")
+            .collect();
+
         if (args.category) {
-            return await ctx.db
-                .query("templates")
-                .withIndex("by_category", (q) => q.eq("category", args.category!))
-                .collect();
+            return allTemplates.filter(t => t.category === args.category);
         }
-        return await ctx.db.query("templates").order("desc").collect();
+        return allTemplates;
     },
 });
 
@@ -21,7 +28,11 @@ export const list = query({
 export const get = query({
     args: { id: v.id("templates") },
     handler: async (ctx, args) => {
-        return await ctx.db.get(args.id);
+        const userId = await auth.getUserId(ctx);
+        if (!userId) return null;
+        const template = await ctx.db.get(args.id);
+        if (!template || template.userId !== userId) return null;
+        return template;
     },
 });
 
@@ -35,9 +46,13 @@ export const create = mutation({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
         const now = Date.now();
         return await ctx.db.insert("templates", {
             ...args,
+            userId,
             createdAt: now,
             updatedAt: now,
         });
@@ -55,6 +70,12 @@ export const update = mutation({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
+        const template = await ctx.db.get(args.id);
+        if (!template || template.userId !== userId) throw new Error("Template not found");
+
         const { id, ...updates } = args;
         const filtered = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
@@ -68,6 +89,12 @@ export const update = mutation({
 export const remove = mutation({
     args: { id: v.id("templates") },
     handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
+        const template = await ctx.db.get(args.id);
+        if (!template || template.userId !== userId) throw new Error("Template not found");
+
         await ctx.db.delete(args.id);
     },
 });
@@ -76,12 +103,16 @@ export const remove = mutation({
 export const duplicate = mutation({
     args: { id: v.id("templates") },
     handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
         const template = await ctx.db.get(args.id);
-        if (!template) throw new Error("Template not found");
+        if (!template || template.userId !== userId) throw new Error("Template not found");
 
         const { _id, _creationTime, ...rest } = template;
         return await ctx.db.insert("templates", {
             ...rest,
+            userId,
             name: `${rest.name} (Copy)`,
         });
     },

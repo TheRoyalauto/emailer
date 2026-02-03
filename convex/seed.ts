@@ -1,5 +1,79 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { auth } from "./auth";
+
+// Seed templates for the current logged-in user (for users without templates)
+export const seedTemplates = mutation({
+    args: {},
+    handler: async (ctx) => {
+        const userId = await auth.getUserId(ctx);
+        if (!userId) throw new Error("Not authenticated");
+
+        // Check if user already has templates
+        const existing = await ctx.db
+            .query("templates")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .first();
+
+        if (existing) {
+            return { success: true, message: "Templates already exist", templatesAdded: 0 };
+        }
+
+        const templates = [
+            {
+                name: "The Revenue Leak",
+                subject: "{{company}} is leaving money on the table",
+                htmlBody: `<p>Hi,</p><p>Most body shops lose <strong>$2,000-$5,000 per claim</strong> simply because they don't catch what insurers miss.</p><p>Claimory uses AI to scan estimates and find hidden revenue. Would 15 minutes to explore this be worth $50K+ in annual revenue?</p><p>— The Claimory Team</p>`,
+                category: "cold-outreach",
+            },
+            {
+                name: "The Supplement Problem",
+                subject: "Stop chasing supplements manually",
+                htmlBody: `<p>Hi,</p><p>Writing supplements is tedious. Claimory automates detection and generates insurer-ready docs in seconds. Our shops see <strong>30% faster approvals</strong>.</p><p>Can I show you in a 10-minute demo?</p><p>— The Claimory Team</p>`,
+                category: "cold-outreach",
+            },
+            {
+                name: "The AI Advantage",
+                subject: "Your competitors are using AI. Are you?",
+                htmlBody: `<p>Hi,</p><p>Shops using AI-powered estimate review capture 15-25% more revenue per claim. Claimory brings that advantage to {{company}}.</p><p>Worth a quick conversation?</p><p>— The Claimory Team</p>`,
+                category: "cold-outreach",
+            },
+            {
+                name: "Quick Follow-Up",
+                subject: "Re: Quick question for {{company}}",
+                htmlBody: `<p>Hi,</p><p>Just circling back. I know you're busy running a shop—that's exactly why Claimory exists.</p><p>5 minutes to see if we're a fit?</p><p>— The Claimory Team</p>`,
+                category: "follow-up",
+            },
+            {
+                name: "Free Audit Offer",
+                subject: "Free estimate audit for {{company}}",
+                htmlBody: `<p>Hi,</p><p>I'd love to prove Claimory's value—at no cost. Send me your last 3 estimates and I'll run a free revenue audit.</p><p>Interested?</p><p>— The Claimory Team</p>`,
+                category: "follow-up",
+            },
+            {
+                name: "The Last Call",
+                subject: "Last note from me (for now)",
+                htmlBody: `<p>Hi,</p><p>I don't want to clog your inbox. If you ever want to explore how AI can help capture more revenue, just reply. I'll be here.</p><p>— The Claimory Team</p>`,
+                category: "follow-up",
+            },
+        ];
+
+        const now = Date.now();
+        for (const template of templates) {
+            await ctx.db.insert("templates", {
+                userId,
+                name: template.name,
+                subject: template.subject,
+                htmlBody: template.htmlBody,
+                category: template.category,
+                createdAt: now,
+                updatedAt: now,
+            });
+        }
+
+        return { success: true, templatesAdded: templates.length };
+    },
+});
 
 // Seed 3 senders for the user
 export const seedSenders = mutation({
@@ -472,6 +546,16 @@ export const seedUserData = mutation({
                 htmlContent: email.html,
                 status: "draft",
             });
+            // Also insert into templates table
+            await ctx.db.insert("templates", {
+                userId,
+                name: `[COLD] ${email.name}`,
+                subject: email.subject,
+                htmlBody: email.html,
+                category: "cold-outreach",
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+            });
         }
 
         // Insert follow-up emails as campaigns/templates
@@ -483,6 +567,16 @@ export const seedUserData = mutation({
                 htmlContent: email.html,
                 status: "draft",
             });
+            // Also insert into templates table
+            await ctx.db.insert("templates", {
+                userId,
+                name: `[FOLLOW-UP] ${email.name}`,
+                subject: email.subject,
+                htmlBody: email.html,
+                category: "follow-up",
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+            });
         }
 
         return {
@@ -491,6 +585,7 @@ export const seedUserData = mutation({
             contacts: 100,
             coldEmails: 10,
             followUpEmails: 10,
+            templates: 20,
         };
     },
 });
