@@ -50,12 +50,18 @@ function ScraperPage() {
                 body: JSON.stringify({ prompt }),
             });
 
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || "Failed to scrape leads");
+            // Check if response is JSON before parsing
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Lead generation service unavailable. Please check API configuration.");
             }
 
             const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to scrape leads");
+            }
+
             setResults(data.contacts || []);
 
             // Auto-select all results

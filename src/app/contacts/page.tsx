@@ -429,10 +429,10 @@ function ContactsPage() {
                                 const hasChildren = childCount > 0;
 
                                 return (
-                                    <button
+                                    <div
                                         key={batch._id}
                                         onClick={() => setViewMode(batch._id)}
-                                        className="p-5 rounded-xl border text-left transition-all group bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/5"
+                                        className="p-5 rounded-xl border text-left transition-all group bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/5 cursor-pointer"
                                     >
                                         <div className="flex items-center gap-3 mb-3">
                                             <div
@@ -461,7 +461,7 @@ function ContactsPage() {
                                                         className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-white/10 rounded-lg transition-all text-white/60"
                                                         title="View zones"
                                                     >
-                                                        �
+                                                        📂
                                                     </button>
                                                 )}
                                                 <button
@@ -481,7 +481,7 @@ function ContactsPage() {
                                             <span className="text-2xl font-bold">{batch.contactCount}</span>
                                             <span className="text-xs text-white/40">contacts</span>
                                         </div>
-                                    </button>
+                                    </div>
                                 );
                             })}
 
