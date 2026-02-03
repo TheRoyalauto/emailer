@@ -217,27 +217,65 @@ export default function LeadSearchAnimation({ isActive, prompt }: LeadSearchAnim
                                 </div>
                             </div>
 
-                            {/* Arm reaching to cabinet */}
-                            <div className="absolute top-24 right-0 origin-left animate-robot-arm">
-                                <div className="w-32 h-4 bg-zinc-500 rounded-full border border-zinc-400 relative">
+                            {/* Right arm - reaching INTO the cabinet */}
+                            <div className="absolute top-20 -right-8 origin-top-left">
+                                {/* Upper arm */}
+                                <div className="relative animate-reach-arm">
+                                    <div className="w-28 h-5 bg-gradient-to-r from-zinc-600 to-zinc-500 rounded-full border border-zinc-400 shadow-md" />
                                     {/* Elbow joint */}
-                                    <div className="absolute -right-3 -top-1 w-6 h-6 bg-zinc-600 rounded-full border-2 border-zinc-400">
-                                        <div className="absolute inset-1 bg-zinc-500 rounded-full" />
+                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-zinc-500 rounded-full border-2 border-zinc-400 shadow-inner">
+                                        <div className="absolute inset-1.5 bg-zinc-600 rounded-full" />
                                     </div>
-                                </div>
-                                {/* Forearm */}
-                                <div className="absolute right-0 top-0 w-24 h-3 bg-zinc-500 rounded-full origin-left animate-robot-forearm" style={{ transform: 'rotate(-30deg)' }}>
-                                    {/* Hand/gripper */}
-                                    <div className="absolute -right-4 -top-2 w-8 h-6 animate-grabber">
-                                        <div className="absolute w-2 h-5 bg-zinc-400 rounded-full left-0" />
-                                        <div className="absolute w-2 h-5 bg-zinc-400 rounded-full right-0" />
+                                    {/* Forearm - angled into cabinet */}
+                                    <div className="absolute right-2 top-2 origin-left animate-pull-forearm">
+                                        <div className="w-24 h-4 bg-gradient-to-r from-zinc-500 to-zinc-400 rounded-full border border-zinc-400 shadow-md rotate-[40deg]" />
+                                        {/* Wrist */}
+                                        <div className="absolute right-[-70px] top-[45px] w-5 h-5 bg-zinc-500 rounded-full border border-zinc-400" />
+                                        {/* Hand gripping a folder */}
+                                        <div className="absolute right-[-90px] top-[40px] animate-grip-folder">
+                                            {/* Folder being pulled out */}
+                                            <div className="w-10 h-14 bg-gradient-to-b from-yellow-400 to-yellow-500 rounded-sm shadow-lg border border-yellow-600 rotate-[-10deg]">
+                                                <div className="w-full h-2 bg-yellow-600 rounded-t-sm" />
+                                                <div className="mt-2 ml-1 w-6 h-0.5 bg-yellow-700/50 rounded" />
+                                                <div className="mt-1 ml-1 w-5 h-0.5 bg-yellow-700/50 rounded" />
+                                            </div>
+                                            {/* Gripper fingers wrapped around folder */}
+                                            <div className="absolute -left-2 top-2 w-2 h-8 bg-zinc-400 rounded-full origin-top rotate-[15deg]" />
+                                            <div className="absolute -left-1 top-1 w-2 h-6 bg-zinc-400 rounded-full origin-top rotate-[5deg]" />
+                                            <div className="absolute right-0 top-2 w-2 h-7 bg-zinc-400 rounded-full origin-top rotate-[-10deg]" />
+                                            <div className="absolute right-1 top-1 w-2 h-5 bg-zinc-400 rounded-full origin-top rotate-[-5deg]" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Left arm (waving) */}
-                            <div className="absolute top-24 left-0 origin-right animate-wave">
-                                <div className="w-20 h-4 bg-zinc-500 rounded-full border border-zinc-400 -scale-x-100" />
+                            {/* Left arm - holding stack of papers */}
+                            <div className="absolute top-20 -left-4 origin-top-right">
+                                <div className="relative animate-hold-papers">
+                                    {/* Upper arm */}
+                                    <div className="w-20 h-5 bg-gradient-to-l from-zinc-600 to-zinc-500 rounded-full border border-zinc-400 shadow-md -scale-x-100" />
+                                    {/* Elbow */}
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 bg-zinc-500 rounded-full border border-zinc-400" />
+                                    {/* Forearm bent to hold papers */}
+                                    <div className="absolute -left-2 top-3 origin-right">
+                                        <div className="w-16 h-4 bg-gradient-to-l from-zinc-500 to-zinc-400 rounded-full border border-zinc-400 rotate-[50deg] -scale-x-100" />
+                                        {/* Hand holding papers */}
+                                        <div className="absolute -left-[40px] top-[55px] rotate-[-20deg]">
+                                            {/* Stack of papers */}
+                                            <div className="w-8 h-10 bg-white rounded-sm shadow-md border border-zinc-200 relative">
+                                                <div className="absolute -bottom-1 -right-1 w-8 h-10 bg-zinc-100 rounded-sm shadow -z-10" />
+                                                <div className="absolute -bottom-2 -right-2 w-8 h-10 bg-zinc-200 rounded-sm shadow -z-20" />
+                                                <div className="mt-1 ml-1 w-5 h-0.5 bg-zinc-400 rounded" />
+                                                <div className="mt-1 ml-1 w-4 h-0.5 bg-zinc-400 rounded" />
+                                                <div className="mt-1 ml-1 w-5 h-0.5 bg-zinc-400 rounded" />
+                                            </div>
+                                            {/* Thumb */}
+                                            <div className="absolute -right-2 top-3 w-2 h-5 bg-zinc-400 rounded-full rotate-[20deg]" />
+                                            {/* Fingers under papers */}
+                                            <div className="absolute left-1 -bottom-1 w-6 h-2 bg-zinc-400 rounded-full" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Legs */}
@@ -392,37 +430,39 @@ export default function LeadSearchAnimation({ isActive, prompt }: LeadSearchAnim
                     animation: blink 3s ease-in-out infinite;
                 }
 
-                @keyframes robot-arm {
-                    0%, 100% { transform: rotate(-10deg); }
-                    50% { transform: rotate(15deg); }
+                @keyframes reach-arm {
+                    0%, 100% { transform: rotate(5deg) translateX(0); }
+                    50% { transform: rotate(-5deg) translateX(15px); }
                 }
-                .animate-robot-arm {
-                    animation: robot-arm 1.5s ease-in-out infinite;
-                }
-
-                @keyframes robot-forearm {
-                    0%, 100% { transform: rotate(-30deg); }
-                    50% { transform: rotate(-60deg); }
-                }
-                .animate-robot-forearm {
-                    animation: robot-forearm 1.5s ease-in-out infinite;
+                .animate-reach-arm {
+                    animation: reach-arm 2s ease-in-out infinite;
                 }
 
-                @keyframes grabber {
-                    0%, 100% { transform: scaleX(1); }
-                    50% { transform: scaleX(0.7); }
+                @keyframes pull-forearm {
+                    0%, 100% { transform: translateX(0) translateY(0); }
+                    30% { transform: translateX(20px) translateY(10px); }
+                    60% { transform: translateX(-10px) translateY(-5px); }
                 }
-                .animate-grabber {
-                    animation: grabber 0.5s ease-in-out infinite;
+                .animate-pull-forearm {
+                    animation: pull-forearm 2s ease-in-out infinite;
                 }
 
-                @keyframes wave {
-                    0%, 100% { transform: rotate(0deg); }
-                    25% { transform: rotate(-20deg); }
-                    75% { transform: rotate(10deg); }
+                @keyframes grip-folder {
+                    0%, 100% { transform: scale(1) rotate(-10deg); }
+                    25% { transform: scale(1.05) rotate(-5deg); }
+                    50% { transform: scale(1) rotate(-15deg); }
+                    75% { transform: scale(0.95) rotate(-8deg); }
                 }
-                .animate-wave {
-                    animation: wave 1s ease-in-out infinite;
+                .animate-grip-folder {
+                    animation: grip-folder 2s ease-in-out infinite;
+                }
+
+                @keyframes hold-papers {
+                    0%, 100% { transform: rotate(-5deg); }
+                    50% { transform: rotate(5deg); }
+                }
+                .animate-hold-papers {
+                    animation: hold-papers 3s ease-in-out infinite;
                 }
 
                 @keyframes mouth-speak {
