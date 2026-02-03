@@ -1,0 +1,17 @@
+const CHUNK_PUBLIC_PATH = "server/app/api/scrape-leads/route.js";
+const runtime = require("../../../chunks/[turbopack]_runtime.js");
+runtime.loadChunk("server/chunks/node_modules_next_ce1d49._.js");
+runtime.loadChunk("server/chunks/node_modules_cheerio_dist_esm_4b5c15._.js");
+runtime.loadChunk("server/chunks/node_modules_3ebcfb._.js");
+runtime.loadChunk("server/chunks/node_modules_parse5_dist_d1335e._.js");
+runtime.loadChunk("server/chunks/node_modules_fea89c._.js");
+runtime.loadChunk("server/chunks/node_modules_undici_lib_dispatcher_38566a._.js");
+runtime.loadChunk("server/chunks/node_modules_undici_lib_llhttp_c234da._.js");
+runtime.loadChunk("server/chunks/node_modules_undici_lib_web_ddaacd._.js");
+runtime.loadChunk("server/chunks/node_modules_undici_lib_b92a26._.js");
+runtime.loadChunk("server/chunks/node_modules_undici_index_f240eb.js");
+runtime.loadChunk("server/chunks/node_modules_83e088._.js");
+runtime.loadChunk("server/chunks/[root of the server]__ce9c8e._.js");
+runtime.loadChunk("server/chunks/_41811e._.js");
+runtime.getOrInstantiateRuntimeModule("[project]/.next-internal/server/app/api/scrape-leads/route/actions.js [app-rsc] (ecmascript)", CHUNK_PUBLIC_PATH);
+module.exports = runtime.getOrInstantiateRuntimeModule("[project]/node_modules/next/dist/esm/build/templates/app-route.js { INNER_APP_ROUTE => \"[project]/src/app/api/scrape-leads/route.ts [app-route] (ecmascript)\" } [app-route] (ecmascript)", CHUNK_PUBLIC_PATH).exports;

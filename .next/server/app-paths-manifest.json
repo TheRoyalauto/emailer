@@ -1,1 +1,9 @@
-{}
+{
+  "/scraper/page": "app/scraper/page.js",
+  "/api/scrape-leads/route": "app/api/scrape-leads/route.js",
+  "/contacts/page": "app/contacts/page.js",
+  "/pipeline/page": "app/pipeline/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/templates/page": "app/templates/page.js"
+}

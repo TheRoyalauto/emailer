@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scrapeLeads, ScrapedLead } from "@/lib/scraper";
+import { scrapeLeads } from "@/lib/scraper";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface ScrapedContact {
@@ -11,6 +11,7 @@ interface ScrapedContact {
     website?: string;
     address?: string;
     leadScore?: number;
+    verified?: boolean;
 }
 
 export async function POST(request: NextRequest) {
@@ -26,104 +27,71 @@ export async function POST(request: NextRequest) {
 
         console.log('[API] Lead scraping request:', prompt);
 
-        // Try real scraping first
-        try {
-            const result = await scrapeLeads(prompt, 25);
+        // Try real scraping first if Google Search API is configured
+        if (process.env.GOOGLE_SEARCH_API_KEY && process.env.GOOGLE_SEARCH_ENGINE_ID) {
+            try {
+                const result = await scrapeLeads(prompt, 25);
 
-            if (result.leads.length > 0) {
-                console.log(`[API] Real scraper found ${result.leads.length} leads`);
+                if (result.leads.length > 0) {
+                    console.log(`[API] Real scraper found ${result.leads.length} leads`);
 
-                const contacts: ScrapedContact[] = result.leads.map(lead => ({
-                    email: lead.email,
-                    name: lead.name,
-                    company: lead.company,
-                    phone: lead.phone,
-                    location: lead.location,
-                    website: lead.website,
-                    address: lead.address,
-                    leadScore: lead.leadScore,
-                }));
+                    const contacts: ScrapedContact[] = result.leads.map(lead => ({
+                        email: lead.email,
+                        name: lead.name || undefined,
+                        company: lead.company || undefined,
+                        phone: lead.phone || undefined,
+                        location: lead.location || undefined,
+                        website: lead.website || undefined,
+                        address: lead.address || undefined,
+                        leadScore: lead.leadScore,
+                        verified: lead.verified,
+                    }));
 
-                return NextResponse.json({
-                    contacts,
-                    count: contacts.length,
-                    source: 'real_scraper',
-                    errors: result.errors.length > 0 ? result.errors : undefined,
-                });
+                    return NextResponse.json({
+                        contacts,
+                        count: contacts.length,
+                        source: 'real_scraper',
+                        totalScraped: result.totalScraped,
+                    });
+                }
+                console.log('[API] Real scraper found no leads, falling back to AI');
+            } catch (scrapeError) {
+                console.error('[API] Real scraper error:', scrapeError);
             }
-
-            console.log('[API] Real scraper found no leads, falling back to AI');
-        } catch (scrapeError) {
-            console.error('[API] Real scraper failed:', scrapeError);
         }
 
-        // Fallback to AI generation if real scraping fails
+        // AI fallback - clearly marked as AI-generated
         if (!process.env.GOOGLE_AI_API_KEY) {
-            return NextResponse.json(
-                { error: "Lead generation service unavailable. Real scraper found no results and AI API is not configured." },
-                { status: 500 }
-            );
+            return NextResponse.json({
+                contacts: [],
+                count: 0,
+                source: 'error',
+                message: 'No API configured. Set up Google Custom Search API for real leads, or GOOGLE_AI_API_KEY for AI-generated leads.',
+            });
         }
 
-        // AI fallback
+        console.log('[API] Using AI generation (data is simulated, not real)');
+
         const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        const systemPrompt = `You are a lead generation assistant. Given a user's request, generate a list of realistic business contacts that match their criteria.
+        const systemPrompt = `Generate realistic business contacts for: "${prompt}"
 
-For each contact, provide:
-- email (required): A realistic business email
-- name: Full name of the contact person
-- company: Company/business name
-- phone: Phone number with area code
-- location: City, State
-- website: Company website URL (e.g., https://example.com)
-- address: Full street address
-- leadScore: A score from 1-100 indicating lead quality (100 = perfect match, highly valuable)
+Return ONLY a JSON array. Each contact must have:
+- email (required): realistic business email
+- name: contact person name (or null if unknown)
+- company: business name
+- phone: phone with area code
+- location: city, state
+- website: company URL
+- address: street address
+- leadScore: 1-100 quality score
 
-Generate contacts that would realistically exist based on the user's query. Make emails realistic (using common business domain patterns like @gmail.com, @yahoo.com, or company domains).
+IMPORTANT: These are SIMULATED leads for demonstration. Return valid JSON array only.`;
 
-Score leads higher if they:
-- Match the exact industry/business type requested
-- Include complete contact information
-- Appear to be decision makers (owners, managers)
-- Are in the specific geographic area requested
-
-IMPORTANT: Return ONLY a valid JSON array of contacts. No explanation, no markdown, just the JSON array.
-
-Example output:
-[
-  {"email": "john.smith@smithsautobody.com", "name": "John Smith", "company": "Smith's Auto Body", "phone": "310-555-1234", "location": "Los Angeles, CA", "website": "https://smithsautobody.com", "address": "1234 Main St, Los Angeles, CA 90001", "leadScore": 85},
-  {"email": "sarah@johnsoncollision.net", "name": "Sarah Johnson", "company": "Johnson Collision Center", "phone": "213-555-5678", "location": "Los Angeles, CA", "website": "https://johnsoncollision.net", "address": "5678 Oak Ave, Los Angeles, CA 90012", "leadScore": 92}
-]`;
-
-        // Retry logic for rate limits
-        let result;
-        let lastError;
-        for (let attempt = 0; attempt < 3; attempt++) {
-            try {
-                result = await model.generateContent([
-                    { text: systemPrompt },
-                    { text: `User request: ${prompt}` }
-                ]);
-                break;
-            } catch (err) {
-                lastError = err;
-                if (err instanceof Error && err.message.includes("429")) {
-                    await new Promise(resolve => setTimeout(resolve, (attempt + 1) * 2000));
-                    continue;
-                }
-                throw err;
-            }
-        }
-
-        if (!result) {
-            throw lastError || new Error("Failed after retries");
-        }
-
+        const result = await model.generateContent(systemPrompt);
         const responseText = result.response.text() || "[]";
 
-        // Parse the JSON response
         let contacts: ScrapedContact[] = [];
         try {
             const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -131,37 +99,32 @@ Example output:
                 contacts = JSON.parse(jsonMatch[0]);
             }
         } catch {
-            console.error("Failed to parse AI response:", responseText);
-            return NextResponse.json(
-                { error: "Failed to parse AI response" },
-                { status: 500 }
-            );
+            return NextResponse.json({
+                contacts: [],
+                count: 0,
+                source: 'error',
+                message: 'Failed to parse AI response',
+            });
         }
 
-        // Validate and clean contacts
         const validContacts = contacts
             .filter(c => c.email && c.email.includes("@"))
             .map(c => ({
+                ...c,
                 email: c.email.toLowerCase().trim(),
-                name: c.name?.trim(),
-                company: c.company?.trim(),
-                phone: c.phone?.trim(),
-                location: c.location?.trim(),
-                website: c.website?.trim(),
-                address: c.address?.trim(),
-                leadScore: typeof c.leadScore === 'number' ? c.leadScore : 50,
+                leadScore: c.leadScore || 50,
+                verified: false, // AI-generated are NOT verified
             }));
 
         return NextResponse.json({
             contacts: validContacts,
             count: validContacts.length,
-            source: 'ai_generated',
+            source: 'ai_generated', // CLEARLY MARKED
         });
     } catch (error) {
         console.error("Scrape leads error:", error);
-        const errorMessage = error instanceof Error ? error.message : "Unknown error";
         return NextResponse.json(
-            { error: `Failed to generate leads: ${errorMessage}` },
+            { contacts: [], count: 0, source: 'error', error: String(error) },
             { status: 500 }
         );
     }
