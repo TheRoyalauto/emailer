@@ -3,7 +3,8 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import ContactDetail from "@/components/ContactDetail";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -99,6 +100,14 @@ function ContactsPage() {
     const [newContactName, setNewContactName] = useState("");
     const [newContactPhone, setNewContactPhone] = useState("");
     const [addingContact, setAddingContact] = useState(false);
+
+    // Handle URL-based modal opening (from dashboard quick actions)
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setShowAddContact(true);
+        }
+    }, [searchParams]);
 
     // View state: 'batches' shows batch cards, 'all' shows all contacts, or a specific batchId shows that batch's contacts
     const [viewMode, setViewMode] = useState<string>("batches");

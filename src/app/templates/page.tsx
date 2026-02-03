@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import EmailEditor from "@/components/EmailEditor";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 
@@ -187,6 +188,18 @@ function TemplatesPage() {
     const filteredDesigns = designCategory === "All"
         ? PREMIUM_DESIGNS
         : PREMIUM_DESIGNS.filter(d => d.category === designCategory);
+
+    // Handle URL-based modal opening (from dashboard quick actions)
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setIsEditing(true);
+            setEditingId(null);
+            setTemplateName("");
+            setSubject("");
+            setHtmlContent("");
+        }
+    }, [searchParams]);
 
     const handleStartNew = () => {
         setIsEditing(true);
