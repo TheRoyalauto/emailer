@@ -39,7 +39,7 @@ export default function CampaignsPage() {
     return (
         <AuthGuard>
             <div className="min-h-screen bg-[#0a0a0f] text-white">
-                <AppHeader currentPage="campaigns" />
+                <AppHeader />
 
                 <main className="max-w-4xl mx-auto px-6 py-8">
                     <div className="mb-8">
@@ -67,18 +67,21 @@ export default function CampaignsPage() {
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-3 gap-3 max-h-[240px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
                                     {templates.map((template) => (
                                         <button
                                             key={template._id}
                                             onClick={() => setSelectedTemplate(template._id)}
-                                            className={`p-4 rounded-lg border text-left transition-all ${selectedTemplate === template._id
-                                                ? "bg-indigo-500/20 border-indigo-500/50"
+                                            className={`p-4 rounded-lg border text-left transition-all hover:scale-[1.02] ${selectedTemplate === template._id
+                                                ? "bg-indigo-500/20 border-indigo-500/50 ring-2 ring-indigo-500/30"
                                                 : "bg-black/20 border-white/10 hover:border-white/20"
                                                 }`}
                                         >
-                                            <div className="font-medium truncate">{template.name}</div>
-                                            <div className="text-sm text-white/50 truncate mt-1">{template.subject}</div>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-lg">📝</span>
+                                                <div className="font-medium truncate text-sm">{template.name}</div>
+                                            </div>
+                                            <div className="text-xs text-white/50 truncate">{template.subject}</div>
                                         </button>
                                     ))}
                                 </div>
