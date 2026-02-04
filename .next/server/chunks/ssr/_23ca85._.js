@@ -1373,21 +1373,297 @@ const PIPELINE_STAGES = [
         icon: "❌"
     }
 ];
+// Compact contact card for pipeline
+function ContactCard({ contact, stage, isDragging, onDragStart, onDragEnd, onClick }) {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        draggable: true,
+        onDragStart: onDragStart,
+        onDragEnd: onDragEnd,
+        onClick: onClick,
+        className: `bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${isDragging ? "opacity-50 scale-95" : ""}`,
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "flex items-center gap-2",
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0",
+                    style: {
+                        backgroundColor: `${stage.color}30`,
+                        color: stage.color
+                    },
+                    children: (contact.name || contact.email).charAt(0).toUpperCase()
+                }, void 0, false, {
+                    fileName: "[project]/src/app/pipeline/page.tsx",
+                    lineNumber: 60,
+                    columnNumber: 17
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "min-w-0 flex-1",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "font-medium text-sm truncate",
+                            children: contact.name || contact.email.split("@")[0]
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/pipeline/page.tsx",
+                            lineNumber: 67,
+                            columnNumber: 21
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "text-xs text-white/40 truncate",
+                            children: contact.company || contact.email
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/pipeline/page.tsx",
+                            lineNumber: 70,
+                            columnNumber: 21
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/app/pipeline/page.tsx",
+                    lineNumber: 66,
+                    columnNumber: 17
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "flex items-center gap-1 text-xs text-white/50",
+                    children: [
+                        (contact.emailCount ?? 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            children: [
+                                "📧",
+                                contact.emailCount
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/pipeline/page.tsx",
+                            lineNumber: 75,
+                            columnNumber: 55
+                        }, this),
+                        (contact.callCount ?? 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            children: [
+                                "📞",
+                                contact.callCount
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/pipeline/page.tsx",
+                            lineNumber: 76,
+                            columnNumber: 54
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/app/pipeline/page.tsx",
+                    lineNumber: 74,
+                    columnNumber: 17
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/app/pipeline/page.tsx",
+            lineNumber: 59,
+            columnNumber: 13
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/pipeline/page.tsx",
+        lineNumber: 51,
+        columnNumber: 9
+    }, this);
+}
+// Stage column with search and scrolling
+function StageColumn({ stage, contacts, searchQuery, onSearchChange, dragOverStage, draggedContact, onDragOver, onDragLeave, onDrop, onDragStart, onDragEnd, onContactClick }) {
+    // Filter contacts by search
+    const filteredContacts = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
+        if (!searchQuery.trim()) return contacts;
+        const q = searchQuery.toLowerCase();
+        return contacts.filter((c)=>c.name?.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.company?.toLowerCase().includes(q));
+    }, [
+        contacts,
+        searchQuery
+    ]);
+    const isDragTarget = dragOverStage === stage.id;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: `flex-shrink-0 w-72 flex flex-col transition-all duration-200 ${isDragTarget ? "scale-[1.01]" : ""}`,
+        onDragOver: onDragOver,
+        onDragLeave: onDragLeave,
+        onDrop: onDrop,
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "rounded-t-xl p-3 flex items-center justify-between",
+                style: {
+                    backgroundColor: `${stage.color}20`
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center gap-2",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                children: stage.icon
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 138,
+                                columnNumber: 21
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "font-medium text-sm",
+                                style: {
+                                    color: stage.color
+                                },
+                                children: stage.label
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 139,
+                                columnNumber: 21
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/pipeline/page.tsx",
+                        lineNumber: 137,
+                        columnNumber: 17
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "px-2 py-0.5 rounded-full text-xs font-bold",
+                        style: {
+                            backgroundColor: stage.color,
+                            color: "#000"
+                        },
+                        children: contacts.length
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/pipeline/page.tsx",
+                        lineNumber: 143,
+                        columnNumber: 17
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/pipeline/page.tsx",
+                lineNumber: 133,
+                columnNumber: 13
+            }, this),
+            contacts.length > 5 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "bg-[#12121f] border-x border-white/10 px-2 py-2",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                    type: "text",
+                    placeholder: "Search...",
+                    value: searchQuery,
+                    onChange: (e)=>onSearchChange(e.target.value),
+                    className: "w-full px-3 py-1.5 text-xs bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500/50"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/pipeline/page.tsx",
+                    lineNumber: 154,
+                    columnNumber: 21
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/src/app/pipeline/page.tsx",
+                lineNumber: 153,
+                columnNumber: 17
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: `bg-[#12121f] rounded-b-xl border border-white/10 flex-1 p-2 space-y-2 overflow-y-auto transition-colors ${isDragTarget ? "border-2" : ""}`,
+                style: {
+                    borderColor: isDragTarget ? stage.color : undefined,
+                    maxHeight: "calc(100vh - 280px)",
+                    minHeight: "200px"
+                },
+                children: filteredContacts.length > 0 ? filteredContacts.map((contact)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ContactCard, {
+                        contact: contact,
+                        stage: stage,
+                        isDragging: draggedContact === contact._id,
+                        onDragStart: (e)=>onDragStart(e, contact._id),
+                        onDragEnd: onDragEnd,
+                        onClick: ()=>onContactClick(contact._id)
+                    }, contact._id, false, {
+                        fileName: "[project]/src/app/pipeline/page.tsx",
+                        lineNumber: 176,
+                        columnNumber: 25
+                    }, this)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "flex flex-col items-center justify-center h-24 text-white/20 text-sm",
+                    children: searchQuery ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "text-xl mb-1",
+                                children: "🔍"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 190,
+                                columnNumber: 33
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                children: "No matches"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 191,
+                                columnNumber: 33
+                            }, this)
+                        ]
+                    }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                className: "text-xl mb-1",
+                                children: stage.icon
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 195,
+                                columnNumber: 33
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                children: "Drop contacts here"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 196,
+                                columnNumber: 33
+                            }, this)
+                        ]
+                    }, void 0, true)
+                }, void 0, false, {
+                    fileName: "[project]/src/app/pipeline/page.tsx",
+                    lineNumber: 187,
+                    columnNumber: 21
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/src/app/pipeline/page.tsx",
+                lineNumber: 165,
+                columnNumber: 13
+            }, this),
+            searchQuery && filteredContacts.length !== contacts.length && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "text-center text-xs text-white/30 py-1 bg-[#12121f] border-x border-b border-white/10 rounded-b-xl -mt-2",
+                children: [
+                    "Showing ",
+                    filteredContacts.length,
+                    " of ",
+                    contacts.length
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/pipeline/page.tsx",
+                lineNumber: 205,
+                columnNumber: 17
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/app/pipeline/page.tsx",
+        lineNumber: 125,
+        columnNumber: 9
+    }, this);
+}
 function PipelinePage() {
     const [viewContactId, setViewContactId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [draggedContact, setDraggedContact] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [dragOverStage, setDragOverStage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [globalSearch, setGlobalSearch] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [stageSearches, setStageSearches] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({});
     // Queries
     const allContacts = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["api"].contacts.list, {});
     const updateStage = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMutation"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["api"].activities.updateSalesStage);
     // Group contacts by stage
-    const contactsByStage = PIPELINE_STAGES.reduce((acc, stage)=>{
-        acc[stage.id] = (allContacts || []).filter((c)=>{
-            const contactStage = c.salesStage || "new";
-            return contactStage === stage.id;
-        });
-        return acc;
-    }, {});
+    const contactsByStage = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMemo"])(()=>{
+        return PIPELINE_STAGES.reduce((acc, stage)=>{
+            let stageContacts = (allContacts || []).filter((c)=>{
+                const contactStage = c.salesStage || "new";
+                return contactStage === stage.id;
+            });
+            // Apply global search
+            if (globalSearch.trim()) {
+                const q = globalSearch.toLowerCase();
+                stageContacts = stageContacts.filter((c)=>c.name?.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.company?.toLowerCase().includes(q));
+            }
+            acc[stage.id] = stageContacts;
+            return acc;
+        }, {});
+    }, [
+        allContacts,
+        globalSearch
+    ]);
     // Drag handlers
     const handleDragStart = (e, contactId)=>{
         setDraggedContact(contactId);
@@ -1421,28 +1697,23 @@ function PipelinePage() {
         setDraggedContact(null);
         setDragOverStage(null);
     };
-    const formatRelativeTime = (timestamp)=>{
-        const diff = Date.now() - timestamp;
-        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-        return `${Math.floor(diff / 86400000)}d ago`;
-    };
     const totalContacts = allContacts?.length || 0;
     const wonCount = contactsByStage["closed_won"]?.length || 0;
     const lostCount = contactsByStage["closed_lost"]?.length || 0;
+    const filteredTotal = Object.values(contactsByStage).reduce((sum, arr)=>sum + arr.length, 0);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-[#0a0a0f] pb-20 md:pb-0",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AppHeader"], {}, void 0, false, {
                 fileName: "[project]/src/app/pipeline/page.tsx",
-                lineNumber: 104,
+                lineNumber: 293,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
                 className: "px-4 sm:px-6 lg:px-8 py-6",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex items-center justify-between mb-6",
+                        className: "flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 children: [
@@ -1451,7 +1722,7 @@ function PipelinePage() {
                                         children: "Sales Pipeline"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 299,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1459,352 +1730,174 @@ function PipelinePage() {
                                         children: "Drag contacts to move through stages"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 111,
+                                        lineNumber: 300,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                lineNumber: 109,
+                                lineNumber: 298,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex items-center gap-4 text-sm",
+                                className: "flex flex-wrap items-center gap-4",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "flex items-center gap-2",
+                                        className: "relative",
                                         children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-white/50",
-                                                children: "Total:"
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "text",
+                                                placeholder: "Search all contacts...",
+                                                value: globalSearch,
+                                                onChange: (e)=>setGlobalSearch(e.target.value),
+                                                className: "w-64 px-4 py-2 pl-9 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-indigo-500/50"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 115,
+                                                lineNumber: 306,
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "font-medium",
-                                                children: totalContacts
+                                                className: "absolute left-3 top-1/2 -translate-y-1/2 text-white/30",
+                                                children: "🔍"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 116,
+                                                lineNumber: 313,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 114,
+                                        lineNumber: 305,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "flex items-center gap-2",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-green-400",
-                                                children: "Won:"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 119,
-                                                columnNumber: 29
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "font-medium text-green-400",
-                                                children: wonCount
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 120,
-                                                columnNumber: 29
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 118,
-                                        columnNumber: 25
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "flex items-center gap-2",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "text-red-400",
-                                                children: "Lost:"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 123,
-                                                columnNumber: 29
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "font-medium text-red-400",
-                                                children: lostCount
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 124,
-                                                columnNumber: 29
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 122,
-                                        columnNumber: 25
-                                    }, this)
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                lineNumber: 113,
-                                columnNumber: 21
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/app/pipeline/page.tsx",
-                        lineNumber: 108,
-                        columnNumber: 17
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory",
-                        children: PIPELINE_STAGES.map((stage)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: `flex-shrink-0 w-72 snap-start transition-all duration-200 ${dragOverStage === stage.id ? "scale-[1.02]" : ""}`,
-                                onDragOver: (e)=>handleDragOver(e, stage.id),
-                                onDragLeave: handleDragLeave,
-                                onDrop: (e)=>handleDrop(e, stage.id),
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "rounded-t-xl p-3 flex items-center justify-between",
-                                        style: {
-                                            backgroundColor: `${stage.color}20`
-                                        },
+                                        className: "flex items-center gap-4 text-sm",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "flex items-center gap-2",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        children: stage.icon
+                                                        className: "text-white/50",
+                                                        children: "Total:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                                        lineNumber: 148,
-                                                        columnNumber: 37
+                                                        lineNumber: 319,
+                                                        columnNumber: 33
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                         className: "font-medium",
-                                                        style: {
-                                                            color: stage.color
-                                                        },
-                                                        children: stage.label
+                                                        children: globalSearch ? `${filteredTotal} / ${totalContacts}` : totalContacts
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                                        lineNumber: 149,
-                                                        columnNumber: 37
+                                                        lineNumber: 320,
+                                                        columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 147,
-                                                columnNumber: 33
+                                                lineNumber: 318,
+                                                columnNumber: 29
                                             }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "px-2 py-0.5 rounded-full text-xs font-bold",
-                                                style: {
-                                                    backgroundColor: stage.color,
-                                                    color: "#000"
-                                                },
-                                                children: contactsByStage[stage.id]?.length || 0
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 153,
-                                                columnNumber: 33
-                                            }, this)
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 143,
-                                        columnNumber: 29
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: `bg-[#12121f] rounded-b-xl border border-white/10 min-h-[400px] p-2 space-y-2 transition-colors ${dragOverStage === stage.id ? "border-2" : ""}`,
-                                        style: {
-                                            borderColor: dragOverStage === stage.id ? stage.color : undefined
-                                        },
-                                        children: [
-                                            contactsByStage[stage.id]?.map((contact)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    draggable: true,
-                                                    onDragStart: (e)=>handleDragStart(e, contact._id),
-                                                    onDragEnd: handleDragEnd,
-                                                    onClick: ()=>setViewContactId(contact._id),
-                                                    className: `bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${draggedContact === contact._id ? "opacity-50 scale-95" : ""}`,
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "flex items-center gap-2 mb-2",
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                    className: "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0",
-                                                                    style: {
-                                                                        backgroundColor: `${stage.color}30`,
-                                                                        color: stage.color
-                                                                    },
-                                                                    children: (contact.name || contact.email).charAt(0).toUpperCase()
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 185,
-                                                                    columnNumber: 45
-                                                                }, this),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                    className: "min-w-0 flex-1",
-                                                                    children: [
-                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                            className: "font-medium text-sm truncate",
-                                                                            children: contact.name || contact.email.split("@")[0]
-                                                                        }, void 0, false, {
-                                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                            lineNumber: 192,
-                                                                            columnNumber: 49
-                                                                        }, this),
-                                                                        contact.company && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                            className: "text-xs text-white/50 truncate",
-                                                                            children: contact.company
-                                                                        }, void 0, false, {
-                                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                            lineNumber: 196,
-                                                                            columnNumber: 53
-                                                                        }, this)
-                                                                    ]
-                                                                }, void 0, true, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 191,
-                                                                    columnNumber: 45
-                                                                }, this)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                            lineNumber: 184,
-                                                            columnNumber: 41
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "text-xs text-white/40 truncate mb-2",
-                                                            children: contact.email
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                            lineNumber: 204,
-                                                            columnNumber: 41
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "flex items-center gap-3 text-xs text-white/50",
-                                                            children: [
-                                                                (contact.emailCount ?? 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                    className: "flex items-center gap-1",
-                                                                    children: [
-                                                                        "📧 ",
-                                                                        contact.emailCount
-                                                                    ]
-                                                                }, void 0, true, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 211,
-                                                                    columnNumber: 49
-                                                                }, this),
-                                                                (contact.callCount ?? 0) > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                    className: "flex items-center gap-1",
-                                                                    children: [
-                                                                        "📞 ",
-                                                                        contact.callCount
-                                                                    ]
-                                                                }, void 0, true, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 216,
-                                                                    columnNumber: 49
-                                                                }, this),
-                                                                contact.lastEmailAt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                    className: "text-white/30",
-                                                                    children: formatRelativeTime(contact.lastEmailAt)
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 221,
-                                                                    columnNumber: 49
-                                                                }, this)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                            lineNumber: 209,
-                                                            columnNumber: 41
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "flex items-center gap-1 mt-2 pt-2 border-t border-white/5",
-                                                            children: [
-                                                                contact.phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                                    href: `tel:${contact.phone}`,
-                                                                    onClick: (e)=>e.stopPropagation(),
-                                                                    className: "p-1.5 hover:bg-green-500/20 rounded text-green-400 transition-colors",
-                                                                    title: "Call",
-                                                                    children: "📞"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 230,
-                                                                    columnNumber: 49
-                                                                }, this),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                                                    href: `mailto:${contact.email}`,
-                                                                    onClick: (e)=>e.stopPropagation(),
-                                                                    className: "p-1.5 hover:bg-blue-500/20 rounded text-blue-400 transition-colors",
-                                                                    title: "Email",
-                                                                    children: "✉️"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                                    lineNumber: 239,
-                                                                    columnNumber: 45
-                                                                }, this)
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/pipeline/page.tsx",
-                                                            lineNumber: 228,
-                                                            columnNumber: 41
-                                                        }, this)
-                                                    ]
-                                                }, contact._id, true, {
-                                                    fileName: "[project]/src/app/pipeline/page.tsx",
-                                                    lineNumber: 172,
-                                                    columnNumber: 37
-                                                }, this)),
-                                            (!contactsByStage[stage.id] || contactsByStage[stage.id].length === 0) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "flex flex-col items-center justify-center h-32 text-white/20 text-sm",
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "flex items-center gap-2",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        className: "text-2xl mb-1",
-                                                        children: stage.icon
+                                                        className: "text-green-400",
+                                                        children: "Won:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                                        lineNumber: 254,
-                                                        columnNumber: 41
+                                                        lineNumber: 325,
+                                                        columnNumber: 33
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                        children: "Drop contacts here"
+                                                        className: "font-medium text-green-400",
+                                                        children: wonCount
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                                        lineNumber: 255,
-                                                        columnNumber: 41
+                                                        lineNumber: 326,
+                                                        columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                                lineNumber: 253,
-                                                columnNumber: 37
+                                                lineNumber: 324,
+                                                columnNumber: 29
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "flex items-center gap-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "text-red-400",
+                                                        children: "Lost:"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/pipeline/page.tsx",
+                                                        lineNumber: 329,
+                                                        columnNumber: 33
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                        className: "font-medium text-red-400",
+                                                        children: lostCount
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/pipeline/page.tsx",
+                                                        lineNumber: 330,
+                                                        columnNumber: 33
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                                lineNumber: 328,
+                                                columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/pipeline/page.tsx",
-                                        lineNumber: 162,
-                                        columnNumber: 29
+                                        lineNumber: 317,
+                                        columnNumber: 25
                                     }, this)
                                 ]
-                            }, stage.id, true, {
+                            }, void 0, true, {
                                 fileName: "[project]/src/app/pipeline/page.tsx",
-                                lineNumber: 132,
+                                lineNumber: 303,
+                                columnNumber: 21
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/pipeline/page.tsx",
+                        lineNumber: 297,
+                        columnNumber: 17
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex gap-4 overflow-x-auto pb-4",
+                        children: PIPELINE_STAGES.map((stage)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StageColumn, {
+                                stage: stage,
+                                contacts: contactsByStage[stage.id] || [],
+                                searchQuery: stageSearches[stage.id] || "",
+                                onSearchChange: (q)=>setStageSearches((prev)=>({
+                                            ...prev,
+                                            [stage.id]: q
+                                        })),
+                                dragOverStage: dragOverStage,
+                                draggedContact: draggedContact,
+                                onDragOver: (e)=>handleDragOver(e, stage.id),
+                                onDragLeave: handleDragLeave,
+                                onDrop: (e)=>handleDrop(e, stage.id),
+                                onDragStart: handleDragStart,
+                                onDragEnd: handleDragEnd,
+                                onContactClick: setViewContactId
+                            }, stage.id, false, {
+                                fileName: "[project]/src/app/pipeline/page.tsx",
+                                lineNumber: 339,
                                 columnNumber: 25
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/pipeline/page.tsx",
-                        lineNumber: 130,
+                        lineNumber: 337,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/pipeline/page.tsx",
-                lineNumber: 106,
+                lineNumber: 295,
                 columnNumber: 13
             }, this),
             viewContactId && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ContactDetail$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1812,13 +1905,13 @@ function PipelinePage() {
                 onClose: ()=>setViewContactId(null)
             }, void 0, false, {
                 fileName: "[project]/src/app/pipeline/page.tsx",
-                lineNumber: 266,
+                lineNumber: 360,
                 columnNumber: 17
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/pipeline/page.tsx",
-        lineNumber: 103,
+        lineNumber: 292,
         columnNumber: 9
     }, this);
 }
@@ -1826,12 +1919,12 @@ function PipelinePageWrapper() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthGuard"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PipelinePage, {}, void 0, false, {
             fileName: "[project]/src/app/pipeline/page.tsx",
-            lineNumber: 278,
+            lineNumber: 372,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/pipeline/page.tsx",
-        lineNumber: 277,
+        lineNumber: 371,
         columnNumber: 9
     }, this);
 }

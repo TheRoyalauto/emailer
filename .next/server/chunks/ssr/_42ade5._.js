@@ -1560,10 +1560,12 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$module__evaluation$3e$__ = __turbopack_import__("[project]/node_modules/convex/dist/esm/react/index.js [app-ssr] (ecmascript) <module evaluation>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/convex/_generated/api.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/navigation.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$EmailEditor$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/EmailEditor.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/components/AuthGuard.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/convex/dist/esm/react/client.js [app-ssr] (ecmascript)");
 "use client";
+;
 ;
 ;
 ;
@@ -1747,6 +1749,19 @@ function TemplatesPage() {
         ...new Set(PREMIUM_DESIGNS.map((d)=>d.category))
     ];
     const filteredDesigns = designCategory === "All" ? PREMIUM_DESIGNS : PREMIUM_DESIGNS.filter((d)=>d.category === designCategory);
+    // Handle URL-based modal opening (from dashboard quick actions)
+    const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useSearchParams"])();
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (searchParams.get('action') === 'add') {
+            setIsEditing(true);
+            setEditingId(null);
+            setTemplateName("");
+            setSubject("");
+            setHtmlContent("");
+        }
+    }, [
+        searchParams
+    ]);
     const handleStartNew = ()=>{
         setIsEditing(true);
         setEditingId(null);
@@ -1820,14 +1835,14 @@ function TemplatesPage() {
                                         children: "← Back"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 274,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "h-6 w-px bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 267,
+                                        lineNumber: 280,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -1835,13 +1850,13 @@ function TemplatesPage() {
                                         children: editingId ? "Edit Template" : "Create Template"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 268,
+                                        lineNumber: 281,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 260,
+                                lineNumber: 273,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1853,7 +1868,7 @@ function TemplatesPage() {
                                         children: "✨ Design Library"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 273,
+                                        lineNumber: 286,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1863,24 +1878,24 @@ function TemplatesPage() {
                                         children: editingId ? "Save Changes" : "Create Template"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 282,
+                                        lineNumber: 295,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 272,
+                                lineNumber: 285,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 259,
+                        lineNumber: 272,
                         columnNumber: 21
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/templates/page.tsx",
-                    lineNumber: 258,
+                    lineNumber: 271,
                     columnNumber: 17
                 }, this),
                 showDesigns && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1894,7 +1909,7 @@ function TemplatesPage() {
                                     children: "Quick Insert:"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 297,
+                                    lineNumber: 310,
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1905,18 +1920,18 @@ function TemplatesPage() {
                                             children: cat
                                         }, cat, false, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 300,
+                                            lineNumber: 313,
                                             columnNumber: 37
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 298,
+                                    lineNumber: 311,
                                     columnNumber: 29
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/templates/page.tsx",
-                            lineNumber: 296,
+                            lineNumber: 309,
                             columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1930,7 +1945,7 @@ function TemplatesPage() {
                                             children: design.preview
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 320,
+                                            lineNumber: 333,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1938,24 +1953,24 @@ function TemplatesPage() {
                                             children: design.name
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 321,
+                                            lineNumber: 334,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, design.id, true, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 315,
+                                    lineNumber: 328,
                                     columnNumber: 33
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/templates/page.tsx",
-                            lineNumber: 313,
+                            lineNumber: 326,
                             columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/templates/page.tsx",
-                    lineNumber: 295,
+                    lineNumber: 308,
                     columnNumber: 21
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1975,7 +1990,7 @@ function TemplatesPage() {
                                                     children: "Template Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 338,
+                                                    lineNumber: 351,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1986,13 +2001,13 @@ function TemplatesPage() {
                                                     className: "w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 339,
+                                                    lineNumber: 352,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 337,
+                                            lineNumber: 350,
                                             columnNumber: 33
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2002,7 +2017,7 @@ function TemplatesPage() {
                                                     children: "Email Subject"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 348,
+                                                    lineNumber: 361,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2013,24 +2028,24 @@ function TemplatesPage() {
                                                     className: "w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 349,
+                                                    lineNumber: 362,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 347,
+                                            lineNumber: 360,
                                             columnNumber: 33
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 336,
+                                    lineNumber: 349,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 335,
+                                lineNumber: 348,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2041,29 +2056,29 @@ function TemplatesPage() {
                                     subject: subject
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 362,
+                                    lineNumber: 375,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 361,
+                                lineNumber: 374,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 333,
+                        lineNumber: 346,
                         columnNumber: 21
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/templates/page.tsx",
-                    lineNumber: 331,
+                    lineNumber: 344,
                     columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/templates/page.tsx",
-            lineNumber: 256,
+            lineNumber: 269,
             columnNumber: 13
         }, this);
     }
@@ -2073,7 +2088,7 @@ function TemplatesPage() {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AppHeader"], {}, void 0, false, {
                 fileName: "[project]/src/app/templates/page.tsx",
-                lineNumber: 377,
+                lineNumber: 390,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -2089,7 +2104,7 @@ function TemplatesPage() {
                                         children: "Email Templates"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 382,
+                                        lineNumber: 395,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2097,13 +2112,13 @@ function TemplatesPage() {
                                         children: "Create and manage your email templates"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 385,
+                                        lineNumber: 398,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 381,
+                                lineNumber: 394,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2115,20 +2130,20 @@ function TemplatesPage() {
                                         children: "+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/templates/page.tsx",
-                                        lineNumber: 391,
+                                        lineNumber: 404,
                                         columnNumber: 25
                                     }, this),
                                     " New Template"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 387,
+                                lineNumber: 400,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 380,
+                        lineNumber: 393,
                         columnNumber: 17
                     }, this),
                     templates === undefined ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2137,12 +2152,12 @@ function TemplatesPage() {
                             className: "animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full"
                         }, void 0, false, {
                             fileName: "[project]/src/app/templates/page.tsx",
-                            lineNumber: 397,
+                            lineNumber: 410,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 396,
+                        lineNumber: 409,
                         columnNumber: 21
                     }, this) : templates.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "text-center py-20",
@@ -2154,12 +2169,12 @@ function TemplatesPage() {
                                     children: "📝"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 402,
+                                    lineNumber: 415,
                                     columnNumber: 29
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 401,
+                                lineNumber: 414,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -2167,7 +2182,7 @@ function TemplatesPage() {
                                 children: "No templates yet"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 404,
+                                lineNumber: 417,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2175,7 +2190,7 @@ function TemplatesPage() {
                                 children: "Create your first email template to use in campaigns."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 405,
+                                lineNumber: 418,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2184,13 +2199,13 @@ function TemplatesPage() {
                                 children: "Create Your First Template"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 408,
+                                lineNumber: 421,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 400,
+                        lineNumber: 413,
                         columnNumber: 21
                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid gap-4",
@@ -2211,7 +2226,7 @@ function TemplatesPage() {
                                                             children: template.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/templates/page.tsx",
-                                                            lineNumber: 426,
+                                                            lineNumber: 439,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2219,13 +2234,13 @@ function TemplatesPage() {
                                                             children: template.status
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/templates/page.tsx",
-                                                            lineNumber: 429,
+                                                            lineNumber: 442,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 425,
+                                                    lineNumber: 438,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2233,13 +2248,13 @@ function TemplatesPage() {
                                                     children: template.subject
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 433,
+                                                    lineNumber: 446,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 424,
+                                            lineNumber: 437,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2254,7 +2269,7 @@ function TemplatesPage() {
                                                     children: "Edit"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 436,
+                                                    lineNumber: 449,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2268,41 +2283,41 @@ function TemplatesPage() {
                                                     children: "Delete"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/templates/page.tsx",
-                                                    lineNumber: 445,
+                                                    lineNumber: 458,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/templates/page.tsx",
-                                            lineNumber: 435,
+                                            lineNumber: 448,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/templates/page.tsx",
-                                    lineNumber: 423,
+                                    lineNumber: 436,
                                     columnNumber: 33
                                 }, this)
                             }, template._id, false, {
                                 fileName: "[project]/src/app/templates/page.tsx",
-                                lineNumber: 418,
+                                lineNumber: 431,
                                 columnNumber: 29
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/src/app/templates/page.tsx",
-                        lineNumber: 416,
+                        lineNumber: 429,
                         columnNumber: 21
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/templates/page.tsx",
-                lineNumber: 379,
+                lineNumber: 392,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/templates/page.tsx",
-        lineNumber: 376,
+        lineNumber: 389,
         columnNumber: 9
     }, this);
 }
@@ -2310,12 +2325,12 @@ function TemplatesPageWrapper() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$AuthGuard$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AuthGuard"], {
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(TemplatesPage, {}, void 0, false, {
             fileName: "[project]/src/app/templates/page.tsx",
-            lineNumber: 469,
+            lineNumber: 482,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/templates/page.tsx",
-        lineNumber: 468,
+        lineNumber: 481,
         columnNumber: 9
     }, this);
 }
