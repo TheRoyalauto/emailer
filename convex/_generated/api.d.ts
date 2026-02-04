@@ -28,6 +28,7 @@ import type * as senders from "../senders.js";
 import type * as sequenceScheduler from "../sequenceScheduler.js";
 import type * as sequences from "../sequences.js";
 import type * as smtpConfigs from "../smtpConfigs.js";
+import type * as tasks from "../tasks.js";
 import type * as templates from "../templates.js";
 import type * as trackedLinks from "../trackedLinks.js";
 import type * as unsubscribes from "../unsubscribes.js";
@@ -59,6 +60,7 @@ declare const fullApi: ApiFromModules<{
   sequenceScheduler: typeof sequenceScheduler;
   sequences: typeof sequences;
   smtpConfigs: typeof smtpConfigs;
+  tasks: typeof tasks;
   templates: typeof templates;
   trackedLinks: typeof trackedLinks;
   unsubscribes: typeof unsubscribes;
