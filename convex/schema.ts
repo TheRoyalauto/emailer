@@ -374,5 +374,375 @@ export default defineSchema({
     })
         .index("by_user", ["userId"])
         .index("by_user_date", ["userId", "date"]),
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CRM AUTOMATION SYSTEM - Phase E/F/G/H
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Deals (separate from contacts - represents active opportunities)
+    deals: defineTable({
+        userId: v.id("users"),
+        contactId: v.id("contacts"),
+        name: v.string(),
+        value: v.number(),
+        probability: v.number(), // 0-100
+        stage: v.union(
+            v.literal("lead"),
+            v.literal("contacted"),
+            v.literal("replied"),
+            v.literal("qualified"),
+            v.literal("demo_booked"),
+            v.literal("proposal_sent"),
+            v.literal("negotiation"),
+            v.literal("closed_won"),
+            v.literal("closed_lost")
+        ),
+        expectedCloseDate: v.optional(v.number()),
+        lostReason: v.optional(v.string()),
+        wonDate: v.optional(v.number()),
+        bookingLink: v.optional(v.string()),
+        notes: v.optional(v.string()),
+        createdAt: v.number(),
+        updatedAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_stage", ["stage"])
+        .index("by_user_stage", ["userId", "stage"]),
+
+    // Automation Rules
+    automationRules: defineTable({
+        userId: v.id("users"),
+        name: v.string(),
+        description: v.optional(v.string()),
+        isActive: v.boolean(),
+        triggerType: v.union(
+            v.literal("reply_positive"),
+            v.literal("reply_objection"),
+            v.literal("reply_not_now"),
+            v.literal("reply_price"),
+            v.literal("reply_competitor"),
+            v.literal("reply_angry"),
+            v.literal("no_reply_after"),
+            v.literal("demo_no_show"),
+            v.literal("proposal_sent"),
+            v.literal("proposal_viewed"),
+            v.literal("proposal_accepted"),
+            v.literal("stage_change")
+        ),
+        triggerConfig: v.optional(v.any()), // { daysWithoutReply: 3, targetStage: "qualified" }
+        actionType: v.union(
+            v.literal("create_deal"),
+            v.literal("send_sequence"),
+            v.literal("update_stage"),
+            v.literal("add_task"),
+            v.literal("send_booking_link"),
+            v.literal("send_email"),
+            v.literal("notify_user")
+        ),
+        actionConfig: v.any(), // { sequenceId: "xxx", templateId: "yyy", message: "zzz" }
+        priority: v.optional(v.number()), // execution order
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_trigger", ["triggerType"])
+        .index("by_user_active", ["userId", "isActive"]),
+
+    // Automation Execution Log
+    automationLogs: defineTable({
+        userId: v.id("users"),
+        ruleId: v.id("automationRules"),
+        contactId: v.id("contacts"),
+        dealId: v.optional(v.id("deals")),
+        replyId: v.optional(v.id("inboundReplies")),
+        triggeredAt: v.number(),
+        triggerType: v.string(),
+        actionTaken: v.string(),
+        success: v.boolean(),
+        error: v.optional(v.string()),
+        metadata: v.optional(v.any()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_rule", ["ruleId"])
+        .index("by_contact", ["contactId"])
+        .index("by_user_date", ["userId", "triggeredAt"]),
+
+    // Inbound Replies (for AI triage)
+    inboundReplies: defineTable({
+        userId: v.id("users"),
+        contactId: v.id("contacts"),
+        dealId: v.optional(v.id("deals")),
+        originalEmailId: v.optional(v.string()),
+        campaignId: v.optional(v.id("campaigns")),
+        sequenceId: v.optional(v.id("sequences")),
+        subject: v.string(),
+        body: v.string(),
+        fromEmail: v.string(),
+        receivedAt: v.number(),
+        classification: v.optional(v.union(
+            v.literal("positive"),
+            v.literal("not_now"),
+            v.literal("price_objection"),
+            v.literal("competitor"),
+            v.literal("angry"),
+            v.literal("unsubscribe"),
+            v.literal("out_of_office"),
+            v.literal("question"),
+            v.literal("unknown")
+        )),
+        sentiment: v.optional(v.number()), // -100 to 100
+        buyingSignals: v.optional(v.object({
+            budget: v.optional(v.string()),
+            authority: v.optional(v.string()),
+            need: v.optional(v.string()),
+            timeline: v.optional(v.string()),
+            score: v.optional(v.number()), // 0-100 BANT score
+        })),
+        suggestedResponses: v.optional(v.array(v.object({
+            type: v.string(), // "best", "alternative1", "alternative2"
+            subject: v.string(),
+            body: v.string(),
+        }))),
+        isProcessed: v.boolean(),
+        processedAt: v.optional(v.number()),
+        responseStatus: v.optional(v.union(
+            v.literal("pending"),
+            v.literal("responded"),
+            v.literal("ignored")
+        )),
+        respondedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_classification", ["classification"])
+        .index("by_user_processed", ["userId", "isProcessed"])
+        .index("by_user_date", ["userId", "receivedAt"]),
+
+    // Meetings
+    meetings: defineTable({
+        userId: v.id("users"),
+        contactId: v.id("contacts"),
+        dealId: v.optional(v.id("deals")),
+        title: v.string(),
+        description: v.optional(v.string()),
+        scheduledAt: v.number(),
+        duration: v.optional(v.number()), // minutes
+        status: v.union(
+            v.literal("scheduled"),
+            v.literal("completed"),
+            v.literal("no_show"),
+            v.literal("cancelled"),
+            v.literal("rescheduled")
+        ),
+        meetingType: v.optional(v.union(
+            v.literal("discovery"),
+            v.literal("demo"),
+            v.literal("follow_up"),
+            v.literal("closing"),
+            v.literal("onboarding"),
+            v.literal("other")
+        )),
+        location: v.optional(v.string()), // Zoom link, address, etc.
+        transcript: v.optional(v.string()),
+        rawNotes: v.optional(v.string()),
+        isProcessed: v.boolean(),
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_deal", ["dealId"])
+        .index("by_status", ["status"])
+        .index("by_user_date", ["userId", "scheduledAt"]),
+
+    // Meeting Notes (AI-extracted insights)
+    meetingNotes: defineTable({
+        userId: v.id("users"),
+        meetingId: v.id("meetings"),
+        summary: v.string(),
+        keyPoints: v.array(v.string()),
+        objections: v.optional(v.array(v.object({
+            objection: v.string(),
+            suggestedResponse: v.string(),
+            severity: v.optional(v.union(v.literal("low"), v.literal("medium"), v.literal("high"))),
+        }))),
+        actionItems: v.array(v.object({
+            task: v.string(),
+            owner: v.optional(v.string()),
+            dueDate: v.optional(v.number()),
+            priority: v.optional(v.string()),
+        })),
+        nextSteps: v.optional(v.array(v.string())),
+        followUpEmailDraft: v.optional(v.object({
+            subject: v.string(),
+            body: v.string(),
+        })),
+        recommendedStage: v.optional(v.string()),
+        dealValue: v.optional(v.number()), // if mentioned
+        timeline: v.optional(v.string()), // if discussed
+        generatedAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_meeting", ["meetingId"]),
+
+    // Tasks (action items, follow-ups, reminders)
+    tasks: defineTable({
+        userId: v.id("users"),
+        contactId: v.optional(v.id("contacts")),
+        dealId: v.optional(v.id("deals")),
+        meetingId: v.optional(v.id("meetings")),
+        replyId: v.optional(v.id("inboundReplies")),
+        title: v.string(),
+        description: v.optional(v.string()),
+        dueAt: v.optional(v.number()),
+        reminderAt: v.optional(v.number()),
+        priority: v.union(
+            v.literal("low"),
+            v.literal("medium"),
+            v.literal("high"),
+            v.literal("urgent")
+        ),
+        status: v.union(
+            v.literal("pending"),
+            v.literal("in_progress"),
+            v.literal("completed"),
+            v.literal("cancelled")
+        ),
+        taskType: v.optional(v.union(
+            v.literal("follow_up"),
+            v.literal("call"),
+            v.literal("email"),
+            v.literal("meeting"),
+            v.literal("proposal"),
+            v.literal("other")
+        )),
+        createdAt: v.number(),
+        completedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_deal", ["dealId"])
+        .index("by_status", ["status"])
+        .index("by_user_status", ["userId", "status"])
+        .index("by_due_date", ["dueAt"]),
+
+    // Proposals
+    proposals: defineTable({
+        userId: v.id("users"),
+        contactId: v.id("contacts"),
+        dealId: v.optional(v.id("deals")),
+        templateId: v.optional(v.id("proposalTemplates")),
+        title: v.string(),
+        introduction: v.optional(v.string()),
+        status: v.union(
+            v.literal("draft"),
+            v.literal("sent"),
+            v.literal("viewed"),
+            v.literal("accepted"),
+            v.literal("rejected"),
+            v.literal("expired")
+        ),
+        totalValue: v.number(),
+        discount: v.optional(v.number()), // percentage
+        finalValue: v.optional(v.number()),
+        validUntil: v.optional(v.number()),
+        termsAndConditions: v.optional(v.string()),
+        sentAt: v.optional(v.number()),
+        viewedAt: v.optional(v.number()),
+        viewCount: v.optional(v.number()),
+        signedAt: v.optional(v.number()),
+        signatureData: v.optional(v.string()), // base64 signature image
+        signerName: v.optional(v.string()),
+        signerEmail: v.optional(v.string()),
+        rejectionReason: v.optional(v.string()),
+        paymentLink: v.optional(v.string()),
+        publicToken: v.string(), // for client-facing URL
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_deal", ["dealId"])
+        .index("by_status", ["status"])
+        .index("by_token", ["publicToken"])
+        .index("by_user_status", ["userId", "status"]),
+
+    // Proposal Items (line items)
+    proposalItems: defineTable({
+        proposalId: v.id("proposals"),
+        name: v.string(),
+        description: v.optional(v.string()),
+        quantity: v.number(),
+        unitPrice: v.number(),
+        total: v.number(),
+        order: v.number(),
+    })
+        .index("by_proposal", ["proposalId"]),
+
+    // Proposal Templates (reusable proposal structures)
+    proposalTemplates: defineTable({
+        userId: v.id("users"),
+        name: v.string(),
+        description: v.optional(v.string()),
+        introduction: v.optional(v.string()),
+        defaultItems: v.array(v.object({
+            name: v.string(),
+            description: v.optional(v.string()),
+            unitPrice: v.number(),
+            quantity: v.optional(v.number()),
+        })),
+        termsAndConditions: v.optional(v.string()),
+        validityDays: v.optional(v.number()), // default validity period
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"]),
+
+    // Invoices
+    invoices: defineTable({
+        userId: v.id("users"),
+        proposalId: v.optional(v.id("proposals")),
+        contactId: v.id("contacts"),
+        dealId: v.optional(v.id("deals")),
+        invoiceNumber: v.string(),
+        status: v.union(
+            v.literal("draft"),
+            v.literal("sent"),
+            v.literal("paid"),
+            v.literal("partial"),
+            v.literal("overdue"),
+            v.literal("cancelled"),
+            v.literal("refunded")
+        ),
+        items: v.array(v.object({
+            name: v.string(),
+            description: v.optional(v.string()),
+            quantity: v.number(),
+            unitPrice: v.number(),
+            total: v.number(),
+        })),
+        subtotal: v.number(),
+        tax: v.optional(v.number()),
+        taxRate: v.optional(v.number()),
+        discount: v.optional(v.number()),
+        totalAmount: v.number(),
+        amountPaid: v.optional(v.number()),
+        dueDate: v.number(),
+        sentAt: v.optional(v.number()),
+        paidAt: v.optional(v.number()),
+        paymentMethod: v.optional(v.string()),
+        paymentReference: v.optional(v.string()),
+        notes: v.optional(v.string()),
+        publicToken: v.string(), // for client-facing URL
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_contact", ["contactId"])
+        .index("by_proposal", ["proposalId"])
+        .index("by_status", ["status"])
+        .index("by_token", ["publicToken"])
+        .index("by_user_status", ["userId", "status"]),
 });
 

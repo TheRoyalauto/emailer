@@ -44,9 +44,10 @@ const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: "🏠", mobileIcon: "🏠" },
     { href: "/campaigns", label: "Campaigns", icon: "📧", mobileIcon: "📧" },
     { href: "/contacts", label: "Contacts", icon: "👥", mobileIcon: "👥" },
-    { href: "/pipeline", label: "Pipeline", icon: "📊", mobileIcon: "📊" },
+    { href: "/replies", label: "Replies", icon: "💬", mobileIcon: "💬" },
+    { href: "/deals", label: "Deals", icon: "💼", mobileIcon: "💼" },
     { href: "/sequences", label: "Sequences", icon: "🔄", mobileIcon: "🔄" },
-    { href: "/insights", label: "Insights", icon: "📈", mobileIcon: "📈" },
+    { href: "/automations", label: "Automations", icon: "⚡", mobileIcon: "⚡" },
     { href: "/settings", label: "Settings", icon: "⚙️", mobileIcon: "⚙️" },
 ];
 
