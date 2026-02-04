@@ -771,6 +771,40 @@ export default defineSchema({
         .index("by_sender", ["senderId"])
         .index("by_user_active", ["userId", "isActive"]),
 
+    // Tracked Links - Click tracking for emails
+    trackedLinks: defineTable({
+        userId: v.id("users"),
+        campaignId: v.optional(v.id("campaigns")),
+        sequenceId: v.optional(v.id("sequences")),
+        contactId: v.optional(v.id("contacts")),
+
+        code: v.string(), // Short code for URL
+        destinationUrl: v.string(), // Where to redirect
+
+        // UTM Parameters
+        utmSource: v.optional(v.string()),
+        utmMedium: v.optional(v.string()),
+        utmCampaign: v.optional(v.string()),
+        utmContent: v.optional(v.string()),
+        utmTerm: v.optional(v.string()),
+
+        // Analytics
+        clickCount: v.number(),
+        uniqueClicks: v.optional(v.number()),
+        lastClickedAt: v.optional(v.number()),
+
+        // Metadata
+        label: v.optional(v.string()), // e.g., "CTA Button", "Logo"
+        isActive: v.boolean(),
+
+        createdAt: v.number(),
+        expiresAt: v.optional(v.number()),
+    })
+        .index("by_code", ["code"])
+        .index("by_user", ["userId"])
+        .index("by_campaign", ["campaignId"])
+        .index("by_contact", ["contactId"]),
+
     // Invoices
     invoices: defineTable({
         userId: v.id("users"),
