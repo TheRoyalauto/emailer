@@ -699,6 +699,78 @@ export default defineSchema({
     })
         .index("by_user", ["userId"]),
 
+    // Email Brand Rules - Voice & Tone Guidelines for AI
+    emailBrandRules: defineTable({
+        userId: v.id("users"),
+        name: v.string(), // e.g., "Main Brand", "Enterprise Outreach"
+        isDefault: v.optional(v.boolean()),
+
+        // Voice & Tone
+        voiceDescription: v.optional(v.string()), // Describe the brand voice
+        voiceSamples: v.optional(v.array(v.string())), // Example emails that match the voice
+
+        // Content Rules
+        forbiddenPhrases: v.optional(v.array(v.string())), // Never use these
+        requiredPhrases: v.optional(v.array(v.string())), // Must include one of these
+        preferredPhrases: v.optional(v.array(v.string())), // Prefer these over alternatives
+
+        // Product Facts (for AI accuracy)
+        productFacts: v.optional(v.array(v.object({
+            fact: v.string(),
+            context: v.optional(v.string()),
+        }))),
+
+        // Formatting Rules
+        maxParagraphs: v.optional(v.number()),
+        maxSubjectLength: v.optional(v.number()),
+        signatureTemplate: v.optional(v.string()),
+
+        // Personalization
+        companyName: v.optional(v.string()),
+        senderPersona: v.optional(v.string()), // Role/title to write as
+
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_default", ["userId", "isDefault"]),
+
+    // Send Policies - Sending limits, business hours, warmup
+    sendPolicies: defineTable({
+        userId: v.id("users"),
+        senderId: v.optional(v.id("senders")), // If null, applies globally
+        name: v.string(),
+        isActive: v.boolean(),
+
+        // Daily Limits
+        dailySendLimit: v.number(), // Max emails per day
+        hourlySendLimit: v.optional(v.number()), // Max per hour
+        cooldownMinutes: v.optional(v.number()), // Min gap between sends
+
+        // Business Hours (UTC offset in minutes)
+        timezone: v.string(), // e.g., "America/New_York"
+        businessHoursStart: v.optional(v.number()), // Hour (0-23)
+        businessHoursEnd: v.optional(v.number()), // Hour (0-23)
+        businessDays: v.optional(v.array(v.number())), // 0=Sun, 1=Mon, etc.
+
+        // Warmup Mode
+        isWarmupMode: v.optional(v.boolean()),
+        warmupDailyIncrement: v.optional(v.number()), // Increase limit by this each day
+        warmupStartDate: v.optional(v.number()),
+        warmupMaxDaily: v.optional(v.number()), // Target daily limit
+
+        // Bounce/Reputation
+        maxBounceRate: v.optional(v.number()), // Pause if exceeded (0-100)
+        maxComplaintRate: v.optional(v.number()), // Pause if exceeded (0-100)
+        autoPauseOnBounce: v.optional(v.boolean()),
+
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_sender", ["senderId"])
+        .index("by_user_active", ["userId", "isActive"]),
+
     // Invoices
     invoices: defineTable({
         userId: v.id("users"),

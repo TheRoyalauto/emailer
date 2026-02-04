@@ -31,6 +31,7 @@ function RepliesPage() {
 
     const stats = useQuery(api.replies.getStats, {});
     const updateClassification = useMutation(api.replies.updateClassification);
+    const saveResponses = useMutation(api.replies.saveResponses);
     const markResponded = useMutation(api.replies.markResponded);
     const markIgnored = useMutation(api.replies.markIgnored);
 
@@ -42,6 +43,42 @@ function RepliesPage() {
         setIsClassifying(true);
         try {
             await updateClassification({ id: replyId, classification });
+        } finally {
+            setIsClassifying(false);
+        }
+    };
+
+    // AI-powered auto-classification
+    const handleAIClassify = async (reply: typeof replies extends (infer T)[] | undefined ? T : never) => {
+        if (!reply) return;
+        setIsClassifying(true);
+        try {
+            const response = await fetch("/api/classify-reply", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    subject: reply.subject,
+                    body: reply.body,
+                    fromEmail: reply.fromEmail,
+                }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                await saveResponses({
+                    id: reply._id,
+                    classification: result.classification,
+                    sentiment: result.sentiment,
+                    buyingSignals: result.buyingSignals,
+                    suggestedResponses: result.suggestedResponses?.map((r: { subject: string; body: string; tone: string }) => ({
+                        type: r.tone,
+                        subject: r.subject,
+                        body: r.body,
+                    })) || [],
+                });
+            }
+        } catch (error) {
+            console.error("AI classification failed:", error);
         } finally {
             setIsClassifying(false);
         }
@@ -267,7 +304,22 @@ function RepliesPage() {
 
                                 {/* Quick Classify */}
                                 <div className="mb-4 pb-4 border-b border-white/10">
-                                    <div className="text-sm text-white/50 mb-2">Classify As</div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="text-sm text-white/50">Classify As</div>
+                                        {!selectedReplyData.isProcessed && (
+                                            <button
+                                                onClick={() => handleAIClassify(selectedReplyData)}
+                                                disabled={isClassifying}
+                                                className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg text-xs font-medium transition-all disabled:opacity-50 flex items-center gap-1"
+                                            >
+                                                {isClassifying ? (
+                                                    <>⏳ Analyzing...</>
+                                                ) : (
+                                                    <>✨ AI Classify</>
+                                                )}
+                                            </button>
+                                        )}
+                                    </div>
                                     <div className="grid grid-cols-3 gap-2">
                                         {CLASSIFICATIONS.map(c => (
                                             <button
