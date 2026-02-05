@@ -5,41 +5,37 @@ import Link from "next/link";
 import Navbar from "@/components/marketing/Navbar";
 import Footer from "@/components/marketing/Footer";
 
-// Animated counter hook - starts with fixed value to avoid hydration mismatch
-function useRandomCounter(min: number, max: number, interval: number) {
-    const [mounted, setMounted] = useState(false);
-    const [count, setCount] = useState(12847); // Fixed initial value for SSR
-    const [previousCounts, setPreviousCounts] = useState<Set<number>>(new Set());
-
-    // Set mounted on client
-    useEffect(() => {
-        setMounted(true);
-        // Set initial random value after mount
-        setCount(min + Math.floor(Math.random() * (max - min)));
-    }, [min, max]);
+// Hour-based counter - same value for everyone during the same hour
+function useHourlyCounter(min: number, max: number) {
+    const [count, setCount] = useState(12847); // Fixed initial for SSR
 
     useEffect(() => {
-        if (!mounted) return;
+        const calculateCount = () => {
+            const now = new Date();
+            // Seed based on year, month, day, hour for deterministic value
+            const seed = now.getFullYear() * 1000000 +
+                (now.getMonth() + 1) * 10000 +
+                now.getDate() * 100 +
+                now.getHours();
+            // Simple seeded random
+            const seededRandom = Math.sin(seed * 9999) * 10000;
+            const normalizedRandom = Math.abs(seededRandom - Math.floor(seededRandom));
+            return min + Math.floor(normalizedRandom * (max - min));
+        };
 
+        setCount(calculateCount());
+
+        // Check every minute if hour changed
         const timer = setInterval(() => {
-            let newCount: number;
-            do {
-                newCount = min + Math.floor(Math.random() * (max - min));
-            } while (previousCounts.has(newCount) && previousCounts.size < (max - min));
+            setCount(calculateCount());
+        }, 60000);
 
-            setPreviousCounts(prev => {
-                const updated = new Set(prev);
-                if (updated.size > 100) updated.clear();
-                updated.add(newCount);
-                return updated;
-            });
-            setCount(newCount);
-        }, interval);
         return () => clearInterval(timer);
-    }, [min, max, interval, previousCounts, mounted]);
+    }, [min, max]);
 
     return count;
 }
+
 
 // Typing animation hook
 function useTypingEffect(text: string, speed: number = 50) {
@@ -142,7 +138,7 @@ const jsonLd = {
 };
 
 export default function Home() {
-    const emailCount = useRandomCounter(5000, 20000, 3000);
+    const emailCount = useHourlyCounter(5000, 20000);
     const { displayText, isComplete } = useTypingEffect("Send emails that get replies.", 80);
 
     return (
