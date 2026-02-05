@@ -16,57 +16,11 @@ const VARIABLES = [
 ];
 
 const HTML_SNIPPETS = [
-    {
-        id: "cta",
-        icon: "🔘",
-        name: "CTA Button",
-        html: `<p style="margin:0 0 16px 0;"><a href="https://example.com" style="display:inline-block;padding:14px 28px;background:#8b5cf6;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Get Started Now</a></p>`,
-    },
-    {
-        id: "divider",
-        icon: "➖",
-        name: "Divider",
-        html: `<hr style="margin:24px 0;border:none;border-top:1px solid #e5e5e5;" />`,
-    },
-    {
-        id: "bullets",
-        icon: "📋",
-        name: "Bullet List",
-        html: `<ul style="margin:0 0 16px 20px;padding:0;">
-    <li style="margin:0 0 8px 0;">First benefit or point</li>
-    <li style="margin:0 0 8px 0;">Second benefit or point</li>
-    <li style="margin:0 0 8px 0;">Third benefit or point</li>
-</ul>`,
-    },
-    {
-        id: "callout",
-        icon: "💡",
-        name: "Callout Box",
-        html: `<div style="margin:0 0 16px 0;padding:16px 20px;background:#f3f4f6;border-left:4px solid #8b5cf6;border-radius:4px;">
-    <strong style="display:block;margin-bottom:4px;">Pro Tip:</strong>
-    <span style="color:#555;">Your helpful tip or important note goes here.</span>
-</div>`,
-    },
-    {
-        id: "signature",
-        icon: "✍️",
-        name: "Signature",
-        html: `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e5e5;">
-    <p style="margin:0 0 4px 0;font-weight:600;">Your Name</p>
-    <p style="margin:0;color:#666;font-size:14px;">Your Title | Your Company</p>
-</div>`,
-    },
-    {
-        id: "social",
-        icon: "🔗",
-        name: "Social Links",
-        html: `<p style="margin:16px 0 0 0;font-size:14px;color:#666;">
-    Follow us:
-    <a href="#" style="color:#0066cc;text-decoration:none;margin-left:8px;">Twitter</a> ·
-    <a href="#" style="color:#0066cc;text-decoration:none;margin-left:4px;">LinkedIn</a> ·
-    <a href="#" style="color:#0066cc;text-decoration:none;margin-left:4px;">Website</a>
-</p>`,
-    },
+    { id: "cta", icon: "🔘", name: "Button", html: `<p style="margin:0 0 16px 0;"><a href="https://example.com" style="display:inline-block;padding:14px 28px;background:#8b5cf6;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;font-size:16px;">Get Started Now</a></p>` },
+    { id: "divider", icon: "➖", name: "Divider", html: `<hr style="margin:24px 0;border:none;border-top:1px solid #e5e5e5;" />` },
+    { id: "bullets", icon: "📋", name: "List", html: `<ul style="margin:0 0 16px 20px;padding:0;"><li style="margin:0 0 8px 0;">First point</li><li style="margin:0 0 8px 0;">Second point</li></ul>` },
+    { id: "callout", icon: "💡", name: "Callout", html: `<div style="margin:0 0 16px 0;padding:16px 20px;background:#f3f4f6;border-left:4px solid #8b5cf6;border-radius:4px;"><strong>Pro Tip:</strong> Your note here.</div>` },
+    { id: "signature", icon: "✍️", name: "Signature", html: `<div style="margin-top:24px;padding-top:16px;border-top:1px solid #e5e5e5;"><p style="margin:0 0 4px 0;font-weight:600;">Your Name</p><p style="margin:0;color:#666;font-size:14px;">Title | Company</p></div>` },
 ];
 
 const STARTER_TEMPLATE = `<!DOCTYPE html>
@@ -85,16 +39,13 @@ const STARTER_TEMPLATE = `<!DOCTYPE html>
 </html>`;
 
 export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEditorProps) {
-    const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
-    const [activeTab, setActiveTab] = useState<"html" | "visual">("html");
+    const [activeView, setActiveView] = useState<"write" | "preview">("write");
     const [showVariables, setShowVariables] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Close dropdowns when clicking outside
     useEffect(() => {
-        const handleClick = () => {
-            setShowVariables(false);
-        };
+        const handleClick = () => setShowVariables(false);
         document.addEventListener("click", handleClick);
         return () => document.removeEventListener("click", handleClick);
     }, []);
@@ -102,13 +53,14 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
     // Insert text at cursor position
     const insertAtCursor = useCallback((text: string) => {
         const textarea = textareaRef.current;
-        if (!textarea) return;
-
+        if (!textarea) {
+            onHtmlChange(htmlBody + text);
+            return;
+        }
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const newValue = htmlBody.substring(0, start) + text + htmlBody.substring(end);
         onHtmlChange(newValue);
-
         setTimeout(() => {
             textarea.selectionStart = textarea.selectionEnd = start + text.length;
             textarea.focus();
@@ -119,13 +71,11 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
     const wrapSelection = useCallback((before: string, after: string) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
-
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const selectedText = htmlBody.substring(start, end);
         const newValue = htmlBody.substring(0, start) + before + selectedText + after + htmlBody.substring(end);
         onHtmlChange(newValue);
-
         setTimeout(() => {
             textarea.selectionStart = start + before.length;
             textarea.selectionEnd = start + before.length + selectedText.length;
@@ -135,79 +85,37 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
 
     const formatBold = () => wrapSelection("<b>", "</b>");
     const formatItalic = () => wrapSelection("<i>", "</i>");
-    const formatUnderline = () => wrapSelection("<u>", "</u>");
     const formatLink = () => {
         const url = prompt("Enter URL:");
         if (url) wrapSelection(`<a href="${url}" style="color:#0066cc;text-decoration:underline;">`, "</a>");
     };
-    const formatParagraph = () => insertAtCursor('\n<p style="margin:0 0 16px 0;">New paragraph</p>');
-    const formatList = () => insertAtCursor('\n<ul style="margin:0 0 16px 20px;padding:0;">\n    <li style="margin:0 0 6px 0;">Item 1</li>\n    <li style="margin:0 0 6px 0;">Item 2</li>\n</ul>');
-    const formatButton = () => {
-        const url = prompt("Button URL:", "https://");
-        const text = prompt("Button text:", "Click Here");
-        if (url && text) {
-            insertAtCursor(`\n<p style="margin:0 0 16px 0;"><a href="${url}" style="display:inline-block;padding:12px 24px;background:#0066cc;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;">${text}</a></p>`);
-        }
-    };
 
-    // Handle Enter key to insert HTML line breaks
+    // Handle Enter key
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
             const textarea = textareaRef.current;
             if (!textarea) return;
-
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
-
-            // Shift+Enter = new paragraph, Enter = line break
-            const insertHtml = e.shiftKey
-                ? '\n<p style="margin:0 0 16px 0;"></p>'
-                : '<br>\n';
-
+            const insertHtml = e.shiftKey ? '\n<p style="margin:0 0 16px 0;"></p>' : '<br>\n';
             const newValue = htmlBody.substring(0, start) + insertHtml + htmlBody.substring(end);
             onHtmlChange(newValue);
-
             setTimeout(() => {
-                const newPos = start + insertHtml.length;
-                textarea.selectionStart = textarea.selectionEnd = newPos;
+                textarea.selectionStart = textarea.selectionEnd = start + insertHtml.length;
                 textarea.focus();
             }, 0);
         }
     };
 
-    const loadStarterTemplate = () => {
-        onHtmlChange(STARTER_TEMPLATE);
-    };
+    const loadStarterTemplate = () => onHtmlChange(STARTER_TEMPLATE);
 
-    const insertSnippet = (html: string) => {
-        const textarea = textareaRef.current;
-        if (!textarea) {
-            // If no textarea, append to existing or set as new content
-            onHtmlChange(htmlBody + "\n" + html);
-            return;
-        }
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const newValue = htmlBody.substring(0, start) + html + htmlBody.substring(end);
-        onHtmlChange(newValue);
-        setTimeout(() => {
-            textarea.selectionStart = textarea.selectionEnd = start + html.length;
-            textarea.focus();
-        }, 0);
-    };
-
-    // Preview with interpolated variables (sample data)
+    // Preview with interpolated variables
     const getPreviewHtml = () => {
         if (!htmlBody.trim()) {
-            return `
-                <div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:Arial,sans-serif;color:#888;padding:40px;text-align:center;">
-                    <div>
-                        <div style="font-size:48px;margin-bottom:16px;">📧</div>
-                        <div style="font-size:14px;">Start typing or select a template<br/>to see your email preview here</div>
-                    </div>
-                </div>
-            `;
+            return `<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#666;text-align:center;font-family:Arial,sans-serif;">
+                <div><div style="font-size:40px;margin-bottom:12px;">📧</div><div style="font-size:13px;">Start typing to see preview</div></div>
+            </div>`;
         }
         return htmlBody
             .replace(/\{\{firstName\}\}/g, "John")
@@ -219,407 +127,164 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
     const isEmpty = !htmlBody.trim();
 
     return (
-        <div style={{ display: "flex", gap: 16, height: "100%" }}>
-            {/* Editor Panel */}
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-                {/* Toolbar */}
-                <div
-                    style={{
-                        display: "flex",
-                        gap: 6,
-                        padding: "10px 12px",
-                        background: "var(--bg-tertiary)",
-                        borderRadius: "var(--radius-md) var(--radius-md) 0 0",
-                        border: "1px solid var(--border-subtle)",
-                        borderBottom: "none",
-                        flexWrap: "wrap",
-                        alignItems: "center",
-                    }}
-                >
-                    {/* Tab switcher */}
-                    <div style={{
-                        display: "flex",
-                        gap: 2,
-                        padding: 2,
-                        background: "var(--bg-primary)",
-                        borderRadius: 6,
-                        marginRight: 8,
-                    }}>
-                        <button
-                            className={`btn btn-sm ${activeTab === "html" ? "btn-primary" : "btn-ghost"}`}
-                            onClick={() => setActiveTab("html")}
-                            style={{ fontSize: 12, padding: "5px 12px", borderRadius: 4 }}
-                        >
-                            HTML
-                        </button>
-                        <button
-                            className={`btn btn-sm ${activeTab === "visual" ? "btn-primary" : "btn-ghost"}`}
-                            onClick={() => setActiveTab("visual")}
-                            style={{ fontSize: 12, padding: "5px 12px", borderRadius: 4 }}
-                        >
-                            Visual
-                        </button>
-                    </div>
-
-                    <div style={{ width: 1, height: 20, background: "var(--border-subtle)" }} />
-
-                    {/* Formatting buttons */}
-                    <button className="btn btn-ghost btn-sm" onClick={formatBold} title="Bold" style={{ padding: "6px 10px", fontWeight: 700 }}>
-                        B
+        <div className="h-full flex flex-col bg-[#0d0d15] rounded-xl border border-white/10 overflow-hidden">
+            {/* Unified Header - View Tabs + Toolbar */}
+            <div className="flex items-center justify-between px-3 py-2 bg-[#12121f] border-b border-white/10">
+                {/* View Toggle */}
+                <div className="flex items-center gap-1 p-0.5 bg-white/5 rounded-lg">
+                    <button
+                        onClick={() => setActiveView("write")}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "write"
+                            ? "bg-indigo-500 text-white shadow"
+                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            }`}
+                    >
+                        ✏️ Write
                     </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatItalic} title="Italic" style={{ padding: "6px 10px", fontStyle: "italic" }}>
-                        I
+                    <button
+                        onClick={() => setActiveView("preview")}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "preview"
+                            ? "bg-indigo-500 text-white shadow"
+                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            }`}
+                    >
+                        👁️ Preview
                     </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatUnderline} title="Underline" style={{ padding: "6px 10px", textDecoration: "underline" }}>
-                        U
-                    </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatLink} title="Insert Link" style={{ padding: "6px 10px" }}>
-                        🔗
-                    </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatParagraph} title="Add Paragraph" style={{ padding: "6px 10px" }}>
-                        ¶
-                    </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatList} title="Add List" style={{ padding: "6px 10px" }}>
-                        •••
-                    </button>
-                    <button className="btn btn-ghost btn-sm" onClick={formatButton} title="Add CTA Button" style={{ padding: "6px 10px" }}>
-                        🔘
-                    </button>
-
-                    <div style={{ width: 1, height: 20, background: "var(--border-subtle)" }} />
-
-                    {/* Variables dropdown */}
-                    <div style={{ position: "relative" }} onClick={(e) => e.stopPropagation()}>
-                        <button
-                            className="btn btn-ghost btn-sm"
-                            onClick={() => setShowVariables(!showVariables)}
-                            style={{ padding: "6px 10px", fontSize: 12 }}
-                        >
-                            {`{{x}}`} ▾
-                        </button>
-                        {showVariables && (
-                            <div
-                                style={{
-                                    position: "absolute",
-                                    top: "calc(100% + 4px)",
-                                    left: 0,
-                                    background: "var(--bg-secondary)",
-                                    border: "1px solid var(--border-subtle)",
-                                    borderRadius: 8,
-                                    padding: 6,
-                                    zIndex: 100,
-                                    minWidth: 160,
-                                    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-                                }}
-                            >
-                                <div style={{ fontSize: 11, color: "var(--text-muted)", padding: "4px 8px", marginBottom: 4 }}>
-                                    Insert Variable
-                                </div>
-                                {VARIABLES.map((v) => (
-                                    <button
-                                        key={v.key}
-                                        className="btn btn-ghost btn-sm"
-                                        style={{ width: "100%", justifyContent: "flex-start", fontSize: 12, padding: "6px 8px" }}
-                                        onClick={() => {
-                                            insertAtCursor(v.key);
-                                            setShowVariables(false);
-                                        }}
-                                    >
-                                        <code style={{ marginRight: 8, opacity: 0.6 }}>{v.key}</code>
-                                        {v.label}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
                 </div>
 
-                {/* Editor Content - Always same layout */}
-                <div
-                    style={{
-                        flex: 1,
-                        background: "var(--bg-primary)",
-                        border: "1px solid var(--border-subtle)",
-                        borderRadius: "0 0 var(--radius-md) var(--radius-md)",
-                        padding: 16,
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 12,
-                        overflow: "hidden",
-                    }}
-                >
-                    {/* Insert Components - Always visible */}
-                    <div style={{ flexShrink: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-muted)" }}>Insert Components</span>
-                            {isEmpty && (
-                                <button
-                                    onClick={loadStarterTemplate}
-                                    className="btn btn-ghost btn-sm"
-                                    style={{ padding: "4px 10px", fontSize: 11 }}
-                                >
-                                    📄 Load Base Template
-                                </button>
+                {/* Formatting Toolbar - Only visible in Write mode */}
+                {activeView === "write" && (
+                    <div className="flex items-center gap-1">
+                        <button onClick={formatBold} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm font-bold transition-colors" title="Bold">B</button>
+                        <button onClick={formatItalic} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm italic transition-colors" title="Italic">I</button>
+                        <button onClick={formatLink} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm transition-colors" title="Link">🔗</button>
+
+                        <div className="w-px h-4 bg-white/10 mx-1" />
+
+                        {/* Variables Dropdown */}
+                        <div className="relative" onClick={(e) => e.stopPropagation()}>
+                            <button
+                                onClick={() => setShowVariables(!showVariables)}
+                                className="px-2 py-1 hover:bg-white/10 rounded text-white/60 hover:text-white text-xs transition-colors"
+                            >
+                                {`{{x}}`} ▾
+                            </button>
+                            {showVariables && (
+                                <div className="absolute right-0 top-full mt-1 bg-[#1a1a2e] border border-white/10 rounded-lg p-1 z-50 min-w-40 shadow-xl">
+                                    <div className="text-[10px] text-white/40 px-2 py-1">Insert Variable</div>
+                                    {VARIABLES.map((v) => (
+                                        <button
+                                            key={v.key}
+                                            className="w-full px-2 py-1.5 text-left text-xs text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+                                            onClick={() => { insertAtCursor(v.key); setShowVariables(false); }}
+                                        >
+                                            <code className="text-indigo-400 mr-2">{v.key}</code>
+                                            {v.label}
+                                        </button>
+                                    ))}
+                                </div>
                             )}
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 6 }}>
-                            {HTML_SNIPPETS.map((snippet) => (
-                                <button
-                                    key={snippet.id}
-                                    onClick={() => insertSnippet(snippet.html)}
-                                    style={{
-                                        padding: "8px",
-                                        background: "var(--bg-secondary)",
-                                        border: "1px solid var(--border-subtle)",
-                                        borderRadius: 6,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        alignItems: "center",
-                                        gap: 4,
-                                        cursor: "pointer",
-                                        transition: "all 0.15s ease",
-                                        fontSize: 10,
-                                        color: "var(--text-secondary)",
-                                    }}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.borderColor = "var(--accent-primary)";
-                                        e.currentTarget.style.background = "var(--bg-tertiary)";
-                                        e.currentTarget.style.color = "var(--text-primary)";
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.borderColor = "var(--border-subtle)";
-                                        e.currentTarget.style.background = "var(--bg-secondary)";
-                                        e.currentTarget.style.color = "var(--text-secondary)";
-                                    }}
-                                    title={snippet.name}
-                                >
-                                    <span style={{ fontSize: 18 }}>{snippet.icon}</span>
-                                    <span style={{ fontWeight: 500 }}>{snippet.name}</span>
-                                </button>
-                            ))}
-                        </div>
                     </div>
+                )}
 
-                    {/* HTML Textarea - Always visible */}
-                    <textarea
-                        ref={textareaRef}
-                        className="form-textarea"
-                        value={htmlBody}
-                        onChange={(e) => onHtmlChange(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        style={{
-                            flex: 1,
-                            fontFamily: "monospace",
-                            fontSize: 13,
-                            lineHeight: 1.6,
-                            resize: "none",
-                            minHeight: 200,
-                        }}
-                        placeholder="Start typing your email content...
-
-Press Enter for line break (<br>)
-Press Shift+Enter for new paragraph (<p>)"
-                    />
-                </div>
+                {/* Preview badge when in Preview mode */}
+                {activeView === "preview" && (
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-white/40">Live preview with sample data</span>
+                    </div>
+                )}
             </div>
 
-            {/* Gmail-Style Preview Panel (Dark Theme) */}
-            <div style={{
-                width: previewMode === "mobile" ? 488 : 585,
-                flexShrink: 0,
-                display: "flex",
-                flexDirection: "column",
-                background: "var(--bg-secondary)",
-                borderRadius: "var(--radius-md)",
-                border: "1px solid var(--border-subtle)",
-                overflow: "hidden",
-            }}>
-                {/* Preview Mode Toggle */}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "8px 12px",
-                        background: "var(--bg-tertiary)",
-                        borderBottom: "1px solid var(--border-subtle)",
-                    }}
-                >
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-secondary)" }}>Gmail Preview</span>
-                    <div style={{
-                        display: "flex",
-                        gap: 2,
-                        padding: 2,
-                        background: "var(--bg-primary)",
-                        borderRadius: 6,
-                    }}>
-                        <button
-                            className={`btn btn-sm ${previewMode === "desktop" ? "btn-primary" : "btn-ghost"}`}
-                            onClick={() => setPreviewMode("desktop")}
-                            style={{ fontSize: 10, padding: "3px 8px", borderRadius: 4 }}
-                        >
-                            🖥️
-                        </button>
-                        <button
-                            className={`btn btn-sm ${previewMode === "mobile" ? "btn-primary" : "btn-ghost"}`}
-                            onClick={() => setPreviewMode("mobile")}
-                            style={{ fontSize: 10, padding: "3px 8px", borderRadius: 4 }}
-                        >
-                            📱
-                        </button>
+            {/* Content Area */}
+            <div className="flex-1 overflow-hidden">
+                {activeView === "write" ? (
+                    <div className="h-full flex flex-col">
+                        {/* Component Snippets */}
+                        <div className="px-3 py-2 border-b border-white/5 bg-black/20">
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-white/30 font-medium shrink-0">INSERT:</span>
+                                <div className="flex gap-1 flex-wrap">
+                                    {HTML_SNIPPETS.map((snippet) => (
+                                        <button
+                                            key={snippet.id}
+                                            onClick={() => insertAtCursor(snippet.html)}
+                                            className="px-2 py-1 text-xs bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/50 rounded-md text-white/60 hover:text-white transition-all flex items-center gap-1"
+                                            title={snippet.name}
+                                        >
+                                            <span>{snippet.icon}</span>
+                                            <span className="hidden sm:inline">{snippet.name}</span>
+                                        </button>
+                                    ))}
+                                    {isEmpty && (
+                                        <button
+                                            onClick={loadStarterTemplate}
+                                            className="px-2 py-1 text-xs bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 rounded-md text-indigo-400 transition-all ml-2"
+                                        >
+                                            📄 Load Template
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* HTML Editor */}
+                        <textarea
+                            ref={textareaRef}
+                            value={htmlBody}
+                            onChange={(e) => onHtmlChange(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className="flex-1 w-full p-4 bg-transparent text-white/90 font-mono text-sm leading-relaxed resize-none focus:outline-none placeholder:text-white/20"
+                            placeholder="Start typing your email content...
+
+Press Enter for line break
+Press Shift+Enter for new paragraph"
+                        />
                     </div>
-                </div>
+                ) : (
+                    /* Preview Mode - Gmail Style */
+                    <div className="h-full flex flex-col bg-[#1a1a2e]">
+                        {/* Gmail Header */}
+                        <div className="px-4 py-3 border-b border-white/10">
+                            <h3 className="text-base font-medium text-white mb-1">
+                                {subject || "No subject"}
+                            </h3>
+                            <div className="flex items-center gap-2 text-xs text-white/40">
+                                <span className="px-1.5 py-0.5 bg-indigo-500/20 text-indigo-400 rounded text-[10px]">Inbox</span>
+                            </div>
+                        </div>
 
-                {/* Gmail Chrome - Toolbar */}
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "8px 16px",
-                    background: "var(--bg-tertiary)",
-                    borderBottom: "1px solid var(--border-subtle)",
-                }}>
-                    <span style={{ cursor: "pointer", opacity: 0.5, fontSize: 14 }}>←</span>
-                    <span style={{ cursor: "pointer", opacity: 0.5, fontSize: 12 }}>🗑️</span>
-                    <span style={{ cursor: "pointer", opacity: 0.5, fontSize: 12 }}>📁</span>
-                    <span style={{ cursor: "pointer", opacity: 0.5, fontSize: 12 }}>⚠️</span>
-                    <div style={{ flex: 1 }} />
-                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>1 of 1</span>
-                </div>
-
-                {/* Email Header - Subject */}
-                <div style={{
-                    padding: "14px 16px 10px",
-                    background: "var(--bg-primary)",
-                    borderBottom: "1px solid var(--border-subtle)",
-                }}>
-                    <h2 style={{
-                        margin: 0,
-                        fontSize: 18,
-                        fontWeight: 500,
-                        color: "var(--text-primary)",
-                    }}>
-                        {subject || "No subject"}
-                    </h2>
-                    <div style={{
-                        marginTop: 6,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                    }}>
-                        <span style={{
-                            display: "inline-block",
-                            padding: "2px 8px",
-                            background: "rgba(139, 92, 246, 0.15)",
-                            color: "var(--accent-primary)",
-                            borderRadius: 4,
-                            fontSize: 11,
-                            fontWeight: 500,
-                        }}>Inbox</span>
-                    </div>
-                </div>
-
-                {/* Sender Info */}
-                <div style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 12,
-                    padding: "14px 16px",
-                    background: "var(--bg-primary)",
-                    borderBottom: "1px solid var(--border-subtle)",
-                }}>
-                    {/* Avatar */}
-                    <div style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: "50%",
-                        background: "linear-gradient(135deg, var(--accent-primary) 0%, #a855f7 100%)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#ffffff",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        flexShrink: 0,
-                    }}>
-                        Y
-                    </div>
-
-                    {/* Sender details */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2, flexWrap: "wrap" }}>
-                            <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>
-                                Your Name
-                            </span>
-                            <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                                &lt;you@example.com&gt;
+                        {/* Sender Info */}
+                        <div className="flex items-start gap-3 px-4 py-3 border-b border-white/10">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
+                                Y
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <span className="font-medium text-white">Your Name</span>
+                                    <span className="text-white/40 text-xs">&lt;you@example.com&gt;</span>
+                                </div>
+                                <div className="text-xs text-white/40">
+                                    to <span className="text-white/60">John Doe</span>
+                                </div>
+                            </div>
+                            <span className="text-xs text-white/40">
+                                {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                             </span>
                         </div>
-                        <div style={{ fontSize: 11, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
-                            to <span style={{ fontWeight: 500, color: "var(--text-secondary)" }}>John Doe</span>
-                            <span style={{ fontSize: 9, opacity: 0.5 }}>▾</span>
+
+                        {/* Email Body Preview */}
+                        <div className="flex-1 overflow-auto">
+                            <iframe
+                                srcDoc={`<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:#1a1a2e;color:#fff;}a{color:#a78bfa;}p,div,span,li,td,th,h1,h2,h3,h4,h5,h6{color:#fff !important;}</style></head><body style="padding:0;margin:0;font-family:Arial,Helvetica,sans-serif;background:#1a1a2e;">${getPreviewHtml()}</body></html>`}
+                                className="w-full h-full border-none"
+                                style={{ minHeight: 200, background: "#1a1a2e" }}
+                                title="Email Preview"
+                                sandbox="allow-same-origin"
+                            />
                         </div>
                     </div>
-
-                    {/* Timestamp & Actions */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                        <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                            {new Date().toLocaleString("en-US", { month: "short", day: "numeric" })}
-                        </span>
-                        <span style={{ cursor: "pointer", opacity: 0.4, fontSize: 12 }}>⭐</span>
-                        <span style={{ cursor: "pointer", opacity: 0.4, fontSize: 12 }}>↩️</span>
-                        <span style={{ cursor: "pointer", opacity: 0.4 }}>⋮</span>
-                    </div>
-                </div>
-
-                {/* Email Body */}
-                <div
-                    style={{
-                        flex: 1,
-                        background: "var(--bg-primary)",
-                        overflow: "auto",
-                        minHeight: 220,
-                    }}
-                >
-                    <iframe
-                        srcDoc={`<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;min-height:100%;background:#1a1a2e;color:#ffffff;}a{color:#a78bfa;}p,div,span,li,td,th,h1,h2,h3,h4,h5,h6{color:#ffffff !important;}</style></head><body style="padding:16px;font-family:Arial,Helvetica,sans-serif;background:#1a1a2e;color:#ffffff;">${getPreviewHtml()}</body></html>`}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            border: "none",
-                            display: "block",
-                            minHeight: 220,
-                            background: "#1a1a2e",
-                        }}
-                        title="Email Preview"
-                        sandbox="allow-same-origin"
-                    />
-                </div>
-
-                {/* Reply Bar */}
-                <div style={{
-                    padding: "10px 16px",
-                    background: "var(--bg-secondary)",
-                    borderTop: "1px solid var(--border-subtle)",
-                    display: "flex",
-                    gap: 8,
-                }}>
-                    <div style={{
-                        flex: 1,
-                        padding: "8px 14px",
-                        background: "var(--bg-tertiary)",
-                        border: "1px solid var(--border-subtle)",
-                        borderRadius: 20,
-                        color: "var(--text-muted)",
-                        fontSize: 13,
-                        cursor: "text",
-                    }}>
-                        Click here to Reply
-                    </div>
-                    <button className="btn btn-ghost btn-sm" style={{ borderRadius: 20, padding: "8px 14px", fontSize: 12 }}>
-                        Forward
-                    </button>
-                </div>
+                )}
             </div>
         </div>
     );

@@ -144,135 +144,154 @@ function TemplatesPage() {
         }
     };
 
-    // Full-screen editor mode
-    if (isEditing) {
+    // Wizard state
+    const [wizardStep, setWizardStep] = useState<1 | 2>(editingId ? 2 : 1);
+
+    // Reset wizard when starting new
+    useEffect(() => {
+        if (isEditing && !editingId) {
+            setWizardStep(1);
+        } else if (isEditing && editingId) {
+            setWizardStep(2);
+        }
+    }, [isEditing, editingId]);
+
+    // Wizard Step 1: Choose Template Type
+    if (isEditing && wizardStep === 1) {
         return (
-            <div className="fixed inset-0 bg-[#0a0a0f] z-50 flex flex-col">
-                {/* Premium Top Bar */}
-                <header className="flex-shrink-0 border-b border-white/10 bg-gradient-to-r from-[#0d0d15] via-[#12121f] to-[#0d0d15]">
-                    <div className="px-6 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-[#12121f] rounded-2xl border border-white/10 max-w-lg w-full p-6 shadow-2xl">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-white">Create Template</h2>
+                            <p className="text-sm text-white/50 mt-1">Step 1 of 2 — Choose type</p>
+                        </div>
+                        <button
+                            onClick={handleCancel}
+                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    {/* Category Selection */}
+                    <div className="space-y-3">
+                        {[
+                            { id: "cold", icon: "❄️", label: "Cold Outreach", desc: "First contact with new leads", color: "blue" },
+                            { id: "followup", icon: "🔄", label: "Follow-up", desc: "Sequence and nurture emails", color: "amber" },
+                            { id: "custom", icon: "✨", label: "Custom", desc: "General purpose templates", color: "purple" },
+                        ].map((cat) => (
                             <button
-                                onClick={handleCancel}
-                                className="p-2.5 hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 text-white/70 hover:text-white"
+                                key={cat.id}
+                                onClick={() => {
+                                    setTemplateCategory(cat.id);
+                                    setWizardStep(2);
+                                }}
+                                className={`w-full p-4 rounded-xl border transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center gap-4 text-left ${templateCategory === cat.id
+                                    ? cat.color === "blue"
+                                        ? "bg-blue-500/10 border-blue-500/40"
+                                        : cat.color === "amber"
+                                            ? "bg-amber-500/10 border-amber-500/40"
+                                            : "bg-purple-500/10 border-purple-500/40"
+                                    : "bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/[0.07]"
+                                    }`}
                             >
-                                <span className="text-lg">←</span>
-                                <span>Back</span>
+                                <div className="text-3xl">{cat.icon}</div>
+                                <div className="flex-1">
+                                    <div className={`font-semibold ${cat.color === "blue" ? "text-blue-300" : cat.color === "amber" ? "text-amber-300" : "text-purple-300"
+                                        }`}>
+                                        {cat.label}
+                                    </div>
+                                    <div className="text-sm text-white/50">{cat.desc}</div>
+                                </div>
+                                <span className="text-white/30">→</span>
                             </button>
-                            <div className="h-8 w-px bg-white/10" />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Wizard Step 2: Template Editor (Centered Modal)
+    if (isEditing && wizardStep === 2) {
+        return (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#12121f]">
+                        <div className="flex items-center gap-3">
+                            {!editingId && (
+                                <button
+                                    onClick={() => setWizardStep(1)}
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                >
+                                    ←
+                                </button>
+                            )}
                             <div>
-                                <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                                    {editingId ? "Edit Template" : "Create New Template"}
-                                </h1>
-                                <p className="text-xs text-white/40 mt-0.5">
-                                    {templateName || "Untitled"} • {getCategoryIcon(templateCategory)} {templateCategory}
-                                </p>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-lg font-bold text-white">
+                                        {editingId ? "Edit Template" : "New Template"}
+                                    </h2>
+                                    <span className={`px-2 py-0.5 rounded-full text-xs border ${getCategoryColor(templateCategory)}`}>
+                                        {getCategoryIcon(templateCategory)} {templateCategory}
+                                    </span>
+                                </div>
+                                {!editingId && <p className="text-xs text-white/40">Step 2 of 2 — Add details</p>}
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            {/* Live indicator */}
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                </span>
-                                <span className="text-xs text-white/50">Auto-saving</span>
-                            </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={handleCancel}
+                                className="px-4 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 onClick={handleSave}
                                 disabled={!templateName.trim() || !subject.trim()}
-                                className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg shadow-indigo-500/20"
+                                className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium text-sm hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {editingId ? "💾 Save Changes" : "✨ Create Template"}
+                                {editingId ? "Save" : "Create"}
                             </button>
                         </div>
                     </div>
-                </header>
 
-                {/* Main Content */}
-                <div className="flex-1 flex min-h-0">
-                    {/* Left Panel - Template Details + Editor */}
-                    <div className="flex-1 flex flex-col min-w-0">
-                        {/* Template Metadata - Premium Card Style */}
-                        <div className="flex-shrink-0 p-6 border-b border-white/10 bg-gradient-to-b from-[#12121f] to-[#0d0d15]">
-                            {/* Category Selector - Interactive Cards */}
-                            <div className="mb-6">
-                                <label className="block text-sm font-medium text-white/70 mb-3">Template Type</label>
-                                <div className="flex gap-3">
-                                    {[
-                                        { id: "cold", icon: "❄️", label: "Cold Outreach", desc: "First contact emails", color: "blue" },
-                                        { id: "followup", icon: "🔄", label: "Follow-up", desc: "Sequence emails", color: "amber" },
-                                        { id: "custom", icon: "✨", label: "Custom", desc: "Other templates", color: "purple" },
-                                    ].map((cat) => (
-                                        <button
-                                            key={cat.id}
-                                            onClick={() => setTemplateCategory(cat.id)}
-                                            className={`flex-1 p-4 rounded-xl border-2 transition-all hover:scale-[1.02] active:scale-[0.98] ${templateCategory === cat.id
-                                                    ? cat.color === "blue"
-                                                        ? "bg-blue-500/10 border-blue-500/50 shadow-lg shadow-blue-500/10"
-                                                        : cat.color === "amber"
-                                                            ? "bg-amber-500/10 border-amber-500/50 shadow-lg shadow-amber-500/10"
-                                                            : "bg-purple-500/10 border-purple-500/50 shadow-lg shadow-purple-500/10"
-                                                    : "bg-white/5 border-white/10 hover:border-white/20"
-                                                }`}
-                                        >
-                                            <div className="text-2xl mb-2">{cat.icon}</div>
-                                            <div className={`font-semibold ${templateCategory === cat.id
-                                                    ? cat.color === "blue" ? "text-blue-300" : cat.color === "amber" ? "text-amber-300" : "text-purple-300"
-                                                    : "text-white/80"
-                                                }`}>
-                                                {cat.label}
-                                            </div>
-                                            <div className="text-xs text-white/40 mt-1">{cat.desc}</div>
-                                            {templateCategory === cat.id && (
-                                                <div className={`mt-3 text-xs font-medium ${cat.color === "blue" ? "text-blue-400" : cat.color === "amber" ? "text-amber-400" : "text-purple-400"
-                                                    }`}>
-                                                    ✓ Selected
-                                                </div>
-                                            )}
-                                        </button>
-                                    ))}
-                                </div>
+                    {/* Form Fields */}
+                    <div className="px-6 py-4 border-b border-white/10 bg-[#0d0d15]">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-medium text-white/50 mb-1.5">Template Name</label>
+                                <input
+                                    type="text"
+                                    value={templateName}
+                                    onChange={(e) => setTemplateName(e.target.value)}
+                                    placeholder="e.g., Initial Outreach"
+                                    className="w-full px-3 py-2.5 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 transition-all text-sm"
+                                />
                             </div>
-
-                            {/* Name and Subject - Side by Side */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="group">
-                                    <label className="block text-sm font-medium text-white/70 mb-2 group-focus-within:text-indigo-400 transition-colors">
-                                        Template Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={templateName}
-                                        onChange={(e) => setTemplateName(e.target.value)}
-                                        placeholder="e.g., Welcome Email"
-                                        className="w-full px-4 py-3.5 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-lg placeholder:text-white/30"
-                                    />
-                                </div>
-                                <div className="group">
-                                    <label className="block text-sm font-medium text-white/70 mb-2 group-focus-within:text-indigo-400 transition-colors">
-                                        Email Subject Line
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={subject}
-                                        onChange={(e) => setSubject(e.target.value)}
-                                        placeholder="e.g., {{firstName}}, quick question about {{company}}"
-                                        className="w-full px-4 py-3.5 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-lg placeholder:text-white/30"
-                                    />
-                                    <p className="text-xs text-white/30 mt-2">Use {"{{firstName}}"}, {"{{company}}"}, {"{{email}}"} for personalization</p>
-                                </div>
+                            <div>
+                                <label className="block text-xs font-medium text-white/50 mb-1.5">Subject Line</label>
+                                <input
+                                    type="text"
+                                    value={subject}
+                                    onChange={(e) => setSubject(e.target.value)}
+                                    placeholder="e.g., Quick question, {{firstName}}"
+                                    className="w-full px-3 py-2.5 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 transition-all text-sm"
+                                />
                             </div>
                         </div>
+                    </div>
 
-                        {/* Email Editor */}
-                        <div className="flex-1 min-h-0 p-4">
-                            <EmailEditor
-                                htmlBody={htmlContent}
-                                onHtmlChange={setHtmlContent}
-                                subject={subject}
-                            />
-                        </div>
+                    {/* Email Editor */}
+                    <div className="flex-1 min-h-0 p-4 h-full">
+                        <EmailEditor
+                            htmlBody={htmlContent}
+                            onHtmlChange={setHtmlContent}
+                            subject={subject}
+                        />
                     </div>
                 </div>
             </div>
