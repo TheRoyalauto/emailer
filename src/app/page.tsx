@@ -169,8 +169,8 @@ export default function Home() {
             <Navbar />
 
             <main>
-                {/* HERO SECTION - Tight to navbar */}
-                <section className="relative pt-20 pb-16 lg:pt-24 lg:pb-24 overflow-hidden">
+                {/* HERO SECTION */}
+                <section className="relative pt-28 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
                     {/* Animated Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
                     <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-indigo-400/30 to-violet-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
@@ -240,8 +240,8 @@ export default function Home() {
                                             key={i}
                                             onClick={() => setActiveStep(i)}
                                             className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all ${activeStep === i
-                                                    ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg scale-105"
-                                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                                ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg scale-105"
+                                                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                                                 }`}
                                         >
                                             <span className="text-2xl">{step.visual}</span>
