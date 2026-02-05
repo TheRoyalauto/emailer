@@ -99,9 +99,10 @@ function DashboardPage() {
                                         </span>
                                     )}
                                 </div>
-                                {activeIndex !== null && displayData && (
-                                    <p className="text-white/40 text-sm mt-1">{displayData.date}</p>
-                                )}
+                                {/* Fixed height date row - prevents layout shift */}
+                                <p className={`text-white/40 text-sm mt-1 h-5 ${activeIndex !== null && displayData ? 'opacity-100' : 'opacity-0'}`}>
+                                    {displayData?.date || '\u00A0'}
+                                </p>
                             </div>
 
                             {/* Time Range Toggle */}
