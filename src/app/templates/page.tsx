@@ -2,158 +2,21 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import EmailEditor from "@/components/EmailEditor";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { Id } from "../../../convex/_generated/dataModel";
 
-// Beautiful pre-built HTML designs for one-click insertion
-const PREMIUM_DESIGNS = [
-    {
-        id: "hero-gradient",
-        name: "Gradient Hero",
-        preview: "🎨",
-        category: "Headers",
-        html: `<div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 30px;border-radius:12px;text-align:center;margin-bottom:24px;">
-  <h1 style="margin:0 0 12px 0;color:#ffffff;font-size:28px;font-weight:700;">Your Bold Headline</h1>
-  <p style="margin:0;color:rgba(255,255,255,0.9);font-size:16px;">A compelling subheadline that captures attention</p>
-</div>`,
-    },
-    {
-        id: "cta-primary",
-        name: "Primary CTA",
-        preview: "🔘",
-        category: "Buttons",
-        html: `<table border="0" cellpadding="0" cellspacing="0" style="margin:16px 0;">
-  <tr>
-    <td align="center" style="border-radius:8px;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);">
-      <a href="https://example.com" target="_blank" style="display:inline-block;padding:16px 40px;font-family:Arial,sans-serif;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">Get Started Free →</a>
-    </td>
-  </tr>
-</table>`,
-    },
-    {
-        id: "cta-outline",
-        name: "Outline Button",
-        preview: "⭕",
-        category: "Buttons",
-        html: `<table border="0" cellpadding="0" cellspacing="0" style="margin:16px 0;">
-  <tr>
-    <td align="center" style="border-radius:8px;border:2px solid #6366f1;">
-      <a href="https://example.com" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,sans-serif;font-size:15px;font-weight:600;color:#6366f1;text-decoration:none;">Learn More</a>
-    </td>
-  </tr>
-</table>`,
-    },
-    {
-        id: "feature-grid",
-        name: "Feature Grid",
-        preview: "📊",
-        category: "Content",
-        html: `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:24px 0;">
-  <tr>
-    <td style="padding:16px;background:#f8fafc;border-radius:8px;width:50%;vertical-align:top;">
-      <div style="font-size:28px;margin-bottom:8px;">⚡</div>
-      <h3 style="margin:0 0 6px 0;font-size:16px;font-weight:600;color:#111;">Lightning Fast</h3>
-      <p style="margin:0;font-size:14px;color:#666;">Blazing performance for your workflows</p>
-    </td>
-    <td style="width:16px;"></td>
-    <td style="padding:16px;background:#f8fafc;border-radius:8px;width:50%;vertical-align:top;">
-      <div style="font-size:28px;margin-bottom:8px;">🛡️</div>
-      <h3 style="margin:0 0 6px 0;font-size:16px;font-weight:600;color:#111;">Secure</h3>
-      <p style="margin:0;font-size:14px;color:#666;">Enterprise-grade security built in</p>
-    </td>
-  </tr>
-</table>`,
-    },
-    {
-        id: "testimonial",
-        name: "Testimonial",
-        preview: "💬",
-        category: "Social Proof",
-        html: `<div style="background:#f8fafc;border-radius:12px;padding:24px;margin:24px 0;border-left:4px solid #6366f1;">
-  <p style="margin:0 0 16px 0;font-size:16px;line-height:1.6;color:#333;font-style:italic;">"This product completely transformed how our team works. We've saved hours every week and our customers are happier than ever."</p>
-  <div style="display:flex;align-items:center;">
-    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);margin-right:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;">JD</div>
-    <div>
-      <div style="font-weight:600;color:#111;font-size:14px;">Jane Doe</div>
-      <div style="color:#666;font-size:12px;">CEO at TechCorp</div>
-    </div>
-  </div>
-</div>`,
-    },
-    {
-        id: "pricing-card",
-        name: "Pricing Card",
-        preview: "💳",
-        category: "Pricing",
-        html: `<div style="background:linear-gradient(180deg,#1a1a2e 0%,#16162a 100%);border-radius:16px;padding:32px;margin:24px 0;text-align:center;border:1px solid rgba(255,255,255,0.1);">
-  <div style="color:rgba(255,255,255,0.6);font-size:12px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Most Popular</div>
-  <div style="color:#fff;font-size:48px;font-weight:700;">$29<span style="font-size:16px;font-weight:400;">/mo</span></div>
-  <p style="color:rgba(255,255,255,0.7);margin:12px 0 24px 0;font-size:14px;">Perfect for growing teams</p>
-  <a href="#" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;text-decoration:none;border-radius:8px;font-weight:600;">Start Free Trial</a>
-</div>`,
-    },
-    {
-        id: "countdown",
-        name: "Urgency Banner",
-        preview: "⏰",
-        category: "Urgency",
-        html: `<div style="background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);padding:20px;border-radius:8px;text-align:center;margin:24px 0;">
-  <p style="margin:0 0 8px 0;color:#fff;font-size:18px;font-weight:600;">🔥 Limited Time Offer - Ends Soon!</p>
-  <p style="margin:0;color:rgba(255,255,255,0.9);font-size:14px;">Use code <strong>SAVE20</strong> for 20% off your first month</p>
-</div>`,
-    },
-    {
-        id: "image-text",
-        name: "Image + Text",
-        preview: "🖼️",
-        category: "Content",
-        html: `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:24px 0;">
-  <tr>
-    <td style="width:180px;vertical-align:top;">
-      <div style="width:160px;height:120px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:32px;">📸</div>
-    </td>
-    <td style="vertical-align:top;padding-left:20px;">
-      <h3 style="margin:0 0 8px 0;font-size:18px;font-weight:600;color:#111;">Feature Highlight</h3>
-      <p style="margin:0;font-size:14px;line-height:1.6;color:#555;">Describe your amazing feature here. Make it compelling and benefit-focused to drive engagement.</p>
-    </td>
-  </tr>
-</table>`,
-    },
-    {
-        id: "divider-fancy",
-        name: "Fancy Divider",
-        preview: "✨",
-        category: "Dividers",
-        html: `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin:32px 0;">
-  <tr>
-    <td style="border-top:1px solid #e5e7eb;"></td>
-    <td style="padding:0 16px;color:#9ca3af;font-size:12px;white-space:nowrap;">✨ ✨ ✨</td>
-    <td style="border-top:1px solid #e5e7eb;"></td>
-  </tr>
-</table>`,
-    },
-    {
-        id: "footer-pro",
-        name: "Pro Footer",
-        preview: "📝",
-        category: "Footers",
-        html: `<div style="margin-top:40px;padding-top:24px;border-top:1px solid #e5e7eb;text-align:center;">
-  <p style="margin:0 0 12px 0;font-size:13px;color:#666;">
-    <a href="#" style="color:#6366f1;text-decoration:none;margin:0 8px;">Website</a> •
-    <a href="#" style="color:#6366f1;text-decoration:none;margin:0 8px;">Twitter</a> •
-    <a href="#" style="color:#6366f1;text-decoration:none;margin:0 8px;">LinkedIn</a>
-  </p>
-  <p style="margin:0;font-size:11px;color:#999;">
-    © 2026 Your Company • 
-    <a href="{{unsubscribeUrl}}" style="color:#999;">Unsubscribe</a>
-  </p>
-</div>`,
-    },
+// Template categories
+const TEMPLATE_CATEGORIES = [
+    { id: "all", label: "All Templates", icon: "📋" },
+    { id: "cold", label: "Cold Outreach", icon: "❄️" },
+    { id: "followup", label: "Follow-up", icon: "🔄" },
+    { id: "custom", label: "Custom", icon: "✨" },
 ];
 
+// Premium HTML starter template
 const STARTER_HTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,51 +33,64 @@ const STARTER_HTML = `<!DOCTYPE html>
 </html>`;
 
 function TemplatesPage() {
-    const templates = useQuery(api.campaigns.list);
-    const createTemplate = useMutation(api.campaigns.create);
-    const updateTemplate = useMutation(api.campaigns.update);
-    const deleteTemplate = useMutation(api.campaigns.remove);
-
-    // Editor state
+    // State
+    const [activeCategory, setActiveCategory] = useState<string>("all");
     const [isEditing, setIsEditing] = useState(false);
-    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<Id<"templates"> | null>(null);
     const [templateName, setTemplateName] = useState("");
+    const [templateCategory, setTemplateCategory] = useState<string>("custom");
     const [subject, setSubject] = useState("");
     const [htmlContent, setHtmlContent] = useState(STARTER_HTML);
-    const [showDesigns, setShowDesigns] = useState(false);
-    const [designCategory, setDesignCategory] = useState<string>("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
-    const categories = ["All", ...new Set(PREMIUM_DESIGNS.map(d => d.category))];
-    const filteredDesigns = designCategory === "All"
-        ? PREMIUM_DESIGNS
-        : PREMIUM_DESIGNS.filter(d => d.category === designCategory);
+    // Queries & Mutations
+    const templates = useQuery(api.templates.list,
+        activeCategory === "all" ? {} : { category: activeCategory }
+    );
+    const createTemplate = useMutation(api.templates.create);
+    const updateTemplate = useMutation(api.templates.update);
+    const deleteTemplate = useMutation(api.templates.remove);
+    const duplicateTemplate = useMutation(api.templates.duplicate);
 
-    // Handle URL-based modal opening (from dashboard quick actions)
+    // Handle URL-based modal opening
     const searchParams = useSearchParams();
     useEffect(() => {
         if (searchParams.get('action') === 'add') {
-            setIsEditing(true);
-            setEditingId(null);
-            setTemplateName("");
-            setSubject("");
-            setHtmlContent("");
+            handleStartNew();
         }
     }, [searchParams]);
+
+    // Filter by search
+    const filteredTemplates = templates?.filter(t =>
+        t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.subject.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Template counts by category
+    const allTemplates = useQuery(api.templates.list, {});
+    const categoryCounts = {
+        all: allTemplates?.length || 0,
+        cold: allTemplates?.filter(t => t.category === "cold").length || 0,
+        followup: allTemplates?.filter(t => t.category === "followup").length || 0,
+        custom: allTemplates?.filter(t => !t.category || t.category === "custom").length || 0,
+    };
 
     const handleStartNew = () => {
         setIsEditing(true);
         setEditingId(null);
         setTemplateName("");
+        setTemplateCategory("custom");
         setSubject("");
-        setHtmlContent("");
+        setHtmlContent(STARTER_HTML);
     };
 
     const handleEdit = (template: NonNullable<typeof templates>[0]) => {
         setIsEditing(true);
         setEditingId(template._id);
         setTemplateName(template.name);
+        setTemplateCategory(template.category || "custom");
         setSubject(template.subject);
-        setHtmlContent(template.htmlContent);
+        setHtmlContent(template.htmlBody);
     };
 
     const handleSave = async () => {
@@ -222,16 +98,18 @@ function TemplatesPage() {
 
         if (editingId) {
             await updateTemplate({
-                id: editingId as any,
+                id: editingId,
                 name: templateName,
                 subject,
-                htmlContent,
+                htmlBody: htmlContent,
+                category: templateCategory,
             });
         } else {
             await createTemplate({
                 name: templateName,
                 subject,
-                htmlContent,
+                htmlBody: htmlContent,
+                category: templateCategory,
             });
         }
 
@@ -244,23 +122,26 @@ function TemplatesPage() {
         setEditingId(null);
     };
 
-    const insertDesign = (html: string) => {
-        // Find insertion point (before closing div/body)
-        const insertPoint = htmlContent.lastIndexOf("</div>");
-        if (insertPoint > 0) {
-            const newHtml = htmlContent.slice(0, insertPoint) + "\n" + html + "\n" + htmlContent.slice(insertPoint);
-            setHtmlContent(newHtml);
-        } else {
-            setHtmlContent(htmlContent + "\n" + html);
+    const handleDuplicate = async (id: Id<"templates">) => {
+        await duplicateTemplate({ id });
+    };
+
+    const getCategoryColor = (category: string | undefined) => {
+        switch (category) {
+            case "cold": return "bg-blue-500/20 text-blue-300 border-blue-500/30";
+            case "followup": return "bg-amber-500/20 text-amber-300 border-amber-500/30";
+            case "custom": return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+            default: return "bg-white/10 text-white/60 border-white/20";
         }
     };
 
-    const statusColors: Record<string, string> = {
-        draft: "bg-zinc-600",
-        scheduled: "bg-amber-600",
-        sending: "bg-blue-600 animate-pulse",
-        sent: "bg-green-600",
-        paused: "bg-orange-600",
+    const getCategoryIcon = (category: string | undefined) => {
+        switch (category) {
+            case "cold": return "❄️";
+            case "followup": return "🔄";
+            case "custom": return "✨";
+            default: return "📝";
+        }
     };
 
     // Full-screen editor mode
@@ -273,9 +154,9 @@ function TemplatesPage() {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={handleCancel}
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors flex items-center gap-2"
                             >
-                                ← Back
+                                <span>←</span> Back
                             </button>
                             <div className="h-6 w-px bg-white/20" />
                             <h1 className="text-lg font-semibold">
@@ -283,15 +164,6 @@ function TemplatesPage() {
                             </h1>
                         </div>
                         <div className="flex items-center gap-3">
-                            <button
-                                onClick={() => setShowDesigns(!showDesigns)}
-                                className={`px-4 py-2 rounded-lg font-medium transition-all ${showDesigns
-                                    ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                    : "bg-white/10 hover:bg-white/20"
-                                    }`}
-                            >
-                                ✨ Design Library
-                            </button>
                             <button
                                 onClick={handleSave}
                                 disabled={!templateName.trim() || !subject.trim()}
@@ -303,50 +175,13 @@ function TemplatesPage() {
                     </div>
                 </header>
 
-                {/* Design Library Panel */}
-                {showDesigns && (
-                    <div className="flex-shrink-0 border-b border-white/10 bg-[#12121f] p-4 max-h-40 overflow-y-auto">
-                        <div className="flex items-center gap-4 mb-3">
-                            <span className="text-sm font-medium text-white/60">Quick Insert:</span>
-                            <div className="flex gap-2 flex-wrap">
-                                {categories.map((cat) => (
-                                    <button
-                                        key={cat}
-                                        onClick={() => setDesignCategory(cat)}
-                                        className={`px-3 py-1 rounded-lg text-xs transition-all ${designCategory === cat
-                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                            : "bg-white/5 hover:bg-white/10 text-white/60"
-                                            }`}
-                                    >
-                                        {cat}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex gap-2 overflow-x-auto pb-1">
-                            {filteredDesigns.map((design) => (
-                                <button
-                                    key={design.id}
-                                    onClick={() => insertDesign(design.html)}
-                                    className="flex-shrink-0 w-24 p-2 rounded-lg bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-indigo-500/50 hover:bg-white/5 transition-all group text-left"
-                                >
-                                    <span className="text-lg block mb-1">{design.preview}</span>
-                                    <span className="text-xs font-medium text-white/80 group-hover:text-white transition-colors line-clamp-1">
-                                        {design.name}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
                 {/* Main Content */}
                 <div className="flex-1 flex min-h-0">
                     {/* Left Panel - Template Details + Editor */}
                     <div className="flex-1 flex flex-col min-w-0 border-r border-white/10">
                         {/* Template Metadata */}
                         <div className="flex-shrink-0 p-4 border-b border-white/10 bg-[#0d0d15]">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-xs font-medium text-white/50 mb-2">Template Name</label>
                                     <input
@@ -356,6 +191,18 @@ function TemplatesPage() {
                                         placeholder="e.g., Welcome Email"
                                         className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
                                     />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-white/50 mb-2">Category</label>
+                                    <select
+                                        value={templateCategory}
+                                        onChange={(e) => setTemplateCategory(e.target.value)}
+                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all appearance-none cursor-pointer"
+                                    >
+                                        <option value="cold">❄️ Cold Outreach</option>
+                                        <option value="followup">🔄 Follow-up</option>
+                                        <option value="custom">✨ Custom</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-white/50 mb-2">Email Subject</label>
@@ -389,83 +236,149 @@ function TemplatesPage() {
         <div className="min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0">
             <AppHeader />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            Email Templates
-                        </h1>
-                        <p className="text-white/50 mt-1">Create and manage your email templates</p>
+            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Hero Header */}
+                <div className="mb-8">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                Email Templates
+                            </h1>
+                            <p className="text-white/50 mt-2">Craft, organize, and reuse your email templates</p>
+                        </div>
+                        <button
+                            onClick={handleStartNew}
+                            className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+                        >
+                            <span className="text-lg">+</span> New Template
+                        </button>
                     </div>
-                    <button
-                        onClick={handleStartNew}
-                        className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2"
-                    >
-                        <span className="text-lg">+</span> New Template
-                    </button>
                 </div>
 
+                {/* Category Tabs - Robinhood Style */}
+                <div className="mb-6">
+                    <div className="flex items-center gap-1 p-1 bg-[#12121f] rounded-xl border border-white/10 w-fit">
+                        {TEMPLATE_CATEGORIES.map((cat) => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setActiveCategory(cat.id)}
+                                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${activeCategory === cat.id
+                                        ? "bg-white/10 text-white border border-white/20"
+                                        : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                                    }`}
+                            >
+                                <span>{cat.icon}</span>
+                                <span>{cat.label}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-xs ${activeCategory === cat.id ? "bg-indigo-500/30 text-indigo-300" : "bg-white/10 text-white/40"
+                                    }`}>
+                                    {categoryCounts[cat.id as keyof typeof categoryCounts]}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className="mb-6">
+                    <div className="relative max-w-md">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40">🔍</span>
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search templates..."
+                            className="w-full pl-11 pr-4 py-3 bg-[#12121f] border border-white/10 rounded-xl focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-all text-white placeholder:text-white/30"
+                        />
+                    </div>
+                </div>
+
+                {/* Templates Grid */}
                 {templates === undefined ? (
                     <div className="flex items-center justify-center py-20">
                         <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full" />
                     </div>
-                ) : templates.length === 0 ? (
+                ) : filteredTemplates?.length === 0 ? (
                     <div className="text-center py-20">
-                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center">
                             <span className="text-4xl">📝</span>
                         </div>
-                        <h2 className="text-xl font-semibold mb-2">No templates yet</h2>
+                        <h2 className="text-xl font-semibold mb-2">
+                            {searchQuery ? "No matching templates" : `No ${activeCategory === "all" ? "" : activeCategory} templates yet`}
+                        </h2>
                         <p className="text-white/50 mb-6 max-w-md mx-auto">
-                            Create your first email template to use in campaigns.
+                            {searchQuery
+                                ? "Try a different search term"
+                                : "Create your first template to get started"}
                         </p>
-                        <button
-                            onClick={handleStartNew}
-                            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity"
-                        >
-                            Create Your First Template
-                        </button>
+                        {!searchQuery && (
+                            <button
+                                onClick={handleStartNew}
+                                className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium hover:opacity-90 transition-opacity"
+                            >
+                                Create Template
+                            </button>
+                        )}
                     </div>
                 ) : (
-                    <div className="grid gap-4">
-                        {templates.map((template) => (
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {filteredTemplates?.map((template) => (
                             <div
                                 key={template._id}
-                                className="p-5 rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all group cursor-pointer"
+                                className="group relative p-5 rounded-2xl bg-gradient-to-br from-[#12121f] to-[#16162a] border border-white/10 hover:border-indigo-500/30 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 cursor-pointer"
                                 onClick={() => handleEdit(template)}
                             >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-3 mb-1">
-                                            <h3 className="text-lg font-semibold group-hover:text-indigo-300 transition-colors truncate">
-                                                {template.name}
-                                            </h3>
-                                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[template.status]}`}>
-                                                {template.status}
-                                            </span>
-                                        </div>
-                                        <p className="text-white/50 text-sm truncate">{template.subject}</p>
-                                    </div>
-                                    <div className="flex items-center gap-2 ml-4">
+                                {/* Category Badge */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(template.category)}`}>
+                                        {getCategoryIcon(template.category)} {template.category || "Custom"}
+                                    </span>
+                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleEdit(template);
+                                                handleDuplicate(template._id);
                                             }}
-                                            className="px-3 py-1.5 text-sm bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                                            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                                            title="Duplicate"
                                         >
-                                            Edit
+                                            📋
                                         </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 deleteTemplate({ id: template._id });
                                             }}
-                                            className="px-3 py-1.5 text-sm text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                                            className="p-1.5 hover:bg-red-500/20 rounded-lg transition-colors text-red-400"
+                                            title="Delete"
                                         >
-                                            Delete
+                                            🗑️
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Template Info */}
+                                <h3 className="text-lg font-semibold text-white group-hover:text-indigo-300 transition-colors mb-2 line-clamp-1">
+                                    {template.name}
+                                </h3>
+                                <p className="text-white/50 text-sm line-clamp-2 mb-4">
+                                    {template.subject}
+                                </p>
+
+                                {/* Footer */}
+                                <div className="flex items-center justify-between text-xs text-white/40">
+                                    <span>
+                                        {template.createdAt
+                                            ? new Date(template.createdAt).toLocaleDateString()
+                                            : "—"
+                                        }
+                                    </span>
+                                    <span className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-400">
+                                        Edit →
+                                    </span>
+                                </div>
+
+                                {/* Hover glow effect */}
+                                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/5 transition-all pointer-events-none" />
                             </div>
                         ))}
                     </div>
