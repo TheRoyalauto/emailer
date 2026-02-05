@@ -5,12 +5,22 @@ import Link from "next/link";
 import Navbar from "@/components/marketing/Navbar";
 import Footer from "@/components/marketing/Footer";
 
-// Animated counter hook
+// Animated counter hook - starts with fixed value to avoid hydration mismatch
 function useRandomCounter(min: number, max: number, interval: number) {
-    const [count, setCount] = useState(min + Math.floor(Math.random() * (max - min)));
+    const [mounted, setMounted] = useState(false);
+    const [count, setCount] = useState(12847); // Fixed initial value for SSR
     const [previousCounts, setPreviousCounts] = useState<Set<number>>(new Set());
 
+    // Set mounted on client
     useEffect(() => {
+        setMounted(true);
+        // Set initial random value after mount
+        setCount(min + Math.floor(Math.random() * (max - min)));
+    }, [min, max]);
+
+    useEffect(() => {
+        if (!mounted) return;
+
         const timer = setInterval(() => {
             let newCount: number;
             do {
@@ -19,14 +29,14 @@ function useRandomCounter(min: number, max: number, interval: number) {
 
             setPreviousCounts(prev => {
                 const updated = new Set(prev);
-                if (updated.size > 100) updated.clear(); // Reset after 100 to avoid memory issues
+                if (updated.size > 100) updated.clear();
                 updated.add(newCount);
                 return updated;
             });
             setCount(newCount);
         }, interval);
         return () => clearInterval(timer);
-    }, [min, max, interval, previousCounts]);
+    }, [min, max, interval, previousCounts, mounted]);
 
     return count;
 }
