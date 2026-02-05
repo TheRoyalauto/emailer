@@ -38,8 +38,9 @@ function DashboardPage() {
     const totalCampaigns = campaigns?.length || 0;
     const activeCampaigns = campaigns?.filter(c => c.status === "sending" || c.status === "scheduled")?.length || 0;
 
-    // Chart calculations
-    const hasData = chartData.length > 0;
+    // Chart calculations - check if there's actually any email activity
+    const totalEmailsSent = chartData.length > 0 ? chartData[chartData.length - 1]?.emailsSent || 0 : 0;
+    const hasData = totalEmailsSent > 0;
     const maxValue = hasData ? Math.max(...chartData.map(d => d.emailsSent), 1) * 1.1 : 100;
     const points = hasData ? chartData.map((d, i) => ({
         x: (i / (chartData.length - 1)) * 100,
