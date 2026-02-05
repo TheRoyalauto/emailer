@@ -37,29 +37,44 @@ function useHourlyCounter(min: number, max: number) {
 }
 
 
-// Typing animation hook
-function useTypingEffect(text: string, speed: number = 50) {
+// Continuous typing animation hook - loops forever
+function useTypingEffect(text: string, speed: number = 120) {
     const [displayText, setDisplayText] = useState("");
-    const [isComplete, setIsComplete] = useState(false);
 
     useEffect(() => {
         let i = 0;
-        setDisplayText("");
-        setIsComplete(false);
+        let isDeleting = false;
+
         const timer = setInterval(() => {
-            if (i < text.length) {
-                setDisplayText(text.slice(0, i + 1));
-                i++;
+            if (!isDeleting) {
+                // Typing forward
+                if (i < text.length) {
+                    setDisplayText(text.slice(0, i + 1));
+                    i++;
+                } else {
+                    // Pause at the end before deleting
+                    setTimeout(() => {
+                        isDeleting = true;
+                    }, 2000);
+                }
             } else {
-                setIsComplete(true);
-                clearInterval(timer);
+                // Deleting backward
+                if (i > 0) {
+                    i--;
+                    setDisplayText(text.slice(0, i));
+                } else {
+                    // Pause before retyping
+                    isDeleting = false;
+                }
             }
         }, speed);
+
         return () => clearInterval(timer);
     }, [text, speed]);
 
-    return { displayText, isComplete };
+    return displayText;
 }
+
 
 // Feature data
 const features = [
@@ -139,7 +154,7 @@ const jsonLd = {
 
 export default function Home() {
     const emailCount = useHourlyCounter(5000, 20000);
-    const { displayText, isComplete } = useTypingEffect("Send emails that get replies.", 80);
+    const typedText = useTypingEffect("Send emails that get replies.", 100);
 
     return (
         <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
@@ -175,8 +190,8 @@ export default function Home() {
                                     Cold email, simplified.
                                 </span>
                                 <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
-                                    {displayText}
-                                    {!isComplete && <span className="animate-pulse">|</span>}
+                                    {typedText}
+                                    <span className="animate-pulse text-indigo-500">|</span>
                                 </span>
                             </h1>
 
