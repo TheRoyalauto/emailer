@@ -142,7 +142,7 @@ export default function Home() {
 
             <main>
                 {/* HERO SECTION */}
-                <section className="relative pt-28 pb-16 lg:pt-32 lg:pb-24 overflow-hidden">
+                <section className="relative pt-24 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
                     {/* Animated Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
                     <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-indigo-400/30 to-violet-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
