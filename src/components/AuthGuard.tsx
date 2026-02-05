@@ -50,6 +50,7 @@ const NAV_ITEMS = [
     { href: "/sequences", label: "Sequences", icon: "🔄", mobileIcon: "🔄" },
     { href: "/automations", label: "Automations", icon: "⚡", mobileIcon: "⚡" },
     { href: "/links", label: "Links", icon: "🔗", mobileIcon: "🔗" },
+    { href: "/accounts", label: "Accounts", icon: "📧", mobileIcon: "📧" },
     { href: "/settings", label: "Settings", icon: "⚙️", mobileIcon: "⚙️" },
 ];
 
