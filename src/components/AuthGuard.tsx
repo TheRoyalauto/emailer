@@ -39,22 +39,17 @@ export function AuthGuard({ children }: AuthGuardProps) {
     return <>{children}</>;
 }
 
-// Navigation items - consolidated to core hubs
+// Navigation items - simplified to core hubs only
 const NAV_ITEMS = [
     { href: "/dashboard", label: "Dashboard", icon: "🏠", mobileIcon: "🏠" },
     { href: "/campaigns", label: "Campaigns", icon: "📧", mobileIcon: "📧" },
     { href: "/contacts", label: "Contacts", icon: "👥", mobileIcon: "👥" },
-    { href: "/replies", label: "Replies", icon: "💬", mobileIcon: "💬" },
-    { href: "/deals", label: "Deals", icon: "💼", mobileIcon: "💼" },
-    { href: "/tasks", label: "Tasks", icon: "✅", mobileIcon: "✅" },
-    { href: "/sequences", label: "Sequences", icon: "🔄", mobileIcon: "🔄" },
-    { href: "/automations", label: "Automations", icon: "⚡", mobileIcon: "⚡" },
-    { href: "/links", label: "Links", icon: "🔗", mobileIcon: "🔗" },
-    { href: "/accounts", label: "Accounts", icon: "📧", mobileIcon: "📧" },
-    { href: "/settings", label: "Settings", icon: "⚙️", mobileIcon: "⚙️" },
+    { href: "/templates", label: "Templates", icon: "📝", mobileIcon: "📝" },
+    { href: "/scraper", label: "Leads", icon: "🔎", mobileIcon: "🔎" },
+    { href: "/accounts", label: "Accounts", icon: "⚙️", mobileIcon: "⚙️" },
 ];
 
-// Mobile bottom nav items (first 5)
+// Mobile bottom nav items (first 5 - Accounts accessible via menu)
 const MOBILE_NAV_ITEMS = NAV_ITEMS.slice(0, 5);
 
 // Unified App Header
