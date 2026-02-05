@@ -37,35 +37,23 @@ function useHourlyCounter(min: number, max: number) {
 }
 
 
-// Continuous typing animation hook - loops forever
-function useTypingEffect(text: string, speed: number = 120) {
+// Continuous typing animation hook - loops forever (forward only)
+function useTypingEffect(text: string, speed: number = 100) {
     const [displayText, setDisplayText] = useState("");
 
     useEffect(() => {
         let i = 0;
-        let isDeleting = false;
 
         const timer = setInterval(() => {
-            if (!isDeleting) {
-                // Typing forward
-                if (i < text.length) {
-                    setDisplayText(text.slice(0, i + 1));
-                    i++;
-                } else {
-                    // Pause at the end before deleting
-                    setTimeout(() => {
-                        isDeleting = true;
-                    }, 2000);
-                }
+            if (i < text.length) {
+                setDisplayText(text.slice(0, i + 1));
+                i++;
             } else {
-                // Deleting backward
-                if (i > 0) {
-                    i--;
-                    setDisplayText(text.slice(0, i));
-                } else {
-                    // Pause before retyping
-                    isDeleting = false;
-                }
+                // Pause then restart
+                setTimeout(() => {
+                    i = 0;
+                    setDisplayText("");
+                }, 2000);
             }
         }, speed);
 
@@ -238,7 +226,7 @@ export default function Home() {
                                 <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
                                     {/* Step 1: Import */}
                                     <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1">
-                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">1</div>
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">1</div>
 
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                                             <svg className="w-7 h-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,7 +253,7 @@ export default function Home() {
 
                                     {/* Step 2: Write */}
                                     <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-violet-100/50 hover:border-violet-200 transition-all duration-300 hover:-translate-y-1 md:-translate-y-2">
-                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">2</div>
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">2</div>
 
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                                             <svg className="w-7 h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -291,7 +279,7 @@ export default function Home() {
 
                                     {/* Step 3: Track */}
                                     <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-100/50 hover:border-green-200 transition-all duration-300 hover:-translate-y-1">
-                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">3</div>
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">3</div>
 
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                                             <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
