@@ -6,26 +6,6 @@ import { api } from "@/../convex/_generated/api";
 import Link from "next/link";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 
-// Generate sample data for the chart (would come from real data in production)
-function generateChartData(days: number) {
-    const data = [];
-    const now = Date.now();
-    let emailsSent = Math.floor(Math.random() * 50);
-
-    for (let i = days; i >= 0; i--) {
-        const date = new Date(now - i * 24 * 60 * 60 * 1000);
-        emailsSent += Math.floor(Math.random() * 20);
-        data.push({
-            date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-            timestamp: date.getTime(),
-            emailsSent,
-            opens: Math.floor(emailsSent * (0.2 + Math.random() * 0.3)),
-            clicks: Math.floor(emailsSent * (0.05 + Math.random() * 0.1)),
-        });
-    }
-    return data;
-}
-
 function DashboardPage() {
     // Core queries
     const contacts = useQuery(api.contacts.list, {});
@@ -39,11 +19,18 @@ function DashboardPage() {
     const [isHovering, setIsHovering] = useState(false);
     const chartRef = useRef<HTMLDivElement>(null);
 
-    // Generate chart data based on time range
+    // Fetch real chart data based on time range
+    const days = timeRange === "1W" ? 7 : timeRange === "1M" ? 30 : timeRange === "3M" ? 90 : 180;
+    const chartDataRaw = useQuery(api.analytics.getChartData, { days });
+
+    // Use real data or empty array
     const chartData = useMemo(() => {
-        const days = timeRange === "1W" ? 7 : timeRange === "1M" ? 30 : timeRange === "3M" ? 90 : 180;
-        return generateChartData(days);
-    }, [timeRange]);
+        if (!chartDataRaw || chartDataRaw.length === 0) {
+            // Show empty state message
+            return [];
+        }
+        return chartDataRaw;
+    }, [chartDataRaw]);
 
     // Simple stats
     const totalContacts = contacts?.length || 0;
@@ -52,16 +39,17 @@ function DashboardPage() {
     const activeCampaigns = campaigns?.filter(c => c.status === "sending" || c.status === "scheduled")?.length || 0;
 
     // Chart calculations
-    const maxValue = Math.max(...chartData.map(d => d.emailsSent)) * 1.1;
-    const points = chartData.map((d, i) => ({
+    const hasData = chartData.length > 0;
+    const maxValue = hasData ? Math.max(...chartData.map(d => d.emailsSent), 1) * 1.1 : 100;
+    const points = hasData ? chartData.map((d, i) => ({
         x: (i / (chartData.length - 1)) * 100,
         y: 100 - (d.emailsSent / maxValue) * 100,
-    }));
+    })) : [];
     const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
 
     // Hover logic
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        if (!chartRef.current) return;
+        if (!chartRef.current || chartData.length === 0) return;
         const rect = chartRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const percentage = Math.max(0, Math.min(1, x / rect.width));
@@ -70,10 +58,12 @@ function DashboardPage() {
     }, [chartData.length]);
 
     // Current display value
-    const displayData = activeIndex !== null ? chartData[activeIndex] : chartData[chartData.length - 1];
-    const previousData = activeIndex !== null && activeIndex > 0 ? chartData[activeIndex - 1] : chartData[chartData.length - 2];
-    const change = displayData && previousData ? displayData.emailsSent - previousData.emailsSent : 0;
-    const changePercent = previousData?.emailsSent ? ((change / previousData.emailsSent) * 100).toFixed(1) : "0";
+    const displayData = activeIndex !== null && chartData[activeIndex] ? chartData[activeIndex] : chartData[chartData.length - 1];
+    const previousData = activeIndex !== null && activeIndex > 0 && chartData[activeIndex - 1] ? chartData[activeIndex - 1] : chartData[chartData.length - 2];
+    const currentValue = displayData?.emailsSent || 0;
+    const previousValue = previousData?.emailsSent || 0;
+    const change = currentValue - previousValue;
+    const changePercent = previousValue > 0 ? ((change / previousValue) * 100).toFixed(1) : "0";
 
     const formatRelativeTime = (timestamp: number) => {
         const diff = Date.now() - timestamp;
@@ -100,14 +90,16 @@ function DashboardPage() {
                                 <p className="text-white/50 text-sm mb-1">Emails Sent</p>
                                 <div className="flex items-baseline gap-3">
                                     <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                                        {displayData?.emailsSent?.toLocaleString() || 0}
+                                        {currentValue.toLocaleString()}
                                     </span>
-                                    <span className={`text-sm font-medium ${change >= 0 ? "text-green-400" : "text-red-400"}`}>
-                                        {change >= 0 ? "+" : ""}{change} ({changePercent}%)
-                                    </span>
+                                    {hasData && change !== 0 && (
+                                        <span className={`text-sm font-medium ${change >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                            {change >= 0 ? "+" : ""}{change} ({changePercent}%)
+                                        </span>
+                                    )}
                                 </div>
-                                {activeIndex !== null && (
-                                    <p className="text-white/40 text-sm mt-1">{displayData?.date}</p>
+                                {activeIndex !== null && displayData && (
+                                    <p className="text-white/40 text-sm mt-1">{displayData.date}</p>
                                 )}
                             </div>
 
@@ -131,61 +123,74 @@ function DashboardPage() {
                         {/* Interactive Chart */}
                         <div
                             ref={chartRef}
-                            className="relative h-40 md:h-48 cursor-crosshair"
+                            className="relative h-40 md:h-48"
                             onMouseEnter={() => setIsHovering(true)}
                             onMouseLeave={() => { setIsHovering(false); setActiveIndex(null); }}
                             onMouseMove={handleMouseMove}
                         >
-                            {/* SVG Chart */}
-                            <svg
-                                viewBox="0 0 100 100"
-                                preserveAspectRatio="none"
-                                className="w-full h-full"
-                            >
-                                <defs>
-                                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" stopColor="#6366f1" />
-                                        <stop offset="100%" stopColor="#a855f7" />
-                                    </linearGradient>
-                                    <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
-                                        <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
-                                    </linearGradient>
-                                </defs>
-
-                                {/* Area fill */}
-                                <path
-                                    d={`${pathD} L 100 100 L 0 100 Z`}
-                                    fill="url(#areaGradient)"
-                                />
-
-                                {/* Line */}
-                                <path
-                                    d={pathD}
-                                    fill="none"
-                                    stroke="url(#lineGradient)"
-                                    strokeWidth="0.5"
-                                    vectorEffect="non-scaling-stroke"
-                                />
-                            </svg>
-
-                            {/* Hover Indicator */}
-                            {isHovering && activeIndex !== null && points[activeIndex] && (
+                            {hasData ? (
                                 <>
-                                    {/* Vertical Line */}
-                                    <div
-                                        className="absolute top-0 bottom-0 w-px bg-white/30 pointer-events-none transition-all duration-75"
-                                        style={{ left: `${points[activeIndex].x}%` }}
-                                    />
-                                    {/* Dot */}
-                                    <div
-                                        className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-indigo-500 border-2 border-white shadow-lg shadow-indigo-500/50 pointer-events-none transition-all duration-75"
-                                        style={{
-                                            left: `${points[activeIndex].x}%`,
-                                            top: `${points[activeIndex].y}%`
-                                        }}
-                                    />
+                                    {/* SVG Chart */}
+                                    <svg
+                                        viewBox="0 0 100 100"
+                                        preserveAspectRatio="none"
+                                        className="w-full h-full cursor-crosshair"
+                                    >
+                                        <defs>
+                                            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="#6366f1" />
+                                                <stop offset="100%" stopColor="#a855f7" />
+                                            </linearGradient>
+                                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
+                                                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                                            </linearGradient>
+                                        </defs>
+
+                                        {/* Area fill */}
+                                        <path
+                                            d={`${pathD} L 100 100 L 0 100 Z`}
+                                            fill="url(#areaGradient)"
+                                        />
+
+                                        {/* Line */}
+                                        <path
+                                            d={pathD}
+                                            fill="none"
+                                            stroke="url(#lineGradient)"
+                                            strokeWidth="0.5"
+                                            vectorEffect="non-scaling-stroke"
+                                        />
+                                    </svg>
+
+                                    {/* Hover Indicator */}
+                                    {isHovering && activeIndex !== null && points[activeIndex] && (
+                                        <>
+                                            {/* Vertical Line */}
+                                            <div
+                                                className="absolute top-0 bottom-0 w-px bg-white/30 pointer-events-none transition-all duration-75"
+                                                style={{ left: `${points[activeIndex].x}%` }}
+                                            />
+                                            {/* Dot */}
+                                            <div
+                                                className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-indigo-500 border-2 border-white shadow-lg shadow-indigo-500/50 pointer-events-none transition-all duration-75"
+                                                style={{
+                                                    left: `${points[activeIndex].x}%`,
+                                                    top: `${points[activeIndex].y}%`
+                                                }}
+                                            />
+                                        </>
+                                    )}
                                 </>
+                            ) : (
+                                /* Empty State */
+                                <div className="flex flex-col items-center justify-center h-full text-center">
+                                    <div className="w-16 h-16 mb-4 rounded-full bg-white/5 flex items-center justify-center text-3xl">
+                                        📊
+                                    </div>
+                                    <p className="text-white/40">No email activity yet</p>
+                                    <p className="text-sm text-white/30 mt-1">Send your first campaign to see stats here</p>
+                                </div>
                             )}
                         </div>
                     </div>

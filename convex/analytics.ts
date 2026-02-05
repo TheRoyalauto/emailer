@@ -137,3 +137,95 @@ export const getTopContacts = query({
         return contacts.filter(Boolean);
     },
 });
+
+// Get chart data for dashboard (time-series email stats)
+export const getChartData = query({
+    args: {
+        days: v.optional(v.number()), // Number of days to fetch (default 30)
+    },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx);
+        if (!userId) return [];
+
+        const days = args.days || 30;
+        const now = Date.now();
+        const startDate = now - days * 24 * 60 * 60 * 1000;
+
+        // Try to get from emailStats table first
+        const emailStats = await ctx.db
+            .query("emailStats")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+
+        if (emailStats.length > 0) {
+            // Sort by date and filter to range
+            const filtered = emailStats
+                .filter(s => {
+                    const dateTs = new Date(s.date).getTime();
+                    return dateTs >= startDate;
+                })
+                .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+            // Return with cumulative totals
+            let cumulativeSent = 0;
+            return filtered.map(stat => {
+                cumulativeSent += stat.sent;
+                return {
+                    date: stat.date,
+                    timestamp: new Date(stat.date).getTime(),
+                    emailsSent: cumulativeSent,
+                    dailySent: stat.sent,
+                    opens: stat.opened,
+                    clicks: stat.clicked,
+                };
+            });
+        }
+
+        // Fallback: aggregate from contactActivities
+        const activities = await ctx.db
+            .query("contactActivities")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .filter((q) => q.gte(q.field("createdAt"), startDate))
+            .collect();
+
+        // Group by day
+        const dailyStats = new Map<string, { sent: number; opens: number; clicks: number }>();
+
+        for (const activity of activities) {
+            const date = new Date(activity.createdAt);
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+            if (!dailyStats.has(dateKey)) {
+                dailyStats.set(dateKey, { sent: 0, opens: 0, clicks: 0 });
+            }
+
+            const stats = dailyStats.get(dateKey)!;
+            if (activity.type === "email_sent") stats.sent++;
+            if (activity.type === "email_opened") stats.opens++;
+            if (activity.type === "email_clicked") stats.clicks++;
+        }
+
+        // Generate all days in range with 0s for missing days
+        const result = [];
+        let cumulativeSent = 0;
+
+        for (let i = days; i >= 0; i--) {
+            const date = new Date(now - i * 24 * 60 * 60 * 1000);
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            const stats = dailyStats.get(dateKey) || { sent: 0, opens: 0, clicks: 0 };
+
+            cumulativeSent += stats.sent;
+
+            result.push({
+                date: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+                timestamp: date.getTime(),
+                emailsSent: cumulativeSent,
+                dailySent: stats.sent,
+                opens: stats.opens,
+                clicks: stats.clicks,
+            });
+        }
+
+        return result;
+    },
+});
