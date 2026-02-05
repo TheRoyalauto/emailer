@@ -110,8 +110,8 @@ function DashboardPage() {
                                         key={range}
                                         onClick={() => setTimeRange(range)}
                                         className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${timeRange === range
-                                                ? "bg-indigo-500/30 text-indigo-300"
-                                                : "text-white/40 hover:text-white/60"
+                                            ? "bg-indigo-500/30 text-indigo-300"
+                                            : "text-white/40 hover:text-white/60"
                                             }`}
                                     >
                                         {range}
@@ -183,13 +183,48 @@ function DashboardPage() {
                                     )}
                                 </>
                             ) : (
-                                /* Empty State */
-                                <div className="flex flex-col items-center justify-center h-full text-center">
-                                    <div className="w-16 h-16 mb-4 rounded-full bg-white/5 flex items-center justify-center text-3xl">
-                                        📊
+                                /* Premium Empty State with Placeholder Chart */
+                                <div className="relative h-full">
+                                    {/* Faded placeholder chart */}
+                                    <svg
+                                        viewBox="0 0 100 100"
+                                        preserveAspectRatio="none"
+                                        className="w-full h-full opacity-30"
+                                    >
+                                        <defs>
+                                            <linearGradient id="placeholderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="#6366f1" />
+                                                <stop offset="100%" stopColor="#a855f7" />
+                                            </linearGradient>
+                                            <linearGradient id="placeholderAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
+                                                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                                            </linearGradient>
+                                        </defs>
+
+                                        {/* Placeholder sample line - looks like organic growth */}
+                                        <path
+                                            d="M 0 85 Q 10 80 15 75 T 25 70 T 35 65 T 45 55 T 55 50 T 65 40 T 75 35 T 85 25 T 100 20 L 100 100 L 0 100 Z"
+                                            fill="url(#placeholderAreaGradient)"
+                                        />
+                                        <path
+                                            d="M 0 85 Q 10 80 15 75 T 25 70 T 35 65 T 45 55 T 55 50 T 65 40 T 75 35 T 85 25 T 100 20"
+                                            fill="none"
+                                            stroke="url(#placeholderGradient)"
+                                            strokeWidth="0.5"
+                                            vectorEffect="non-scaling-stroke"
+                                            className="animate-pulse"
+                                        />
+                                    </svg>
+
+                                    {/* Overlay message */}
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gradient-to-t from-[#12121f]/80 via-transparent to-transparent">
+                                        <div className="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center backdrop-blur-sm">
+                                            <span className="text-2xl">🚀</span>
+                                        </div>
+                                        <p className="text-white/60 font-medium">Ready to grow</p>
+                                        <p className="text-sm text-white/40 mt-1">Send your first campaign to track growth</p>
                                     </div>
-                                    <p className="text-white/40">No email activity yet</p>
-                                    <p className="text-sm text-white/30 mt-1">Send your first campaign to see stats here</p>
                                 </div>
                             )}
                         </div>
