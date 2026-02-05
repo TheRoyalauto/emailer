@@ -117,26 +117,7 @@ const testimonials = [
     },
 ];
 
-const steps = [
-    {
-        num: "01",
-        title: "Import Leads",
-        description: "Upload CSV or connect CRM. Auto-enrichment included.",
-        visual: "📥",
-    },
-    {
-        num: "02",
-        title: "Write with AI",
-        description: "Our AI writes personalized emails that sound human.",
-        visual: "✨",
-    },
-    {
-        num: "03",
-        title: "Send & Track",
-        description: "Smart sequences handle follow-ups. You close deals.",
-        visual: "🚀",
-    },
-];
+
 
 // JSON-LD for SEO
 const jsonLd = {
@@ -152,16 +133,7 @@ const jsonLd = {
 
 export default function Home() {
     const emailCount = useRandomCounter(5000, 20000, 3000);
-    const [activeStep, setActiveStep] = useState(0);
     const { displayText, isComplete } = useTypingEffect("Send emails that get replies.", 80);
-
-    // Auto-cycle through steps
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setActiveStep((prev) => (prev + 1) % 3);
-        }, 4000);
-        return () => clearInterval(timer);
-    }, []);
 
     return (
         <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
@@ -218,10 +190,10 @@ export default function Home() {
                                     </svg>
                                 </Link>
                                 <Link
-                                    href="#how-it-works"
+                                    href="#demo"
                                     className="w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur text-slate-700 font-semibold rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-white transition-all text-lg"
                                 >
-                                    See How It Works
+                                    See It In Action ↓
                                 </Link>
                             </div>
 
@@ -230,50 +202,114 @@ export default function Home() {
                             </p>
                         </div>
 
-                        {/* Interactive 3-Step Preview */}
-                        <div id="how-it-works" className="mt-16 lg:mt-20">
-                            <div className="max-w-4xl mx-auto">
-                                {/* Step indicators */}
-                                <div className="flex justify-center gap-4 mb-8">
-                                    {steps.map((step, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setActiveStep(i)}
-                                            className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all ${activeStep === i
-                                                ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg scale-105"
-                                                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                                                }`}
-                                        >
-                                            <span className="text-2xl">{step.visual}</span>
-                                            <span className="font-semibold hidden sm:block">{step.title}</span>
-                                        </button>
-                                    ))}
+                        {/* ANIMATED PRODUCT DEMO */}
+                        <div id="demo" className="mt-20 lg:mt-28">
+                            <div className="max-w-5xl mx-auto">
+                                {/* Browser mockup */}
+                                <div className="bg-slate-900 rounded-2xl shadow-2xl shadow-slate-900/30 overflow-hidden border border-slate-700">
+                                    {/* Browser chrome */}
+                                    <div className="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700">
+                                        <div className="flex gap-1.5">
+                                            <div className="w-3 h-3 rounded-full bg-red-500" />
+                                            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                                            <div className="w-3 h-3 rounded-full bg-green-500" />
+                                        </div>
+                                        <div className="flex-1 ml-4">
+                                            <div className="max-w-md mx-auto bg-slate-700 rounded-md px-4 py-1.5 text-sm text-slate-400 flex items-center gap-2">
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                                app.e-mailer.io
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* App content */}
+                                    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 lg:p-10">
+                                        <div className="grid lg:grid-cols-2 gap-6">
+                                            {/* Left: Email composer */}
+                                            <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
+                                                <div className="flex items-center gap-2 text-white/60 text-sm mb-4">
+                                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                                    Compose Email
+                                                </div>
+                                                <div className="space-y-3">
+                                                    <div className="flex gap-2">
+                                                        <span className="text-white/40 text-sm w-12">To:</span>
+                                                        <span className="text-white text-sm">sarah@techstartup.com</span>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <span className="text-white/40 text-sm w-12">Subject:</span>
+                                                        <span className="text-white text-sm">Quick question about your workflow</span>
+                                                    </div>
+                                                    <div className="h-px bg-white/10 my-3" />
+                                                    <p className="text-white/80 text-sm leading-relaxed">
+                                                        Hi Sarah,<br /><br />
+                                                        I noticed you&apos;re using <span className="text-indigo-400">{"{{competitor}}"}</span> for email outreach.
+                                                        We helped <span className="text-indigo-400">{"{{similar_company}}"}</span> increase their reply rate by 3x...<br /><br />
+                                                        <span className="text-white/40">|</span>
+                                                    </p>
+                                                </div>
+                                                <div className="mt-4 flex items-center gap-2">
+                                                    <span className="px-2 py-1 bg-indigo-500/20 text-indigo-400 text-xs rounded">AI Writing</span>
+                                                    <span className="px-2 py-1 bg-violet-500/20 text-violet-400 text-xs rounded">Variables</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Right: Stats */}
+                                            <div className="space-y-4">
+                                                <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
+                                                    <div className="text-white/60 text-sm mb-3">Campaign Performance</div>
+                                                    <div className="grid grid-cols-3 gap-4">
+                                                        <div>
+                                                            <div className="text-2xl font-bold text-white">847</div>
+                                                            <div className="text-white/40 text-xs">Sent</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-2xl font-bold text-green-400">67%</div>
+                                                            <div className="text-white/40 text-xs">Opened</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-2xl font-bold text-violet-400">12%</div>
+                                                            <div className="text-white/40 text-xs">Replied</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
+                                                    <div className="text-white/60 text-sm mb-3">Recent Activity</div>
+                                                    <div className="space-y-3">
+                                                        {[
+                                                            { icon: "📬", text: "sarah@techstartup.com opened", time: "2m ago", color: "text-green-400" },
+                                                            { icon: "💬", text: "mike@agency.co replied", time: "8m ago", color: "text-violet-400" },
+                                                            { icon: "🔗", text: "jen@startup.io clicked link", time: "15m ago", color: "text-indigo-400" },
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-3">
+                                                                <span>{item.icon}</span>
+                                                                <span className={`text-sm ${item.color}`}>{item.text}</span>
+                                                                <span className="text-white/30 text-xs ml-auto">{item.time}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                {/* Active step content */}
-                                <div className="bg-white rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 lg:p-12 transition-all">
-                                    <div className="flex flex-col lg:flex-row items-center gap-8">
-                                        <div className="flex-shrink-0 w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center text-5xl">
-                                            {steps[activeStep].visual}
+                                {/* Step indicators below */}
+                                <div className="flex justify-center gap-8 lg:gap-16 mt-10">
+                                    {[
+                                        { num: "1", title: "Import", desc: "Upload leads or connect CRM" },
+                                        { num: "2", title: "Write", desc: "AI generates personalized emails" },
+                                        { num: "3", title: "Send", desc: "Track opens, clicks, replies" },
+                                    ].map((step, i) => (
+                                        <div key={i} className="text-center group cursor-default">
+                                            <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                {step.num}
+                                            </div>
+                                            <div className="font-semibold text-slate-900">{step.title}</div>
+                                            <div className="text-xs text-slate-500 max-w-[120px]">{step.desc}</div>
                                         </div>
-                                        <div className="text-center lg:text-left">
-                                            <div className="text-sm font-bold text-indigo-600 mb-1">STEP {steps[activeStep].num}</div>
-                                            <h3 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">
-                                                {steps[activeStep].title}
-                                            </h3>
-                                            <p className="text-lg text-slate-600">
-                                                {steps[activeStep].description}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Progress bar */}
-                                    <div className="mt-8 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-300"
-                                            style={{ width: `${((activeStep + 1) / 3) * 100}%` }}
-                                        />
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
