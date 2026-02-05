@@ -343,30 +343,66 @@ export default function Home() {
                 </section>
 
                 {/* VALUE PROP - The Story */}
-                <section className="py-20 lg:py-28 bg-slate-50 border-y border-slate-200">
-                    <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-6">
-                            Why we built E-mailer
-                        </h2>
-                        <p className="text-lg lg:text-xl text-slate-600 leading-relaxed mb-8">
-                            We were tired of bloated sales tools that cost too much and did too little.
-                            So we built something simple: <span className="text-slate-900 font-semibold">one app that does cold email right.</span>
-                        </p>
-                        <div className="grid sm:grid-cols-3 gap-6 text-left">
+                <section className="py-20 lg:py-28 bg-white">
+                    <div className="max-w-6xl mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-indigo-100 to-violet-100 text-indigo-700 text-sm font-semibold rounded-full mb-4">
+                                Our Philosophy
+                            </span>
+                            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">
+                                Built different.{" "}
+                                <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">On purpose.</span>
+                            </h2>
+                            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+                                We were tired of bloated sales tools that cost too much and did too little.
+                            </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-6">
                             {[
-                                { icon: "🚫", title: "No complexity", desc: "No 47-step workflows. Just email." },
-                                { icon: "💰", title: "No hidden fees", desc: "Transparent pricing. Free tier forever." },
-                                { icon: "🎯", title: "No BS", desc: "Write. Send. Track. Close deals." },
+                                {
+                                    icon: (
+                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                        </svg>
+                                    ),
+                                    title: "No complexity",
+                                    desc: "No 47-step workflows or confusing dashboards. Just write, send, track.",
+                                    color: "from-red-500 to-orange-500"
+                                },
+                                {
+                                    icon: (
+                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    ),
+                                    title: "No hidden fees",
+                                    desc: "Transparent pricing you can actually understand. Free tier that works.",
+                                    color: "from-green-500 to-emerald-500"
+                                },
+                                {
+                                    icon: (
+                                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    ),
+                                    title: "No BS",
+                                    desc: "Stop configuring. Start closing. Results in your first 10 minutes.",
+                                    color: "from-indigo-500 to-violet-500"
+                                },
                             ].map((item, i) => (
-                                <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 hover:shadow-lg transition-shadow">
-                                    <div className="text-3xl mb-3">{item.icon}</div>
-                                    <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
-                                    <p className="text-slate-600 text-sm">{item.desc}</p>
+                                <div key={i} className="group relative bg-white p-6 rounded-2xl border border-slate-200 hover:border-transparent hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity`} />
+                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                        {item.icon}
+                                    </div>
+                                    <h3 className="font-bold text-lg text-slate-900 mb-2">{item.title}</h3>
+                                    <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </section >
+                </section>
 
                 {/* Stats Section */}
                 < section className="py-16 bg-white" >
