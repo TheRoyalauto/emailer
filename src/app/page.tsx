@@ -203,7 +203,7 @@ export default function Home() {
                             {/* Headline with typing effect */}
                             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-slate-900 leading-[1.05] mb-6">
                                 <span className="block text-slate-400 text-2xl sm:text-3xl lg:text-4xl font-medium mb-2">
-                                    Cold email, simplified.
+                                    Outreach, simplified.
                                 </span>
                                 <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
                                     {typedText}
