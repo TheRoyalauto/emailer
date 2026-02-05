@@ -424,29 +424,8 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                </section >
-
-                {/* Final CTA */}
-                < section className="py-20 lg:py-28 bg-gradient-to-br from-indigo-600 to-violet-600 text-white" >
-                    <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
-                        <h2 className="text-3xl lg:text-5xl font-bold mb-4">
-                            Ready to send better emails?
-                        </h2>
-                        <p className="text-xl text-indigo-100 mb-8">
-                            Join 10,000+ teams. Start sending in 2 minutes.
-                        </p>
-                        <Link
-                            href="/register"
-                            className="inline-flex px-10 py-5 bg-white text-indigo-600 font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
-                        >
-                            Start Free →
-                        </Link>
-                        <p className="mt-4 text-indigo-200 text-sm">
-                            Free forever · No credit card
-                        </p>
-                    </div>
-                </section >
-            </main >
+                </section>
+            </main>
 
             <Footer />
         </div >
