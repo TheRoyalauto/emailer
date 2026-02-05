@@ -14,13 +14,26 @@ function DashboardPage() {
     const recentActivity = useQuery(api.activities.getRecentActivity, { limit: 5 });
 
     // Chart state
-    const [timeRange, setTimeRange] = useState<"1W" | "1M" | "3M" | "ALL">("1M");
+    const [timeRange, setTimeRange] = useState<"LIVE" | "1D" | "1W" | "1M" | "3M" | "YTD" | "1Y" | "ALL">("1M");
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [isHovering, setIsHovering] = useState(false);
     const chartRef = useRef<HTMLDivElement>(null);
 
     // Fetch real chart data based on time range
-    const days = timeRange === "1W" ? 7 : timeRange === "1M" ? 30 : timeRange === "3M" ? 90 : 180;
+    const getDays = () => {
+        switch (timeRange) {
+            case "LIVE": return 1;
+            case "1D": return 1;
+            case "1W": return 7;
+            case "1M": return 30;
+            case "3M": return 90;
+            case "YTD": return Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 1).getTime()) / (1000 * 60 * 60 * 24));
+            case "1Y": return 365;
+            case "ALL": return 730;
+            default: return 30;
+        }
+    };
+    const days = getDays();
     const chartDataRaw = useQuery(api.analytics.getChartData, { days });
 
     // Use real data or empty array
@@ -103,22 +116,6 @@ function DashboardPage() {
                                 <p className={`text-white/40 text-sm mt-1 h-5 ${activeIndex !== null && displayData ? 'opacity-100' : 'opacity-0'}`}>
                                     {displayData?.date || '\u00A0'}
                                 </p>
-                            </div>
-
-                            {/* Time Range Toggle */}
-                            <div className="flex bg-black/30 rounded-lg p-1 border border-white/10">
-                                {(["1W", "1M", "3M", "ALL"] as const).map((range) => (
-                                    <button
-                                        key={range}
-                                        onClick={() => setTimeRange(range)}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${timeRange === range
-                                            ? "bg-indigo-500/30 text-indigo-300"
-                                            : "text-white/40 hover:text-white/60"
-                                            }`}
-                                    >
-                                        {range}
-                                    </button>
-                                ))}
                             </div>
                         </div>
 
@@ -229,6 +226,22 @@ function DashboardPage() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Robinhood-style Time Range Selector - Bottom */}
+                        <div className="flex items-center justify-center gap-1 mt-4 pt-4 border-t border-white/5">
+                            {(["LIVE", "1D", "1W", "1M", "3M", "YTD", "1Y", "ALL"] as const).map((range) => (
+                                <button
+                                    key={range}
+                                    onClick={() => setTimeRange(range)}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${timeRange === range
+                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                                            : "text-white/40 hover:text-white/60 hover:bg-white/5"
+                                        }`}
+                                >
+                                    {range}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
