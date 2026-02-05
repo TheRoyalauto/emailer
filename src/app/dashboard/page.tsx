@@ -14,7 +14,7 @@ function DashboardPage() {
     const recentActivity = useQuery(api.activities.getRecentActivity, { limit: 5 });
 
     // Chart state
-    const [timeRange, setTimeRange] = useState<"LIVE" | "1D" | "1W" | "1M" | "3M" | "YTD" | "1Y" | "ALL">("1M");
+    const [timeRange, setTimeRange] = useState<"LIVE" | "1D" | "1W" | "1M" | "3M" | "YTD" | "1Y" | "ALL">("LIVE");
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [isHovering, setIsHovering] = useState(false);
     const chartRef = useRef<HTMLDivElement>(null);
