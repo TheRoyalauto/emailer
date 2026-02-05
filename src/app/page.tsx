@@ -39,10 +39,10 @@ function useHourlyCounter(min: number, max: number) {
 
 // Cycling typing animation - types multiple phrases
 const heroTexts = [
-    "Send emails that get replies.",
-    "Close deals on autopilot.",
-    "Grow your pipeline 3x faster.",
-    "Turn cold leads into customers.",
+    "Get replies, not silence.",
+    "Close deals faster.",
+    "Grow your pipeline.",
+    "Turn leads into revenue.",
 ];
 
 function useTypingEffect(speed: number = 80) {
@@ -205,7 +205,7 @@ export default function Home() {
                                 <span className="block text-slate-400 text-2xl sm:text-3xl lg:text-4xl font-medium mb-2">
                                     Outreach, simplified.
                                 </span>
-                                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
                                     {typedText}
                                     <span className="animate-pulse text-indigo-500">|</span>
                                 </span>
