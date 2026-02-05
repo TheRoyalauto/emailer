@@ -147,15 +147,17 @@ export default function Home() {
             <Navbar />
 
             <main>
-                {/* HERO SECTION */}
-                <section className="relative pt-24 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
+                <section className="relative pt-8 pb-16 lg:pb-24 overflow-hidden">
+                    {/* Spacer for fixed navbar */}
+                    <div className="h-20 lg:h-24" />
+
                     {/* Animated Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
                     <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-indigo-400/30 to-violet-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
                     <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-violet-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s' }} />
 
                     <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-                        {/* Live Counter - Tight spacing */}
+                        {/* Live Counter */}
                         <div className="text-center mb-6">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-full text-sm font-semibold border border-green-200/50 shadow-sm">
                                 <span className="relative flex h-2 w-2">
@@ -208,114 +210,101 @@ export default function Home() {
                             </p>
                         </div>
 
-                        {/* ANIMATED PRODUCT DEMO */}
-                        <div id="demo" className="mt-20 lg:mt-28">
-                            <div className="max-w-5xl mx-auto">
-                                {/* Browser mockup */}
-                                <div className="bg-slate-900 rounded-2xl shadow-2xl shadow-slate-900/30 overflow-hidden border border-slate-700">
-                                    {/* Browser chrome */}
-                                    <div className="flex items-center gap-2 px-4 py-3 bg-slate-800 border-b border-slate-700">
-                                        <div className="flex gap-1.5">
-                                            <div className="w-3 h-3 rounded-full bg-red-500" />
-                                            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                                            <div className="w-3 h-3 rounded-full bg-green-500" />
-                                        </div>
-                                        <div className="flex-1 ml-4">
-                                            <div className="max-w-md mx-auto bg-slate-700 rounded-md px-4 py-1.5 text-sm text-slate-400 flex items-center gap-2">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                                                app.e-mailer.io
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* App content */}
-                                    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 lg:p-10">
-                                        <div className="grid lg:grid-cols-2 gap-6">
-                                            {/* Left: Email composer */}
-                                            <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
-                                                <div className="flex items-center gap-2 text-white/60 text-sm mb-4">
-                                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                                    Compose Email
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <div className="flex gap-2">
-                                                        <span className="text-white/40 text-sm w-12">To:</span>
-                                                        <span className="text-white text-sm">sarah@techstartup.com</span>
-                                                    </div>
-                                                    <div className="flex gap-2">
-                                                        <span className="text-white/40 text-sm w-12">Subject:</span>
-                                                        <span className="text-white text-sm">Quick question about your workflow</span>
-                                                    </div>
-                                                    <div className="h-px bg-white/10 my-3" />
-                                                    <p className="text-white/80 text-sm leading-relaxed">
-                                                        Hi Sarah,<br /><br />
-                                                        I noticed you&apos;re using <span className="text-indigo-400">{"{{competitor}}"}</span> for email outreach.
-                                                        We helped <span className="text-indigo-400">{"{{similar_company}}"}</span> increase their reply rate by 3x...<br /><br />
-                                                        <span className="text-white/40">|</span>
-                                                    </p>
-                                                </div>
-                                                <div className="mt-4 flex items-center gap-2">
-                                                    <span className="px-2 py-1 bg-indigo-500/20 text-indigo-400 text-xs rounded">AI Writing</span>
-                                                    <span className="px-2 py-1 bg-violet-500/20 text-violet-400 text-xs rounded">Variables</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Right: Stats */}
-                                            <div className="space-y-4">
-                                                <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
-                                                    <div className="text-white/60 text-sm mb-3">Campaign Performance</div>
-                                                    <div className="grid grid-cols-3 gap-4">
-                                                        <div>
-                                                            <div className="text-2xl font-bold text-white">847</div>
-                                                            <div className="text-white/40 text-xs">Sent</div>
-                                                        </div>
-                                                        <div>
-                                                            <div className="text-2xl font-bold text-green-400">67%</div>
-                                                            <div className="text-white/40 text-xs">Opened</div>
-                                                        </div>
-                                                        <div>
-                                                            <div className="text-2xl font-bold text-violet-400">12%</div>
-                                                            <div className="text-white/40 text-xs">Replied</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="bg-white/5 backdrop-blur rounded-xl border border-white/10 p-5">
-                                                    <div className="text-white/60 text-sm mb-3">Recent Activity</div>
-                                                    <div className="space-y-3">
-                                                        {[
-                                                            { icon: "📬", text: "sarah@techstartup.com opened", time: "2m ago", color: "text-green-400" },
-                                                            { icon: "💬", text: "mike@agency.co replied", time: "8m ago", color: "text-violet-400" },
-                                                            { icon: "🔗", text: "jen@startup.io clicked link", time: "15m ago", color: "text-indigo-400" },
-                                                        ].map((item, i) => (
-                                                            <div key={i} className="flex items-center gap-3">
-                                                                <span>{item.icon}</span>
-                                                                <span className={`text-sm ${item.color}`}>{item.text}</span>
-                                                                <span className="text-white/30 text-xs ml-auto">{item.time}</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        {/* INTERACTIVE WORKFLOW SHOWCASE */}
+                        <div id="demo" className="mt-16 lg:mt-24">
+                            <div className="max-w-6xl mx-auto">
+                                {/* Section header */}
+                                <div className="text-center mb-12">
+                                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-3">Three steps. That&apos;s it.</h2>
+                                    <p className="text-slate-500">No complex setup. No learning curve. Just results.</p>
                                 </div>
 
-                                {/* Step indicators below */}
-                                <div className="flex justify-center gap-8 lg:gap-16 mt-10">
-                                    {[
-                                        { num: "1", title: "Import", desc: "Upload leads or connect CRM" },
-                                        { num: "2", title: "Write", desc: "AI generates personalized emails" },
-                                        { num: "3", title: "Send", desc: "Track opens, clicks, replies" },
-                                    ].map((step, i) => (
-                                        <div key={i} className="text-center group cursor-default">
-                                            <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold flex items-center justify-center group-hover:scale-110 transition-transform">
-                                                {step.num}
-                                            </div>
-                                            <div className="font-semibold text-slate-900">{step.title}</div>
-                                            <div className="text-xs text-slate-500 max-w-[120px]">{step.desc}</div>
+                                {/* Interactive cards */}
+                                <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+                                    {/* Step 1: Import */}
+                                    <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1">
+                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">1</div>
+
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                            </svg>
                                         </div>
-                                    ))}
+
+                                        <h3 className="text-xl font-bold text-slate-900 mb-2">Import Leads</h3>
+                                        <p className="text-slate-500 text-sm mb-5">Upload a CSV or connect your CRM. We auto-enrich with company data.</p>
+
+                                        {/* Mini preview */}
+                                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                                            <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                leads.csv
+                                            </div>
+                                            <div className="space-y-1">
+                                                <div className="h-2 bg-indigo-200 rounded animate-pulse" style={{ width: '80%' }} />
+                                                <div className="h-2 bg-indigo-100 rounded animate-pulse" style={{ width: '65%', animationDelay: '150ms' }} />
+                                                <div className="h-2 bg-indigo-100 rounded animate-pulse" style={{ width: '90%', animationDelay: '300ms' }} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 2: Write */}
+                                    <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-violet-100/50 hover:border-violet-200 transition-all duration-300 hover:-translate-y-1 md:-translate-y-2">
+                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">2</div>
+
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                            </svg>
+                                        </div>
+
+                                        <h3 className="text-xl font-bold text-slate-900 mb-2">AI Writes It</h3>
+                                        <p className="text-slate-500 text-sm mb-5">Personalized emails that sound human, not robotic. 3x higher reply rates.</p>
+
+                                        {/* Mini preview */}
+                                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                                            <div className="text-xs text-slate-600 space-y-1">
+                                                <p>Hi <span className="text-violet-600 font-medium">{"{{first_name}}"}</span>,</p>
+                                                <p className="text-slate-400">I noticed you&apos;re using...</p>
+                                                <div className="flex gap-1 mt-2">
+                                                    <span className="px-1.5 py-0.5 bg-violet-100 text-violet-600 text-[10px] rounded">AI powered</span>
+                                                    <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-600 text-[10px] rounded">Variables</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 3: Track */}
+                                    <div className="group relative bg-white rounded-2xl p-6 lg:p-8 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-100/50 hover:border-green-200 transition-all duration-300 hover:-translate-y-1">
+                                        <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-sm flex items-center justify-center">3</div>
+
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </div>
+
+                                        <h3 className="text-xl font-bold text-slate-900 mb-2">Track Results</h3>
+                                        <p className="text-slate-500 text-sm mb-5">Real-time opens, clicks, and replies. Know exactly who&apos;s interested.</p>
+
+                                        {/* Mini preview - animated stats */}
+                                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
+                                            <div className="grid grid-cols-3 gap-2 text-center">
+                                                <div>
+                                                    <div className="text-lg font-bold text-slate-900">847</div>
+                                                    <div className="text-[10px] text-slate-400">Sent</div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-lg font-bold text-green-500">67%</div>
+                                                    <div className="text-[10px] text-slate-400">Opens</div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-lg font-bold text-violet-500">12%</div>
+                                                    <div className="text-[10px] text-slate-400">Replies</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -346,10 +335,10 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                </section>
+                </section >
 
                 {/* Stats Section */}
-                <section className="py-16 bg-white">
+                < section className="py-16 bg-white" >
                     <div className="max-w-7xl mx-auto px-6 lg:px-8">
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                             {stats.map((stat, i) => (
@@ -362,10 +351,10 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                </section>
+                </section >
 
                 {/* Features Section */}
-                <section className="py-20 lg:py-28">
+                < section className="py-20 lg:py-28" >
                     <div className="max-w-7xl mx-auto px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
@@ -395,10 +384,10 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                </section>
+                </section >
 
                 {/* Testimonials Section */}
-                <section className="py-20 lg:py-28 bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+                < section className="py-20 lg:py-28 bg-gradient-to-br from-slate-900 to-slate-800 text-white" >
                     <div className="max-w-7xl mx-auto px-6 lg:px-8">
                         <div className="text-center mb-12">
                             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
@@ -435,10 +424,10 @@ export default function Home() {
                             ))}
                         </div>
                     </div>
-                </section>
+                </section >
 
                 {/* Final CTA */}
-                <section className="py-20 lg:py-28 bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+                < section className="py-20 lg:py-28 bg-gradient-to-br from-indigo-600 to-violet-600 text-white" >
                     <div className="max-w-3xl mx-auto px-6 lg:px-8 text-center">
                         <h2 className="text-3xl lg:text-5xl font-bold mb-4">
                             Ready to send better emails?
@@ -456,10 +445,10 @@ export default function Home() {
                             Free forever · No credit card
                         </p>
                     </div>
-                </section>
-            </main>
+                </section >
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 }
