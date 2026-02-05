@@ -38,7 +38,7 @@ export default function Footer() {
                             Ready to scale your outreach?
                         </h2>
                         <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-                            Join thousands of businesses using Sendly to send personalized emails at scale.
+                            Join thousands of businesses using E-mailer to send personalized emails at scale.
                             Start free, no credit card required.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -70,7 +70,7 @@ export default function Footer() {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                            <span className="text-xl font-bold">Sendly</span>
+                            <span className="text-xl font-bold">E-mailer</span>
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed">
                             The intelligent email outreach platform for modern sales teams.
@@ -105,7 +105,7 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <p className="text-slate-500 text-sm">
-                            © {new Date().getFullYear()} Sendly. All rights reserved.
+                            © {new Date().getFullYear()} E-mailer. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6">
                             {/* Social Icons */}
@@ -125,3 +125,4 @@ export default function Footer() {
         </footer>
     );
 }
+

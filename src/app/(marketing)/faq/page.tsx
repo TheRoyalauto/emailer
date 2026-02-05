@@ -8,16 +8,16 @@ const faqCategories = [
         name: "General",
         questions: [
             {
-                q: "What is Sendly?",
-                a: "Sendly is an AI-powered email outreach platform designed for sales teams and businesses. It helps you send personalized cold emails at scale, automate follow-up sequences, and track engagement with advanced analytics.",
+                q: "What is E-mailer?",
+                a: "E-mailer is an AI-powered email outreach platform designed for sales teams and businesses. It helps you send personalized cold emails at scale, automate follow-up sequences, and track engagement with advanced analytics.",
             },
             {
-                q: "How is Sendly different from other email tools?",
-                a: "Sendly combines AI-powered personalization, smart sequences, and deliverability tools in one platform. Our AI doesn't just fill in blanks—it understands context and writes compelling copy that sounds human. Plus, our built-in warm-up and reputation monitoring ensure your emails actually reach the inbox.",
+                q: "How is E-mailer different from other email tools?",
+                a: "E-mailer combines AI-powered personalization, smart sequences, and deliverability tools in one platform. Our AI doesn't just fill in blanks—it understands context and writes compelling copy that sounds human. Plus, our built-in warm-up and reputation monitoring ensure your emails actually reach the inbox.",
             },
             {
-                q: "Who is Sendly best for?",
-                a: "Sendly is perfect for sales teams, recruiters, marketers, agencies, and anyone who needs to send personalized outreach at scale. Whether you're a solo founder or part of a large sales org, Sendly scales with your needs.",
+                q: "Who is E-mailer best for?",
+                a: "E-mailer is perfect for sales teams, recruiters, marketers, agencies, and anyone who needs to send personalized outreach at scale. Whether you're a solo founder or part of a large sales org, E-mailer scales with your needs.",
             },
         ],
     },
@@ -34,7 +34,7 @@ const faqCategories = [
             },
             {
                 q: "Can I connect my existing email accounts?",
-                a: "Yes! Sendly works with Gmail, Google Workspace, Outlook, and any IMAP/SMTP email provider. You can connect multiple accounts and rotate between them for better deliverability.",
+                a: "Yes! E-mailer works with Gmail, Google Workspace, Outlook, and any IMAP/SMTP email provider. You can connect multiple accounts and rotate between them for better deliverability.",
             },
             {
                 q: "Do you integrate with CRMs?",
@@ -114,7 +114,7 @@ export default function FAQPage() {
                         Frequently Asked Questions
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                        Everything you need to know about Sendly. Can't find what you're looking for?{" "}
+                        Everything you need to know about E-mailer. Can't find what you're looking for?{" "}
                         <Link href="/contact" className="text-indigo-600 hover:text-indigo-700 font-medium">
                             Contact our support team
                         </Link>
@@ -206,3 +206,4 @@ export default function FAQPage() {
         </>
     );
 }
+

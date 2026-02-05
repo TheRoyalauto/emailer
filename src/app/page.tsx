@@ -4,22 +4,22 @@ import Navbar from "@/components/marketing/Navbar";
 import Footer from "@/components/marketing/Footer";
 
 export const metadata: Metadata = {
-    title: "Sendly - AI-Powered Email Outreach Platform | Best Cold Email Software",
-    description: "Sendly is the #1 AI-powered email outreach platform. Send personalized cold emails at scale, automate follow-ups, and close more deals. Trusted by 10,000+ sales teams.",
+    title: "E-mailer - AI-Powered Email Outreach Platform | Best Cold Email Software",
+    description: "E-mailer is the #1 AI-powered email outreach platform. Send personalized cold emails at scale, automate follow-ups, and close more deals. Trusted by 10,000+ sales teams.",
     keywords: ["email outreach", "cold email software", "AI email writer", "sales automation", "email marketing platform", "lead generation tool", "email sequences"],
     openGraph: {
-        title: "Sendly - AI-Powered Email Outreach Platform",
+        title: "E-mailer - AI-Powered Email Outreach Platform",
         description: "Send personalized cold emails at scale with AI-powered writing and smart sequences. Start free.",
         type: "website",
-        url: "https://sendly.io",
-        siteName: "Sendly",
+        url: "https://E-mailer.io",
+        siteName: "E-mailer",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Sendly - AI-Powered Email Outreach Platform",
+        title: "E-mailer - AI-Powered Email Outreach Platform",
         description: "Send personalized cold emails at scale with AI-powered writing and smart sequences.",
     },
-    alternates: { canonical: "https://sendly.io" },
+    alternates: { canonical: "https://E-mailer.io" },
 };
 
 // Feature data
@@ -65,7 +65,7 @@ const stats = [
 
 const testimonials = [
     {
-        quote: "Sendly transformed our outreach. We went from 2% to 15% reply rates in just one month.",
+        quote: "E-mailer transformed our outreach. We went from 2% to 15% reply rates in just one month.",
         author: "Sarah Chen",
         role: "Head of Sales, TechCorp",
         avatar: "SC",
@@ -77,7 +77,7 @@ const testimonials = [
         avatar: "MR",
     },
     {
-        quote: "We replaced 3 different tools with Sendly. It does everything and costs way less.",
+        quote: "We replaced 3 different tools with E-mailer. It does everything and costs way less.",
         author: "Emily Watson",
         role: "VP Sales, StartupXYZ",
         avatar: "EW",
@@ -88,7 +88,7 @@ const testimonials = [
 const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Sendly",
+    name: "E-mailer",
     description: "AI-powered email outreach platform for sales teams",
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
@@ -177,7 +177,7 @@ export default function Home() {
                                         <div className="w-3 h-3 rounded-full bg-red-500" />
                                         <div className="w-3 h-3 rounded-full bg-yellow-500" />
                                         <div className="w-3 h-3 rounded-full bg-green-500" />
-                                        <span className="ml-4 text-sm text-slate-400">app.sendly.io</span>
+                                        <span className="ml-4 text-sm text-slate-400">app.E-mailer.io</span>
                                     </div>
                                     <div className="aspect-[16/9] bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
                                         <div className="text-center">
@@ -219,7 +219,7 @@ export default function Home() {
                                 Everything you need to scale outreach
                             </h2>
                             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                                From AI-powered writing to advanced analytics, Sendly gives you all the tools
+                                From AI-powered writing to advanced analytics, E-mailer gives you all the tools
                                 you need to run successful email campaigns.
                             </p>
                         </div>
@@ -253,7 +253,7 @@ export default function Home() {
                                 Loved by sales teams everywhere
                             </h2>
                             <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                                Join thousands of businesses using Sendly to transform their outreach.
+                                Join thousands of businesses using E-mailer to transform their outreach.
                             </p>
                         </div>
 
@@ -341,7 +341,7 @@ export default function Home() {
                             Ready to 10x your outreach?
                         </h2>
                         <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
-                            Join over 10,000 sales professionals who use Sendly to send better emails and close more deals.
+                            Join over 10,000 sales professionals who use E-mailer to send better emails and close more deals.
                         </p>
                         <Link
                             href="/register"
@@ -359,3 +359,5 @@ export default function Home() {
         </div>
     );
 }
+
+

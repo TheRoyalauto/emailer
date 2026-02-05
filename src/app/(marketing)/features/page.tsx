@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Features - Sendly | AI Email Outreach Platform",
-    description: "Explore Sendly's powerful features: AI-powered writing, smart sequences, advanced analytics, deliverability tools, CRM integrations, and team collaboration.",
+    title: "Features - E-mailer | AI Email Outreach Platform",
+    description: "Explore E-mailer's powerful features: AI-powered writing, smart sequences, advanced analytics, deliverability tools, CRM integrations, and team collaboration.",
 };
 
 const features = [
@@ -94,7 +94,7 @@ const features = [
             {
                 icon: "🔌",
                 title: "API Access",
-                description: "Build custom integrations with our REST API. Automate workflows and connect Sendly to your existing stack.",
+                description: "Build custom integrations with our REST API. Automate workflows and connect E-mailer to your existing stack.",
                 highlights: ["RESTful API", "Webhooks", "SDKs available"],
             },
         ],
@@ -111,7 +111,7 @@ export default function FeaturesPage() {
                         Everything you need to scale outreach
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                        From AI-powered writing to enterprise-grade deliverability, Sendly gives you
+                        From AI-powered writing to enterprise-grade deliverability, E-mailer gives you
                         all the tools to run successful email campaigns.
                     </p>
                 </div>
@@ -179,3 +179,4 @@ export default function FeaturesPage() {
         </>
     );
 }
+
