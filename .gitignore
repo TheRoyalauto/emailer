@@ -1,5 +1,5 @@
 node_modules
-
+.next
 # Environment files (contains API keys - NEVER commit)
 .env
 .env.local
