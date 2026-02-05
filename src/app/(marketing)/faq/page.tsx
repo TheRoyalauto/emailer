@@ -221,7 +221,7 @@ export default function FAQPage() {
                     </div>
 
                     {/* Questions */}
-                    <div className="space-y-4">
+                    <div className={`space-y-4 ${activeCategory === "All" ? "max-h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100" : ""}`}>
                         {currentCategory?.questions.map((item, i) => (
                             <div
                                 key={i}
@@ -250,6 +250,11 @@ export default function FAQPage() {
                             </div>
                         ))}
                     </div>
+                    {activeCategory === "All" && currentCategory && currentCategory.questions.length > 7 && (
+                        <p className="text-center text-sm text-slate-400 mt-4">
+                            Scroll to see all {currentCategory.questions.length} questions
+                        </p>
+                    )}
                 </div>
             </section>
 
