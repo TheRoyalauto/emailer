@@ -142,12 +142,14 @@ export const getTopContacts = query({
 export const getChartData = query({
     args: {
         days: v.optional(v.number()), // Number of days to fetch (default 30)
+        isLive: v.optional(v.boolean()), // If true, return hourly data for last 24h
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx);
         if (!userId) return [];
 
         const days = args.days || 30;
+        const isLive = args.isLive || false;
         const now = Date.now();
         const startDate = now - days * 24 * 60 * 60 * 1000;
 

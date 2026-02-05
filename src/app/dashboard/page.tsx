@@ -34,7 +34,8 @@ function DashboardPage() {
         }
     };
     const days = getDays();
-    const chartDataRaw = useQuery(api.analytics.getChartData, { days });
+    const isLive = timeRange === "LIVE";
+    const chartDataRaw = useQuery(api.analytics.getChartData, { days, isLive });
 
     // Use real data or empty array
     const chartData = useMemo(() => {
@@ -101,7 +102,18 @@ function DashboardPage() {
                         {/* Header Row */}
                         <div className="flex items-start justify-between mb-6">
                             <div>
-                                <p className="text-white/50 text-sm mb-1">Emails Sent</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-white/50 text-sm">Emails Sent</p>
+                                    {isLive && (
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="relative flex h-2 w-2">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                            </span>
+                                            <span className="text-xs text-green-400 font-medium">LIVE</span>
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="flex items-baseline gap-3">
                                     <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                                         {currentValue.toLocaleString()}
@@ -235,8 +247,8 @@ function DashboardPage() {
                                     key={range}
                                     onClick={() => setTimeRange(range)}
                                     className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${timeRange === range
-                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                                            : "text-white/40 hover:text-white/60 hover:bg-white/5"
+                                        ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                                        : "text-white/40 hover:text-white/60 hover:bg-white/5"
                                         }`}
                                 >
                                     {range}
