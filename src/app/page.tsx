@@ -37,31 +37,59 @@ function useHourlyCounter(min: number, max: number) {
 }
 
 
-// Continuous typing animation hook - loops forever (forward only)
-function useTypingEffect(text: string, speed: number = 100) {
+// Cycling typing animation - types multiple phrases
+const heroTexts = [
+    "Send emails that get replies.",
+    "Close deals on autopilot.",
+    "Grow your pipeline 3x faster.",
+    "Turn cold leads into customers.",
+];
+
+function useTypingEffect(speed: number = 80) {
     const [displayText, setDisplayText] = useState("");
+    const [phraseIndex, setPhraseIndex] = useState(0);
 
     useEffect(() => {
-        let i = 0;
+        let charIndex = 0;
+        let isHolding = false;
+        let isErasing = false;
+        const currentPhrase = heroTexts[phraseIndex];
 
         const timer = setInterval(() => {
-            if (i < text.length) {
-                setDisplayText(text.slice(0, i + 1));
-                i++;
+            if (isHolding) return;
+
+            if (!isErasing) {
+                // Typing forward
+                if (charIndex < currentPhrase.length) {
+                    charIndex++;
+                    setDisplayText(currentPhrase.slice(0, charIndex));
+                } else {
+                    // Hold for 1.5 seconds
+                    isHolding = true;
+                    setTimeout(() => {
+                        isHolding = false;
+                        isErasing = true;
+                    }, 1500);
+                }
             } else {
-                // Pause then restart
-                setTimeout(() => {
-                    i = 0;
-                    setDisplayText("");
-                }, 2000);
+                // Erasing
+                if (charIndex > 0) {
+                    charIndex--;
+                    setDisplayText(currentPhrase.slice(0, charIndex));
+                } else {
+                    // Move to next phrase
+                    isErasing = false;
+                    setPhraseIndex((prev) => (prev + 1) % heroTexts.length);
+                }
             }
         }, speed);
 
         return () => clearInterval(timer);
-    }, [text, speed]);
+    }, [phraseIndex, speed]);
 
     return displayText;
 }
+
 
 
 // Feature data
@@ -142,7 +170,7 @@ const jsonLd = {
 
 export default function Home() {
     const emailCount = useHourlyCounter(5000, 20000);
-    const typedText = useTypingEffect("Send emails that get replies.", 100);
+    const typedText = useTypingEffect(80);
 
     return (
         <div className="min-h-screen bg-white text-slate-900 overflow-x-hidden">
