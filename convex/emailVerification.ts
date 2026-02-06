@@ -1,7 +1,14 @@
 import { v } from "convex/values";
 import { mutation, query, action, internalMutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
 import { internal } from "./_generated/api";
+
+// Type for the action return
+type SendVerificationResult = {
+    success: boolean;
+    code?: string;
+    message?: string;
+    error?: string;
+};
 
 // Generate a 6-digit OTP
 function generateOTP(): string {
@@ -119,13 +126,14 @@ export const sendVerificationEmail = action({
         name: v.string(),
         phone: v.optional(v.string()),
     },
-    handler: async (ctx, args) => {
+    handler: async (ctx, args): Promise<SendVerificationResult> => {
         // Create verification record and get code
-        const { code } = await ctx.runMutation(internal.emailVerification.createVerification, {
+        const result = await ctx.runMutation(internal.emailVerification.createVerification, {
             email: args.email,
             name: args.name,
             phone: args.phone,
         });
+        const code = result.code;
 
         // Send email via Resend
         const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -135,7 +143,6 @@ export const sendVerificationEmail = action({
 
         if (!RESEND_API_KEY) {
             console.log("RESEND_API_KEY not set - code is:", code);
-            // For development, return the code directly
             return { success: true, code, message: "Dev mode - no API key" };
         }
 
@@ -179,15 +186,12 @@ export const sendVerificationEmail = action({
 
             if (!response.ok) {
                 console.error("Resend error:", responseText);
-                // Return code anyway for debugging
                 return { success: false, code, error: `Email failed: ${responseText}` };
             }
 
-            // Return code for now so user can proceed while debugging
             return { success: true, code, message: "Email sent (check inbox)" };
         } catch (error) {
             console.error("Email send error:", error);
-            // Return code anyway for debugging
             return { success: false, code, error: "Failed to send email" };
         }
     },
