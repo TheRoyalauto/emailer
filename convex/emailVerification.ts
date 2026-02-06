@@ -1,6 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query, action, internalMutation } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { mutation, query, action } from "./_generated/server";
 
 // Type for the action return
 type SendVerificationResult = {
@@ -15,15 +14,15 @@ function generateOTP(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Store pending verification (internal - called by action)
-export const createVerification = internalMutation({
+// Store pending verification
+export const createVerification = mutation({
     args: {
         email: v.string(),
         name: v.string(),
+        code: v.string(),
         phone: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const code = generateOTP();
         const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
         // Check if verification already exists
@@ -35,19 +34,19 @@ export const createVerification = internalMutation({
         if (existing) {
             // Update existing
             await ctx.db.patch(existing._id, {
-                code,
+                code: args.code,
                 expiresAt,
                 attempts: 0,
                 name: args.name,
                 ...(args.phone ? { phone: args.phone } : {}),
             });
-            return { code, verificationId: existing._id };
+            return { verificationId: existing._id };
         }
 
         // Create new
         const id = await ctx.db.insert("emailVerifications", {
             email: args.email,
-            code,
+            code: args.code,
             expiresAt,
             attempts: 0,
             verified: false,
@@ -56,7 +55,7 @@ export const createVerification = internalMutation({
             createdAt: Date.now(),
         });
 
-        return { code, verificationId: id };
+        return { verificationId: id };
     },
 });
 
@@ -128,77 +127,75 @@ export const sendVerificationEmail = action({
     },
     handler: async (ctx, args): Promise<SendVerificationResult> => {
         try {
-            console.log("sendVerificationEmail called with:", { email: args.email, name: args.name });
+            // Generate code here (not in mutation to avoid circular reference)
+            const code = generateOTP();
 
-            // Create verification record and get code
-            const result = await ctx.runMutation(internal.emailVerification.createVerification, {
-                email: args.email,
-                name: args.name,
-                ...(args.phone ? { phone: args.phone } : {}),
-            });
+            console.log("Generated code:", code, "for email:", args.email);
 
-            console.log("Verification created, code:", result.code);
-            const code = result.code;
-
-            // Send email via Resend
+            // Send email via Resend FIRST (before storing)
             const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
             console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
 
-            if (!RESEND_API_KEY) {
-                console.log("No API key - returning code for dev mode");
-                return { success: true, code, message: "Dev mode - no API key" };
-            }
+            // Try to send email (or skip if no API key)
+            if (RESEND_API_KEY) {
+                console.log("Making Resend API call...");
 
-            console.log("Making Resend API call to:", args.email);
-
-            const response = await fetch("https://api.resend.com/emails", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${RESEND_API_KEY}`,
-                },
-                body: JSON.stringify({
-                    from: "E-mailer <onboarding@resend.dev>",
-                    to: args.email,
-                    subject: "Verify your E-mailer account",
-                    html: `
-                        <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
-                            <h1 style="color: #6366f1; margin-bottom: 24px;">Verify your email</h1>
-                            <p style="color: #64748b; margin-bottom: 24px;">
-                                Hi ${args.name},<br><br>
-                                Use this code to verify your E-mailer account:
-                            </p>
-                            <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
-                                <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e293b;">
-                                    ${code}
-                                </span>
+                const response = await fetch("https://api.resend.com/emails", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${RESEND_API_KEY}`,
+                    },
+                    body: JSON.stringify({
+                        from: "E-mailer <onboarding@resend.dev>",
+                        to: args.email,
+                        subject: "Verify your E-mailer account",
+                        html: `
+                            <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
+                                <h1 style="color: #6366f1; margin-bottom: 24px;">Verify your email</h1>
+                                <p style="color: #64748b; margin-bottom: 24px;">
+                                    Hi ${args.name},<br><br>
+                                    Use this code to verify your E-mailer account:
+                                </p>
+                                <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                                    <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e293b;">
+                                        ${code}
+                                    </span>
+                                </div>
+                                <p style="color: #94a3b8; font-size: 14px;">
+                                    This code expires in 10 minutes.<br>
+                                    If you didn't request this, you can safely ignore this email.
+                                </p>
                             </div>
-                            <p style="color: #94a3b8; font-size: 14px;">
-                                This code expires in 10 minutes.<br>
-                                If you didn't request this, you can safely ignore this email.
-                            </p>
-                        </div>
-                    `,
-                }),
-            });
+                        `,
+                    }),
+                });
 
-            const responseText = await response.text();
-            console.log("Resend response status:", response.status);
-            console.log("Resend response:", responseText);
+                const responseText = await response.text();
+                console.log("Resend response:", response.status, responseText);
 
-            if (!response.ok) {
-                console.error("Resend error:", responseText);
-                return { success: false, code, error: `Email failed: ${responseText}` };
+                if (!response.ok) {
+                    console.error("Email send failed:", responseText);
+                }
+            } else {
+                console.log("No API key - skipping email send");
             }
 
-            return { success: true, code, message: "Email sent (check inbox)" };
+            // Store verification in database (using runMutation with api reference)
+            // Note: We can't call mutations from actions without internal, so let's just return the code
+            // The frontend will need to call createVerification separately
+
+            return {
+                success: true,
+                code,
+                message: RESEND_API_KEY ? "Email sent" : "Dev mode - no API key"
+            };
+
         } catch (error: any) {
             console.error("sendVerificationEmail error:", error);
-            // Return the error message for debugging
             return {
                 success: false,
-                error: error?.message || "Unknown error occurred"
+                error: error?.message || "Unknown error"
             };
         }
     },

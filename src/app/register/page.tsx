@@ -13,6 +13,7 @@ export default function RegisterPage() {
     const { signIn } = useAuthActions();
     const router = useRouter();
     const sendVerificationEmail = useAction(api.emailVerification.sendVerificationEmail);
+    const createVerification = useMutation(api.emailVerification.createVerification);
     const verifyCode = useMutation(api.emailVerification.verifyCode);
 
     // Form state
@@ -52,15 +53,27 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            // Send verification email
+            // Send verification email and get code
             const result = await sendVerificationEmail({
                 email,
                 name,
-                phone: phone || undefined,
+                ...(phone ? { phone } : {}),
             });
 
-            // In dev mode, show the code
+            if (!result.success) {
+                setError(result.error || "Failed to send verification email");
+                setLoading(false);
+                return;
+            }
+
+            // Store verification code in database
             if (result.code) {
+                await createVerification({
+                    email,
+                    name,
+                    code: result.code,
+                    ...(phone ? { phone } : {}),
+                });
                 setDevCode(result.code);
             }
 
