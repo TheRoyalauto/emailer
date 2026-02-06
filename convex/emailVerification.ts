@@ -130,13 +130,18 @@ export const sendVerificationEmail = action({
         // Send email via Resend
         const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
+        console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
+        console.log("Sending to:", args.email);
+
         if (!RESEND_API_KEY) {
             console.log("RESEND_API_KEY not set - code is:", code);
             // For development, return the code directly
-            return { success: true, code, message: "Dev mode - check console for code" };
+            return { success: true, code, message: "Dev mode - no API key" };
         }
 
         try {
+            console.log("Making Resend API call...");
+
             const response = await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -168,16 +173,22 @@ export const sendVerificationEmail = action({
                 }),
             });
 
+            const responseText = await response.text();
+            console.log("Resend response status:", response.status);
+            console.log("Resend response:", responseText);
+
             if (!response.ok) {
-                const error = await response.text();
-                console.error("Resend error:", error);
-                return { success: false, error: "Failed to send email" };
+                console.error("Resend error:", responseText);
+                // Return code anyway for debugging
+                return { success: false, code, error: `Email failed: ${responseText}` };
             }
 
-            return { success: true };
+            // Return code for now so user can proceed while debugging
+            return { success: true, code, message: "Email sent (check inbox)" };
         } catch (error) {
             console.error("Email send error:", error);
-            return { success: false, error: "Failed to send email" };
+            // Return code anyway for debugging
+            return { success: false, code, error: "Failed to send email" };
         }
     },
 });
