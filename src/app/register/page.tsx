@@ -141,7 +141,7 @@ export default function RegisterPage() {
             const result = await initiateVerification({
                 email,
                 name,
-                phone: phone || undefined,
+                ...(phone ? { phone } : {}),
             });
             if (result.code) {
                 setDevCode(result.code);
