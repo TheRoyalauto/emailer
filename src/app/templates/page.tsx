@@ -556,8 +556,8 @@ function TemplatesPage() {
 
             {/* Template Library Modal */}
             {showLibrary && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-8">
-                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-4xl w-full max-h-[70vh] flex flex-col shadow-2xl overflow-hidden">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center px-8 py-20">
+                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-4xl w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#12121f]">
                             <div>
