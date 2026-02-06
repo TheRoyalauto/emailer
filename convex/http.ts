@@ -1,8 +1,12 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
+import { auth } from "./auth";
 
 const http = httpRouter();
+
+// Add auth routes (required for authentication to work)
+auth.addHttpRoutes(http);
 
 // Email open tracking webhook
 http.route({
