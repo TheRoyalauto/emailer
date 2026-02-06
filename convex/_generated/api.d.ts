@@ -18,6 +18,7 @@ import type * as brandRules from "../brandRules.js";
 import type * as campaigns from "../campaigns.js";
 import type * as contacts from "../contacts.js";
 import type * as deals from "../deals.js";
+import type * as emailVerification from "../emailVerification.js";
 import type * as http from "../http.js";
 import type * as leadSearches from "../leadSearches.js";
 import type * as lists from "../lists.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   campaigns: typeof campaigns;
   contacts: typeof contacts;
   deals: typeof deals;
+  emailVerification: typeof emailVerification;
   http: typeof http;
   leadSearches: typeof leadSearches;
   lists: typeof lists;

@@ -6,6 +6,19 @@ export default defineSchema({
     // Auth tables (required by Convex Auth)
     ...authTables,
 
+    // Email verification OTP storage
+    emailVerifications: defineTable({
+        email: v.string(),
+        code: v.string(),
+        expiresAt: v.number(),
+        attempts: v.number(),
+        verified: v.boolean(),
+        name: v.string(),
+        phone: v.optional(v.string()),
+        createdAt: v.number(),
+    })
+        .index("by_email", ["email"]),
+
     // User profiles with tier system (extends auth users)
     userProfiles: defineTable({
         userId: v.id("users"),
