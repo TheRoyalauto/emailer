@@ -127,27 +127,30 @@ export const sendVerificationEmail = action({
         phone: v.optional(v.string()),
     },
     handler: async (ctx, args): Promise<SendVerificationResult> => {
-        // Create verification record and get code
-        const result = await ctx.runMutation(internal.emailVerification.createVerification, {
-            email: args.email,
-            name: args.name,
-            phone: args.phone,
-        });
-        const code = result.code;
-
-        // Send email via Resend
-        const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
-        console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
-        console.log("Sending to:", args.email);
-
-        if (!RESEND_API_KEY) {
-            console.log("RESEND_API_KEY not set - code is:", code);
-            return { success: true, code, message: "Dev mode - no API key" };
-        }
-
         try {
-            console.log("Making Resend API call...");
+            console.log("sendVerificationEmail called with:", { email: args.email, name: args.name });
+
+            // Create verification record and get code
+            const result = await ctx.runMutation(internal.emailVerification.createVerification, {
+                email: args.email,
+                name: args.name,
+                ...(args.phone ? { phone: args.phone } : {}),
+            });
+
+            console.log("Verification created, code:", result.code);
+            const code = result.code;
+
+            // Send email via Resend
+            const RESEND_API_KEY = process.env.RESEND_API_KEY;
+
+            console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
+
+            if (!RESEND_API_KEY) {
+                console.log("No API key - returning code for dev mode");
+                return { success: true, code, message: "Dev mode - no API key" };
+            }
+
+            console.log("Making Resend API call to:", args.email);
 
             const response = await fetch("https://api.resend.com/emails", {
                 method: "POST",
@@ -190,9 +193,13 @@ export const sendVerificationEmail = action({
             }
 
             return { success: true, code, message: "Email sent (check inbox)" };
-        } catch (error) {
-            console.error("Email send error:", error);
-            return { success: false, code, error: "Failed to send email" };
+        } catch (error: any) {
+            console.error("sendVerificationEmail error:", error);
+            // Return the error message for debugging
+            return {
+                success: false,
+                error: error?.message || "Unknown error occurred"
+            };
         }
     },
 });
