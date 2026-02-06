@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
-import { useMutation, useAction } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,8 +14,8 @@ export default function RegisterPage() {
     const { signIn } = useAuthActions();
     const { isAuthenticated, isLoading } = useConvexAuth();
     const router = useRouter();
-    const sendVerificationEmail = useAction(api.emailVerification.sendVerificationEmail);
-    const createVerification = useMutation(api.emailVerification.createVerification);
+    // Use mutation instead of action - much more reliable, no WebSocket timeout issues
+    const initiateVerification = useMutation(api.emailVerification.initiateVerification);
     const verifyCode = useMutation(api.emailVerification.verifyCode);
 
     // Form state
@@ -63,25 +63,21 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const result = await sendVerificationEmail({
+            // Use mutation-first pattern - stores OTP and schedules email in one call
+            const result = await initiateVerification({
                 email,
                 name,
                 ...(phone ? { phone } : {}),
             });
 
             if (!result.success) {
-                setError(result.error || "Failed to send verification email");
+                setError(result.message || "Failed to send verification email");
                 setLoading(false);
                 return;
             }
 
+            // Code is returned for dev mode debugging
             if (result.code) {
-                await createVerification({
-                    email,
-                    name,
-                    code: result.code,
-                    ...(phone ? { phone } : {}),
-                });
                 setDevCode(result.code);
             }
 
@@ -142,7 +138,7 @@ export default function RegisterPage() {
         setError("");
         setLoading(true);
         try {
-            const result = await sendVerificationEmail({
+            const result = await initiateVerification({
                 email,
                 name,
                 phone: phone || undefined,
