@@ -136,91 +136,87 @@ export const sendVerificationEmail = action({
         phone: v.optional(v.string()),
     },
     handler: async (ctx, args): Promise<SendVerificationResult> => {
+        // Generate code immediately
+        const code = generateOTP();
+        console.log("Generated code:", code, "for email:", args.email);
+
+        const RESEND_API_KEY = process.env.RESEND_API_KEY;
+        console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
+
+        if (!RESEND_API_KEY) {
+            console.log("No API key - skipping email send");
+            return {
+                success: true,
+                code,
+                message: "Dev mode - no API key"
+            };
+        }
+
+        // Send email with aggressive 5s timeout to stay within Convex action limits
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         try {
-            // Generate code here (not in mutation to avoid circular reference)
-            const code = generateOTP();
+            console.log("Making Resend API call...");
+            const response = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${RESEND_API_KEY}`,
+                },
+                body: JSON.stringify({
+                    from: "E-mailer <verify@no-reply.e-mailer.io>",
+                    to: args.email,
+                    subject: "Verify your E-mailer account",
+                    html: `
+                        <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
+                            <h1 style="color: #6366f1; margin-bottom: 24px;">Verify your email</h1>
+                            <p style="color: #64748b; margin-bottom: 24px;">
+                                Hi ${args.name},<br><br>
+                                Use this code to verify your E-mailer account:
+                            </p>
+                            <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
+                                <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e293b;">
+                                    ${code}
+                                </span>
+                            </div>
+                            <p style="color: #94a3b8; font-size: 14px;">
+                                This code expires in 10 minutes.<br>
+                                If you didn't request this, you can safely ignore this email.
+                            </p>
+                        </div>
+                    `,
+                }),
+                signal: controller.signal,
+            });
 
-            console.log("Generated code:", code, "for email:", args.email);
+            clearTimeout(timeoutId);
+            const responseText = await response.text();
+            console.log("Resend response:", response.status, responseText);
 
-            // Send email via Resend FIRST (before storing)
-            const RESEND_API_KEY = process.env.RESEND_API_KEY;
-            console.log("RESEND_API_KEY set:", !!RESEND_API_KEY);
-
-            // Try to send email (or skip if no API key)
-            if (RESEND_API_KEY) {
-                console.log("Making Resend API call...");
-
-                // Add timeout to prevent hanging
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-
-                try {
-                    const response = await fetch("https://api.resend.com/emails", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${RESEND_API_KEY}`,
-                        },
-                        body: JSON.stringify({
-                            from: "E-mailer <verify@no-reply.e-mailer.io>",
-                            to: args.email,
-                            subject: "Verify your E-mailer account",
-                            html: `
-                                <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
-                                    <h1 style="color: #6366f1; margin-bottom: 24px;">Verify your email</h1>
-                                    <p style="color: #64748b; margin-bottom: 24px;">
-                                        Hi ${args.name},<br><br>
-                                        Use this code to verify your E-mailer account:
-                                    </p>
-                                    <div style="background: #f1f5f9; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
-                                        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1e293b;">
-                                            ${code}
-                                        </span>
-                                    </div>
-                                    <p style="color: #94a3b8; font-size: 14px;">
-                                        This code expires in 10 minutes.<br>
-                                        If you didn't request this, you can safely ignore this email.
-                                    </p>
-                                </div>
-                            `,
-                        }),
-                        signal: controller.signal,
-                    });
-
-                    clearTimeout(timeoutId);
-                    const responseText = await response.text();
-                    console.log("Resend response:", response.status, responseText);
-
-                    if (!response.ok) {
-                        console.error("Email send failed:", responseText);
-                    }
-                } catch (fetchError: any) {
-                    clearTimeout(timeoutId);
-                    if (fetchError.name === 'AbortError') {
-                        console.log("Resend API timed out, but returning code anyway");
-                    } else {
-                        console.error("Resend fetch error:", fetchError);
-                    }
-                }
-            } else {
-                console.log("No API key - skipping email send");
+            if (!response.ok) {
+                console.error("Email send failed:", responseText);
             }
-
-            // Store verification in database (using runMutation with api reference)
-            // Note: We can't call mutations from actions without internal, so let's just return the code
-            // The frontend will need to call createVerification separately
 
             return {
                 success: true,
                 code,
-                message: RESEND_API_KEY ? "Email sent" : "Dev mode - no API key"
+                message: "Email sent"
             };
 
-        } catch (error: any) {
-            console.error("sendVerificationEmail error:", error);
+        } catch (fetchError: unknown) {
+            clearTimeout(timeoutId);
+            const err = fetchError as { name?: string; message?: string };
+            if (err.name === 'AbortError') {
+                console.log("Resend API timed out, returning code anyway");
+            } else {
+                console.error("Resend fetch error:", fetchError);
+            }
+            // Still return success with code - user can verify even if email failed
             return {
-                success: false,
-                error: error?.message || "Unknown error"
+                success: true,
+                code,
+                message: "Email may have failed, but code is valid"
             };
         }
     },
