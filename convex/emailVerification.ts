@@ -1,15 +1,15 @@
 import { v } from "convex/values";
-import { mutation, query, action } from "./_generated/server";
+import { mutation, query, action, internalMutation } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { api } from "./_generated/api";
+import { internal } from "./_generated/api";
 
 // Generate a 6-digit OTP
 function generateOTP(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Store pending verification
-export const createVerification = mutation({
+// Store pending verification (internal - called by action)
+export const createVerification = internalMutation({
     args: {
         email: v.string(),
         name: v.string(),
@@ -121,7 +121,7 @@ export const sendVerificationEmail = action({
     },
     handler: async (ctx, args) => {
         // Create verification record and get code
-        const { code } = await ctx.runMutation(api.emailVerification.createVerification, {
+        const { code } = await ctx.runMutation(internal.emailVerification.createVerification, {
             email: args.email,
             name: args.name,
             phone: args.phone,
