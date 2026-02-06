@@ -17,6 +17,8 @@ const plans = [
             "Community support",
         ],
         cta: "Start Free",
+        href: "/register",
+        comingSoon: false,
         featured: false,
     },
     {
@@ -32,7 +34,9 @@ const plans = [
             "Basic analytics",
             "Email support",
         ],
-        cta: "Start Free Trial",
+        cta: "Get Starter",
+        href: "#",
+        comingSoon: true,
         featured: false,
     },
     {
@@ -49,7 +53,9 @@ const plans = [
             "Email warm-up",
             "Priority support",
         ],
-        cta: "Start Free Trial",
+        cta: "Get Growth",
+        href: "#",
+        comingSoon: true,
         featured: true,
     },
     {
@@ -66,7 +72,9 @@ const plans = [
             "API access",
             "Dedicated support",
         ],
-        cta: "Start Free Trial",
+        cta: "Contact Us",
+        href: "/contact",
+        comingSoon: false,
         featured: false,
     },
 ];
@@ -96,9 +104,44 @@ const faqs = [
 
 export default function PricingPage() {
     const [yearly, setYearly] = useState(true);
+    const [showComingSoon, setShowComingSoon] = useState(false);
 
     return (
         <>
+            {/* Coming Soon Modal */}
+            {showComingSoon && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="text-center">
+                            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full flex items-center justify-center">
+                                <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-2xl font-bold text-slate-900 mb-2">Coming Soon!</h3>
+                            <p className="text-slate-600 mb-6">
+                                Paid plans are launching very soon. Join the waitlist to get notified and receive
+                                <span className="font-semibold text-indigo-600"> 3 months free</span> when we launch.
+                            </p>
+                            <div className="space-y-3">
+                                <Link
+                                    href="/register"
+                                    className="block w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                                >
+                                    Join Waitlist →
+                                </Link>
+                                <button
+                                    onClick={() => setShowComingSoon(false)}
+                                    className="block w-full py-3 text-slate-600 font-medium hover:text-slate-900 transition-colors"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Hero */}
             <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -175,15 +218,27 @@ export default function PricingPage() {
                                     {plan.emails}
                                 </p>
 
-                                <Link
-                                    href="/register"
-                                    className={`block w-full py-2.5 rounded-xl font-semibold text-center transition-all text-sm ${plan.featured
-                                        ? "bg-white text-indigo-600 hover:bg-indigo-50"
-                                        : "bg-slate-900 text-white hover:bg-slate-800"
-                                        }`}
-                                >
-                                    {plan.cta}
-                                </Link>
+                                {plan.comingSoon ? (
+                                    <button
+                                        onClick={() => setShowComingSoon(true)}
+                                        className={`block w-full py-2.5 rounded-xl font-semibold text-center transition-all text-sm ${plan.featured
+                                            ? "bg-white text-indigo-600 hover:bg-indigo-50"
+                                            : "bg-slate-900 text-white hover:bg-slate-800"
+                                            }`}
+                                    >
+                                        {plan.cta}
+                                    </button>
+                                ) : (
+                                    <Link
+                                        href={plan.href}
+                                        className={`block w-full py-2.5 rounded-xl font-semibold text-center transition-all text-sm ${plan.featured
+                                            ? "bg-white text-indigo-600 hover:bg-indigo-50"
+                                            : "bg-slate-900 text-white hover:bg-slate-800"
+                                            }`}
+                                    >
+                                        {plan.cta}
+                                    </Link>
+                                )}
 
                                 <ul className="mt-6 space-y-3">
                                     {plan.features.map((feature, j) => (
@@ -268,12 +323,12 @@ export default function PricingPage() {
                     <p className="text-lg text-slate-600 mb-8">
                         We offer custom solutions for enterprise teams with specific needs.
                     </p>
-                    <a
-                        href="mailto:support@e-mailer.app"
+                    <Link
+                        href="/contact"
                         className="inline-flex px-8 py-4 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-colors"
                     >
                         Contact Sales →
-                    </a>
+                    </Link>
                 </div>
             </section>
         </>
