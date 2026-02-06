@@ -186,7 +186,7 @@ function ScraperPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+        <div className="min-h-screen bg-[#F8F9FC] pb-20 md:pb-0">
             {/* Robot Animation Overlay */}
             <LeadSearchAnimation isActive={isSearching} prompt={prompt} />
 
@@ -195,31 +195,32 @@ function ScraperPage() {
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold mb-2">
-                        <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            AI Lead Scraper
-                        </span>
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] mb-4 shadow-lg shadow-[#8B5CF6]/25">
+                        <span className="text-3xl">🤖</span>
+                    </div>
+                    <h1 className="text-3xl font-bold text-[#1A1D26] mb-2">
+                        AI Lead Scraper
                     </h1>
-                    <p className="text-white/50">
+                    <p className="text-[#9CA3AF]">
                         Describe the leads you want and AI will find them for you
                     </p>
                 </div>
 
                 {/* Search Input */}
-                <div className="bg-[#12121f] rounded-xl border border-white/10 p-6 mb-6">
+                <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 mb-6">
                     <div className="relative">
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder="Describe the leads you're looking for..."
-                            className="w-full h-32 px-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:outline-none focus:border-indigo-500 resize-none text-lg"
+                            className="w-full h-32 px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 resize-none text-lg text-[#1A1D26] placeholder:text-[#9CA3AF] transition-all"
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" && e.metaKey) {
                                     handleSearch();
                                 }
                             }}
                         />
-                        <div className="absolute bottom-3 right-3 text-xs text-white/30">
+                        <div className="absolute bottom-3 right-3 text-xs text-[#9CA3AF]">
                             ⌘ + Enter to search
                         </div>
                     </div>
@@ -227,13 +228,13 @@ function ScraperPage() {
                     {/* Example Prompts & History Toggle */}
                     <div className="mt-4 flex items-start justify-between gap-4">
                         <div className="flex-1">
-                            <div className="text-xs text-white/40 mb-2">Try these:</div>
+                            <div className="text-xs text-[#9CA3AF] mb-2 font-medium">Try these:</div>
                             <div className="flex flex-wrap gap-2">
                                 {EXAMPLE_PROMPTS.map((example, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setPrompt(example)}
-                                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-sm text-white/60 hover:text-white transition-colors"
+                                        className="px-3 py-1.5 bg-[#F8F9FC] border border-[#E5E7EB] hover:bg-[#F1F3F8] hover:border-[#FF6B4A]/30 rounded-lg text-sm text-[#4B5563] hover:text-[#1A1D26] transition-all"
                                     >
                                         {example}
                                     </button>
@@ -243,7 +244,7 @@ function ScraperPage() {
                         {searchHistory && searchHistory.length > 0 && (
                             <button
                                 onClick={() => setShowSearchHistory(!showSearchHistory)}
-                                className="px-3 py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg text-sm text-indigo-400 transition-colors flex items-center gap-1"
+                                className="px-3 py-1.5 bg-[#8B5CF6]/10 hover:bg-[#8B5CF6]/20 rounded-lg text-sm text-[#8B5CF6] font-medium transition-colors flex items-center gap-1"
                             >
                                 🕐 History ({searchHistory.length})
                             </button>
@@ -252,15 +253,15 @@ function ScraperPage() {
 
                     {/* Search History Panel */}
                     {showSearchHistory && searchHistory && searchHistory.length > 0 && (
-                        <div className="mt-4 p-4 bg-black/40 rounded-xl border border-white/10">
+                        <div className="mt-4 p-4 bg-[#F8F9FC] rounded-xl border border-[#E5E7EB]">
                             <div className="flex items-center justify-between mb-3">
-                                <span className="text-sm font-medium text-white/70">Recent Searches</span>
+                                <span className="text-sm font-semibold text-[#1A1D26]">Recent Searches</span>
                                 <button
                                     onClick={async () => {
                                         await clearSearchHistory({});
                                         setShowSearchHistory(false);
                                     }}
-                                    className="text-xs text-red-400 hover:text-red-300"
+                                    className="text-xs text-[#EF4444] hover:text-[#DC2626] font-medium"
                                 >
                                     Clear All
                                 </button>
@@ -273,10 +274,10 @@ function ScraperPage() {
                                             setPrompt(search.prompt);
                                             setShowSearchHistory(false);
                                         }}
-                                        className="w-full text-left p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                                        className="w-full text-left p-3 rounded-lg bg-white border border-[#E5E7EB] hover:border-[#FF6B4A]/30 hover:shadow-sm transition-all"
                                     >
-                                        <div className="text-sm truncate">{search.prompt}</div>
-                                        <div className="text-xs text-white/40 flex items-center gap-2 mt-1">
+                                        <div className="text-sm font-medium text-[#1A1D26] truncate">{search.prompt}</div>
+                                        <div className="text-xs text-[#9CA3AF] flex items-center gap-2 mt-1">
                                             <span>{search.resultsCount} leads found</span>
                                             <span>•</span>
                                             <span>{new Date(search.createdAt).toLocaleDateString()}</span>
@@ -291,7 +292,7 @@ function ScraperPage() {
                     <button
                         onClick={handleSearch}
                         disabled={!prompt.trim() || isSearching}
-                        className="mt-4 w-full py-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-indigo-500/20"
+                        className="mt-4 w-full py-3.5 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-[#FF6B4A]/25 active:scale-[0.99]"
                     >
                         {isSearching ? (
                             <span className="flex items-center justify-center gap-2">
@@ -306,7 +307,7 @@ function ScraperPage() {
 
                 {/* Duplicate Warning */}
                 {results.length > 0 && duplicateCount > 0 && (
-                    <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-400 flex items-center gap-2">
+                    <div className="mb-6 p-4 bg-[#FEF3C7] border border-[#F59E0B]/30 rounded-xl text-[#92400E] flex items-center gap-2">
                         <span>⚠️</span>
                         <span>
                             <strong>{duplicateCount}</strong> of {results.length} leads already exist in your contacts.
@@ -317,7 +318,7 @@ function ScraperPage() {
 
                 {/* Error */}
                 {error && (
-                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 flex items-center gap-2">
+                    <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#EF4444]/30 rounded-xl text-[#DC2626] flex items-center gap-2">
                         <span>⚠️</span>
                         {error}
                     </div>
@@ -325,7 +326,7 @@ function ScraperPage() {
 
                 {/* Success */}
                 {importSuccess && (
-                    <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 flex items-center gap-2">
+                    <div className="mb-6 p-4 bg-[#ECFDF5] border border-[#10B981]/30 rounded-xl text-[#047857] flex items-center gap-2">
                         <span>✅</span>
                         Successfully imported {importSuccess} contacts!
                     </div>
@@ -333,9 +334,9 @@ function ScraperPage() {
 
                 {/* Results */}
                 {results.length > 0 && (
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 overflow-hidden">
+                    <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
                         {/* Results Header */}
-                        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+                        <div className="p-4 border-b border-[#E5E7EB] bg-[#F8F9FC] flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={toggleAll}
@@ -345,21 +346,21 @@ function ScraperPage() {
                                         type="checkbox"
                                         checked={selectedContacts.size === results.length}
                                         onChange={toggleAll}
-                                        className="w-4 h-4 rounded bg-white/10 border-white/20 text-indigo-500"
+                                        className="w-4 h-4 rounded bg-[#F1F3F8] border-[#E5E7EB] text-[#FF6B4A] focus:ring-[#FF6B4A]"
                                     />
                                 </button>
-                                <span className="font-semibold">
+                                <span className="font-semibold text-[#1A1D26]">
                                     Found {results.length} leads
                                 </span>
-                                <span className="text-white/50 text-sm">
+                                <span className="text-[#9CA3AF] text-sm">
                                     ({selectedContacts.size} selected)
                                 </span>
                                 {/* Source Badge */}
                                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${dataSource === 'real_scraper'
-                                    ? 'bg-green-500/20 text-green-400'
+                                    ? 'bg-[#10B981]/10 text-[#10B981]'
                                     : dataSource === 'ai_generated'
-                                        ? 'bg-orange-500/20 text-orange-400'
-                                        : 'bg-gray-500/20 text-gray-400'}`}>
+                                        ? 'bg-[#F59E0B]/10 text-[#F59E0B]'
+                                        : 'bg-[#9CA3AF]/10 text-[#9CA3AF]'}`}>
                                     {dataSource === 'real_scraper' ? '✓ Real Data' : dataSource === 'ai_generated' ? '⚡ AI Generated' : 'Unknown'}
                                 </span>
                             </div>
@@ -373,7 +374,7 @@ function ScraperPage() {
                                             value={newBatchName}
                                             onChange={(e) => setNewBatchName(e.target.value)}
                                             placeholder="New batch name..."
-                                            className="px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm w-40"
+                                            className="px-3 py-1.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-lg text-sm w-40 focus:border-[#FF6B4A] focus:outline-none"
                                             autoFocus
                                         />
                                         <button
@@ -381,7 +382,7 @@ function ScraperPage() {
                                                 setShowNewBatchInput(false);
                                                 setNewBatchName("");
                                             }}
-                                            className="text-white/50 hover:text-white text-sm"
+                                            className="text-[#9CA3AF] hover:text-[#1A1D26] text-sm"
                                         >
                                             ✕
                                         </button>
@@ -397,7 +398,7 @@ function ScraperPage() {
                                                 setSelectedBatchId(e.target.value);
                                             }
                                         }}
-                                        className="px-3 py-1.5 bg-black/40 border border-white/10 rounded-lg text-sm"
+                                        className="px-3 py-1.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-lg text-sm text-[#1A1D26] focus:border-[#FF6B4A] focus:outline-none"
                                     >
                                         <option value="">No batch</option>
                                         <option value="__new__">➕ Create New Batch</option>
@@ -428,7 +429,7 @@ function ScraperPage() {
                                         a.click();
                                     }}
                                     disabled={selectedContacts.size === 0}
-                                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="px-3 py-1.5 bg-[#F1F3F8] hover:bg-[#E5E7EB] border border-[#E5E7EB] rounded-lg font-medium text-sm text-[#4B5563] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     📥 Export CSV
                                 </button>
@@ -437,7 +438,7 @@ function ScraperPage() {
                                 <button
                                     onClick={handleImport}
                                     disabled={selectedContacts.size === 0 || importing || (showNewBatchInput && !newBatchName.trim())}
-                                    className="px-4 py-1.5 bg-green-500 hover:bg-green-600 rounded-lg font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="px-4 py-1.5 bg-gradient-to-r from-[#10B981] to-[#059669] rounded-lg font-semibold text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-[#10B981]/25"
                                 >
                                     {importing ? "Importing..." : `Import ${selectedContacts.size}`}
                                 </button>
@@ -445,68 +446,71 @@ function ScraperPage() {
                         </div>
 
                         {/* Results List */}
-                        <div className="divide-y divide-white/5 max-h-[400px] overflow-y-auto">
+                        <div className="divide-y divide-[#F1F3F8] max-h-[400px] overflow-y-auto">
                             {results.map((contact, i) => (
                                 <div
                                     key={i}
                                     onClick={() => toggleContact(i)}
-                                    className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-colors ${selectedContacts.has(i) ? "bg-indigo-500/10" : ""
+                                    className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-[#F8F9FC] transition-colors ${selectedContacts.has(i) ? "bg-[#FF6B4A]/5" : ""
                                         }`}
                                 >
                                     <input
                                         type="checkbox"
                                         checked={selectedContacts.has(i)}
                                         onChange={() => toggleContact(i)}
-                                        className="w-4 h-4 rounded bg-white/10 border-white/20 text-indigo-500"
+                                        className="w-4 h-4 rounded bg-[#F1F3F8] border-[#E5E7EB] text-[#FF6B4A] focus:ring-[#FF6B4A]"
                                     />
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center font-bold flex-shrink-0">
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${selectedContacts.has(i)
+                                        ? "bg-gradient-to-br from-[#FF6B4A] to-[#F43F5E] text-white"
+                                        : "bg-[#F1F3F8] text-[#4B5563]"
+                                        }`}>
                                         {(contact.name || contact.email).charAt(0).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <span className={`font-medium truncate ${!contact.name ? 'italic text-white/40' : ''}`}>
+                                            <span className={`font-medium truncate ${!contact.name ? 'italic text-[#9CA3AF]' : 'text-[#1A1D26]'}`}>
                                                 {contact.name || 'Name not found'}
                                             </span>
-                                            <span className={`text-sm truncate ${contact.company ? 'text-white/50' : 'text-white/30 italic'}`}>
+                                            <span className={`text-sm truncate ${contact.company ? 'text-[#9CA3AF]' : 'text-[#E5E7EB] italic'}`}>
                                                 • {contact.company || 'Company not found'}
                                             </span>
                                             {contact.verified && (
-                                                <span className="px-1 py-0.5 bg-green-500/20 text-green-400 text-xs rounded">✓</span>
+                                                <span className="px-1 py-0.5 bg-[#10B981]/10 text-[#10B981] text-xs rounded font-medium">✓</span>
                                             )}
                                             {contact.isDuplicate && (
-                                                <span className="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs rounded">
+                                                <span className="px-1.5 py-0.5 bg-[#F59E0B]/10 text-[#F59E0B] text-xs rounded font-medium">
                                                     Duplicate
                                                 </span>
                                             )}
                                         </div>
-                                        <div className="text-sm text-white/50 truncate">
+                                        <div className="text-sm text-[#9CA3AF] truncate">
                                             {contact.email}
                                         </div>
                                     </div>
                                     {/* Lead Score Badge */}
                                     {contact.leadScore && (
-                                        <div className={`px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${contact.leadScore >= 80 ? 'bg-green-500/20 text-green-400' :
-                                            contact.leadScore >= 60 ? 'bg-yellow-500/20 text-yellow-400' :
-                                                'bg-red-500/20 text-red-400'
+                                        <div className={`px-2 py-1 rounded-lg text-xs font-semibold flex-shrink-0 ${contact.leadScore >= 80 ? 'bg-[#10B981]/10 text-[#10B981]' :
+                                            contact.leadScore >= 60 ? 'bg-[#F59E0B]/10 text-[#F59E0B]' :
+                                                'bg-[#EF4444]/10 text-[#EF4444]'
                                             }`}>
                                             {contact.leadScore}
                                         </div>
                                     )}
                                     <div className="text-right text-sm hidden md:block flex-shrink-0 min-w-[150px]">
-                                        <div className={contact.phone ? 'text-white/40' : 'text-white/20 italic text-xs'}>📞 {contact.phone || 'No phone'}</div>
-                                        <div className={contact.location ? 'text-white/40' : 'text-white/20 italic text-xs'}>📍 {contact.location || 'No location'}</div>
+                                        <div className={contact.phone ? 'text-[#9CA3AF]' : 'text-[#E5E7EB] italic text-xs'}>📞 {contact.phone || 'No phone'}</div>
+                                        <div className={contact.location ? 'text-[#9CA3AF]' : 'text-[#E5E7EB] italic text-xs'}>📍 {contact.location || 'No location'}</div>
                                         {contact.website ? (
                                             <a
                                                 href={contact.website.startsWith('http') ? contact.website : `https://${contact.website}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="text-indigo-400 hover:text-indigo-300 truncate block max-w-[200px]"
+                                                className="text-[#FF6B4A] hover:text-[#F43F5E] truncate block max-w-[200px]"
                                             >
                                                 🌐 Website
                                             </a>
                                         ) : (
-                                            <div className="text-white/20 italic text-xs">🌐 No website</div>
+                                            <div className="text-[#E5E7EB] italic text-xs">🌐 No website</div>
                                         )}
                                     </div>
                                 </div>
@@ -517,9 +521,12 @@ function ScraperPage() {
 
                 {/* Empty State */}
                 {!isSearching && results.length === 0 && !importSuccess && (
-                    <div className="text-center py-12 text-white/30">
-                        <div className="text-6xl mb-4">🤖</div>
-                        <p>Enter a prompt above to start finding leads</p>
+                    <div className="text-center py-16 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#8B5CF6]/10 to-[#A855F7]/10 border border-[#8B5CF6]/20 flex items-center justify-center text-4xl">
+                            🤖
+                        </div>
+                        <h2 className="text-xl font-semibold text-[#1A1D26] mb-2">Ready to Find Leads</h2>
+                        <p className="text-[#9CA3AF]">Enter a prompt above to start finding leads</p>
                     </div>
                 )}
             </main>

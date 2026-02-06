@@ -40,7 +40,6 @@ function DashboardPage() {
     // Use real data or empty array
     const chartData = useMemo(() => {
         if (!chartDataRaw || chartDataRaw.length === 0) {
-            // Show empty state message
             return [];
         }
         return chartDataRaw;
@@ -52,7 +51,7 @@ function DashboardPage() {
     const totalCampaigns = campaigns?.length || 0;
     const activeCampaigns = campaigns?.filter(c => c.status === "sending" || c.status === "scheduled")?.length || 0;
 
-    // Chart calculations - check if there's actually any email activity
+    // Chart calculations
     const totalEmailsSent = chartData.length > 0 ? chartData[chartData.length - 1]?.emailsSent || 0 : 0;
     const hasData = totalEmailsSent > 0;
     const maxValue = hasData ? Math.max(...chartData.map(d => d.emailsSent), 1) * 1.1 : 100;
@@ -89,43 +88,42 @@ function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+        <div className="min-h-screen bg-[#F8F9FC] pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Hero Section with Chart */}
-                <div className="relative mb-8 rounded-2xl overflow-hidden bg-gradient-to-br from-[#12121f] to-[#16162a] border border-white/10">
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.15),transparent_50%)]" />
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(168,85,247,0.1),transparent_50%)]" />
+                <div className="relative mb-8 rounded-2xl overflow-hidden bg-white border border-[#E5E7EB] shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#FF6B4A]/5 to-[#0EA5E9]/5" />
 
                     <div className="relative p-6 md:p-8">
                         {/* Header Row */}
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <p className="text-white/50 text-sm">Emails Sent</p>
+                                    <p className="text-[#4B5563] text-sm font-medium">Emails Sent</p>
                                     {isLive && (
                                         <div className="flex items-center gap-1.5">
                                             <span className="relative flex h-2 w-2">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
                                             </span>
-                                            <span className="text-xs text-green-400 font-medium">LIVE</span>
+                                            <span className="text-xs text-[#10B981] font-semibold">LIVE</span>
                                         </div>
                                     )}
                                 </div>
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                                    <span className="text-4xl md:text-5xl font-bold text-gradient">
                                         {currentValue.toLocaleString()}
                                     </span>
                                     {hasData && change !== 0 && (
-                                        <span className={`text-sm font-medium ${change >= 0 ? "text-green-400" : "text-red-400"}`}>
+                                        <span className={`text-sm font-semibold px-2 py-0.5 rounded-full ${change >= 0 ? "text-[#10B981] bg-[#ECFDF5]" : "text-[#EF4444] bg-[#FEF2F2]"}`}>
                                             {change >= 0 ? "+" : ""}{change} ({changePercent}%)
                                         </span>
                                     )}
                                 </div>
-                                {/* Fixed height date row - prevents layout shift */}
-                                <p className={`text-white/40 text-sm mt-1 h-5 ${activeIndex !== null && displayData ? 'opacity-100' : 'opacity-0'}`}>
+                                {/* Fixed height date row */}
+                                <p className={`text-[#9CA3AF] text-sm mt-1 h-5 ${activeIndex !== null && displayData ? 'opacity-100' : 'opacity-0'}`}>
                                     {displayData?.date || '\u00A0'}
                                 </p>
                             </div>
@@ -149,12 +147,12 @@ function DashboardPage() {
                                     >
                                         <defs>
                                             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stopColor="#6366f1" />
-                                                <stop offset="100%" stopColor="#a855f7" />
+                                                <stop offset="0%" stopColor="#FF6B4A" />
+                                                <stop offset="100%" stopColor="#F43F5E" />
                                             </linearGradient>
                                             <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.3" />
-                                                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                                                <stop offset="0%" stopColor="#FF6B4A" stopOpacity="0.2" />
+                                                <stop offset="100%" stopColor="#FF6B4A" stopOpacity="0" />
                                             </linearGradient>
                                         </defs>
 
@@ -179,12 +177,12 @@ function DashboardPage() {
                                         <>
                                             {/* Vertical Line */}
                                             <div
-                                                className="absolute top-0 bottom-0 w-px bg-white/30 pointer-events-none transition-all duration-75"
+                                                className="absolute top-0 bottom-0 w-px bg-[#FF6B4A]/50 pointer-events-none transition-all duration-75"
                                                 style={{ left: `${points[activeIndex].x}%` }}
                                             />
                                             {/* Dot */}
                                             <div
-                                                className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-indigo-500 border-2 border-white shadow-lg shadow-indigo-500/50 pointer-events-none transition-all duration-75"
+                                                className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-[#FF6B4A] border-2 border-white shadow-lg shadow-[#FF6B4A]/30 pointer-events-none transition-all duration-75"
                                                 style={{
                                                     left: `${points[activeIndex].x}%`,
                                                     top: `${points[activeIndex].y}%`
@@ -194,9 +192,8 @@ function DashboardPage() {
                                     )}
                                 </>
                             ) : (
-                                /* Premium Empty State with Placeholder Chart */
+                                /* Premium Empty State */
                                 <div className="relative h-full">
-                                    {/* Faded placeholder chart */}
                                     <svg
                                         viewBox="0 0 100 100"
                                         preserveAspectRatio="none"
@@ -204,16 +201,15 @@ function DashboardPage() {
                                     >
                                         <defs>
                                             <linearGradient id="placeholderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stopColor="#6366f1" />
-                                                <stop offset="100%" stopColor="#a855f7" />
+                                                <stop offset="0%" stopColor="#FF6B4A" />
+                                                <stop offset="100%" stopColor="#F43F5E" />
                                             </linearGradient>
                                             <linearGradient id="placeholderAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
-                                                <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                                                <stop offset="0%" stopColor="#FF6B4A" stopOpacity="0.3" />
+                                                <stop offset="100%" stopColor="#FF6B4A" stopOpacity="0" />
                                             </linearGradient>
                                         </defs>
 
-                                        {/* Placeholder sample line - looks like organic growth */}
                                         <path
                                             d="M 0 85 Q 10 80 15 75 T 25 70 T 35 65 T 45 55 T 55 50 T 65 40 T 75 35 T 85 25 T 100 20 L 100 100 L 0 100 Z"
                                             fill="url(#placeholderAreaGradient)"
@@ -228,27 +224,26 @@ function DashboardPage() {
                                         />
                                     </svg>
 
-                                    {/* Overlay message */}
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gradient-to-t from-[#12121f]/80 via-transparent to-transparent">
-                                        <div className="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center backdrop-blur-sm">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                        <div className="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-[#FF6B4A]/10 to-[#F43F5E]/10 border border-[#FF6B4A]/20 flex items-center justify-center">
                                             <span className="text-2xl">🚀</span>
                                         </div>
-                                        <p className="text-white/60 font-medium">Ready to grow</p>
-                                        <p className="text-sm text-white/40 mt-1">Send your first campaign to track growth</p>
+                                        <p className="text-[#1A1D26] font-semibold">Ready to grow</p>
+                                        <p className="text-sm text-[#9CA3AF] mt-1">Send your first campaign to track growth</p>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Robinhood-style Time Range Selector - Bottom */}
-                        <div className="flex items-center justify-center gap-1 mt-4 pt-4 border-t border-white/5">
+                        {/* Time Range Selector */}
+                        <div className="flex items-center justify-center gap-1 mt-4 pt-4 border-t border-[#E5E7EB]">
                             {(["LIVE", "1D", "1W", "1M", "3M", "YTD", "1Y", "ALL"] as const).map((range) => (
                                 <button
                                     key={range}
                                     onClick={() => setTimeRange(range)}
-                                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${timeRange === range
-                                        ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                                        : "text-white/40 hover:text-white/60 hover:bg-white/5"
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${timeRange === range
+                                        ? "bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] text-white shadow-md shadow-[#FF6B4A]/20"
+                                        : "text-[#9CA3AF] hover:text-[#4B5563] hover:bg-[#F1F3F8]"
                                         }`}
                                 >
                                     {range}
@@ -261,35 +256,35 @@ function DashboardPage() {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <Link href="/contacts" className="group">
-                        <div className="p-5 bg-gradient-to-br from-[#12121f] to-[#16162a] rounded-xl border border-white/10 hover:border-indigo-500/30 transition-all hover:-translate-y-1">
-                            <div className="text-3xl font-bold text-indigo-400 group-hover:scale-105 transition-transform">
+                        <div className="p-5 bg-white rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-lg hover:border-[#0EA5E9]/30 transition-all duration-200 hover:-translate-y-1">
+                            <div className="text-3xl font-bold text-[#0EA5E9] group-hover:scale-105 transition-transform">
                                 {totalContacts}
                             </div>
-                            <div className="text-sm text-white/50">Contacts</div>
+                            <div className="text-sm text-[#9CA3AF] font-medium">Contacts</div>
                         </div>
                     </Link>
                     <Link href="/campaigns" className="group">
-                        <div className="p-5 bg-gradient-to-br from-[#12121f] to-[#16162a] rounded-xl border border-white/10 hover:border-green-500/30 transition-all hover:-translate-y-1">
-                            <div className="text-3xl font-bold text-green-400 group-hover:scale-105 transition-transform">
+                        <div className="p-5 bg-white rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-lg hover:border-[#10B981]/30 transition-all duration-200 hover:-translate-y-1">
+                            <div className="text-3xl font-bold text-[#10B981] group-hover:scale-105 transition-transform">
                                 {activeCampaigns}
                             </div>
-                            <div className="text-sm text-white/50">Active Campaigns</div>
+                            <div className="text-sm text-[#9CA3AF] font-medium">Active Campaigns</div>
                         </div>
                     </Link>
                     <Link href="/campaigns" className="group">
-                        <div className="p-5 bg-gradient-to-br from-[#12121f] to-[#16162a] rounded-xl border border-white/10 hover:border-amber-500/30 transition-all hover:-translate-y-1">
-                            <div className="text-3xl font-bold text-amber-400 group-hover:scale-105 transition-transform">
+                        <div className="p-5 bg-white rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-lg hover:border-[#F59E0B]/30 transition-all duration-200 hover:-translate-y-1">
+                            <div className="text-3xl font-bold text-[#F59E0B] group-hover:scale-105 transition-transform">
                                 {totalCampaigns}
                             </div>
-                            <div className="text-sm text-white/50">Total Campaigns</div>
+                            <div className="text-sm text-[#9CA3AF] font-medium">Total Campaigns</div>
                         </div>
                     </Link>
                     <Link href="/templates" className="group">
-                        <div className="p-5 bg-gradient-to-br from-[#12121f] to-[#16162a] rounded-xl border border-white/10 hover:border-purple-500/30 transition-all hover:-translate-y-1">
-                            <div className="text-3xl font-bold text-purple-400 group-hover:scale-105 transition-transform">
+                        <div className="p-5 bg-white rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-lg hover:border-[#FF6B4A]/30 transition-all duration-200 hover:-translate-y-1">
+                            <div className="text-3xl font-bold text-[#FF6B4A] group-hover:scale-105 transition-transform">
                                 {totalTemplates}
                             </div>
-                            <div className="text-sm text-white/50">Templates</div>
+                            <div className="text-sm text-[#9CA3AF] font-medium">Templates</div>
                         </div>
                     </Link>
                 </div>
@@ -297,90 +292,90 @@ function DashboardPage() {
                 {/* Two Column Layout */}
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* Quick Actions */}
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 p-6">
-                        <h2 className="text-xl font-semibold mb-5">Quick Actions</h2>
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6">
+                        <h2 className="text-xl font-bold text-[#1A1D26] mb-5">Quick Actions</h2>
                         <div className="space-y-3">
                             <Link
                                 href="/campaigns"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 hover:from-indigo-500/20 hover:to-purple-500/20 border border-indigo-500/20 transition-all group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-[#FF6B4A]/5 to-[#F43F5E]/5 hover:from-[#FF6B4A]/10 hover:to-[#F43F5E]/10 border border-[#FF6B4A]/10 transition-all duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF6B4A] to-[#F43F5E] flex items-center justify-center text-lg shadow-lg shadow-[#FF6B4A]/20 group-hover:scale-110 transition-transform">
                                     🚀
                                 </div>
                                 <div>
-                                    <div className="font-medium">New Campaign</div>
-                                    <div className="text-sm text-white/40">Send emails to your contacts</div>
+                                    <div className="font-semibold text-[#1A1D26]">New Campaign</div>
+                                    <div className="text-sm text-[#9CA3AF]">Send emails to your contacts</div>
                                 </div>
                             </Link>
                             <Link
                                 href="/scraper"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-[#F8F9FC] hover:bg-[#F1F3F8] border border-[#E5E7EB] transition-all duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
                                     🔎
                                 </div>
                                 <div>
-                                    <div className="font-medium">Find Leads</div>
-                                    <div className="text-sm text-white/40">Discover new business contacts</div>
+                                    <div className="font-semibold text-[#1A1D26]">Find Leads</div>
+                                    <div className="text-sm text-[#9CA3AF]">Discover new business contacts</div>
                                 </div>
                             </Link>
                             <Link
                                 href="/contacts"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-[#F8F9FC] hover:bg-[#F1F3F8] border border-[#E5E7EB] transition-all duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
                                     ➕
                                 </div>
                                 <div>
-                                    <div className="font-medium">Add Contacts</div>
-                                    <div className="text-sm text-white/40">Import or add manually</div>
+                                    <div className="font-semibold text-[#1A1D26]">Add Contacts</div>
+                                    <div className="text-sm text-[#9CA3AF]">Import or add manually</div>
                                 </div>
                             </Link>
                         </div>
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 p-6">
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-6">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-xl font-semibold">Recent Activity</h2>
+                            <h2 className="text-xl font-bold text-[#1A1D26]">Recent Activity</h2>
                         </div>
 
                         {recentActivity === undefined ? (
                             <div className="flex justify-center py-12">
-                                <div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" />
+                                <div className="animate-spin w-6 h-6 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
                             </div>
                         ) : recentActivity.length === 0 ? (
                             <div className="text-center py-12">
-                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center text-3xl">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#F1F3F8] flex items-center justify-center text-3xl">
                                     📭
                                 </div>
-                                <p className="text-white/40">No activity yet</p>
-                                <p className="text-sm text-white/30 mt-1">Start a campaign to see activity here</p>
+                                <p className="text-[#4B5563] font-medium">No activity yet</p>
+                                <p className="text-sm text-[#9CA3AF] mt-1">Start a campaign to see activity here</p>
                             </div>
                         ) : (
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                                 {recentActivity.map((activity) => (
                                     <div
                                         key={activity._id}
-                                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#F8F9FC] transition-colors"
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">
+                                        <div className="w-8 h-8 rounded-lg bg-[#F1F3F8] flex items-center justify-center text-sm">
                                             {activity.type === "email_sent" ? "📧" :
                                                 activity.type === "status_changed" ? "🔄" : "📌"}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="text-sm truncate">
-                                                <span className="font-medium">
+                                                <span className="font-semibold text-[#1A1D26]">
                                                     {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                                 </span>
                                                 {activity.contact && (
-                                                    <span className="text-white/50 ml-2">
+                                                    <span className="text-[#9CA3AF] ml-2">
                                                         • {activity.contact.name || activity.contact.email}
                                                     </span>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="text-xs text-white/30">
+                                        <div className="text-xs text-[#9CA3AF] font-medium">
                                             {formatRelativeTime(activity.createdAt)}
                                         </div>
                                     </div>
