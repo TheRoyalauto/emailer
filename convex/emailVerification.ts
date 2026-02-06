@@ -29,7 +29,7 @@ export const initiateVerification = mutation({
         const code = generateOTP();
         const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
-        console.log("[initiateVerification] email:", email, "code:", code);
+        console.log(`[PROD_DEBUG] initiateVerification called | email=${email} | code=${code} | timestamp=${new Date().toISOString()}`);
 
         // Upsert verification record
         const existing = await ctx.db
@@ -82,11 +82,12 @@ export const sendEmailInternal = internalAction({
     },
     handler: async (ctx, args) => {
         const RESEND_API_KEY = process.env.RESEND_API_KEY;
-        console.log("[sendEmailInternal] email:", args.email, "hasApiKey:", !!RESEND_API_KEY);
+        const fromAddress = "E-mailer <verify@e-mailer.io>";
+        console.log(`[PROD_DEBUG] sendEmailInternal fired | email=${args.email} | hasApiKey=${!!RESEND_API_KEY} | from=${fromAddress}`);
 
         if (!RESEND_API_KEY) {
-            console.log("[sendEmailInternal] No API key - skipping (dev mode)");
-            return { success: true };
+            console.error("[PROD_DEBUG] RESEND_API_KEY is missing! Email will NOT be sent.");
+            return { success: false };
         }
 
         try {
@@ -97,7 +98,7 @@ export const sendEmailInternal = internalAction({
                     "Authorization": `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    from: "E-mailer <verify@no-reply.e-mailer.io>",
+                    from: fromAddress,
                     to: args.email,
                     subject: "Verify your E-mailer account",
                     html: `
@@ -122,11 +123,15 @@ export const sendEmailInternal = internalAction({
             });
 
             const responseText = await response.text();
-            console.log("[sendEmailInternal] Resend response:", response.status, responseText);
+            if (response.ok) {
+                console.log(`[PROD_DEBUG] Email sent successfully | status=${response.status} | response=${responseText}`);
+            } else {
+                console.error(`[PROD_DEBUG] Resend API FAILED | status=${response.status} | response=${responseText} | from=${fromAddress} | to=${args.email}`);
+            }
 
             return { success: response.ok };
-        } catch (err) {
-            console.error("[sendEmailInternal] Error:", err);
+        } catch (err: any) {
+            console.error(`[PROD_DEBUG] sendEmailInternal EXCEPTION | error=${err.message} | email=${args.email}`);
             return { success: false };
         }
     },

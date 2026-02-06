@@ -62,12 +62,28 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            // Use mutation-first pattern - stores OTP and schedules email in one call
-            const result = await initiateVerification({
+            console.log("[Register Debug] Calling initiateVerification...", {
                 email,
                 name,
-                ...(phone ? { phone } : {}),
+                convexUrl: process.env.NEXT_PUBLIC_CONVEX_URL,
             });
+
+            // Timeout wrapper — never let the spinner hang forever
+            const timeoutPromise = new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error("Request timed out after 15 seconds. Please check your internet connection and try again.")), 15000)
+            );
+
+            // Use mutation-first pattern - stores OTP and schedules email in one call
+            const result = await Promise.race([
+                initiateVerification({
+                    email,
+                    name,
+                    ...(phone ? { phone } : {}),
+                }),
+                timeoutPromise,
+            ]);
+
+            console.log("[Register Debug] initiateVerification returned:", result);
 
             if (!result.success) {
                 setError("Failed to send verification email");
@@ -77,8 +93,8 @@ export default function RegisterPage() {
 
             setStep("verify");
         } catch (err: any) {
-            console.error("Signup error:", err);
-            setError(err.message || "Failed to send verification email");
+            console.error("[Register Debug] Signup error:", err);
+            setError(err.message || "Failed to send verification email. Please try again.");
         } finally {
             setLoading(false);
         }
