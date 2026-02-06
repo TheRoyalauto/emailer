@@ -96,8 +96,10 @@ export const verifyCode = mutation({
             attempts: verification.attempts + 1,
         });
 
+        console.log("Comparing codes - stored:", verification.code, "entered:", args.code, "match:", verification.code === args.code);
+
         if (verification.code !== args.code) {
-            return { success: false, error: "Invalid code" };
+            return { success: false, error: `Invalid code. Expected ${verification.code.slice(0, 2)}****, got ${args.code.slice(0, 2)}****` };
         }
 
         // Mark as verified
