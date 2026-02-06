@@ -2,6 +2,11 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+// Pre-configured super admin emails - these will be auto-promoted on registration
+const SUPER_ADMIN_EMAILS = [
+    "genswizz@gmail.com",
+];
+
 // Tier limits configuration
 export const TIER_LIMITS = {
     free: { dailyEmails: 30, monthlyEmails: 900, emailAccounts: 1 },
@@ -57,13 +62,18 @@ export const ensureProfile = mutation({
 
         // Get user email from auth
         const user = await ctx.db.get(userId);
-        const email = user?.email || "unknown@email.com";
+        const email = (user?.email || "unknown@email.com") as string;
 
-        // Create new profile with free tier
+        // Check if this email is a pre-configured super admin
+        const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(email.toLowerCase());
+
+        // Create new profile
         const profileId = await ctx.db.insert("userProfiles", {
             userId,
-            email: email as string,
-            tier: "free",
+            email,
+            tier: isSuperAdmin ? "scale" : "free",
+            isSuperAdmin: isSuperAdmin || undefined,
+            isAdmin: isSuperAdmin || undefined,
             createdAt: Date.now(),
             lastLoginAt: Date.now(),
             emailsSentToday: 0,
