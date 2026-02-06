@@ -263,39 +263,17 @@ export default function PricingPage() {
                 </div>
             </section>
 
-            {/* Lead Generation Credits - Coming Soon */}
-            <section className="py-16 lg:py-20 bg-gradient-to-br from-slate-900 to-slate-800">
-                <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-                    <span className="inline-block px-4 py-1.5 bg-amber-500/20 text-amber-400 text-sm font-semibold rounded-full mb-4">
+            {/* Lead Generation - Coming Soon (Compact) */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 -mt-4 mb-16">
+                <div className="flex items-center justify-center gap-4 py-4 px-6 bg-slate-100 rounded-xl border border-slate-200">
+                    <span className="px-2.5 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full">
                         Coming Soon
                     </span>
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-                        Lead Generation Credits
-                    </h2>
-                    <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-                        Find and verify leads with our AI-powered scraper. Buy credits as you need them—no subscription required.
-                    </p>
-                    <div className="grid sm:grid-cols-3 gap-4 max-w-xl mx-auto">
-                        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                            <div className="text-2xl font-bold text-white">$10</div>
-                            <div className="text-slate-400 text-sm">1,000 credits</div>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-xl p-4 ring-2 ring-indigo-500">
-                            <div className="text-2xl font-bold text-white">$40</div>
-                            <div className="text-slate-400 text-sm">5,000 credits</div>
-                            <div className="text-xs text-indigo-400 mt-1">Save 20%</div>
-                        </div>
-                        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                            <div className="text-2xl font-bold text-white">$70</div>
-                            <div className="text-slate-400 text-sm">10,000 credits</div>
-                            <div className="text-xs text-green-400 mt-1">Save 30%</div>
-                        </div>
-                    </div>
-                    <p className="text-sm text-slate-500 mt-6">
-                        1 credit = 1 lead discovered • 8 credits = 1 verified email
-                    </p>
+                    <span className="text-slate-600 text-sm">
+                        <strong className="text-slate-900">Lead Generation Credits</strong> — Find and verify leads with our AI scraper. Pay as you go.
+                    </span>
                 </div>
-            </section>
+            </div>
 
             {/* Pricing FAQ */}
             <section className="py-16 lg:py-24 bg-slate-50">
