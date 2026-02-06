@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useConvexAuth } from "convex/react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
@@ -11,6 +12,7 @@ type Step = "details" | "verify" | "success";
 
 export default function RegisterPage() {
     const { signIn } = useAuthActions();
+    const { isAuthenticated, isLoading } = useConvexAuth();
     const router = useRouter();
     const sendVerificationEmail = useAction(api.emailVerification.sendVerificationEmail);
     const createVerification = useMutation(api.emailVerification.createVerification);
@@ -29,6 +31,14 @@ export default function RegisterPage() {
     // UI state
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [registrationComplete, setRegistrationComplete] = useState(false);
+
+    // Redirect when authenticated after registration
+    useEffect(() => {
+        if (registrationComplete && isAuthenticated && !isLoading) {
+            router.push("/dashboard");
+        }
+    }, [isAuthenticated, isLoading, registrationComplete, router]);
 
     // Step 1: Submit account details and send verification email
     const handleDetailsSubmit = async (e: React.FormEvent) => {
@@ -118,11 +128,8 @@ export default function RegisterPage() {
             });
 
             setStep("success");
-
-            // Redirect after brief success message
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 2000);
+            setRegistrationComplete(true);
+            // Redirect will happen via useEffect when isAuthenticated becomes true
         } catch (err: any) {
             console.error("Account creation error:", err);
             if (err.message?.includes("already exists")) {
