@@ -127,10 +127,10 @@ const features = [
 ];
 
 const stats = [
-    { value: "50M+", label: "Emails Sent" },
+    { value: "47K+", label: "Emails Sent" },
     { value: "98.7%", label: "Deliverability" },
     { value: "3.2x", label: "More Replies" },
-    { value: "10K+", label: "Happy Users" },
+    { value: "312", label: "Active Users" },
 ];
 
 const testimonials = [
