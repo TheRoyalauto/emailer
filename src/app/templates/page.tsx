@@ -603,17 +603,17 @@ function TemplatesPage() {
                         </div>
 
                         {/* Template Grid */}
-                        <div className="flex-1 overflow-auto p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="flex-1 overflow-auto p-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {LIBRARY_TEMPLATES
                                     .filter(t => libraryCategory === "all" || t.category === libraryCategory)
                                     .map((template) => (
                                         <div
                                             key={template.id}
-                                            className="group relative p-5 rounded-xl bg-gradient-to-br from-[#16162a] to-[#12121f] border border-white/10 hover:border-indigo-500/30 transition-all"
+                                            className="group relative p-4 rounded-xl bg-gradient-to-br from-[#16162a] to-[#12121f] border border-white/10 hover:border-indigo-500/30 transition-all"
                                         >
                                             {/* Category Badge */}
-                                            <div className="flex items-center justify-between mb-3">
+                                            <div className="flex items-center justify-between mb-2">
                                                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${template.category === "cold"
                                                     ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
                                                     : template.category === "followup"
@@ -625,9 +625,9 @@ function TemplatesPage() {
                                             </div>
 
                                             {/* Template Info */}
-                                            <h3 className="text-lg font-semibold text-white mb-1">{template.name}</h3>
-                                            <p className="text-sm text-white/50 mb-3 line-clamp-2">{template.description}</p>
-                                            <p className="text-xs text-white/40 mb-4 truncate">Subject: {template.subject}</p>
+                                            <h3 className="text-base font-semibold text-white mb-0.5">{template.name}</h3>
+                                            <p className="text-xs text-white/50 mb-2 line-clamp-1">{template.description}</p>
+                                            <p className="text-xs text-white/40 mb-3 truncate">Subject: {template.subject}</p>
 
                                             {/* Action Buttons */}
                                             <div className="flex items-center gap-2">
