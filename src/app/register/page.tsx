@@ -26,7 +26,6 @@ export default function RegisterPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [otp, setOtp] = useState("");
-    const [devCode, setDevCode] = useState<string | null>(null);
 
     // UI state
     const [error, setError] = useState("");
@@ -71,14 +70,9 @@ export default function RegisterPage() {
             });
 
             if (!result.success) {
-                setError(result.message || "Failed to send verification email");
+                setError("Failed to send verification email");
                 setLoading(false);
                 return;
-            }
-
-            // Code is returned for dev mode debugging
-            if (result.code) {
-                setDevCode(result.code);
             }
 
             setStep("verify");
@@ -138,14 +132,11 @@ export default function RegisterPage() {
         setError("");
         setLoading(true);
         try {
-            const result = await initiateVerification({
+            await initiateVerification({
                 email,
                 name,
                 ...(phone ? { phone } : {}),
             });
-            if (result.code) {
-                setDevCode(result.code);
-            }
         } catch (err: any) {
             setError("Failed to resend code");
         } finally {
