@@ -39,7 +39,7 @@ export const createVerification = internalMutation({
                 expiresAt,
                 attempts: 0,
                 name: args.name,
-                phone: args.phone,
+                ...(args.phone ? { phone: args.phone } : {}),
             });
             return { code, verificationId: existing._id };
         }
@@ -52,7 +52,7 @@ export const createVerification = internalMutation({
             attempts: 0,
             verified: false,
             name: args.name,
-            phone: args.phone,
+            ...(args.phone ? { phone: args.phone } : {}),
             createdAt: Date.now(),
         });
 
