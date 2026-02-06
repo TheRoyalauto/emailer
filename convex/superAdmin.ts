@@ -42,14 +42,12 @@ export const listAllUsers = query({
             return { users: [], totalCount: 0, error: "Access denied" };
         }
 
-        let query = ctx.db.query("userProfiles");
+        let profiles = await ctx.db.query("userProfiles").collect();
 
-        // Apply tier filter
+        // Apply tier filter in JS (Convex doesn't allow query reassignment)
         if (args.tierFilter && args.tierFilter !== "all") {
-            query = query.withIndex("by_tier", (q) => q.eq("tier", args.tierFilter as Tier));
+            profiles = profiles.filter((p) => p.tier === args.tierFilter);
         }
-
-        const profiles = await query.collect();
 
         // Apply search filter
         let filtered = profiles;
@@ -117,13 +115,6 @@ export const getUserDetails = query({
             .withIndex("by_user", (q) => q.eq("userId", profile.userId))
             .collect();
 
-        // Get recent activities
-        const activities = await ctx.db
-            .query("activities")
-            .withIndex("by_user", (q) => q.eq("userId", profile.userId))
-            .order("desc")
-            .take(20);
-
         const limits = TIER_LIMITS[profile.tier];
 
         return {
@@ -136,7 +127,6 @@ export const getUserDetails = query({
                 totalEmailsSent: campaigns.reduce((acc, c) => acc + (c.stats?.sent || 0), 0),
             },
             recentCampaigns: campaigns.slice(0, 5),
-            recentActivities: activities,
         };
     },
 });
@@ -157,15 +147,6 @@ export const updateUserTier = mutation({
             tier: args.tier,
             tierUpdatedAt: Date.now(),
             tierUpdatedBy: userId,
-        });
-
-        // Log activity
-        await ctx.db.insert("activities", {
-            userId: profile.userId,
-            type: "tier_change",
-            description: `Tier changed to ${args.tier}`,
-            metadata: { oldTier: profile.tier, newTier: args.tier, changedBy: userId },
-            createdAt: Date.now(),
         });
 
         return { success: true };
@@ -203,15 +184,6 @@ export const updateUserStatus = mutation({
 
         await ctx.db.patch(args.profileId, {
             status: args.status,
-        });
-
-        // Log activity
-        await ctx.db.insert("activities", {
-            userId: profile.userId,
-            type: "status_change",
-            description: `Account status changed to ${args.status}`,
-            metadata: { oldStatus: profile.status, newStatus: args.status, changedBy: userId },
-            createdAt: Date.now(),
         });
 
         return { success: true };
