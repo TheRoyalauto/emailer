@@ -20,6 +20,9 @@ export default function CampaignsPage() {
     const [isSending, setIsSending] = useState(false);
     const [sendProgress, setSendProgress] = useState<{ sent: number; total: number; failed: number } | null>(null);
     const [showSendModal, setShowSendModal] = useState(false);
+    const [previewTemplate, setPreviewTemplate] = useState<string | null>(null);
+
+    const previewTemplateData = templates?.find(t => t._id === previewTemplate);
 
     const selectedTemplateData = templates?.find(t => t._id === selectedTemplate);
     const selectedSenderData = senders?.find(s => s._id === selectedSender);
@@ -99,15 +102,27 @@ export default function CampaignsPage() {
                                                 </div>
                                                 <div className="text-xs text-white/50 truncate">{template.subject}</div>
                                             </button>
-                                            {/* Edit button on hover */}
-                                            <Link
-                                                href={`/templates?edit=${template._id}`}
-                                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1.5 bg-black/60 hover:bg-indigo-500/40 rounded-lg transition-all text-xs"
-                                                title="Edit Template"
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                ✏️
-                                            </Link>
+                                            {/* Action buttons on hover */}
+                                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-all">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setPreviewTemplate(template._id);
+                                                    }}
+                                                    className="p-1.5 bg-black/60 hover:bg-indigo-500/40 rounded-lg text-xs"
+                                                    title="Preview"
+                                                >
+                                                    👁️
+                                                </button>
+                                                <Link
+                                                    href={`/templates?edit=${template._id}`}
+                                                    className="p-1.5 bg-black/60 hover:bg-indigo-500/40 rounded-lg text-xs"
+                                                    title="Edit Template"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    ✏️
+                                                </Link>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -271,6 +286,56 @@ export default function CampaignsPage() {
                         }}
                         contacts={batchContacts}
                     />
+                )}
+
+                {/* Template Preview Modal */}
+                {previewTemplate && previewTemplateData && (
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="bg-[#12121f] rounded-2xl border border-white/10 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                                <div>
+                                    <h2 className="text-lg font-bold text-white">{previewTemplateData.name}</h2>
+                                    <p className="text-sm text-white/50">Subject: {previewTemplateData.subject}</p>
+                                </div>
+                                <button
+                                    onClick={() => setPreviewTemplate(null)}
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Email Preview */}
+                            <div className="flex-1 overflow-auto bg-white">
+                                <iframe
+                                    srcDoc={previewTemplateData.htmlBody}
+                                    className="w-full h-full min-h-[400px]"
+                                    title="Email Preview"
+                                    sandbox="allow-same-origin"
+                                />
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-[#0d0d15]">
+                                <Link
+                                    href={`/templates?edit=${previewTemplateData._id}`}
+                                    className="px-4 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                                >
+                                    ✏️ Edit Template
+                                </Link>
+                                <button
+                                    onClick={() => {
+                                        setSelectedTemplate(previewTemplateData._id);
+                                        setPreviewTemplate(null);
+                                    }}
+                                    className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium text-sm hover:opacity-90 transition-all"
+                                >
+                                    Use This Template
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </div>
         </AuthGuard>
