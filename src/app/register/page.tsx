@@ -314,10 +314,10 @@ export default function RegisterPage() {
                             </p>
                         </div>
 
-                        {/* Dev mode code display */}
+                        {/* Show the verification code */}
                         {devCode && (
-                            <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm text-center">
-                                <p className="text-xs text-yellow-500/70 mb-1">Dev Mode - Your code:</p>
+                            <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm text-center">
+                                <p className="text-xs text-green-500/70 mb-1">Your verification code:</p>
                                 <p className="text-2xl font-mono font-bold tracking-widest">{devCode}</p>
                             </div>
                         )}
