@@ -27,11 +27,14 @@ import type * as sendPolicies from "../sendPolicies.js";
 import type * as senders from "../senders.js";
 import type * as sequenceScheduler from "../sequenceScheduler.js";
 import type * as sequences from "../sequences.js";
+import type * as setup from "../setup.js";
 import type * as smtpConfigs from "../smtpConfigs.js";
+import type * as superAdmin from "../superAdmin.js";
 import type * as tasks from "../tasks.js";
 import type * as templates from "../templates.js";
 import type * as trackedLinks from "../trackedLinks.js";
 import type * as unsubscribes from "../unsubscribes.js";
+import type * as userProfiles from "../userProfiles.js";
 
 import type {
   ApiFromModules,
@@ -59,11 +62,14 @@ declare const fullApi: ApiFromModules<{
   senders: typeof senders;
   sequenceScheduler: typeof sequenceScheduler;
   sequences: typeof sequences;
+  setup: typeof setup;
   smtpConfigs: typeof smtpConfigs;
+  superAdmin: typeof superAdmin;
   tasks: typeof tasks;
   templates: typeof templates;
   trackedLinks: typeof trackedLinks;
   unsubscribes: typeof unsubscribes;
+  userProfiles: typeof userProfiles;
 }>;
 
 /**

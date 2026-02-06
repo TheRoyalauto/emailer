@@ -6,6 +6,44 @@ export default defineSchema({
     // Auth tables (required by Convex Auth)
     ...authTables,
 
+    // User profiles with tier system (extends auth users)
+    userProfiles: defineTable({
+        userId: v.id("users"),
+        email: v.string(),
+        name: v.optional(v.string()),
+        tier: v.union(
+            v.literal("free"),
+            v.literal("starter"),
+            v.literal("growth"),
+            v.literal("scale")
+        ),
+        tierUpdatedAt: v.optional(v.number()),
+        tierUpdatedBy: v.optional(v.id("users")), // Admin who changed the tier
+        isAdmin: v.optional(v.boolean()),
+        isSuperAdmin: v.optional(v.boolean()),
+        // Usage tracking
+        emailsSentToday: v.optional(v.number()),
+        emailsSentThisMonth: v.optional(v.number()),
+        emailsLastResetAt: v.optional(v.number()),
+        monthlyResetAt: v.optional(v.number()),
+        // Account limits
+        emailAccountCount: v.optional(v.number()),
+        // Dates
+        createdAt: v.number(),
+        lastLoginAt: v.optional(v.number()),
+        // Metadata
+        notes: v.optional(v.string()), // Admin notes
+        status: v.optional(v.union(
+            v.literal("active"),
+            v.literal("suspended"),
+            v.literal("deleted")
+        )),
+    })
+        .index("by_userId", ["userId"])
+        .index("by_email", ["email"])
+        .index("by_tier", ["tier"])
+        .index("by_superAdmin", ["isSuperAdmin"]),
+
     // Email campaigns/templates (user-scoped)
     campaigns: defineTable({
         userId: v.optional(v.id("users")), // Optional for migration
