@@ -556,8 +556,8 @@ function TemplatesPage() {
 
             {/* Template Library Modal */}
             {showLibrary && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center px-8 py-20">
-                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-4xl w-full max-h-full flex flex-col shadow-2xl overflow-hidden">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-3xl w-full flex flex-col shadow-2xl overflow-hidden" style={{ maxHeight: 'calc(100vh - 160px)' }}>
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#12121f]">
                             <div>
@@ -578,22 +578,22 @@ function TemplatesPage() {
                         </div>
 
                         {/* Category Tabs */}
-                        <div className="px-6 py-3 border-b border-white/10 bg-[#0d0d15]">
-                            <div className="flex items-center gap-2 flex-wrap">
+                        <div className="px-5 py-3 border-b border-white/10 bg-gradient-to-r from-[#0d0d15] to-[#12121f]">
+                            <div className="flex items-center gap-2">
                                 {LIBRARY_CATEGORIES.map((cat) => (
                                     <button
                                         key={cat.id}
                                         onClick={() => setLibraryCategory(cat.id)}
-                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${libraryCategory === cat.id
-                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
-                                            : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                                        className={`group px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-2 ${libraryCategory === cat.id
+                                                ? "bg-gradient-to-r from-indigo-500/30 to-purple-500/20 text-white border border-indigo-500/40 shadow-lg shadow-indigo-500/10"
+                                                : "text-white/50 hover:text-white hover:bg-white/10 border border-transparent"
                                             }`}
                                     >
-                                        <span>{cat.icon}</span>
+                                        <span className={`transition-transform duration-200 ${libraryCategory === cat.id ? "scale-110" : "group-hover:scale-110"}`}>{cat.icon}</span>
                                         <span>{cat.label}</span>
-                                        <span className={`px-1.5 py-0.5 rounded-full text-xs ${libraryCategory === cat.id
-                                            ? "bg-indigo-500/30"
-                                            : "bg-white/10"
+                                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${libraryCategory === cat.id
+                                                ? "bg-indigo-500/40 text-indigo-200"
+                                                : "bg-white/10 text-white/40"
                                             }`}>
                                             {cat.count}
                                         </span>
@@ -607,35 +607,40 @@ function TemplatesPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {LIBRARY_TEMPLATES
                                     .filter(t => libraryCategory === "all" || t.category === libraryCategory)
-                                    .map((template) => (
+                                    .map((template, index) => (
                                         <div
                                             key={template.id}
-                                            className="group relative p-4 rounded-xl bg-gradient-to-br from-[#16162a] to-[#12121f] border border-white/10 hover:border-indigo-500/30 transition-all"
+                                            className="group relative p-4 rounded-xl bg-gradient-to-br from-[#16162a] to-[#12121f] border border-white/10 hover:border-indigo-500/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/10"
+                                            style={{ animationDelay: `${index * 50}ms` }}
                                         >
-                                            {/* Category Badge */}
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${template.category === "cold"
-                                                    ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                                            {/* Glow effect on hover */}
+                                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/10 transition-all duration-300 pointer-events-none" />
+
+                                            {/* Category Badge - fixed sizing */}
+                                            <div className="relative flex items-center mb-3">
+                                                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${template.category === "cold"
+                                                    ? "bg-sky-500/20 text-sky-300"
                                                     : template.category === "followup"
-                                                        ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                                                        : "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                                                        ? "bg-amber-500/20 text-amber-300"
+                                                        : "bg-violet-500/20 text-violet-300"
                                                     }`}>
-                                                    {template.category === "cold" ? "❄️" : template.category === "followup" ? "🔄" : "✨"} {template.category}
+                                                    <span>{template.category === "cold" ? "❄️" : template.category === "followup" ? "🔄" : "✨"}</span>
+                                                    {template.category === "cold" ? "Cold" : template.category === "followup" ? "Follow-up" : "General"}
                                                 </span>
                                             </div>
 
                                             {/* Template Info */}
-                                            <h3 className="text-base font-semibold text-white mb-0.5">{template.name}</h3>
-                                            <p className="text-xs text-white/50 mb-2 line-clamp-1">{template.description}</p>
-                                            <p className="text-xs text-white/40 mb-3 truncate">Subject: {template.subject}</p>
+                                            <h3 className="relative text-base font-bold text-white mb-1 group-hover:text-indigo-200 transition-colors">{template.name}</h3>
+                                            <p className="relative text-xs text-white/50 mb-1.5 line-clamp-1">{template.description}</p>
+                                            <p className="relative text-[11px] text-white/30 mb-3 truncate font-mono">📧 {template.subject}</p>
 
                                             {/* Action Buttons */}
-                                            <div className="flex items-center gap-2">
+                                            <div className="relative flex items-center gap-2">
                                                 <button
                                                     onClick={() => setPreviewLibraryTemplate(template.id)}
-                                                    className="flex-1 px-3 py-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all flex items-center justify-center gap-2"
+                                                    className="flex-1 px-3 py-2 text-xs bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 rounded-lg transition-all duration-200 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
                                                 >
-                                                    👁️ Preview
+                                                    <span className="opacity-70">👁️</span> Preview
                                                 </button>
                                                 <button
                                                     onClick={async () => {
@@ -647,9 +652,9 @@ function TemplatesPage() {
                                                         });
                                                         setShowLibrary(false);
                                                     }}
-                                                    className="flex-1 px-3 py-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                                                    className="flex-1 px-3 py-2 text-xs bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-400 hover:to-purple-400 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
                                                 >
-                                                    ✨ Use Template
+                                                    <span>✨</span> Use
                                                 </button>
                                             </div>
                                         </div>
