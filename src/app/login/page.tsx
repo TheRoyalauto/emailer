@@ -1,31 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const { signIn } = useAuthActions();
+    const { isAuthenticated, isLoading } = useConvexAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [attemptingLogin, setAttemptingLogin] = useState(false);
+
+    // Redirect when authenticated
+    useEffect(() => {
+        if (attemptingLogin && isAuthenticated && !isLoading) {
+            router.push("/campaigns");
+        }
+    }, [isAuthenticated, isLoading, attemptingLogin, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setLoading(true);
+        setAttemptingLogin(true);
 
         try {
             console.log("Attempting sign in with email:", email);
-            const result = await signIn("password", { email, password, flow: "signIn" });
-            console.log("Sign in result:", result);
-            router.push("/campaigns");
+            await signIn("password", { email, password, flow: "signIn" });
+            // Don't redirect here - let useEffect handle it when isAuthenticated changes
         } catch (err: any) {
             console.error("Login error:", err);
             setError(err.message || "Invalid email or password");
+            setAttemptingLogin(false);
         } finally {
             setLoading(false);
         }
