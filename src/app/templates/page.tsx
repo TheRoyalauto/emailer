@@ -556,8 +556,8 @@ function TemplatesPage() {
 
             {/* Template Library Modal */}
             {showLibrary && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-5xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-8">
+                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-4xl w-full max-h-[70vh] flex flex-col shadow-2xl overflow-hidden">
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#12121f]">
                             <div>
@@ -585,15 +585,15 @@ function TemplatesPage() {
                                         key={cat.id}
                                         onClick={() => setLibraryCategory(cat.id)}
                                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${libraryCategory === cat.id
-                                                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
-                                                : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                                            ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
+                                            : "text-white/50 hover:text-white/70 hover:bg-white/5"
                                             }`}
                                     >
                                         <span>{cat.icon}</span>
                                         <span>{cat.label}</span>
                                         <span className={`px-1.5 py-0.5 rounded-full text-xs ${libraryCategory === cat.id
-                                                ? "bg-indigo-500/30"
-                                                : "bg-white/10"
+                                            ? "bg-indigo-500/30"
+                                            : "bg-white/10"
                                             }`}>
                                             {cat.count}
                                         </span>
@@ -615,10 +615,10 @@ function TemplatesPage() {
                                             {/* Category Badge */}
                                             <div className="flex items-center justify-between mb-3">
                                                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${template.category === "cold"
-                                                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-                                                        : template.category === "followup"
-                                                            ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                                                            : "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                                                    ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                                                    : template.category === "followup"
+                                                        ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                                                        : "bg-purple-500/20 text-purple-300 border-purple-500/30"
                                                     }`}>
                                                     {template.category === "cold" ? "❄️" : template.category === "followup" ? "🔄" : "✨"} {template.category}
                                                 </span>
