@@ -23,12 +23,15 @@ export const createVerification = mutation({
         phone: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const email = args.email.toLowerCase().trim();
         const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+        console.log("createVerification called with email:", email, "code:", args.code);
 
         // Check if verification already exists
         const existing = await ctx.db
             .query("emailVerifications")
-            .withIndex("by_email", (q) => q.eq("email", args.email))
+            .withIndex("by_email", (q) => q.eq("email", email))
             .first();
 
         if (existing) {
@@ -45,7 +48,7 @@ export const createVerification = mutation({
 
         // Create new
         const id = await ctx.db.insert("emailVerifications", {
-            email: args.email,
+            email: email,
             code: args.code,
             expiresAt,
             attempts: 0,
@@ -66,13 +69,18 @@ export const verifyCode = mutation({
         code: v.string(),
     },
     handler: async (ctx, args) => {
+        const email = args.email.toLowerCase().trim();
+        console.log("verifyCode called with email:", email, "code:", args.code);
+
         const verification = await ctx.db
             .query("emailVerifications")
             .withIndex("by_email", (q) => q.eq("email", args.email))
             .first();
 
+        console.log("Found verification:", verification);
+
         if (!verification) {
-            return { success: false, error: "No verification found" };
+            return { success: false, error: "No verification found for this email" };
         }
 
         if (verification.attempts >= 5) {
