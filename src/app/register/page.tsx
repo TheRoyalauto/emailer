@@ -314,14 +314,6 @@ export default function RegisterPage() {
                             </p>
                         </div>
 
-                        {/* Show the verification code */}
-                        {devCode && (
-                            <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm text-center">
-                                <p className="text-xs text-green-500/70 mb-1">Your verification code:</p>
-                                <p className="text-2xl font-mono font-bold tracking-widest">{devCode}</p>
-                            </div>
-                        )}
-
                         {error && (
                             <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm text-center">
                                 {error}

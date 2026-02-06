@@ -19,9 +19,12 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            await signIn("password", { email, password, flow: "signIn" });
+            console.log("Attempting sign in with email:", email);
+            const result = await signIn("password", { email, password, flow: "signIn" });
+            console.log("Sign in result:", result);
             router.push("/campaigns");
         } catch (err: any) {
+            console.error("Login error:", err);
             setError(err.message || "Invalid email or password");
         } finally {
             setLoading(false);
