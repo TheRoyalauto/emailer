@@ -32,6 +32,89 @@ const STARTER_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+// Template Library - Professional pre-built templates
+const LIBRARY_TEMPLATES = [
+    {
+        id: 1,
+        name: "Warm Introduction",
+        category: "cold",
+        subject: "Quick intro from {{senderName}}",
+        description: "A friendly first-touch email that feels personal and genuine",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">I came across {{company}} and was impressed by what you're building. I work with similar companies to help them [your value proposition].</p><p style="margin:0 0 16px 0;">Would you be open to a quick 15-minute chat to explore if there's a fit?</p><p style="margin:0 0 8px 0;">Best,</p><p style="margin:0;font-weight:600;">{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 2,
+        name: "Value-First Outreach",
+        category: "cold",
+        subject: "Idea for {{company}}",
+        description: "Lead with value, not a pitch. Great for high-value prospects",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">I noticed {{company}} is [observation about their business]. I had an idea that might help with [specific challenge].</p><p style="margin:0 0 16px 0;">I put together a quick breakdown of how companies like yours are solving this — happy to share if you're interested.</p><p style="margin:0 0 16px 0;">No strings attached, just thought it might be valuable.</p><p style="margin:0;">— {{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 3,
+        name: "Direct & Confident",
+        category: "cold",
+        subject: "{{firstName}}, quick question",
+        description: "Straight to the point for busy decision makers",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">{{firstName}},</p><p style="margin:0 0 16px 0;">We help companies like {{company}} [achieve specific result]. Clients typically see [specific outcome] within [timeframe].</p><p style="margin:0 0 16px 0;">Worth a conversation?</p><p style="margin:0;">{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 4,
+        name: "Gentle Nudge",
+        category: "followup",
+        subject: "Following up",
+        description: "A soft follow-up that doesn't feel pushy",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">Just floating this back to the top of your inbox in case it got buried.</p><p style="margin:0 0 16px 0;">No worries if now isn't the right time — happy to reconnect whenever makes sense.</p><p style="margin:0;">{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 5,
+        name: "Breakup Email",
+        category: "followup",
+        subject: "Should I close your file?",
+        description: "Create urgency with a respectful final attempt",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">I've reached out a few times and haven't heard back — totally understand you're busy.</p><p style="margin:0 0 16px 0;">I don't want to be a pest, so I'll assume the timing isn't right and close out your file for now.</p><p style="margin:0 0 16px 0;">If things change down the road, I'd love to reconnect. Just reply to this email anytime.</p><p style="margin:0;">All the best,<br/>{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 6,
+        name: "Quick Check-in",
+        category: "followup",
+        subject: "Re: Quick follow-up",
+        description: "Short and sweet for the third touch",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">{{firstName}},</p><p style="margin:0 0 16px 0;">Wanted to circle back on my previous email. Still interested in connecting?</p><p style="margin:0 0 16px 0;">A quick yes/no would be helpful so I know whether to keep you on my radar.</p><p style="margin:0;">Thanks,<br/>{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 7,
+        name: "Thank You Note",
+        category: "custom",
+        subject: "Thanks {{firstName}}!",
+        description: "Post-meeting appreciation that builds rapport",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">Just wanted to say thanks for taking the time to chat today. I really enjoyed learning about {{company}} and your approach to [topic discussed].</p><p style="margin:0 0 16px 0;">As promised, [mention any follow-up items]. Looking forward to staying in touch!</p><p style="margin:0;">Best,<br/>{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 8,
+        name: "Resource Share",
+        category: "custom",
+        subject: "Thought you'd find this useful",
+        description: "Share valuable content to stay top of mind",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">I came across this [article/resource/tool] and immediately thought of you — given our conversation about [topic].</p><p style="margin:0 0 16px 0;">[Link or description of resource]</p><p style="margin:0 0 16px 0;">Hope you find it useful!</p><p style="margin:0;">{{senderName}}</p></div></body></html>`,
+    },
+    {
+        id: 9,
+        name: "Referral Request",
+        category: "custom",
+        subject: "Quick favor?",
+        description: "Ask for introductions without being awkward",
+        htmlBody: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#ffffff;"><div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,sans-serif;font-size:16px;line-height:1.6;color:#333333;"><p style="margin:0 0 16px 0;">Hi {{firstName}},</p><p style="margin:0 0 16px 0;">Hope you're doing well! I'm currently working with more companies like {{company}} and wondered if you might know anyone who'd benefit from [your service].</p><p style="margin:0 0 16px 0;">No pressure at all — but if anyone comes to mind, I'd really appreciate an intro.</p><p style="margin:0 0 16px 0;">Either way, always happy to be a resource for you too.</p><p style="margin:0;">Best,<br/>{{senderName}}</p></div></body></html>`,
+    },
+];
+
+const LIBRARY_CATEGORIES = [
+    { id: "all", label: "All", icon: "📋", count: 9 },
+    { id: "cold", label: "Cold Outreach", icon: "❄️", count: 3 },
+    { id: "followup", label: "Follow-up", icon: "🔄", count: 3 },
+    { id: "custom", label: "General", icon: "✨", count: 3 },
+];
+
 function TemplatesPage() {
     // State
     const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -42,6 +125,9 @@ function TemplatesPage() {
     const [subject, setSubject] = useState("");
     const [htmlContent, setHtmlContent] = useState(STARTER_HTML);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showLibrary, setShowLibrary] = useState(false);
+    const [libraryCategory, setLibraryCategory] = useState<string>("all");
+    const [previewLibraryTemplate, setPreviewLibraryTemplate] = useState<number | null>(null);
 
     // Queries & Mutations
     const templates = useQuery(api.templates.list,
@@ -321,12 +407,20 @@ function TemplatesPage() {
                             </h1>
                             <p className="text-white/50 mt-2">Craft, organize, and reuse your email templates</p>
                         </div>
-                        <button
-                            onClick={handleStartNew}
-                            className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 shadow-lg shadow-indigo-500/20"
-                        >
-                            <span className="text-lg">+</span> New Template
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => setShowLibrary(true)}
+                                className="px-4 py-2.5 bg-[#1a1a2e] border border-white/20 rounded-xl font-medium hover:bg-[#22223a] hover:border-indigo-500/50 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+                            >
+                                <span className="text-lg">📚</span> Template Library
+                            </button>
+                            <button
+                                onClick={handleStartNew}
+                                className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-medium hover:opacity-90 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 shadow-lg shadow-indigo-500/20"
+                            >
+                                <span className="text-lg">+</span> New Template
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -459,6 +553,172 @@ function TemplatesPage() {
                     </div>
                 )}
             </main>
+
+            {/* Template Library Modal */}
+            {showLibrary && (
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-[#0d0d15] rounded-2xl border border-white/10 max-w-5xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#12121f]">
+                            <div>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <span className="text-2xl">📚</span> Template Library
+                                </h2>
+                                <p className="text-sm text-white/50">Professional templates ready to use</p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setShowLibrary(false);
+                                    setPreviewLibraryTemplate(null);
+                                }}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Category Tabs */}
+                        <div className="px-6 py-3 border-b border-white/10 bg-[#0d0d15]">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                {LIBRARY_CATEGORIES.map((cat) => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => setLibraryCategory(cat.id)}
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${libraryCategory === cat.id
+                                                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40"
+                                                : "text-white/50 hover:text-white/70 hover:bg-white/5"
+                                            }`}
+                                    >
+                                        <span>{cat.icon}</span>
+                                        <span>{cat.label}</span>
+                                        <span className={`px-1.5 py-0.5 rounded-full text-xs ${libraryCategory === cat.id
+                                                ? "bg-indigo-500/30"
+                                                : "bg-white/10"
+                                            }`}>
+                                            {cat.count}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Template Grid */}
+                        <div className="flex-1 overflow-auto p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {LIBRARY_TEMPLATES
+                                    .filter(t => libraryCategory === "all" || t.category === libraryCategory)
+                                    .map((template) => (
+                                        <div
+                                            key={template.id}
+                                            className="group relative p-5 rounded-xl bg-gradient-to-br from-[#16162a] to-[#12121f] border border-white/10 hover:border-indigo-500/30 transition-all"
+                                        >
+                                            {/* Category Badge */}
+                                            <div className="flex items-center justify-between mb-3">
+                                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${template.category === "cold"
+                                                        ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                                                        : template.category === "followup"
+                                                            ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                                                            : "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                                                    }`}>
+                                                    {template.category === "cold" ? "❄️" : template.category === "followup" ? "🔄" : "✨"} {template.category}
+                                                </span>
+                                            </div>
+
+                                            {/* Template Info */}
+                                            <h3 className="text-lg font-semibold text-white mb-1">{template.name}</h3>
+                                            <p className="text-sm text-white/50 mb-3 line-clamp-2">{template.description}</p>
+                                            <p className="text-xs text-white/40 mb-4 truncate">Subject: {template.subject}</p>
+
+                                            {/* Action Buttons */}
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => setPreviewLibraryTemplate(template.id)}
+                                                    className="flex-1 px-3 py-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    👁️ Preview
+                                                </button>
+                                                <button
+                                                    onClick={async () => {
+                                                        await createTemplate({
+                                                            name: template.name,
+                                                            subject: template.subject,
+                                                            htmlBody: template.htmlBody,
+                                                            category: template.category,
+                                                        });
+                                                        setShowLibrary(false);
+                                                    }}
+                                                    className="flex-1 px-3 py-2 text-sm bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    ✨ Use Template
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Library Template Preview Modal */}
+            {previewLibraryTemplate && (() => {
+                const template = LIBRARY_TEMPLATES.find(t => t.id === previewLibraryTemplate);
+                if (!template) return null;
+                return (
+                    <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+                        <div className="bg-[#12121f] rounded-2xl border border-white/10 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                            {/* Header */}
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                                <div>
+                                    <h2 className="text-lg font-bold text-white">{template.name}</h2>
+                                    <p className="text-sm text-white/50">Subject: {template.subject}</p>
+                                </div>
+                                <button
+                                    onClick={() => setPreviewLibraryTemplate(null)}
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+
+                            {/* Email Preview */}
+                            <div className="flex-1 overflow-auto bg-white">
+                                <iframe
+                                    srcDoc={template.htmlBody}
+                                    className="w-full h-full min-h-[350px]"
+                                    title="Email Preview"
+                                    sandbox="allow-same-origin"
+                                />
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-white/10 bg-[#0d0d15]">
+                                <button
+                                    onClick={() => setPreviewLibraryTemplate(null)}
+                                    className="px-4 py-2 text-sm text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                                >
+                                    ← Back to Library
+                                </button>
+                                <button
+                                    onClick={async () => {
+                                        await createTemplate({
+                                            name: template.name,
+                                            subject: template.subject,
+                                            htmlBody: template.htmlBody,
+                                            category: template.category,
+                                        });
+                                        setPreviewLibraryTemplate(null);
+                                        setShowLibrary(false);
+                                    }}
+                                    className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium text-sm hover:opacity-90 transition-all"
+                                >
+                                    ✨ Use This Template
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
         </div>
     );
 }
