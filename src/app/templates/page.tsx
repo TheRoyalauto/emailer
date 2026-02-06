@@ -58,7 +58,15 @@ function TemplatesPage() {
         if (searchParams.get('action') === 'add') {
             handleStartNew();
         }
-    }, [searchParams]);
+        // Handle edit from campaign page
+        const editId = searchParams.get('edit');
+        if (editId && templates) {
+            const templateToEdit = templates.find(t => t._id === editId);
+            if (templateToEdit) {
+                handleEdit(templateToEdit);
+            }
+        }
+    }, [searchParams, templates]);
 
     // Filter by search
     const filteredTemplates = templates?.filter(t =>

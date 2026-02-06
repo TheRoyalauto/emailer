@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,8 +12,6 @@ export default function CampaignsPage() {
     const senders = useQuery(api.senders.list);
     const batches = useQuery(api.batches.list);
     const contacts = useQuery(api.contacts.list, {});
-    const seedTemplates = useMutation(api.seed.seedTemplates);
-    const [isSeeding, setIsSeeding] = useState(false);
 
     // Campaign creation state
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
@@ -52,9 +50,19 @@ export default function CampaignsPage() {
                     <div className="space-y-6">
                         {/* Step 1: Select Template */}
                         <div className="p-6 rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-sm">1</div>
-                                <h2 className="text-lg font-semibold">Select Email Template</h2>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold text-sm">1</div>
+                                    <h2 className="text-lg font-semibold">Select Email Template</h2>
+                                </div>
+                                {templates && templates.length > 0 && (
+                                    <Link
+                                        href="/templates"
+                                        className="text-sm text-white/50 hover:text-indigo-400 transition-colors flex items-center gap-1"
+                                    >
+                                        ← Back to Templates
+                                    </Link>
+                                )}
                             </div>
 
                             {templates === undefined ? (
@@ -62,47 +70,45 @@ export default function CampaignsPage() {
                                     <div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : templates.length === 0 ? (
-                                <div className="py-6 text-center space-y-4">
-                                    <p className="text-white/50">No templates yet</p>
-                                    <div className="flex items-center justify-center gap-4">
-                                        <button
-                                            onClick={async () => {
-                                                setIsSeeding(true);
-                                                try {
-                                                    await seedTemplates({});
-                                                } catch (err) {
-                                                    console.error(err);
-                                                } finally {
-                                                    setIsSeeding(false);
-                                                }
-                                            }}
-                                            disabled={isSeeding}
-                                            className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-                                        >
-                                            {isSeeding ? "Creating..." : "✨ Quick Start (6 Templates)"}
-                                        </button>
-                                        <Link href="/templates" className="text-indigo-400 hover:text-indigo-300 transition-colors">
-                                            Create from scratch →
-                                        </Link>
-                                    </div>
+                                <div className="py-6 text-center">
+                                    <p className="text-white/50 mb-4">No templates yet</p>
+                                    <Link
+                                        href="/templates?action=add"
+                                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium hover:opacity-90 transition-opacity inline-block"
+                                    >
+                                        + Create Your First Template
+                                    </Link>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-3 gap-3 max-h-[240px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
                                     {templates.map((template) => (
-                                        <button
+                                        <div
                                             key={template._id}
-                                            onClick={() => setSelectedTemplate(template._id)}
-                                            className={`p-4 rounded-lg border text-left transition-all hover:scale-[1.02] ${selectedTemplate === template._id
-                                                ? "bg-indigo-500/20 border-indigo-500/50 ring-2 ring-indigo-500/30"
-                                                : "bg-black/20 border-white/10 hover:border-white/20"
-                                                }`}
+                                            className="group relative"
                                         >
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="text-lg">📝</span>
-                                                <div className="font-medium truncate text-sm">{template.name}</div>
-                                            </div>
-                                            <div className="text-xs text-white/50 truncate">{template.subject}</div>
-                                        </button>
+                                            <button
+                                                onClick={() => setSelectedTemplate(template._id)}
+                                                className={`w-full p-4 rounded-lg border text-left transition-all hover:scale-[1.02] ${selectedTemplate === template._id
+                                                    ? "bg-indigo-500/20 border-indigo-500/50 ring-2 ring-indigo-500/30"
+                                                    : "bg-black/20 border-white/10 hover:border-white/20"
+                                                    }`}
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="text-lg">📝</span>
+                                                    <div className="font-medium truncate text-sm">{template.name}</div>
+                                                </div>
+                                                <div className="text-xs text-white/50 truncate">{template.subject}</div>
+                                            </button>
+                                            {/* Edit button on hover */}
+                                            <Link
+                                                href={`/templates?edit=${template._id}`}
+                                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 p-1.5 bg-black/60 hover:bg-indigo-500/40 rounded-lg transition-all text-xs"
+                                                title="Edit Template"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                ✏️
+                                            </Link>
+                                        </div>
                                     ))}
                                 </div>
                             )}
