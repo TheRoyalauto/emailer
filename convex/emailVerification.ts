@@ -144,7 +144,7 @@ export const sendVerificationEmail = action({
                     "Authorization": `Bearer ${RESEND_API_KEY}`,
                 },
                 body: JSON.stringify({
-                    from: "E-mailer <noreply@yourdomain.com>",
+                    from: "E-mailer <onboarding@resend.dev>",
                     to: args.email,
                     subject: "Verify your E-mailer account",
                     html: `
