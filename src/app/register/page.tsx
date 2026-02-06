@@ -100,7 +100,7 @@ export default function RegisterPage() {
                 email,
                 password,
                 name,
-                phone: phone || undefined,
+                ...(phone ? { phone } : {}),
                 flow: "signUp"
             });
 
