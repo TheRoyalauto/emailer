@@ -563,7 +563,7 @@ function ContactsContent() {
                                             style={{
                                                 backgroundColor: `${stage.color}15`,
                                                 color: stage.color,
-                                                ringColor: stage.color
+                                                boxShadow: (selectedContact.salesStage === stage.id || (!selectedContact.salesStage && stage.id === "new")) ? `0 0 0 2px white, 0 0 0 4px ${stage.color}` : undefined
                                             }}
                                         >
                                             {stage.icon} {stage.label}
