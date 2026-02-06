@@ -9,7 +9,7 @@ const plans = [
         description: "Try E-mailer with no commitment.",
         monthlyPrice: 0,
         yearlyPrice: 0,
-        emails: "250 emails/month",
+        emails: "30 emails/day",
         features: [
             "1 email account",
             "Basic templates",
@@ -24,7 +24,7 @@ const plans = [
         description: "For individuals sending outreach.",
         monthlyPrice: 19,
         yearlyPrice: 15,
-        emails: "2,500 emails/month",
+        emails: "3,000 emails/month",
         features: [
             "3 email accounts",
             "AI-powered writing",
