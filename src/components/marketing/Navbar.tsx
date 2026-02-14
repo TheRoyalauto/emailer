@@ -37,8 +37,8 @@ export default function Navbar() {
                             alt="E-mailer"
                             className="w-[72px] h-[72px] object-contain drop-shadow-sm"
                         />
-                        <span className="text-2xl font-bold text-slate-800 leading-none -ml-2">
-                            <span className="text-[#0EA5E9]">E</span>-mailer
+                        <span className="text-3xl font-bold text-[#0EA5E9] leading-none -ml-2">
+                            E-Mailer
                         </span>
                     </Link>
 
