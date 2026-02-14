@@ -14,7 +14,7 @@ export type Tier = keyof typeof TIER_LIMITS;
 
 // Get current user's profile
 export const getMyProfile = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -38,7 +38,7 @@ export const getMyProfile = query({
 
 // Ensure profile exists (call after login)
 export const ensureProfile = mutation({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -80,7 +80,7 @@ export const ensureProfile = mutation({
 
 // Check if user can send more emails
 export const checkEmailLimit = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return { canSend: false, reason: "Not authenticated" };
@@ -116,7 +116,7 @@ export const checkEmailLimit = query({
 // Increment email count after sending
 export const incrementEmailCount = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         count: v.optional(v.number()) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -161,7 +161,7 @@ export const incrementEmailCount = mutation({
 
 // Get tier limits for display
 export const getTierLimits = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async () => {
         return TIER_LIMITS;
     },

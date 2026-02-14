@@ -50,7 +50,7 @@ export const setupSuperAdmin = mutation({
 
 // Create profiles for all existing users who don't have one
 export const migrateExistingUsers = mutation({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())),},
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
     handler: async (ctx) => {
         const users = await ctx.db.query("users").collect();
         let created = 0;

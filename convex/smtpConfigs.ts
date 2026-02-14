@@ -4,7 +4,7 @@ import { getAuthUserId } from "./auth";
 
 // List all SMTP configs for user
 export const list = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -19,7 +19,7 @@ export const list = query({
 
 // Get default SMTP config
 export const getDefault = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -34,7 +34,7 @@ export const getDefault = query({
 // Get a single SMTP config
 export const get = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -47,7 +47,7 @@ export const get = query({
 // Create SMTP config
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         name: v.string(),
         provider: v.optional(v.union(
@@ -105,7 +105,7 @@ export const create = mutation({
 // Update SMTP config
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         id: v.id("smtpConfigs"),
         name: v.optional(v.string()),
@@ -137,7 +137,7 @@ export const update = mutation({
 // Set as default
 export const setDefault = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -166,7 +166,7 @@ export const setDefault = mutation({
 // Delete SMTP config
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -183,7 +183,7 @@ export const remove = mutation({
 // Mark as used
 export const markUsed = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const config = await ctx.db.get(args.id);
@@ -195,7 +195,7 @@ export const markUsed = mutation({
 // Test SMTP connection (returns config for frontend to test)
 export const getForTest = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

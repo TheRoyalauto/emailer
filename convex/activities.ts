@@ -5,7 +5,7 @@ import { getAuthUserId } from "./auth";
 // Log a call activity
 export const logCall = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         outcome: v.union(
@@ -54,7 +54,7 @@ export const logCall = mutation({
 // Log an email activity (called when campaign sends email)
 export const logEmail = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         campaignId: v.optional(v.id("campaigns")),
@@ -89,7 +89,7 @@ export const logEmail = mutation({
 // Add a note to a contact
 export const addNote = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         notes: v.string(),
@@ -116,7 +116,7 @@ export const addNote = mutation({
 // Schedule a follow-up
 export const scheduleFollowUp = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         followUpAt: v.number(),
@@ -150,7 +150,7 @@ export const scheduleFollowUp = mutation({
 // Update sales stage
 export const updateSalesStage = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         stage: v.union(
@@ -189,7 +189,7 @@ export const updateSalesStage = mutation({
 // Get activity history for a contact
 export const getContactActivities = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         limit: v.optional(v.number()),
@@ -212,7 +212,7 @@ export const getContactActivities = query({
 // Get recent activity across all contacts (for dashboard)
 export const getRecentActivity = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         limit: v.optional(v.number()),
     },
@@ -247,7 +247,7 @@ export const getRecentActivity = query({
 
 // Get today's follow-ups
 export const getTodayFollowUps = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -271,7 +271,7 @@ export const getTodayFollowUps = query({
 
 // Get call stats for dashboard
 export const getCallStats = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return { today: 0, week: 0, month: 0 };
@@ -298,7 +298,7 @@ export const getCallStats = query({
 // Log email events from tracking webhooks (opens, clicks)
 export const logEmailEvent = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         campaignId: v.optional(v.string()),

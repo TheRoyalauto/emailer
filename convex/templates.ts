@@ -5,7 +5,7 @@ import { auth } from "./auth";
 // List all templates for the current user
 export const list = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
@@ -40,7 +40,7 @@ export const get = query({
 // Create a new template
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         name: v.string(),
         subject: v.string(),
         htmlBody: v.string(),
@@ -64,7 +64,7 @@ export const create = mutation({
 // Update a template
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("templates"),
         name: v.optional(v.string()),
         subject: v.optional(v.string()),

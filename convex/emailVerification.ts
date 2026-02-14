@@ -20,7 +20,7 @@ function generateOTP(): string {
  */
 export const initiateVerification = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         email: v.string(),
         name: v.string(),
         phone: v.optional(v.string()),
@@ -144,7 +144,7 @@ export const sendEmailInternal = internalAction({
  */
 export const verifyCode = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         email: v.string(),
         code: v.string(),
     },
@@ -194,7 +194,7 @@ export const verifyCode = mutation({
  * Query to check if email is verified
  */
 export const checkVerification = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())), email: v.string() },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), email: v.string() },
     handler: async (ctx, args) => {
         const verification = await ctx.db
             .query("emailVerifications")

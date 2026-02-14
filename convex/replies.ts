@@ -22,7 +22,7 @@ export const CLASSIFICATIONS = [
 // List all replies
 export const list = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         isProcessed: v.optional(v.boolean()),
         classification: v.optional(v.string()),
@@ -64,7 +64,7 @@ export const list = query({
 // Get reply by ID
 export const get = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -83,7 +83,7 @@ export const get = query({
 // Add a new reply (manual or from webhook)
 export const add = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         contactId: v.id("contacts"),
         dealId: v.optional(v.id("deals")),
@@ -118,7 +118,7 @@ export const add = mutation({
 // Update reply classification manually
 export const updateClassification = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         id: v.id("inboundReplies"),
         classification: v.string(),
@@ -163,7 +163,7 @@ export const updateClassification = mutation({
 // Mark reply as responded
 export const markResponded = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -184,7 +184,7 @@ export const markResponded = mutation({
 // Mark reply as ignored
 export const markIgnored = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -204,7 +204,7 @@ export const markIgnored = mutation({
 // Save AI-generated responses
 export const saveResponses = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         id: v.id("inboundReplies"),
         classification: v.string(),
@@ -265,7 +265,7 @@ export const saveResponses = mutation({
 // Delete reply
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -281,7 +281,7 @@ export const remove = mutation({
 
 // Get reply stats
 export const getStats = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -324,7 +324,7 @@ export const getStats = query({
 
 // Get unprocessed count (for badges)
 export const getUnprocessedCount = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return 0;

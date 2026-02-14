@@ -6,7 +6,7 @@ import { auth } from "./auth";
 // Templates are now only available via the Template Library (one-click clone)
 // New users start with an empty template list
 export const seedTemplates = mutation({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())),},
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
     handler: async (ctx) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) throw new Error("Not authenticated");

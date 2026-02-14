@@ -5,7 +5,7 @@ import { internal } from "./_generated/api";
 
 // Get all enrollments that need to be processed
 export const getPendingEnrollments = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const now = Date.now();
         return await ctx.db
@@ -24,7 +24,7 @@ export const getPendingEnrollments = query({
 // Internal mutation to process a single enrollment
 export const processEnrollment = internalMutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         enrollmentId: v.id("sequenceEnrollments"),
     },
@@ -149,7 +149,7 @@ async function advanceToNextStep(
 // Mark enrollment as sent and schedule next step
 export const markEnrollmentSent = internalMutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         enrollmentId: v.id("sequenceEnrollments"),
         nextStepDelayDays: v.optional(v.number()),
@@ -185,7 +185,7 @@ export const markEnrollmentSent = internalMutation({
 // Log email event for stats
 export const logEmailEvent = internalMutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         userId: v.id("users"),
         event: v.union(
@@ -249,7 +249,7 @@ export const logEmailEvent = internalMutation({
 // Get domain reputation stats
 export const getReputationStats = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         days: v.optional(v.number()),
     },

@@ -4,7 +4,7 @@ import { auth, getAuthUserId } from "./auth";
 
 // List all campaigns (templates) for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
@@ -19,7 +19,7 @@ export const list = query({
 // Get a single campaign
 export const get = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("campaigns"),
     },
     handler: async (ctx, args) => {
@@ -34,7 +34,7 @@ export const get = query({
 // Create a new campaign
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         name: v.string(),
         subject: v.string(),
         htmlContent: v.string(),
@@ -64,7 +64,7 @@ export const create = mutation({
 // Update a campaign
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("campaigns"),
         name: v.optional(v.string()),
         subject: v.optional(v.string()),
@@ -92,7 +92,7 @@ export const update = mutation({
 // Delete a campaign
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("campaigns"),
     },
     handler: async (ctx, args) => {
@@ -109,7 +109,7 @@ export const remove = mutation({
 // Update campaign status
 export const updateStatus = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("campaigns"),
         status: v.union(
             v.literal("draft"),

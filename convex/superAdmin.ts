@@ -23,7 +23,7 @@ async function requireSuperAdmin(ctx: any, args: any) {
 // List all users with profiles (paginated)
 export const listAllUsers = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         limit: v.optional(v.number()),
         cursor: v.optional(v.string()),
         tierFilter: v.optional(v.string()),
@@ -83,7 +83,7 @@ export const listAllUsers = query({
 // Get detailed user info
 export const getUserDetails = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
     },
     handler: async (ctx, args) => {
@@ -138,7 +138,7 @@ export const getUserDetails = query({
 // Update user tier
 export const updateUserTier = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
         tier: v.union(v.literal("free"), v.literal("starter"), v.literal("growth"), v.literal("scale")),
     },
@@ -161,7 +161,7 @@ export const updateUserTier = mutation({
 // Toggle admin status
 export const toggleAdminStatus = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
         isAdmin: v.boolean(),
     },
@@ -179,7 +179,7 @@ export const toggleAdminStatus = mutation({
 // Update user status (active/suspended)
 export const updateUserStatus = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
         status: v.union(v.literal("active"), v.literal("suspended"), v.literal("deleted")),
     },
@@ -200,7 +200,7 @@ export const updateUserStatus = mutation({
 // Add admin note
 export const addAdminNote = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
         note: v.string(),
     },
@@ -224,7 +224,7 @@ export const addAdminNote = mutation({
 
 // Get admin dashboard stats
 export const getDashboardStats = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -270,7 +270,7 @@ export const getDashboardStats = query({
 
 // Check if current user is super admin
 export const checkSuperAdmin = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return { isSuperAdmin: false };
@@ -287,7 +287,7 @@ export const checkSuperAdmin = query({
 // Make a user super admin (only callable by existing super admin)
 export const makeSuperAdmin = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         profileId: v.id("userProfiles"),
     },
     handler: async (ctx, args) => {

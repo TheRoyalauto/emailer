@@ -19,7 +19,7 @@ function generateCode(length = 8): string {
 // List all tracked links for the current user
 export const list = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         campaignId: v.optional(v.id("campaigns")),
         limit: v.optional(v.number()),
@@ -49,7 +49,7 @@ export const list = query({
 // Get link by code (public - for redirect)
 export const getByCode = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         code: v.string() },
     handler: async (ctx, args) => {
         const link = await ctx.db
@@ -68,7 +68,7 @@ export const getByCode = query({
 
 // Get stats for tracked links
 export const getStats = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return { total: 0, totalClicks: 0, activeLinks: 0 };
@@ -89,7 +89,7 @@ export const getStats = query({
 // Create a tracked link
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         destinationUrl: v.string(),
         campaignId: v.optional(v.id("campaigns")),
@@ -146,7 +146,7 @@ export const create = mutation({
 // Record a click (for redirect handler to call)
 export const recordClick = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         code: v.string(),
         contactId: v.optional(v.id("contacts")),
@@ -174,7 +174,7 @@ export const recordClick = mutation({
 // Build tracking URL
 export const buildUrl = query({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("trackedLinks") },
     handler: async (ctx, args) => {
         const link = await ctx.db.get(args.id);
@@ -191,7 +191,7 @@ export const buildUrl = query({
 // Update a tracked link
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
        
         id: v.id("trackedLinks"),
         destinationUrl: v.optional(v.string()),
@@ -219,7 +219,7 @@ export const update = mutation({
 // Delete a tracked link
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.union(v.string(), v.null_())),
+        sessionToken: v.optional(v.union(v.string(), v.null())),
         id: v.id("trackedLinks") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
