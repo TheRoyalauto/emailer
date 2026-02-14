@@ -1,19 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { auth } from "./auth";
-
-// Helper to get authenticated user
-async function getAuthUserId(ctx: any) {
-    const userId = await auth.getUserId(ctx);
-    if (!userId) throw new Error("Not authenticated");
-    return userId;
-}
+import { auth, getAuthUserId } from "./auth";
 
 // List all campaigns (templates) for the current user
 export const list = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
         return await ctx.db
             .query("campaigns")
@@ -25,9 +18,12 @@ export const list = query({
 
 // Get a single campaign
 export const get = query({
-    args: { id: v.id("campaigns") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("campaigns"),
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
         const campaign = await ctx.db.get(args.id);
         if (!campaign || campaign.userId !== userId) return null;
@@ -38,6 +34,7 @@ export const get = query({
 // Create a new campaign
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         name: v.string(),
         subject: v.string(),
         htmlContent: v.string(),
@@ -46,7 +43,8 @@ export const create = mutation({
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         return await ctx.db.insert("campaigns", {
             ...args,
             userId,
@@ -66,6 +64,7 @@ export const create = mutation({
 // Update a campaign
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         id: v.id("campaigns"),
         name: v.optional(v.string()),
         subject: v.optional(v.string()),
@@ -75,12 +74,13 @@ export const update = mutation({
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const campaign = await ctx.db.get(args.id);
         if (!campaign || campaign.userId !== userId) {
             throw new Error("Campaign not found");
         }
-        const { id, ...updates } = args;
+        const { id, sessionToken, ...updates } = args;
         const filtered = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
         );
@@ -91,9 +91,13 @@ export const update = mutation({
 
 // Delete a campaign
 export const remove = mutation({
-    args: { id: v.id("campaigns") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("campaigns"),
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const campaign = await ctx.db.get(args.id);
         if (!campaign || campaign.userId !== userId) {
             throw new Error("Campaign not found");
@@ -105,6 +109,7 @@ export const remove = mutation({
 // Update campaign status
 export const updateStatus = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         id: v.id("campaigns"),
         status: v.union(
             v.literal("draft"),
@@ -115,7 +120,8 @@ export const updateStatus = mutation({
         ),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const campaign = await ctx.db.get(args.id);
         if (!campaign || campaign.userId !== userId) {
             throw new Error("Campaign not found");

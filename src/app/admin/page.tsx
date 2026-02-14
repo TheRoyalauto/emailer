@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 type Tier = "free" | "starter" | "growth" | "scale";
 
@@ -28,9 +29,9 @@ export default function AdminPage() {
     const [showTierModal, setShowTierModal] = useState(false);
     const [pendingTier, setPendingTier] = useState<Tier | null>(null);
 
-    const isSuperAdmin = useQuery(api.superAdmin.checkSuperAdmin);
-    const dashboardStats = useQuery(api.superAdmin.getDashboardStats);
-    const usersData = useQuery(api.superAdmin.listAllUsers, {
+    const isSuperAdmin = useAuthQuery(api.superAdmin.checkSuperAdmin);
+    const dashboardStats = useAuthQuery(api.superAdmin.getDashboardStats);
+    const usersData = useAuthQuery(api.superAdmin.listAllUsers, {
         search: search || undefined,
         tierFilter: tierFilter !== "all" ? tierFilter : undefined,
         limit: 100,
@@ -40,8 +41,8 @@ export default function AdminPage() {
         selectedUser ? { profileId: selectedUser } : "skip"
     );
 
-    const updateTier = useMutation(api.superAdmin.updateUserTier);
-    const updateStatus = useMutation(api.superAdmin.updateUserStatus);
+    const updateTier = useAuthMutation(api.superAdmin.updateUserTier);
+    const updateStatus = useAuthMutation(api.superAdmin.updateUserStatus);
 
     // Not authorized
     if (isSuperAdmin && !isSuperAdmin.isSuperAdmin) {

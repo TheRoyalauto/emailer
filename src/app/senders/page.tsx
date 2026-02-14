@@ -1,16 +1,16 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 function SendersPage() {
-    const senders = useQuery(api.senders.list);
-    const createSender = useMutation(api.senders.create);
-    const deleteSender = useMutation(api.senders.remove);
-    const updateSender = useMutation(api.senders.update);
+    const senders = useAuthQuery(api.senders.list);
+    const createSender = useAuthMutation(api.senders.create);
+    const deleteSender = useAuthMutation(api.senders.remove);
+    const updateSender = useAuthMutation(api.senders.update);
     const [isCreating, setIsCreating] = useState(false);
     const [newName, setNewName] = useState("");
     const [newEmail, setNewEmail] = useState("");

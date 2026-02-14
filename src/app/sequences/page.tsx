@@ -1,19 +1,19 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 function SequencesPage() {
-    const sequences = useQuery(api.sequences.list);
-    const templates = useQuery(api.templates.list, {});
-    const createSequence = useMutation(api.sequences.create);
-    const activateSequence = useMutation(api.sequences.activate);
-    const pauseSequence = useMutation(api.sequences.pause);
-    const removeSequence = useMutation(api.sequences.remove);
+    const sequences = useAuthQuery(api.sequences.list);
+    const templates = useAuthQuery(api.templates.list, {});
+    const createSequence = useAuthMutation(api.sequences.create);
+    const activateSequence = useAuthMutation(api.sequences.activate);
+    const pauseSequence = useAuthMutation(api.sequences.pause);
+    const removeSequence = useAuthMutation(api.sequences.remove);
 
     const [showCreate, setShowCreate] = useState(false);
     const [name, setName] = useState("");

@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation, internalAction } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 import { internal } from "./_generated/api";
 
 // Get all enrollments that need to be processed
 export const getPendingEnrollments = query({
-    handler: async (ctx) => {
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
         const now = Date.now();
         return await ctx.db
             .query("sequenceEnrollments")
@@ -23,6 +24,8 @@ export const getPendingEnrollments = query({
 // Internal mutation to process a single enrollment
 export const processEnrollment = internalMutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         enrollmentId: v.id("sequenceEnrollments"),
     },
     handler: async (ctx, args) => {
@@ -146,6 +149,8 @@ async function advanceToNextStep(
 // Mark enrollment as sent and schedule next step
 export const markEnrollmentSent = internalMutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         enrollmentId: v.id("sequenceEnrollments"),
         nextStepDelayDays: v.optional(v.number()),
         nextStepDelayHours: v.optional(v.number()),
@@ -180,6 +185,8 @@ export const markEnrollmentSent = internalMutation({
 // Log email event for stats
 export const logEmailEvent = internalMutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         userId: v.id("users"),
         event: v.union(
             v.literal("sent"),
@@ -242,10 +249,12 @@ export const logEmailEvent = internalMutation({
 // Get domain reputation stats
 export const getReputationStats = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         days: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const daysBack = args.days || 30;

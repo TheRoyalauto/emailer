@@ -1,7 +1,6 @@
 "use client";
 
-import { useConvexAuth } from "convex/react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useAuth } from "../contexts/AuthContext";
 import { ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +12,7 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-    const { isAuthenticated, isLoading } = useConvexAuth();
+    const { isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
@@ -55,12 +54,12 @@ const MOBILE_NAV_ITEMS = NAV_ITEMS.slice(0, 5);
 
 // Unified App Header - LIGHT MODE
 export function AppHeader() {
-    const { signOut } = useAuthActions();
+    const { logout } = useAuth();
     const pathname = usePathname();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     const handleSignOut = async () => {
-        await signOut();
+        await logout();
     };
 
     const isActive = (href: string) => {
@@ -89,8 +88,8 @@ export function AppHeader() {
                                     key={item.href}
                                     href={item.href}
                                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${isActive(item.href)
-                                            ? "bg-[#FF6B4A]/10 text-[#FF6B4A]"
-                                            : "text-[#4B5563] hover:text-[#1A1D26] hover:bg-[#F1F3F8]"
+                                        ? "bg-[#FF6B4A]/10 text-[#FF6B4A]"
+                                        : "text-[#4B5563] hover:text-[#1A1D26] hover:bg-[#F1F3F8]"
                                         }`}
                                 >
                                     <span className="text-base">{item.icon}</span>
@@ -139,8 +138,8 @@ export function AppHeader() {
                                 href={item.href}
                                 onClick={() => setShowMobileMenu(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive(item.href)
-                                        ? "bg-[#FF6B4A]/10 text-[#FF6B4A]"
-                                        : "text-[#4B5563] hover:bg-[#F1F3F8] hover:text-[#1A1D26]"
+                                    ? "bg-[#FF6B4A]/10 text-[#FF6B4A]"
+                                    : "text-[#4B5563] hover:bg-[#F1F3F8] hover:text-[#1A1D26]"
                                     }`}
                             >
                                 <span className="text-xl">{item.icon}</span>
@@ -167,8 +166,8 @@ export function AppHeader() {
                             key={item.href}
                             href={item.href}
                             className={`flex flex-col items-center gap-0.5 py-1.5 px-2 rounded-xl transition-all min-w-[56px] ${isActive(item.href)
-                                    ? "text-[#FF6B4A] bg-[#FF6B4A]/10"
-                                    : "text-[#9CA3AF]"
+                                ? "text-[#FF6B4A] bg-[#FF6B4A]/10"
+                                : "text-[#9CA3AF]"
                                 }`}
                         >
                             <span className="text-lg">{item.mobileIcon}</span>

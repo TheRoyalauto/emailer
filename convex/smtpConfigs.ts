@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // List all SMTP configs for user
 export const list = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         return await ctx.db
@@ -18,8 +19,9 @@ export const list = query({
 
 // Get default SMTP config
 export const getDefault = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         return await ctx.db
@@ -31,9 +33,11 @@ export const getDefault = query({
 
 // Get a single SMTP config
 export const get = query({
-    args: { id: v.id("smtpConfigs") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
         if (!config || config.userId !== userId) return null;
         return config;
@@ -43,6 +47,8 @@ export const get = query({
 // Create SMTP config
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         name: v.string(),
         provider: v.optional(v.union(
             v.literal("smtp"),
@@ -61,7 +67,7 @@ export const create = mutation({
         isDefault: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // If setting as default, unset other defaults
@@ -99,6 +105,8 @@ export const create = mutation({
 // Update SMTP config
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("smtpConfigs"),
         name: v.optional(v.string()),
         host: v.optional(v.string()),
@@ -110,7 +118,7 @@ export const update = mutation({
         fromName: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
         if (!config || config.userId !== userId) {
             throw new Error("Config not found");
@@ -128,9 +136,11 @@ export const update = mutation({
 
 // Set as default
 export const setDefault = mutation({
-    args: { id: v.id("smtpConfigs") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
         if (!config || config.userId !== userId) {
             throw new Error("Config not found");
@@ -155,9 +165,11 @@ export const setDefault = mutation({
 
 // Delete SMTP config
 export const remove = mutation({
-    args: { id: v.id("smtpConfigs") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
         if (!config || config.userId !== userId) {
             throw new Error("Config not found");
@@ -170,7 +182,9 @@ export const remove = mutation({
 
 // Mark as used
 export const markUsed = mutation({
-    args: { id: v.id("smtpConfigs") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
         const config = await ctx.db.get(args.id);
         if (!config) return;
@@ -180,9 +194,11 @@ export const markUsed = mutation({
 
 // Test SMTP connection (returns config for frontend to test)
 export const getForTest = query({
-    args: { id: v.id("smtpConfigs") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("smtpConfigs") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
         if (!config || config.userId !== userId) return null;
 

@@ -1,29 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { PageTransition, FadeInContainer, StaggeredList, StaggeredItem } from "@/components/PageTransition";
 import Link from "next/link";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 type SettingsTab = "overview" | "smtp" | "senders" | "templates" | "unsubscribes" | "scraper" | "sending" | "brand";
 
 function SettingsPage() {
     const [activeTab, setActiveTab] = useState<SettingsTab>("overview");
-    const smtpConfigs = useQuery(api.smtpConfigs.list);
-    const senders = useQuery(api.senders.list);
-    const templates = useQuery(api.templates.list, {});
-    const unsubscribes = useQuery(api.unsubscribes.list);
-    const sendPolicies = useQuery(api.sendPolicies.list, {});
-    const todayUsage = useQuery(api.sendPolicies.getTodayUsage, {});
+    const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
+    const senders = useAuthQuery(api.senders.list);
+    const templates = useAuthQuery(api.templates.list, {});
+    const unsubscribes = useAuthQuery(api.unsubscribes.list);
+    const sendPolicies = useAuthQuery(api.sendPolicies.list, {});
+    const todayUsage = useAuthQuery(api.sendPolicies.getTodayUsage, {});
 
     // Send Policy mutations
-    const createPolicy = useMutation(api.sendPolicies.create);
-    const updatePolicy = useMutation(api.sendPolicies.update);
-    const togglePolicy = useMutation(api.sendPolicies.toggle);
-    const deletePolicy = useMutation(api.sendPolicies.remove);
+    const createPolicy = useAuthMutation(api.sendPolicies.create);
+    const updatePolicy = useAuthMutation(api.sendPolicies.update);
+    const togglePolicy = useAuthMutation(api.sendPolicies.toggle);
+    const deletePolicy = useAuthMutation(api.sendPolicies.remove);
 
     // Policy form state
     const [showPolicyForm, setShowPolicyForm] = useState(false);

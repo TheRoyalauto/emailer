@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const PRIORITIES = [
     { id: "urgent", label: "Urgent", color: "text-red-400 bg-red-500/20" },
@@ -51,14 +51,14 @@ function TasksContent() {
         dueTime: "",
     });
 
-    const tasks = useQuery(api.tasks.list, { includeCompleted });
-    const stats = useQuery(api.tasks.getStats, {});
-    const upcoming = useQuery(api.tasks.getUpcoming, {});
+    const tasks = useAuthQuery(api.tasks.list, { includeCompleted });
+    const stats = useAuthQuery(api.tasks.getStats, {});
+    const upcoming = useAuthQuery(api.tasks.getUpcoming, {});
 
-    const createTask = useMutation(api.tasks.create);
-    const quickComplete = useMutation(api.tasks.quickComplete);
-    const setStatus = useMutation(api.tasks.setStatus);
-    const deleteTask = useMutation(api.tasks.remove);
+    const createTask = useAuthMutation(api.tasks.create);
+    const quickComplete = useAuthMutation(api.tasks.quickComplete);
+    const setStatus = useAuthMutation(api.tasks.setStatus);
+    const deleteTask = useAuthMutation(api.tasks.remove);
 
     const resetForm = () => {
         setFormData({ title: "", description: "", priority: "medium", taskType: "", dueDate: "", dueTime: "" });

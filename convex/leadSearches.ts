@@ -4,7 +4,7 @@ import { auth } from "./auth";
 
 // List recent searches for the current user
 export const list = query({
-    args: {},
+    args: { sessionToken: v.optional(v.string()),},
     handler: async (ctx) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) return [];
@@ -20,6 +20,7 @@ export const list = query({
 // Save a new search
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         prompt: v.string(),
         resultsCount: v.number(),
     },
@@ -54,7 +55,7 @@ export const remove = mutation({
 
 // Clear all searches for user
 export const clearAll = mutation({
-    args: {},
+    args: { sessionToken: v.optional(v.string()),},
     handler: async (ctx) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) throw new Error("Not authenticated");

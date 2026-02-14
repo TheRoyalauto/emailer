@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { PageTransition, FadeInContainer } from "@/components/PageTransition";
+import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 type InsightTab = "overview" | "performance" | "reputation" | "calls";
 
@@ -12,11 +12,11 @@ function InsightsPage() {
     const [activeTab, setActiveTab] = useState<InsightTab>("overview");
     const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
 
-    const stats = useQuery(api.sequenceScheduler.getReputationStats, {
+    const stats = useAuthQuery(api.sequenceScheduler.getReputationStats, {
         days: timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90
     });
-    const callStats = useQuery(api.activities.getCallStats);
-    const recentActivity = useQuery(api.activities.getRecentActivity, { limit: 10 });
+    const callStats = useAuthQuery(api.activities.getCallStats);
+    const recentActivity = useAuthQuery(api.activities.getRecentActivity, { limit: 10 });
 
     const tabs: { id: InsightTab; label: string; icon: string }[] = [
         { id: "overview", label: "Overview", icon: "📊" },

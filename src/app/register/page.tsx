@@ -1,22 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth } from "convex/react";
-import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { useAuth } from "../../contexts/AuthContext";
+import { useAuthMutation } from "../../hooks/useAuthConvex";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Step = "details" | "verify" | "success";
 
 export default function RegisterPage() {
-    const { signIn } = useAuthActions();
-    const { isAuthenticated, isLoading } = useConvexAuth();
+    const { isAuthenticated, isLoading, register: authRegister } = useAuth();
     const router = useRouter();
-    // Use mutation instead of action - much more reliable, no WebSocket timeout issues
-    const initiateVerification = useMutation(api.emailVerification.initiateVerification);
-    const verifyCode = useMutation(api.emailVerification.verifyCode);
+    const initiateVerification = useAuthMutation(api.emailVerification.initiateVerification);
+    const verifyCode = useAuthMutation(api.emailVerification.verifyCode);
 
     // Form state
     const [step, setStep] = useState<Step>("details");
@@ -121,16 +118,17 @@ export default function RegisterPage() {
                 return;
             }
 
-            await signIn("password", {
-                email,
-                password,
-                name,
-                ...(phone ? { phone } : {}),
-                flow: "signUp"
-            });
+            // Register with custom auth system via AuthContext
+            const regResult = await authRegister(email, password, name, phone || undefined);
 
-            setStep("success");
-            setRegistrationComplete(true);
+            if (!regResult.success) {
+                setError(regResult.error || "Registration failed");
+                setLoading(false);
+                return;
+            }
+
+            // Auth context handles token storage — redirect to dashboard
+            router.push("/dashboard");
         } catch (err: any) {
             console.error("Account creation error:", err);
             if (err.message?.includes("already exists")) {

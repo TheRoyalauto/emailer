@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 export default function BrandRulesPage() {
     return (
@@ -38,10 +38,10 @@ function BrandRulesContent() {
     const [newPreferred, setNewPreferred] = useState("");
     const [newFact, setNewFact] = useState({ fact: "", context: "" });
 
-    const rules = useQuery(api.brandRules.list, {});
-    const createRule = useMutation(api.brandRules.create);
-    const updateRule = useMutation(api.brandRules.update);
-    const deleteRule = useMutation(api.brandRules.remove);
+    const rules = useAuthQuery(api.brandRules.list, {});
+    const createRule = useAuthMutation(api.brandRules.create);
+    const updateRule = useAuthMutation(api.brandRules.update);
+    const deleteRule = useAuthMutation(api.brandRules.remove);
 
     const resetForm = () => {
         setFormData({

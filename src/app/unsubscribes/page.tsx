@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 function UnsubscribesPage() {
-    const unsubscribes = useQuery(api.unsubscribes.list);
-    const resubscribe = useMutation(api.unsubscribes.resubscribe);
+    const unsubscribes = useAuthQuery(api.unsubscribes.list);
+    const resubscribe = useAuthMutation(api.unsubscribes.resubscribe);
 
     const formatDate = (ts: number) => {
         return new Date(ts).toLocaleDateString("en-US", {

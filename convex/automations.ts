@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 import { internal } from "./_generated/api";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -35,10 +35,12 @@ export const ACTION_TYPES = [
 // List all automation rules
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         isActive: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let rules = await ctx.db
@@ -56,9 +58,11 @@ export const list = query({
 
 // Get rule by ID
 export const get = query({
-    args: { id: v.id("automationRules") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("automationRules") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const rule = await ctx.db.get(args.id);
@@ -71,6 +75,8 @@ export const get = query({
 // Create automation rule
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         name: v.string(),
         description: v.optional(v.string()),
         triggerType: v.string(),
@@ -80,7 +86,7 @@ export const create = mutation({
         priority: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const ruleId = await ctx.db.insert("automationRules", {
@@ -103,6 +109,8 @@ export const create = mutation({
 // Update automation rule
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("automationRules"),
         name: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -114,7 +122,7 @@ export const update = mutation({
         priority: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const rule = await ctx.db.get(args.id);
@@ -136,9 +144,11 @@ export const update = mutation({
 
 // Toggle rule active status
 export const toggle = mutation({
-    args: { id: v.id("automationRules") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("automationRules") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const rule = await ctx.db.get(args.id);
@@ -155,9 +165,11 @@ export const toggle = mutation({
 
 // Delete rule
 export const remove = mutation({
-    args: { id: v.id("automationRules") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("automationRules") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const rule = await ctx.db.get(args.id);
@@ -171,12 +183,14 @@ export const remove = mutation({
 // Get automation logs
 export const getLogs = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         ruleId: v.optional(v.id("automationRules")),
         contactId: v.optional(v.id("contacts")),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let logs = await ctx.db
@@ -210,6 +224,8 @@ export const getLogs = query({
 // Execute automation based on trigger
 export const executeForTrigger = internalMutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         userId: v.id("users"),
         triggerType: v.string(),
         contactId: v.id("contacts"),
@@ -370,9 +386,9 @@ export const executeForTrigger = internalMutation({
 
 // Get automation stats
 export const getStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const [rules, logs] = await Promise.all([
@@ -401,9 +417,9 @@ export const getStats = query({
 
 // Seed default automation rules
 export const seedDefaults = mutation({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const existing = await ctx.db

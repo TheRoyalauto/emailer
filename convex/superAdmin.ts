@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 import { TIER_LIMITS, Tier } from "./userProfiles";
 
 // Helper to check if user is super admin
-async function requireSuperAdmin(ctx: any) {
-    const userId = await getAuthUserId(ctx);
+async function requireSuperAdmin(ctx: any, args: any) {
+    const userId = await getAuthUserId(ctx, args);
     if (!userId) throw new Error("Not authenticated");
 
     const profile = await ctx.db
@@ -23,13 +23,14 @@ async function requireSuperAdmin(ctx: any) {
 // List all users with profiles (paginated)
 export const listAllUsers = query({
     args: {
+        sessionToken: v.optional(v.string()),
         limit: v.optional(v.number()),
         cursor: v.optional(v.string()),
         tierFilter: v.optional(v.string()),
         search: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return { users: [], totalCount: 0 };
 
         // Check if super admin
@@ -81,9 +82,12 @@ export const listAllUsers = query({
 
 // Get detailed user info
 export const getUserDetails = query({
-    args: { profileId: v.id("userProfiles") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        profileId: v.id("userProfiles"),
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         // Check if super admin
@@ -134,11 +138,12 @@ export const getUserDetails = query({
 // Update user tier
 export const updateUserTier = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         profileId: v.id("userProfiles"),
         tier: v.union(v.literal("free"), v.literal("starter"), v.literal("growth"), v.literal("scale")),
     },
     handler: async (ctx, args) => {
-        const { userId } = await requireSuperAdmin(ctx);
+        const { userId } = await requireSuperAdmin(ctx, args);
 
         const profile = await ctx.db.get(args.profileId);
         if (!profile) throw new Error("User not found");
@@ -156,11 +161,12 @@ export const updateUserTier = mutation({
 // Toggle admin status
 export const toggleAdminStatus = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         profileId: v.id("userProfiles"),
         isAdmin: v.boolean(),
     },
     handler: async (ctx, args) => {
-        await requireSuperAdmin(ctx);
+        await requireSuperAdmin(ctx, args);
 
         await ctx.db.patch(args.profileId, {
             isAdmin: args.isAdmin,
@@ -173,11 +179,12 @@ export const toggleAdminStatus = mutation({
 // Update user status (active/suspended)
 export const updateUserStatus = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         profileId: v.id("userProfiles"),
         status: v.union(v.literal("active"), v.literal("suspended"), v.literal("deleted")),
     },
     handler: async (ctx, args) => {
-        const { userId } = await requireSuperAdmin(ctx);
+        const { userId } = await requireSuperAdmin(ctx, args);
 
         const profile = await ctx.db.get(args.profileId);
         if (!profile) throw new Error("User not found");
@@ -193,11 +200,12 @@ export const updateUserStatus = mutation({
 // Add admin note
 export const addAdminNote = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         profileId: v.id("userProfiles"),
         note: v.string(),
     },
     handler: async (ctx, args) => {
-        await requireSuperAdmin(ctx);
+        await requireSuperAdmin(ctx, args);
 
         const profile = await ctx.db.get(args.profileId);
         if (!profile) throw new Error("User not found");
@@ -216,9 +224,9 @@ export const addAdminNote = mutation({
 
 // Get admin dashboard stats
 export const getDashboardStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         // Check if super admin
@@ -262,9 +270,9 @@ export const getDashboardStats = query({
 
 // Check if current user is super admin
 export const checkSuperAdmin = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return { isSuperAdmin: false };
 
         const profile = await ctx.db
@@ -278,9 +286,12 @@ export const checkSuperAdmin = query({
 
 // Make a user super admin (only callable by existing super admin)
 export const makeSuperAdmin = mutation({
-    args: { profileId: v.id("userProfiles") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        profileId: v.id("userProfiles"),
+    },
     handler: async (ctx, args) => {
-        await requireSuperAdmin(ctx);
+        await requireSuperAdmin(ctx, args);
 
         await ctx.db.patch(args.profileId, {
             isSuperAdmin: true,

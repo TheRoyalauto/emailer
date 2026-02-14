@@ -1,17 +1,17 @@
 "use client";
 
-import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import CampaignSendModal from "@/components/CampaignSendModal";
+import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 export default function CampaignsPage() {
-    const templates = useQuery(api.templates.list, {});
-    const senders = useQuery(api.senders.list);
-    const batches = useQuery(api.batches.list);
-    const contacts = useQuery(api.contacts.list, {});
+    const templates = useAuthQuery(api.templates.list, {});
+    const senders = useAuthQuery(api.senders.list);
+    const batches = useAuthQuery(api.batches.list);
+    const contacts = useAuthQuery(api.contacts.list, {});
 
     // Campaign creation state
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");

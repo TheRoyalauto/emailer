@@ -3,17 +3,17 @@ import { query, mutation } from "./_generated/server";
 import { auth } from "./auth";
 
 // Helper to get authenticated user
-async function getAuthUserId(ctx: any) {
-    const userId = await auth.getUserId(ctx);
+async function getAuthUserId(ctx: any, args: any) {
+    const userId = await auth.getUserId(ctx, args);
     if (!userId) throw new Error("Not authenticated");
     return userId;
 }
 
 // List all senders for the current user
 export const list = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
         return await ctx.db
             .query("senders")
@@ -25,9 +25,12 @@ export const list = query({
 
 // Get a single sender
 export const get = query({
-    args: { id: v.id("senders") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("senders")
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
         const sender = await ctx.db.get(args.id);
         if (!sender || sender.userId !== userId) return null;
@@ -37,9 +40,9 @@ export const get = query({
 
 // Get default sender for the current user
 export const getDefault = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
 
         const senders = await ctx.db
@@ -53,13 +56,15 @@ export const getDefault = query({
 // Create a new sender
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+
         name: v.string(),
         email: v.string(),
         replyTo: v.optional(v.string()),
         isDefault: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
 
         // If setting as default, unset others for this user
         if (args.isDefault) {
@@ -88,6 +93,8 @@ export const create = mutation({
 // Update a sender
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+
         id: v.id("senders"),
         name: v.optional(v.string()),
         email: v.optional(v.string()),
@@ -95,7 +102,7 @@ export const update = mutation({
         isDefault: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sender = await ctx.db.get(args.id);
         if (!sender || sender.userId !== userId) {
             throw new Error("Sender not found");
@@ -126,9 +133,12 @@ export const update = mutation({
 
 // Delete a sender
 export const remove = mutation({
-    args: { id: v.id("senders") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("senders")
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sender = await ctx.db.get(args.id);
         if (!sender || sender.userId !== userId) {
             throw new Error("Sender not found");

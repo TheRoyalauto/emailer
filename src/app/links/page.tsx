@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 export default function LinksPage() {
     return (
@@ -27,11 +27,11 @@ function LinksContent() {
         utmTerm: "",
     });
 
-    const links = useQuery(api.trackedLinks.list, {});
-    const stats = useQuery(api.trackedLinks.getStats, {});
-    const createLink = useMutation(api.trackedLinks.create);
-    const updateLink = useMutation(api.trackedLinks.update);
-    const deleteLink = useMutation(api.trackedLinks.remove);
+    const links = useAuthQuery(api.trackedLinks.list, {});
+    const stats = useAuthQuery(api.trackedLinks.getStats, {});
+    const createLink = useAuthMutation(api.trackedLinks.create);
+    const updateLink = useAuthMutation(api.trackedLinks.update);
+    const deleteLink = useAuthMutation(api.trackedLinks.remove);
 
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 

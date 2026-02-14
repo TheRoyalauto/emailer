@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TRACKED LINKS - Click Tracking with UTM Parameters
@@ -19,11 +19,13 @@ function generateCode(length = 8): string {
 // List all tracked links for the current user
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         campaignId: v.optional(v.id("campaigns")),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let query = ctx.db
@@ -46,7 +48,9 @@ export const list = query({
 
 // Get link by code (public - for redirect)
 export const getByCode = query({
-    args: { code: v.string() },
+    args: {
+        sessionToken: v.optional(v.string()),
+        code: v.string() },
     handler: async (ctx, args) => {
         const link = await ctx.db
             .query("trackedLinks")
@@ -64,9 +68,9 @@ export const getByCode = query({
 
 // Get stats for tracked links
 export const getStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return { total: 0, totalClicks: 0, activeLinks: 0 };
 
         const links = await ctx.db
@@ -85,6 +89,8 @@ export const getStats = query({
 // Create a tracked link
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         destinationUrl: v.string(),
         campaignId: v.optional(v.id("campaigns")),
         sequenceId: v.optional(v.id("sequences")),
@@ -98,7 +104,7 @@ export const create = mutation({
         expiresAt: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // Generate unique code
@@ -140,6 +146,8 @@ export const create = mutation({
 // Record a click (for redirect handler to call)
 export const recordClick = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         code: v.string(),
         contactId: v.optional(v.id("contacts")),
     },
@@ -165,7 +173,9 @@ export const recordClick = mutation({
 
 // Build tracking URL
 export const buildUrl = query({
-    args: { id: v.id("trackedLinks") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("trackedLinks") },
     handler: async (ctx, args) => {
         const link = await ctx.db.get(args.id);
         if (!link) return null;
@@ -181,6 +191,8 @@ export const buildUrl = query({
 // Update a tracked link
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("trackedLinks"),
         destinationUrl: v.optional(v.string()),
         label: v.optional(v.string()),
@@ -188,7 +200,7 @@ export const update = mutation({
         expiresAt: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const link = await ctx.db.get(args.id);
@@ -206,9 +218,11 @@ export const update = mutation({
 
 // Delete a tracked link
 export const remove = mutation({
-    args: { id: v.id("trackedLinks") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("trackedLinks") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const link = await ctx.db.get(args.id);

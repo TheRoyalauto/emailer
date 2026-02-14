@@ -1,10 +1,10 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 // Preset SMTP configurations
 const SMTP_PRESETS = [
@@ -19,10 +19,10 @@ const SMTP_PRESETS = [
 ];
 
 function SMTPSettingsPage() {
-    const configs = useQuery(api.smtpConfigs.list);
-    const createConfig = useMutation(api.smtpConfigs.create);
-    const setDefault = useMutation(api.smtpConfigs.setDefault);
-    const removeConfig = useMutation(api.smtpConfigs.remove);
+    const configs = useAuthQuery(api.smtpConfigs.list);
+    const createConfig = useAuthMutation(api.smtpConfigs.create);
+    const setDefault = useAuthMutation(api.smtpConfigs.setDefault);
+    const removeConfig = useAuthMutation(api.smtpConfigs.remove);
 
     const [showAdd, setShowAdd] = useState(false);
     const [testing, setTesting] = useState<string | null>(null);

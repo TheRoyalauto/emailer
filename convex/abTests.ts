@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // List all A/B tests
 export const list = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const tests = await ctx.db
@@ -33,9 +34,11 @@ export const list = query({
 
 // Get a single A/B test
 export const get = query({
-    args: { id: v.id("abTests") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("abTests") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const test = await ctx.db.get(args.id);
         if (!test || test.userId !== userId) return null;
 
@@ -49,13 +52,15 @@ export const get = query({
 // Create a new A/B test
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         name: v.string(),
         templateAId: v.id("templates"),
         templateBId: v.id("templates"),
         splitPercentage: v.number(), // 50 = 50/50, 70 = 70% A / 30% B
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         return await ctx.db.insert("abTests", {
@@ -74,9 +79,11 @@ export const create = mutation({
 
 // Start an A/B test
 export const start = mutation({
-    args: { id: v.id("abTests") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("abTests") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const test = await ctx.db.get(args.id);
         if (!test || test.userId !== userId) {
             throw new Error("Test not found");
@@ -90,6 +97,8 @@ export const start = mutation({
 // Record A/B test event
 export const recordEvent = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         testId: v.id("abTests"),
         variant: v.union(v.literal("A"), v.literal("B")),
         eventType: v.union(v.literal("sent"), v.literal("opened"), v.literal("clicked")),
@@ -115,11 +124,13 @@ export const recordEvent = mutation({
 // Complete A/B test and declare winner
 export const complete = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("abTests"),
         winningVariant: v.union(v.literal("A"), v.literal("B")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const test = await ctx.db.get(args.id);
         if (!test || test.userId !== userId) {
             throw new Error("Test not found");
@@ -137,9 +148,11 @@ export const complete = mutation({
 
 // Delete an A/B test
 export const remove = mutation({
-    args: { id: v.id("abTests") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("abTests") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const test = await ctx.db.get(args.id);
         if (!test || test.userId !== userId) {
             throw new Error("Test not found");
@@ -152,7 +165,9 @@ export const remove = mutation({
 
 // Get which variant to send to (A or B) based on split
 export const getVariant = query({
-    args: { testId: v.id("abTests") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        testId: v.id("abTests") },
     handler: async (ctx, args) => {
         const test = await ctx.db.get(args.testId);
         if (!test || test.status !== "running") return null;

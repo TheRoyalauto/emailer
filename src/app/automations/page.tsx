@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const TRIGGER_TYPES = [
     { id: "reply_positive", label: "Positive Reply", icon: "😊", description: "When lead responds positively" },
@@ -44,14 +44,14 @@ function AutomationsPage() {
     const [triggerConfig, setTriggerConfig] = useState<any>({});
     const [actionConfig, setActionConfig] = useState<any>({});
 
-    const rules = useQuery(api.automations.list, {});
-    const logs = useQuery(api.automations.getLogs, { limit: 50 });
-    const stats = useQuery(api.automations.getStats, {});
+    const rules = useAuthQuery(api.automations.list, {});
+    const logs = useAuthQuery(api.automations.getLogs, { limit: 50 });
+    const stats = useAuthQuery(api.automations.getStats, {});
 
-    const createRule = useMutation(api.automations.create);
-    const updateRule = useMutation(api.automations.update);
-    const toggleRule = useMutation(api.automations.toggle);
-    const deleteRule = useMutation(api.automations.remove);
+    const createRule = useAuthMutation(api.automations.create);
+    const updateRule = useAuthMutation(api.automations.update);
+    const toggleRule = useAuthMutation(api.automations.toggle);
+    const deleteRule = useAuthMutation(api.automations.remove);
 
     const resetForm = () => {
         setName("");

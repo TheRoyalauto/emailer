@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BRAND RULES - Voice & Tone Guidelines for AI-Generated Content
@@ -8,9 +8,9 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 
 // List all brand rules for the current user
 export const list = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         return await ctx.db
@@ -23,9 +23,9 @@ export const list = query({
 
 // Get default brand rule
 export const getDefault = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const defaultRule = await ctx.db
@@ -45,9 +45,11 @@ export const getDefault = query({
 
 // Get a specific brand rule
 export const get = query({
-    args: { id: v.id("emailBrandRules") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("emailBrandRules") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const rule = await ctx.db.get(args.id);
@@ -60,6 +62,8 @@ export const get = query({
 // Create a new brand rule
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         name: v.string(),
         isDefault: v.optional(v.boolean()),
         voiceDescription: v.optional(v.string()),
@@ -78,7 +82,7 @@ export const create = mutation({
         senderPersona: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // If making this default, unset other defaults
@@ -106,6 +110,8 @@ export const create = mutation({
 // Update a brand rule
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("emailBrandRules"),
         name: v.optional(v.string()),
         isDefault: v.optional(v.boolean()),
@@ -125,7 +131,7 @@ export const update = mutation({
         senderPersona: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const rule = await ctx.db.get(args.id);
@@ -161,9 +167,11 @@ export const update = mutation({
 
 // Delete a brand rule
 export const remove = mutation({
-    args: { id: v.id("emailBrandRules") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("emailBrandRules") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const rule = await ctx.db.get(args.id);

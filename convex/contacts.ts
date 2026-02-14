@@ -3,8 +3,8 @@ import { query, mutation } from "./_generated/server";
 import { auth } from "./auth";
 
 // Helper to get authenticated user
-async function getAuthUserId(ctx: any) {
-    const userId = await auth.getUserId(ctx);
+async function getAuthUserId(ctx: any, args: any) {
+    const userId = await auth.getUserId(ctx, args);
     if (!userId) throw new Error("Not authenticated");
     return userId;
 }
@@ -12,12 +12,14 @@ async function getAuthUserId(ctx: any) {
 // List all contacts for the current user
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+
         status: v.optional(
             v.union(v.literal("active"), v.literal("unsubscribed"), v.literal("bounced"))
         ),
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
 
         let query = ctx.db
@@ -35,9 +37,12 @@ export const list = query({
 
 // Get a single contact
 export const get = query({
-    args: { id: v.id("contacts") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("contacts")
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
         const contact = await ctx.db.get(args.id);
         if (!contact || contact.userId !== userId) return null;
@@ -48,6 +53,8 @@ export const get = query({
 // Create a new contact
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+
         email: v.string(),
         name: v.optional(v.string()),
         company: v.optional(v.string()),
@@ -59,7 +66,7 @@ export const create = mutation({
         batchId: v.optional(v.id("batches")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
 
         // Check for existing contact with same email for this user
         const existing = await ctx.db
@@ -82,6 +89,8 @@ export const create = mutation({
 // Bulk create contacts
 export const bulkCreate = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+
         contacts: v.array(
             v.object({
                 email: v.string(),
@@ -98,7 +107,7 @@ export const bulkCreate = mutation({
         batchId: v.optional(v.id("batches")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const created: string[] = [];
         const skipped: string[] = [];
 
@@ -174,6 +183,8 @@ export const bulkCreate = mutation({
 // Update a contact
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+
         id: v.id("contacts"),
         email: v.optional(v.string()),
         name: v.optional(v.string()),
@@ -186,7 +197,7 @@ export const update = mutation({
         ),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const contact = await ctx.db.get(args.id);
         if (!contact || contact.userId !== userId) {
             throw new Error("Contact not found");
@@ -202,9 +213,12 @@ export const update = mutation({
 
 // Delete a contact
 export const remove = mutation({
-    args: { id: v.id("contacts") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("contacts")
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const contact = await ctx.db.get(args.id);
         if (!contact || contact.userId !== userId) {
             throw new Error("Contact not found");

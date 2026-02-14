@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // SEND POLICIES - Sending Limits, Business Hours, Warmup Mode
@@ -8,9 +8,9 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 
 // List all send policies for the current user
 export const list = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const policies = await ctx.db
@@ -34,10 +34,12 @@ export const list = query({
 // Get active policy for a sender (or global)
 export const getActive = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         // First check for sender-specific policy
@@ -65,9 +67,11 @@ export const getActive = query({
 
 // Get a specific policy
 export const get = query({
-    args: { id: v.id("sendPolicies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const policy = await ctx.db.get(args.id);
@@ -80,6 +84,8 @@ export const get = query({
 // Create a new send policy
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         senderId: v.optional(v.id("senders")),
         name: v.string(),
         isActive: v.optional(v.boolean()),
@@ -99,7 +105,7 @@ export const create = mutation({
         autoPauseOnBounce: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // If making this active and it's global, deactivate other global policies
@@ -129,6 +135,8 @@ export const create = mutation({
 // Update a send policy
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("sendPolicies"),
         senderId: v.optional(v.id("senders")),
         name: v.optional(v.string()),
@@ -149,7 +157,7 @@ export const update = mutation({
         autoPauseOnBounce: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const policy = await ctx.db.get(args.id);
@@ -171,9 +179,11 @@ export const update = mutation({
 
 // Toggle active status
 export const toggle = mutation({
-    args: { id: v.id("sendPolicies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const policy = await ctx.db.get(args.id);
@@ -190,9 +200,11 @@ export const toggle = mutation({
 
 // Delete a send policy
 export const remove = mutation({
-    args: { id: v.id("sendPolicies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const policy = await ctx.db.get(args.id);
@@ -206,10 +218,12 @@ export const remove = mutation({
 // Get today's usage for a sender/global
 export const getTodayUsage = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return { sent: 0, remaining: 0, limit: 100 };
 
         // Get active policy

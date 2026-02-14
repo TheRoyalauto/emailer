@@ -1,18 +1,18 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 function ABTestsPage() {
-    const tests = useQuery(api.abTests.list);
-    const templates = useQuery(api.templates.list, {});
-    const createTest = useMutation(api.abTests.create);
-    const startTest = useMutation(api.abTests.start);
-    const completeTest = useMutation(api.abTests.complete);
-    const removeTest = useMutation(api.abTests.remove);
+    const tests = useAuthQuery(api.abTests.list);
+    const templates = useAuthQuery(api.templates.list, {});
+    const createTest = useAuthMutation(api.abTests.create);
+    const startTest = useAuthMutation(api.abTests.start);
+    const completeTest = useAuthMutation(api.abTests.complete);
+    const removeTest = useAuthMutation(api.abTests.remove);
 
     const [showCreate, setShowCreate] = useState(false);
     const [name, setName] = useState("");

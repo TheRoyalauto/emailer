@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import LeadSearchAnimation from "@/components/LeadSearchAnimation";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const EXAMPLE_PROMPTS = [
     "Find me 20 auto body shops in Los Angeles, California",
@@ -42,20 +42,20 @@ function ScraperPage() {
     const [showSearchHistory, setShowSearchHistory] = useState(false);
 
     // For batch assignment
-    const batches = useQuery(api.batches.list);
+    const batches = useAuthQuery(api.batches.list);
     const [selectedBatchId, setSelectedBatchId] = useState<string>("");
     const [showNewBatchInput, setShowNewBatchInput] = useState(false);
     const [newBatchName, setNewBatchName] = useState("");
-    const createContacts = useMutation(api.contacts.bulkCreate);
-    const createBatch = useMutation(api.batches.create);
+    const createContacts = useAuthMutation(api.contacts.bulkCreate);
+    const createBatch = useAuthMutation(api.batches.create);
 
     // Search history
-    const searchHistory = useQuery(api.leadSearches.list);
-    const saveSearch = useMutation(api.leadSearches.create);
-    const clearSearchHistory = useMutation(api.leadSearches.clearAll);
+    const searchHistory = useAuthQuery(api.leadSearches.list);
+    const saveSearch = useAuthMutation(api.leadSearches.create);
+    const clearSearchHistory = useAuthMutation(api.leadSearches.clearAll);
 
     // Existing contacts for duplicate detection
-    const existingContacts = useQuery(api.contacts.list, {});
+    const existingContacts = useAuthQuery(api.contacts.list, {});
     const existingEmails = useMemo(() => {
         return new Set(existingContacts?.map(c => c.email.toLowerCase()) || []);
     }, [existingContacts]);

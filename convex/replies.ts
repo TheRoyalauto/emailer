@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 import { internal, api } from "./_generated/api";
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -22,12 +22,14 @@ export const CLASSIFICATIONS = [
 // List all replies
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         isProcessed: v.optional(v.boolean()),
         classification: v.optional(v.string()),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let replies = await ctx.db
@@ -61,9 +63,11 @@ export const list = query({
 
 // Get reply by ID
 export const get = query({
-    args: { id: v.id("inboundReplies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const reply = await ctx.db.get(args.id);
@@ -79,6 +83,8 @@ export const get = query({
 // Add a new reply (manual or from webhook)
 export const add = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         contactId: v.id("contacts"),
         dealId: v.optional(v.id("deals")),
         campaignId: v.optional(v.id("campaigns")),
@@ -88,7 +94,7 @@ export const add = mutation({
         fromEmail: v.string(),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const replyId = await ctx.db.insert("inboundReplies", {
@@ -112,11 +118,13 @@ export const add = mutation({
 // Update reply classification manually
 export const updateClassification = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("inboundReplies"),
         classification: v.string(),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const reply = await ctx.db.get(args.id);
@@ -154,9 +162,11 @@ export const updateClassification = mutation({
 
 // Mark reply as responded
 export const markResponded = mutation({
-    args: { id: v.id("inboundReplies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const reply = await ctx.db.get(args.id);
@@ -173,9 +183,11 @@ export const markResponded = mutation({
 
 // Mark reply as ignored
 export const markIgnored = mutation({
-    args: { id: v.id("inboundReplies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const reply = await ctx.db.get(args.id);
@@ -192,6 +204,8 @@ export const markIgnored = mutation({
 // Save AI-generated responses
 export const saveResponses = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("inboundReplies"),
         classification: v.string(),
         sentiment: v.optional(v.number()),
@@ -209,7 +223,7 @@ export const saveResponses = mutation({
         })),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const reply = await ctx.db.get(args.id);
@@ -250,9 +264,11 @@ export const saveResponses = mutation({
 
 // Delete reply
 export const remove = mutation({
-    args: { id: v.id("inboundReplies") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("inboundReplies") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const reply = await ctx.db.get(args.id);
@@ -265,9 +281,9 @@ export const remove = mutation({
 
 // Get reply stats
 export const getStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const replies = await ctx.db
@@ -308,9 +324,9 @@ export const getStats = query({
 
 // Get unprocessed count (for badges)
 export const getUnprocessedCount = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return 0;
 
         const replies = await ctx.db

@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // List all unsubscribes
 export const list = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         return await ctx.db
@@ -18,9 +19,11 @@ export const list = query({
 
 // Check if email is unsubscribed
 export const isUnsubscribed = query({
-    args: { email: v.string() },
+    args: {
+        sessionToken: v.optional(v.string()),
+        email: v.string() },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return false;
 
         const unsub = await ctx.db
@@ -37,13 +40,15 @@ export const isUnsubscribed = query({
 // Unsubscribe an email
 export const unsubscribe = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         email: v.string(),
         contactId: v.optional(v.id("contacts")),
         reason: v.optional(v.string()),
         campaignId: v.optional(v.id("campaigns")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // Check if already unsubscribed
@@ -113,9 +118,11 @@ export const unsubscribe = mutation({
 
 // Resubscribe an email
 export const resubscribe = mutation({
-    args: { email: v.string() },
+    args: {
+        sessionToken: v.optional(v.string()),
+        email: v.string() },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         // Find and delete unsubscribe record
@@ -148,8 +155,9 @@ export const resubscribe = mutation({
 
 // Get unsubscribe count
 export const getCount = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return 0;
 
         const unsubs = await ctx.db

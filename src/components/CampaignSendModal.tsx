@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
+import { useAuthQuery, useAuthMutation } from "../hooks/useAuthConvex";
 
 interface CampaignSendModalProps {
     onClose: () => void;
@@ -45,9 +45,9 @@ function replaceVariables(text: string, contact: { name?: string; company?: stri
 
 export default function CampaignSendModal({ onClose, template, sender, contacts }: CampaignSendModalProps) {
     // Saved SMTP configs
-    const smtpConfigs = useQuery(api.smtpConfigs.list);
-    const defaultSmtp = useQuery(api.smtpConfigs.getDefault);
-    const markUsed = useMutation(api.smtpConfigs.markUsed);
+    const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
+    const defaultSmtp = useAuthQuery(api.smtpConfigs.getDefault);
+    const markUsed = useAuthMutation(api.smtpConfigs.markUsed);
 
     // SMTP selection
     const [selectedSmtpId, setSelectedSmtpId] = useState<string>("");
@@ -67,7 +67,7 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
     const [error, setError] = useState<string | null>(null);
 
     // Activity logging
-    const logEmail = useMutation(api.activities.logEmail);
+    const logEmail = useAuthMutation(api.activities.logEmail);
 
     // Set default SMTP when loaded
     useEffect(() => {

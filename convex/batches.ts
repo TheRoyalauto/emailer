@@ -1,18 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { auth } from "./auth";
-
-// Helper to get authenticated user
-async function getAuthUserId(ctx: any) {
-    const userId = await auth.getUserId(ctx);
-    if (!userId) throw new Error("Not authenticated");
-    return userId;
-}
+import { auth, getAuthUserId } from "./auth";
 
 // List all batches for the current user
 export const list = query({
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
         return await ctx.db
             .query("batches")
@@ -24,23 +18,26 @@ export const list = query({
 
 // List only top-level (parent) batches
 export const listParentBatches = query({
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
         const allBatches = await ctx.db
             .query("batches")
             .withIndex("by_user", (q) => q.eq("userId", userId))
             .collect();
-        // Filter to only those without a parent
         return allBatches.filter(b => !b.parentBatchId);
     },
 });
 
 // List child batches of a parent
 export const listChildBatches = query({
-    args: { parentBatchId: v.id("batches") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        parentBatchId: v.id("batches"),
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
 
         const parent = await ctx.db.get(args.parentBatchId);
@@ -55,9 +52,12 @@ export const listChildBatches = query({
 
 // Get a single batch with contacts and child batches
 export const get = query({
-    args: { id: v.id("batches") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("batches"),
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
 
         const batch = await ctx.db.get(args.id);
@@ -68,7 +68,6 @@ export const get = query({
             .withIndex("by_batch", (q) => q.eq("batchId", args.id))
             .collect();
 
-        // Get child batches
         const childBatches = await ctx.db
             .query("batches")
             .withIndex("by_parent", (q) => q.eq("parentBatchId", args.id))
@@ -81,15 +80,16 @@ export const get = query({
 // Create a new batch (optionally nested under a parent batch)
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         name: v.string(),
         description: v.optional(v.string()),
         color: v.optional(v.string()),
         parentBatchId: v.optional(v.id("batches")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
 
-        // If parent batch specified, verify ownership
         if (args.parentBatchId) {
             const parent = await ctx.db.get(args.parentBatchId);
             if (!parent || parent.userId !== userId) {
@@ -112,18 +112,20 @@ export const create = mutation({
 // Update batch
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         id: v.id("batches"),
         name: v.optional(v.string()),
         description: v.optional(v.string()),
         color: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const batch = await ctx.db.get(args.id);
         if (!batch || batch.userId !== userId) {
             throw new Error("Batch not found");
         }
-        const { id, ...updates } = args;
+        const { id, sessionToken, ...updates } = args;
         const filtered = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
         );
@@ -134,15 +136,18 @@ export const update = mutation({
 
 // Delete batch (contacts remain, just unassigned)
 export const remove = mutation({
-    args: { id: v.id("batches") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("batches"),
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const batch = await ctx.db.get(args.id);
         if (!batch || batch.userId !== userId) {
             throw new Error("Batch not found");
         }
 
-        // Unassign contacts from this batch
         const contacts = await ctx.db
             .query("contacts")
             .withIndex("by_batch", (q) => q.eq("batchId", args.id))
@@ -158,9 +163,12 @@ export const remove = mutation({
 
 // Get contacts by batch
 export const getContacts = query({
-    args: { batchId: v.id("batches") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        batchId: v.id("batches"),
+    },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
 
         const batch = await ctx.db.get(args.batchId);
@@ -175,9 +183,13 @@ export const getContacts = query({
 
 // Update batch contact count
 export const updateCount = mutation({
-    args: { id: v.id("batches") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("batches"),
+    },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
         const batch = await ctx.db.get(args.id);
         if (!batch || batch.userId !== userId) {
             throw new Error("Batch not found");
@@ -191,9 +203,10 @@ export const updateCount = mutation({
     },
 });
 
-// Create a new batch from selected contacts (optionally as child of parent)
+// Create a new batch from selected contacts
 export const createFromSelection = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         name: v.string(),
         description: v.optional(v.string()),
         color: v.optional(v.string()),
@@ -201,9 +214,9 @@ export const createFromSelection = mutation({
         parentBatchId: v.optional(v.id("batches")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
 
-        // Verify parent batch ownership if specified
         if (args.parentBatchId) {
             const parent = await ctx.db.get(args.parentBatchId);
             if (!parent || parent.userId !== userId) {
@@ -211,7 +224,6 @@ export const createFromSelection = mutation({
             }
         }
 
-        // Create the new batch
         const batchId = await ctx.db.insert("batches", {
             userId,
             parentBatchId: args.parentBatchId,
@@ -222,10 +234,8 @@ export const createFromSelection = mutation({
             createdAt: Date.now(),
         });
 
-        // Update all selected contacts to belong to this batch
         for (const contactId of args.contactIds) {
             const contact = await ctx.db.get(contactId);
-            // Verify ownership
             if (contact && contact.userId === userId) {
                 await ctx.db.patch(contactId, { batchId });
             }
@@ -235,21 +245,22 @@ export const createFromSelection = mutation({
     },
 });
 
-// Add contacts to existing batch (for reusing contacts in multiple contexts)
+// Add contacts to existing batch
 export const addContactsToBatch = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
         batchId: v.id("batches"),
         contactIds: v.array(v.id("contacts")),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
 
         const batch = await ctx.db.get(args.batchId);
         if (!batch || batch.userId !== userId) {
             throw new Error("Batch not found");
         }
 
-        // Update all selected contacts to belong to this batch
         let added = 0;
         for (const contactId of args.contactIds) {
             const contact = await ctx.db.get(contactId);
@@ -259,7 +270,6 @@ export const addContactsToBatch = mutation({
             }
         }
 
-        // Update batch count
         const allContacts = await ctx.db
             .query("contacts")
             .withIndex("by_batch", (q) => q.eq("batchId", args.batchId))

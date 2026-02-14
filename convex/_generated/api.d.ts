@@ -17,6 +17,7 @@ import type * as batches from "../batches.js";
 import type * as brandRules from "../brandRules.js";
 import type * as campaigns from "../campaigns.js";
 import type * as contacts from "../contacts.js";
+import type * as customAuth from "../customAuth.js";
 import type * as deals from "../deals.js";
 import type * as emailVerification from "../emailVerification.js";
 import type * as http from "../http.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   brandRules: typeof brandRules;
   campaigns: typeof campaigns;
   contacts: typeof contacts;
+  customAuth: typeof customAuth;
   deals: typeof deals;
   emailVerification: typeof emailVerification;
   http: typeof http;

@@ -6,7 +6,7 @@ import { auth } from "./auth";
 // Templates are now only available via the Template Library (one-click clone)
 // New users start with an empty template list
 export const seedTemplates = mutation({
-    args: {},
+    args: { sessionToken: v.optional(v.string()),},
     handler: async (ctx) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) throw new Error("Not authenticated");
@@ -21,16 +21,16 @@ export const seedTemplates = mutation({
 export const seedSenders = mutation({
     args: { userEmail: v.string() },
     handler: async (ctx, args) => {
-        const authAccount = await ctx.db
-            .query("authAccounts")
-            .filter((q) => q.eq(q.field("providerAccountId"), args.userEmail))
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_email", (q) => q.eq("email", args.userEmail))
             .first();
 
-        if (!authAccount) {
+        if (!user) {
             throw new Error(`User with email ${args.userEmail} not found.`);
         }
 
-        const userId = authAccount.userId;
+        const userId = user._id;
 
         const senders = [
             {
@@ -72,17 +72,17 @@ export const seedSenders = mutation({
 export const seedUserData = mutation({
     args: { userEmail: v.string() },
     handler: async (ctx, args) => {
-        // Find the user by email in auth tables
-        const authAccount = await ctx.db
-            .query("authAccounts")
-            .filter((q) => q.eq(q.field("providerAccountId"), args.userEmail))
+        // Find the user by email in users table
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_email", (q) => q.eq("email", args.userEmail))
             .first();
 
-        if (!authAccount) {
+        if (!user) {
             throw new Error(`User with email ${args.userEmail} not found. Please register first.`);
         }
 
-        const userId = authAccount.userId;
+        const userId = user._id;
 
         // ============== CREATE 2 BATCHES ==============
         const batch1Id = await ctx.db.insert("batches", {

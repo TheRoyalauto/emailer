@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import ContactDetail from "@/components/ContactDetail";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const CALL_OUTCOMES = [
     { value: "answered", label: "✅ Answered", color: "#22c55e" },
@@ -26,13 +26,13 @@ function CallsPage() {
     const [loggingCall, setLoggingCall] = useState(false);
 
     // Queries
-    const callStats = useQuery(api.activities.getCallStats);
-    const todayFollowUps = useQuery(api.activities.getTodayFollowUps);
-    const recentActivity = useQuery(api.activities.getRecentActivity, { limit: 30 });
-    const allContacts = useQuery(api.contacts.list, {});
+    const callStats = useAuthQuery(api.activities.getCallStats);
+    const todayFollowUps = useAuthQuery(api.activities.getTodayFollowUps);
+    const recentActivity = useAuthQuery(api.activities.getRecentActivity, { limit: 30 });
+    const allContacts = useAuthQuery(api.contacts.list, {});
 
     // Mutations
-    const logCall = useMutation(api.activities.logCall);
+    const logCall = useAuthMutation(api.activities.logCall);
 
     // Filter contacts with phones for call queue
     const callableContacts = allContacts?.filter(c => c.phone && c.status === "active") || [];

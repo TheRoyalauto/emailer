@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo } from "react";
-import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import Link from "next/link";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 function DashboardPage() {
     // Core queries
-    const contacts = useQuery(api.contacts.list, {});
-    const templates = useQuery(api.templates.list, {});
-    const campaigns = useQuery(api.campaigns.list);
-    const recentActivity = useQuery(api.activities.getRecentActivity, { limit: 5 });
+    const contacts = useAuthQuery(api.contacts.list, {});
+    const templates = useAuthQuery(api.templates.list, {});
+    const campaigns = useAuthQuery(api.campaigns.list);
+    const recentActivity = useAuthQuery(api.activities.getRecentActivity, { limit: 5 });
 
     // Chart state
     const [timeRange, setTimeRange] = useState<"LIVE" | "1D" | "1W" | "1M" | "3M" | "YTD" | "1Y" | "ALL">("LIVE");
@@ -35,7 +35,7 @@ function DashboardPage() {
     };
     const days = getDays();
     const isLive = timeRange === "LIVE";
-    const chartDataRaw = useQuery(api.analytics.getChartData, { days, isLive });
+    const chartDataRaw = useAuthQuery(api.analytics.getChartData, { days, isLive });
 
     // Use real data or empty array
     const chartData = useMemo(() => {

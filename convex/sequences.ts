@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // List all sequences
 export const list = query({
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const sequences = await ctx.db
@@ -40,9 +41,11 @@ export const list = query({
 
 // Get sequence with steps
 export const get = query({
-    args: { id: v.id("sequences") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sequences") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.id);
         if (!sequence || sequence.userId !== userId) return null;
 
@@ -74,6 +77,8 @@ export const get = query({
 // Create a new sequence
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         name: v.string(),
         description: v.optional(v.string()),
         triggerType: v.union(
@@ -83,7 +88,7 @@ export const create = mutation({
         ),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         return await ctx.db.insert("sequences", {
@@ -100,6 +105,8 @@ export const create = mutation({
 // Add a step to a sequence
 export const addStep = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         sequenceId: v.id("sequences"),
         templateId: v.id("templates"),
         delayDays: v.number(),
@@ -112,7 +119,7 @@ export const addStep = mutation({
         )),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.sequenceId);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Sequence not found");
@@ -138,13 +145,15 @@ export const addStep = mutation({
 
 // Remove a step
 export const removeStep = mutation({
-    args: { stepId: v.id("sequenceSteps") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        stepId: v.id("sequenceSteps") },
     handler: async (ctx, args) => {
         const step = await ctx.db.get(args.stepId);
         if (!step) throw new Error("Step not found");
 
         const sequence = await ctx.db.get(step.sequenceId);
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Unauthorized");
         }
@@ -156,9 +165,11 @@ export const removeStep = mutation({
 
 // Activate a sequence
 export const activate = mutation({
-    args: { id: v.id("sequences") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sequences") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.id);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Sequence not found");
@@ -171,9 +182,11 @@ export const activate = mutation({
 
 // Pause a sequence
 export const pause = mutation({
-    args: { id: v.id("sequences") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sequences") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.id);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Sequence not found");
@@ -187,11 +200,13 @@ export const pause = mutation({
 // Enroll a contact in a sequence
 export const enrollContact = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         sequenceId: v.id("sequences"),
         contactId: v.id("contacts"),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.sequenceId);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Sequence not found");
@@ -233,7 +248,9 @@ export const enrollContact = mutation({
 
 // Unenroll a contact
 export const unenrollContact = mutation({
-    args: { enrollmentId: v.id("sequenceEnrollments") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        enrollmentId: v.id("sequenceEnrollments") },
     handler: async (ctx, args) => {
         const enrollment = await ctx.db.get(args.enrollmentId);
         if (!enrollment) throw new Error("Enrollment not found");
@@ -245,9 +262,11 @@ export const unenrollContact = mutation({
 
 // Delete a sequence
 export const remove = mutation({
-    args: { id: v.id("sequences") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("sequences") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         const sequence = await ctx.db.get(args.id);
         if (!sequence || sequence.userId !== userId) {
             throw new Error("Sequence not found");

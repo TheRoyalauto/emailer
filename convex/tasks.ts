@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // TASKS - Follow-ups, Reminders, and To-dos
@@ -14,6 +14,8 @@ const TASK_TYPES = ["follow_up", "call", "email", "meeting", "proposal", "other"
 // List tasks with filters
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         status: v.optional(v.string()),
         priority: v.optional(v.string()),
         contactId: v.optional(v.id("contacts")),
@@ -21,7 +23,7 @@ export const list = query({
         includeCompleted: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let tasks = await ctx.db
@@ -62,9 +64,9 @@ export const list = query({
 
 // Get upcoming tasks (next 7 days)
 export const getUpcoming = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const now = Date.now();
@@ -89,9 +91,9 @@ export const getUpcoming = query({
 
 // Get overdue tasks
 export const getOverdue = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const now = Date.now();
@@ -112,9 +114,9 @@ export const getOverdue = query({
 
 // Get task stats
 export const getStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return { total: 0, pending: 0, inProgress: 0, overdue: 0, completedToday: 0 };
 
         const now = Date.now();
@@ -147,6 +149,8 @@ export const getStats = query({
 // Create a new task
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         title: v.string(),
         description: v.optional(v.string()),
         priority: v.optional(v.string()),
@@ -159,7 +163,7 @@ export const create = mutation({
         reminderAt: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         return await ctx.db.insert("tasks", {
@@ -183,6 +187,8 @@ export const create = mutation({
 // Update a task
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("tasks"),
         title: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -193,7 +199,7 @@ export const update = mutation({
         reminderAt: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const task = await ctx.db.get(args.id);
@@ -213,10 +219,12 @@ export const update = mutation({
 // Complete a task
 export const complete = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("tasks"),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const task = await ctx.db.get(args.id);
@@ -233,9 +241,11 @@ export const complete = mutation({
 
 // Quick-complete (one-click)
 export const quickComplete = mutation({
-    args: { id: v.id("tasks") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("tasks") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const task = await ctx.db.get(args.id);
@@ -253,11 +263,13 @@ export const quickComplete = mutation({
 // Change task status
 export const setStatus = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("tasks"),
         status: v.string(),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const task = await ctx.db.get(args.id);
@@ -278,9 +290,11 @@ export const setStatus = mutation({
 
 // Delete a task
 export const remove = mutation({
-    args: { id: v.id("tasks") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("tasks") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const task = await ctx.db.get(args.id);

@@ -1,15 +1,15 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 function ListsPage() {
-    const lists = useQuery(api.lists.list);
-    const createList = useMutation(api.lists.create);
-    const deleteList = useMutation(api.lists.remove);
+    const lists = useAuthQuery(api.lists.list);
+    const createList = useAuthMutation(api.lists.create);
+    const deleteList = useAuthMutation(api.lists.remove);
     const [isCreating, setIsCreating] = useState(false);
     const [newName, setNewName] = useState("");
     const [newDescription, setNewDescription] = useState("");

@@ -1,10 +1,12 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // Get campaign stats
 export const getCampaignStats = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         campaignId: v.string(),
     },
     handler: async (ctx, args) => {
@@ -43,9 +45,9 @@ export const getCampaignStats = query({
 
 // Get overall email analytics
 export const getEmailAnalytics = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         // Get all email activities for this user
@@ -96,10 +98,12 @@ export const getEmailAnalytics = query({
 // Get top performing contacts (most engaged)
 export const getTopContacts = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         // Get opened/clicked events
@@ -141,11 +145,13 @@ export const getTopContacts = query({
 // Get chart data for dashboard (time-series email stats)
 export const getChartData = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         days: v.optional(v.number()), // Number of days to fetch (default 30)
         isLive: v.optional(v.boolean()), // If true, return hourly data for last 24h
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         const days = args.days || 30;

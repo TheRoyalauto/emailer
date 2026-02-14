@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 function AnalyticsPage() {
-    const emailAnalytics = useQuery(api.analytics.getEmailAnalytics);
-    const topContacts = useQuery(api.analytics.getTopContacts, { limit: 10 });
+    const emailAnalytics = useAuthQuery(api.analytics.getEmailAnalytics);
+    const topContacts = useAuthQuery(api.analytics.getTopContacts, { limit: 10 });
 
     return (
         <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">

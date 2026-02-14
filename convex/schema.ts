@@ -1,10 +1,26 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
-import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
-    // Auth tables (required by Convex Auth)
-    ...authTables,
+    // Custom auth tables (replaces @convex-dev/auth)
+    users: defineTable({
+        email: v.string(),
+        name: v.optional(v.string()),
+        phone: v.optional(v.string()),
+        passwordHash: v.optional(v.string()),
+        salt: v.optional(v.string()),
+        createdAt: v.optional(v.number()),
+    })
+        .index("by_email", ["email"]),
+
+    sessions: defineTable({
+        userId: v.id("users"),
+        token: v.string(),
+        expiresAt: v.number(),
+        createdAt: v.number(),
+    })
+        .index("by_token", ["token"])
+        .index("by_userId", ["userId"]),
 
     // Email verification OTP storage
     emailVerifications: defineTable({

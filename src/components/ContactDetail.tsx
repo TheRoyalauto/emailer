@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../hooks/useAuthConvex";
 
 interface ContactDetailProps {
     contactId: Id<"contacts">;
@@ -29,13 +29,13 @@ const SALES_STAGES = [
 ] as const;
 
 export default function ContactDetail({ contactId, onClose }: ContactDetailProps) {
-    const contact = useQuery(api.contacts.get, { id: contactId });
-    const activities = useQuery(api.activities.getContactActivities, { contactId, limit: 50 });
+    const contact = useAuthQuery(api.contacts.get, { id: contactId });
+    const activities = useAuthQuery(api.activities.getContactActivities, { contactId, limit: 50 });
 
-    const logCall = useMutation(api.activities.logCall);
-    const addNote = useMutation(api.activities.addNote);
-    const updateStage = useMutation(api.activities.updateSalesStage);
-    const scheduleFollowUp = useMutation(api.activities.scheduleFollowUp);
+    const logCall = useAuthMutation(api.activities.logCall);
+    const addNote = useAuthMutation(api.activities.addNote);
+    const updateStage = useAuthMutation(api.activities.updateSalesStage);
+    const scheduleFollowUp = useAuthMutation(api.activities.scheduleFollowUp);
 
     // UI State
     const [showCallLog, setShowCallLog] = useState(false);

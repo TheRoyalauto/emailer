@@ -1,45 +1,51 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth } from "convex/react";
+import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-    const { signIn } = useAuthActions();
-    const { isAuthenticated, isLoading } = useConvexAuth();
+    const { login, isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [attemptingLogin, setAttemptingLogin] = useState(false);
 
     // Redirect when authenticated
     useEffect(() => {
-        if (attemptingLogin && isAuthenticated && !isLoading) {
-            router.push("/campaigns");
+        if (isAuthenticated && !isLoading) {
+            router.push("/dashboard");
         }
-    }, [isAuthenticated, isLoading, attemptingLogin, router]);
+    }, [isAuthenticated, isLoading, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setLoading(true);
-        setAttemptingLogin(true);
 
         try {
-            console.log("Attempting sign in with email:", email);
-            await signIn("password", { email, password, flow: "signIn" });
+            const result = await login(email, password);
+            if (!result.success) {
+                setError(result.error || "Invalid email or password");
+            }
+            // On success, the useEffect above will redirect
         } catch (err: any) {
-            console.error("Login error:", err);
-            setError(err.message || "Invalid email or password");
-            setAttemptingLogin(false);
+            setError(err.message || "Login failed");
         } finally {
             setLoading(false);
         }
     };
+
+    // Don't show login form if already authenticated
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-[#F1F3F8] flex items-center justify-center">
+                <div className="animate-spin w-8 h-8 border-3 border-[#FF6B4A] border-t-transparent rounded-full" />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-[#F1F3F8] flex items-center justify-center p-4">
@@ -112,7 +118,7 @@ export default function LoginPage() {
                     </form>
 
                     <p className="text-center mt-6 text-[#9CA3AF]">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link href="/register" className="text-[#FF6B4A] hover:text-[#F43F5E] font-semibold transition-colors">
                             Sign up
                         </Link>

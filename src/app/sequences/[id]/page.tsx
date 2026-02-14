@@ -1,23 +1,23 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
+import { useAuthQuery, useAuthMutation } from "../../../hooks/useAuthConvex";
 
 function SequenceEditorPage() {
     const params = useParams();
     const sequenceId = params.id as Id<"sequences">;
 
-    const sequence = useQuery(api.sequences.get, { id: sequenceId });
-    const templates = useQuery(api.templates.list, {});
-    const contacts = useQuery(api.contacts.list, {});
-    const addStep = useMutation(api.sequences.addStep);
-    const removeStep = useMutation(api.sequences.removeStep);
-    const enrollContact = useMutation(api.sequences.enrollContact);
+    const sequence = useAuthQuery(api.sequences.get, { id: sequenceId });
+    const templates = useAuthQuery(api.templates.list, {});
+    const contacts = useAuthQuery(api.contacts.list, {});
+    const addStep = useAuthMutation(api.sequences.addStep);
+    const removeStep = useAuthMutation(api.sequences.removeStep);
+    const enrollContact = useAuthMutation(api.sequences.enrollContact);
 
     const [showAddStep, setShowAddStep] = useState(false);
     const [showEnroll, setShowEnroll] = useState(false);

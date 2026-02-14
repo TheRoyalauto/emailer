@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import ContactDetail from "@/components/ContactDetail";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const PIPELINE_STAGES = [
     { id: "new", label: "New Leads", color: "#6366f1", icon: "✨" },
@@ -218,8 +218,8 @@ function PipelinePage() {
     const [stageSearches, setStageSearches] = useState<Record<string, string>>({});
 
     // Queries
-    const allContacts = useQuery(api.contacts.list, {});
-    const updateStage = useMutation(api.activities.updateSalesStage);
+    const allContacts = useAuthQuery(api.contacts.list, {});
+    const updateStage = useAuthMutation(api.activities.updateSalesStage);
 
     // Group contacts by stage
     const contactsByStage = useMemo(() => {

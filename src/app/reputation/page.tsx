@@ -1,11 +1,11 @@
 "use client";
 
-import { useQuery } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 function ReputationPage() {
-    const stats = useQuery(api.sequenceScheduler.getReputationStats, { days: 30 });
+    const stats = useAuthQuery(api.sequenceScheduler.getReputationStats, { days: 30 });
 
     const getReputationColor = (score: number) => {
         if (score >= 80) return "text-green-400";

@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getAuthUserId } from "@convex-dev/auth/server";
+import { getAuthUserId } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // DEALS - Pipeline Management for Active Opportunities
@@ -23,11 +23,13 @@ export type DealStage = typeof DEAL_STAGES[number]["id"];
 // List all deals for the current user
 export const list = query({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         stage: v.optional(v.string()),
         limit: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         let q = ctx.db
@@ -55,9 +57,11 @@ export const list = query({
 
 // Get deal by ID
 export const get = query({
-    args: { id: v.id("deals") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("deals") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const deal = await ctx.db.get(args.id);
@@ -70,9 +74,11 @@ export const get = query({
 
 // Get deals by contact
 export const getByContact = query({
-    args: { contactId: v.id("contacts") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        contactId: v.id("contacts") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
 
         return await ctx.db
@@ -86,6 +92,8 @@ export const getByContact = query({
 // Create a new deal
 export const create = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         contactId: v.id("contacts"),
         name: v.string(),
         value: v.number(),
@@ -94,7 +102,7 @@ export const create = mutation({
         notes: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const contact = await ctx.db.get(args.contactId);
@@ -132,12 +140,14 @@ export const create = mutation({
 // Update deal stage
 export const updateStage = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("deals"),
         stage: v.string(),
         lostReason: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const deal = await ctx.db.get(args.id);
@@ -180,6 +190,8 @@ export const updateStage = mutation({
 // Update deal details
 export const update = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         id: v.id("deals"),
         name: v.optional(v.string()),
         value: v.optional(v.number()),
@@ -188,7 +200,7 @@ export const update = mutation({
         bookingLink: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const deal = await ctx.db.get(args.id);
@@ -210,9 +222,11 @@ export const update = mutation({
 
 // Delete a deal
 export const remove = mutation({
-    args: { id: v.id("deals") },
+    args: {
+        sessionToken: v.optional(v.string()),
+        id: v.id("deals") },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const deal = await ctx.db.get(args.id);
@@ -225,9 +239,9 @@ export const remove = mutation({
 
 // Get pipeline stats
 export const getStats = query({
-    args: {},
-    handler: async (ctx) => {
-        const userId = await getAuthUserId(ctx);
+    args: { sessionToken: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         const deals = await ctx.db
@@ -274,11 +288,13 @@ export const getStats = query({
 // Create deal from contact (quick action)
 export const createFromContact = mutation({
     args: {
+        sessionToken: v.optional(v.string()),
+       
         contactId: v.id("contacts"),
         value: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx);
+        const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const contact = await ctx.db.get(args.contactId);

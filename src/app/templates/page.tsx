@@ -1,12 +1,12 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import EmailEditor from "@/components/EmailEditor";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "../../../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 // Template categories
 const TEMPLATE_CATEGORIES = [
@@ -130,13 +130,13 @@ function TemplatesPage() {
     const [previewLibraryTemplate, setPreviewLibraryTemplate] = useState<number | null>(null);
 
     // Queries & Mutations
-    const templates = useQuery(api.templates.list,
+    const templates = useAuthQuery(api.templates.list,
         activeCategory === "all" ? {} : { category: activeCategory }
     );
-    const createTemplate = useMutation(api.templates.create);
-    const updateTemplate = useMutation(api.templates.update);
-    const deleteTemplate = useMutation(api.templates.remove);
-    const duplicateTemplate = useMutation(api.templates.duplicate);
+    const createTemplate = useAuthMutation(api.templates.create);
+    const updateTemplate = useAuthMutation(api.templates.update);
+    const deleteTemplate = useAuthMutation(api.templates.remove);
+    const duplicateTemplate = useAuthMutation(api.templates.duplicate);
 
     // Handle URL-based modal opening
     const searchParams = useSearchParams();
@@ -161,7 +161,7 @@ function TemplatesPage() {
     );
 
     // Template counts by category
-    const allTemplates = useQuery(api.templates.list, {});
+    const allTemplates = useAuthQuery(api.templates.list, {});
     const categoryCounts = {
         all: allTemplates?.length || 0,
         cold: allTemplates?.filter(t => t.category === "cold").length || 0,

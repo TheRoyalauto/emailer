@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const CLASSIFICATIONS = [
     { id: "positive", label: "Positive", color: "#22c55e", icon: "😊", bg: "rgba(34, 197, 94, 0.15)" },
@@ -23,17 +23,17 @@ function RepliesPage() {
     const [selectedReply, setSelectedReply] = useState<Id<"inboundReplies"> | null>(null);
     const [isClassifying, setIsClassifying] = useState(false);
 
-    const replies = useQuery(api.replies.list, {
+    const replies = useAuthQuery(api.replies.list, {
         isProcessed: filter === "unprocessed" ? false : undefined,
         classification: filter !== "all" && filter !== "unprocessed" ? filter : undefined,
         limit: 100,
     });
 
-    const stats = useQuery(api.replies.getStats, {});
-    const updateClassification = useMutation(api.replies.updateClassification);
-    const saveResponses = useMutation(api.replies.saveResponses);
-    const markResponded = useMutation(api.replies.markResponded);
-    const markIgnored = useMutation(api.replies.markIgnored);
+    const stats = useAuthQuery(api.replies.getStats, {});
+    const updateClassification = useAuthMutation(api.replies.updateClassification);
+    const saveResponses = useAuthMutation(api.replies.saveResponses);
+    const markResponded = useAuthMutation(api.replies.markResponded);
+    const markIgnored = useAuthMutation(api.replies.markIgnored);
 
     const getClassificationInfo = (id: string | undefined) => {
         return CLASSIFICATIONS.find(c => c.id === id) || CLASSIFICATIONS[CLASSIFICATIONS.length - 1];

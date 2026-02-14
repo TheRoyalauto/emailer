@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useQuery, useMutation } from "convex/react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const DEAL_STAGES = [
     { id: "lead", label: "Lead", color: "#6b7280", icon: "🎯", probability: 10 },
@@ -35,12 +35,12 @@ function DealsPage() {
         expectedCloseDate: "",
     });
 
-    const deals = useQuery(api.deals.list, {});
-    const stats = useQuery(api.deals.getStats, {});
-    const contacts = useQuery(api.contacts.list, {});
-    const createDeal = useMutation(api.deals.create);
-    const updateStage = useMutation(api.deals.updateStage);
-    const deleteDeal = useMutation(api.deals.remove);
+    const deals = useAuthQuery(api.deals.list, {});
+    const stats = useAuthQuery(api.deals.getStats, {});
+    const contacts = useAuthQuery(api.contacts.list, {});
+    const createDeal = useAuthMutation(api.deals.create);
+    const updateStage = useAuthMutation(api.deals.updateStage);
+    const deleteDeal = useAuthMutation(api.deals.remove);
 
     // Compute avgDealSize client-side (backend doesn't provide it)
     const avgDealSize = stats && stats.total > 0

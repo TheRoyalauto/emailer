@@ -5,6 +5,7 @@ import { api } from "@/../convex/_generated/api";
 import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
+import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const SALES_STAGES = [
     { id: "new", label: "New", color: "#9CA3AF", icon: "🆕" },
@@ -35,12 +36,12 @@ interface Contact {
 }
 
 function ContactsContent() {
-    const contacts = useQuery(api.contacts.list, {});
-    const batches = useQuery(api.batches.list);
-    const createContact = useMutation(api.contacts.create);
-    const updateContact = useMutation(api.contacts.update);
-    const deleteContact = useMutation(api.contacts.remove);
-    const updateSalesStage = useMutation(api.activities.updateSalesStage);
+    const contacts = useAuthQuery(api.contacts.list, {});
+    const batches = useAuthQuery(api.batches.list);
+    const createContact = useAuthMutation(api.contacts.create);
+    const updateContact = useAuthMutation(api.contacts.update);
+    const deleteContact = useAuthMutation(api.contacts.remove);
+    const updateSalesStage = useAuthMutation(api.activities.updateSalesStage);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedBatch, setSelectedBatch] = useState<string>("all");
