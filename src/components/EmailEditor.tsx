@@ -127,16 +127,16 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
     const isEmpty = !htmlBody.trim();
 
     return (
-        <div className="h-full flex flex-col bg-[#0d0d15] rounded-xl border border-white/10 overflow-hidden">
+        <div className="h-full flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden">
             {/* Unified Header - View Tabs + Toolbar */}
-            <div className="flex items-center justify-between px-3 py-2 bg-[#12121f] border-b border-white/10">
+            <div className="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
                 {/* View Toggle */}
-                <div className="flex items-center gap-1 p-0.5 bg-white/5 rounded-lg">
+                <div className="flex items-center gap-1 p-0.5 bg-gray-100 rounded-lg">
                     <button
                         onClick={() => setActiveView("write")}
                         className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "write"
                             ? "bg-indigo-500 text-white shadow"
-                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            : "text-gray-500 hover:text-gray-800 hover:bg-gray-200"
                             }`}
                     >
                         ✏️ Write
@@ -145,7 +145,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                         onClick={() => setActiveView("preview")}
                         className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "preview"
                             ? "bg-indigo-500 text-white shadow"
-                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            : "text-gray-500 hover:text-gray-800 hover:bg-gray-200"
                             }`}
                     >
                         👁️ Preview
@@ -155,27 +155,27 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                 {/* Formatting Toolbar - Only visible in Write mode */}
                 {activeView === "write" && (
                     <div className="flex items-center gap-1">
-                        <button onClick={formatBold} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm font-bold transition-colors" title="Bold">B</button>
-                        <button onClick={formatItalic} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm italic transition-colors" title="Italic">I</button>
-                        <button onClick={formatLink} className="p-1.5 hover:bg-white/10 rounded text-white/60 hover:text-white text-sm transition-colors" title="Link">🔗</button>
+                        <button onClick={formatBold} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm font-bold transition-colors" title="Bold">B</button>
+                        <button onClick={formatItalic} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm italic transition-colors" title="Italic">I</button>
+                        <button onClick={formatLink} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm transition-colors" title="Link">🔗</button>
 
-                        <div className="w-px h-4 bg-white/10 mx-1" />
+                        <div className="w-px h-4 bg-gray-200 mx-1" />
 
                         {/* Variables Dropdown */}
                         <div className="relative" onClick={(e) => e.stopPropagation()}>
                             <button
                                 onClick={() => setShowVariables(!showVariables)}
-                                className="px-2 py-1 hover:bg-white/10 rounded text-white/60 hover:text-white text-xs transition-colors"
+                                className="px-2 py-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-xs transition-colors"
                             >
                                 {`{{x}}`} ▾
                             </button>
                             {showVariables && (
-                                <div className="absolute right-0 top-full mt-1 bg-[#1a1a2e] border border-white/10 rounded-lg p-1 z-50 min-w-40 shadow-xl">
-                                    <div className="text-[10px] text-white/40 px-2 py-1">Insert Variable</div>
+                                <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg p-1 z-50 min-w-40 shadow-xl">
+                                    <div className="text-[10px] text-gray-400 px-2 py-1">Insert Variable</div>
                                     {VARIABLES.map((v) => (
                                         <button
                                             key={v.key}
-                                            className="w-full px-2 py-1.5 text-left text-xs text-white/70 hover:text-white hover:bg-white/10 rounded transition-colors"
+                                            className="w-full px-2 py-1.5 text-left text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
                                             onClick={() => { insertAtCursor(v.key); setShowVariables(false); }}
                                         >
                                             <code className="text-indigo-400 mr-2">{v.key}</code>
@@ -191,7 +191,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                 {/* Preview badge when in Preview mode */}
                 {activeView === "preview" && (
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-white/40">Live preview with sample data</span>
+                        <span className="text-xs text-gray-400">Live preview with sample data</span>
                     </div>
                 )}
             </div>
@@ -201,15 +201,15 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                 {activeView === "write" ? (
                     <div className="h-full flex flex-col">
                         {/* Component Snippets */}
-                        <div className="px-3 py-2 border-b border-white/5 bg-black/20">
+                        <div className="px-3 py-2 border-b border-gray-100 bg-gray-50/50">
                             <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-white/30 font-medium shrink-0">INSERT:</span>
+                                <span className="text-[10px] text-gray-400 font-medium shrink-0">INSERT:</span>
                                 <div className="flex gap-1 flex-wrap">
                                     {HTML_SNIPPETS.map((snippet) => (
                                         <button
                                             key={snippet.id}
                                             onClick={() => insertAtCursor(snippet.html)}
-                                            className="px-2 py-1 text-xs bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/50 rounded-md text-white/60 hover:text-white transition-all flex items-center gap-1"
+                                            className="px-2 py-1 text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-indigo-400 rounded-md text-gray-600 hover:text-gray-900 transition-all flex items-center gap-1"
                                             title={snippet.name}
                                         >
                                             <span>{snippet.icon}</span>
@@ -234,7 +234,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                             value={htmlBody}
                             onChange={(e) => onHtmlChange(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="flex-1 w-full p-4 bg-transparent text-white/90 font-mono text-sm leading-relaxed resize-none focus:outline-none placeholder:text-white/20"
+                            className="flex-1 w-full p-4 bg-transparent text-gray-800 font-mono text-sm leading-relaxed resize-none focus:outline-none placeholder:text-gray-300"
                             placeholder="Start typing your email content...
 
 Press Enter for line break
@@ -243,32 +243,32 @@ Press Shift+Enter for new paragraph"
                     </div>
                 ) : (
                     /* Preview Mode - Gmail Style */
-                    <div className="h-full flex flex-col bg-[#1a1a2e]">
+                    <div className="h-full flex flex-col bg-white">
                         {/* Gmail Header */}
-                        <div className="px-4 py-3 border-b border-white/10">
-                            <h3 className="text-base font-medium text-white mb-1">
+                        <div className="px-4 py-3 border-b border-gray-200">
+                            <h3 className="text-base font-medium text-gray-900 mb-1">
                                 {subject || "No subject"}
                             </h3>
-                            <div className="flex items-center gap-2 text-xs text-white/40">
-                                <span className="px-1.5 py-0.5 bg-indigo-500/20 text-indigo-400 rounded text-[10px]">Inbox</span>
+                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                                <span className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[10px]">Inbox</span>
                             </div>
                         </div>
 
                         {/* Sender Info */}
-                        <div className="flex items-start gap-3 px-4 py-3 border-b border-white/10">
+                        <div className="flex items-start gap-3 px-4 py-3 border-b border-gray-200">
                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
                                 Y
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 text-sm">
-                                    <span className="font-medium text-white">Your Name</span>
-                                    <span className="text-white/40 text-xs">&lt;you@example.com&gt;</span>
+                                    <span className="font-medium text-gray-900">Your Name</span>
+                                    <span className="text-gray-400 text-xs">&lt;you@example.com&gt;</span>
                                 </div>
-                                <div className="text-xs text-white/40">
-                                    to <span className="text-white/60">John Doe</span>
+                                <div className="text-xs text-gray-400">
+                                    to <span className="text-gray-600">John Doe</span>
                                 </div>
                             </div>
-                            <span className="text-xs text-white/40">
+                            <span className="text-xs text-gray-400">
                                 {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                             </span>
                         </div>
@@ -276,9 +276,9 @@ Press Shift+Enter for new paragraph"
                         {/* Email Body Preview */}
                         <div className="flex-1 overflow-auto">
                             <iframe
-                                srcDoc={`<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:#1a1a2e;color:#fff;}a{color:#a78bfa;}p,div,span,li,td,th,h1,h2,h3,h4,h5,h6{color:#fff !important;}</style></head><body style="padding:0;margin:0;font-family:Arial,Helvetica,sans-serif;background:#1a1a2e;">${getPreviewHtml()}</body></html>`}
+                                srcDoc={`<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:#ffffff;color:#111;}a{color:#4f46e5;}</style></head><body style="padding:0;margin:0;font-family:Arial,Helvetica,sans-serif;background:#ffffff;">${getPreviewHtml()}</body></html>`}
                                 className="w-full h-full border-none"
-                                style={{ minHeight: 200, background: "#1a1a2e" }}
+                                style={{ minHeight: 200, background: "#ffffff" }}
                                 title="Email Preview"
                                 sandbox="allow-same-origin"
                             />
