@@ -35,7 +35,7 @@ export default function Navbar() {
                         <img
                             src="/logo.png"
                             alt="E-mailer"
-                            className="w-32 h-32 object-contain drop-shadow-sm"
+                            className="w-[120px] h-[120px] object-contain drop-shadow-sm"
                         />
                         <span className="text-2xl font-bold text-slate-800 leading-none">
                             <span className="text-[#0EA5E9]">E</span>-mailer
