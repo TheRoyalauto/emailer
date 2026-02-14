@@ -34,12 +34,9 @@ export default function Navbar() {
                     <Link href="/" className="flex items-center group">
                         <img
                             src="/logo.png"
-                            alt="E-mailer"
-                            className="w-[72px] h-[72px] object-contain drop-shadow-sm"
+                            alt="E-Mailer"
+                            className="h-14 w-auto object-contain"
                         />
-                        <span className="text-3xl font-bold text-[#0EA5E9] leading-none -ml-2">
-                            E-Mailer
-                        </span>
                     </Link>
 
                     {/* Desktop Nav */}
