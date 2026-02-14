@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
 
 interface EmailEditorProps {
     htmlBody: string;
@@ -12,6 +17,7 @@ const VARIABLES = [
     { key: "{{firstName}}", label: "First Name" },
     { key: "{{lastName}}", label: "Last Name" },
     { key: "{{email}}", label: "Email" },
+    { key: "{{company}}", label: "Company" },
     { key: "{{unsubscribeUrl}}", label: "Unsubscribe Link" },
 ];
 
@@ -30,7 +36,7 @@ const STARTER_TEMPLATE = `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body style="margin:0;padding:0;background:#ffffff;">
-    <div style="max-width:640px;margin:0 auto;padding:24px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.5;color:#111111;">
+    <div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#111111;">
         <p style="margin:0 0 16px 0;">Hi {{firstName}},</p>
         <p style="margin:0 0 16px 0;">Your message here...</p>
         <p style="margin:0;">Best regards</p>
@@ -38,20 +44,232 @@ const STARTER_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
-export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEditorProps) {
-    const [activeView, setActiveView] = useState<"write" | "preview">("write");
+// Extract inner body content from full HTML for visual editing
+function extractBodyContent(html: string): string {
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    if (bodyMatch) return bodyMatch[1].trim();
+    // If no body tag, check for div wrapper
+    const divMatch = html.match(/<div[^>]*>([\s\S]*)<\/div>/i);
+    if (divMatch) return divMatch[1].trim();
+    return html;
+}
+
+// Wrap visual editor content back into full email HTML
+function wrapInEmailHtml(content: string): string {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="margin:0;padding:0;background:#ffffff;">
+    <div style="max-width:640px;margin:0 auto;padding:32px 24px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#111111;">
+        ${content}
+    </div>
+</body>
+</html>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Visual Editor Toolbar Button
+// ─────────────────────────────────────────────────────────────────────────────
+function ToolbarButton({ onClick, isActive, children, title }: {
+    onClick: () => void;
+    isActive?: boolean;
+    children: React.ReactNode;
+    title: string;
+}) {
+    return (
+        <button
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={onClick}
+            className={`p-1.5 rounded text-sm transition-all ${isActive
+                ? "bg-indigo-50 text-indigo-600 shadow-sm"
+                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                }`}
+            title={title}
+        >
+            {children}
+        </button>
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Visual Editor Toolbar
+// ─────────────────────────────────────────────────────────────────────────────
+function VisualToolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
     const [showVariables, setShowVariables] = useState(false);
+
+    if (!editor) return null;
+
+    const addLink = () => {
+        const url = prompt("Enter URL:");
+        if (url) {
+            editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+        }
+    };
+
+    const insertVariable = (variable: string) => {
+        editor.chain().focus().insertContent(variable).run();
+        setShowVariables(false);
+    };
+
+    return (
+        <div className="flex items-center gap-0.5 flex-wrap">
+            {/* Text Formatting */}
+            <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} isActive={editor.isActive("bold")} title="Bold (Ctrl+B)">
+                <span className="font-bold">B</span>
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} isActive={editor.isActive("italic")} title="Italic (Ctrl+I)">
+                <span className="italic">I</span>
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} isActive={editor.isActive("underline")} title="Underline (Ctrl+U)">
+                <span className="underline">U</span>
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().toggleStrike().run()} isActive={editor.isActive("strike")} title="Strikethrough">
+                <span className="line-through">S</span>
+            </ToolbarButton>
+
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+
+            {/* Headings */}
+            <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} isActive={editor.isActive("heading", { level: 2 })} title="Heading">
+                <span className="font-bold text-xs">H</span>
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} isActive={editor.isActive("heading", { level: 3 })} title="Subheading">
+                <span className="font-semibold text-[10px]">H2</span>
+            </ToolbarButton>
+
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+
+            {/* Lists */}
+            <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} isActive={editor.isActive("bulletList")} title="Bullet List">
+                •≡
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} isActive={editor.isActive("orderedList")} title="Numbered List">
+                1.
+            </ToolbarButton>
+
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+
+            {/* Block Elements */}
+            <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} isActive={editor.isActive("blockquote")} title="Quote">
+                ❝
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Divider">
+                ━
+            </ToolbarButton>
+            <ToolbarButton onClick={addLink} isActive={editor.isActive("link")} title="Link">
+                🔗
+            </ToolbarButton>
+            {editor.isActive("link") && (
+                <ToolbarButton onClick={() => editor.chain().focus().unsetLink().run()} title="Remove Link">
+                    🚫
+                </ToolbarButton>
+            )}
+
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+
+            {/* Variables & Undo/Redo */}
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                <button
+                    onClick={() => setShowVariables(!showVariables)}
+                    className="px-2 py-1 hover:bg-gray-100 rounded text-gray-500 hover:text-gray-900 text-xs transition-colors font-mono"
+                    title="Insert Variable"
+                >
+                    {`{{x}}`} ▾
+                </button>
+                {showVariables && (
+                    <div className="absolute left-0 top-full mt-1 bg-white border border-gray-200 rounded-lg p-1 z-50 min-w-44 shadow-xl">
+                        <div className="text-[10px] text-gray-400 px-2 py-1 font-medium">INSERT VARIABLE</div>
+                        {VARIABLES.map((v) => (
+                            <button
+                                key={v.key}
+                                className="w-full px-2 py-1.5 text-left text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors flex items-center gap-2"
+                                onClick={() => insertVariable(v.key)}
+                            >
+                                <code className="text-indigo-500 bg-indigo-50 px-1 py-0.5 rounded text-[10px]">{v.key}</code>
+                                <span>{v.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+
+            <ToolbarButton onClick={() => editor.chain().focus().undo().run()} title="Undo">
+                ↩
+            </ToolbarButton>
+            <ToolbarButton onClick={() => editor.chain().focus().redo().run()} title="Redo">
+                ↪
+            </ToolbarButton>
+        </div>
+    );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main Email Editor Component
+// ─────────────────────────────────────────────────────────────────────────────
+export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEditorProps) {
+    const [activeView, setActiveView] = useState<"visual" | "code" | "preview">("visual");
+    const [showCodeVariables, setShowCodeVariables] = useState(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Close dropdowns when clicking outside
     useEffect(() => {
-        const handleClick = () => setShowVariables(false);
+        const handleClick = () => setShowCodeVariables(false);
         document.addEventListener("click", handleClick);
         return () => document.removeEventListener("click", handleClick);
     }, []);
 
-    // Insert text at cursor position
+    // TipTap editor instance
+    const editor = useEditor({
+        extensions: [
+            StarterKit.configure({
+                heading: { levels: [1, 2, 3] },
+            }),
+            Underline,
+            Link.configure({
+                openOnClick: false,
+                HTMLAttributes: {
+                    class: "text-indigo-600 underline cursor-pointer",
+                },
+            }),
+            Placeholder.configure({
+                placeholder: "Start writing your email here…",
+            }),
+        ],
+        content: extractBodyContent(htmlBody),
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            onHtmlChange(wrapInEmailHtml(html));
+        },
+        editorProps: {
+            attributes: {
+                class: "prose prose-sm max-w-none focus:outline-none min-h-[200px] px-5 py-4 text-gray-800 leading-relaxed",
+            },
+        },
+    });
+
+    // Sync editor when switching TO visual mode
+    useEffect(() => {
+        if (activeView === "visual" && editor) {
+            const currentContent = extractBodyContent(htmlBody);
+            const editorContent = editor.getHTML();
+            // Only update if meaningfully different (avoid loops)
+            if (currentContent.replace(/\s+/g, "") !== editorContent.replace(/\s+/g, "")) {
+                editor.commands.setContent(currentContent);
+            }
+        }
+    }, [activeView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Code mode: Insert text at cursor
     const insertAtCursor = useCallback((text: string) => {
+        if (activeView === "visual" && editor) {
+            editor.chain().focus().insertContent(text).run();
+            return;
+        }
         const textarea = textareaRef.current;
         if (!textarea) {
             onHtmlChange(htmlBody + text);
@@ -65,9 +283,9 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
             textarea.selectionStart = textarea.selectionEnd = start + text.length;
             textarea.focus();
         }, 0);
-    }, [htmlBody, onHtmlChange]);
+    }, [htmlBody, onHtmlChange, activeView, editor]);
 
-    // Wrap selection with tags
+    // Code mode: Wrap selection
     const wrapSelection = useCallback((before: string, after: string) => {
         const textarea = textareaRef.current;
         if (!textarea) return;
@@ -87,10 +305,10 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
     const formatItalic = () => wrapSelection("<i>", "</i>");
     const formatLink = () => {
         const url = prompt("Enter URL:");
-        if (url) wrapSelection(`<a href="${url}" style="color:#0066cc;text-decoration:underline;">`, "</a>");
+        if (url) wrapSelection(`<a href="${url}" style="color:#4f46e5;text-decoration:underline;">`, "</a>");
     };
 
-    // Handle Enter key
+    // Code mode: Handle Enter key
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
@@ -108,12 +326,17 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
         }
     };
 
-    const loadStarterTemplate = () => onHtmlChange(STARTER_TEMPLATE);
+    const loadStarterTemplate = () => {
+        onHtmlChange(STARTER_TEMPLATE);
+        if (editor) {
+            editor.commands.setContent(extractBodyContent(STARTER_TEMPLATE));
+        }
+    };
 
     // Preview with interpolated variables
     const getPreviewHtml = () => {
         if (!htmlBody.trim()) {
-            return `<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#666;text-align:center;font-family:Arial,sans-serif;">
+            return `<div style="display:flex;align-items:center;justify-content:center;height:200px;color:#999;text-align:center;font-family:Arial,sans-serif;">
                 <div><div style="font-size:40px;margin-bottom:12px;">📧</div><div style="font-size:13px;">Start typing to see preview</div></div>
             </div>`;
         }
@@ -121,6 +344,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
             .replace(/\{\{firstName\}\}/g, "John")
             .replace(/\{\{lastName\}\}/g, "Doe")
             .replace(/\{\{email\}\}/g, "john@example.com")
+            .replace(/\{\{company\}\}/g, "Acme Inc.")
             .replace(/\{\{unsubscribeUrl\}\}/g, "#unsubscribe");
     };
 
@@ -128,57 +352,48 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
 
     return (
         <div className="h-full flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden">
-            {/* Unified Header - View Tabs + Toolbar */}
+            {/* ── Header: Mode Tabs + Toolbar ── */}
             <div className="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
                 {/* View Toggle */}
                 <div className="flex items-center gap-1 p-0.5 bg-gray-100 rounded-lg">
-                    <button
-                        onClick={() => setActiveView("write")}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "write"
-                            ? "bg-indigo-500 text-white shadow"
-                            : "text-gray-500 hover:text-gray-800 hover:bg-gray-200"
-                            }`}
-                    >
-                        ✏️ Write
-                    </button>
-                    <button
-                        onClick={() => setActiveView("preview")}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === "preview"
-                            ? "bg-indigo-500 text-white shadow"
-                            : "text-gray-500 hover:text-gray-800 hover:bg-gray-200"
-                            }`}
-                    >
-                        👁️ Preview
-                    </button>
+                    {(["visual", "code", "preview"] as const).map((mode) => (
+                        <button
+                            key={mode}
+                            onClick={() => setActiveView(mode)}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeView === mode
+                                ? "bg-indigo-500 text-white shadow"
+                                : "text-gray-500 hover:text-gray-800 hover:bg-gray-200"
+                                }`}
+                        >
+                            {mode === "visual" ? "✏️ Visual" : mode === "code" ? "🖥 Code" : "👁 Preview"}
+                        </button>
+                    ))}
                 </div>
 
-                {/* Formatting Toolbar - Only visible in Write mode */}
-                {activeView === "write" && (
+                {/* Mode-specific tools */}
+                {activeView === "code" && (
                     <div className="flex items-center gap-1">
                         <button onClick={formatBold} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm font-bold transition-colors" title="Bold">B</button>
                         <button onClick={formatItalic} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm italic transition-colors" title="Italic">I</button>
                         <button onClick={formatLink} className="p-1.5 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-sm transition-colors" title="Link">🔗</button>
-
                         <div className="w-px h-4 bg-gray-200 mx-1" />
-
-                        {/* Variables Dropdown */}
                         <div className="relative" onClick={(e) => e.stopPropagation()}>
                             <button
-                                onClick={() => setShowVariables(!showVariables)}
+                                onClick={() => setShowCodeVariables(!showCodeVariables)}
                                 className="px-2 py-1 hover:bg-gray-200 rounded text-gray-500 hover:text-gray-900 text-xs transition-colors"
                             >
                                 {`{{x}}`} ▾
                             </button>
-                            {showVariables && (
+                            {showCodeVariables && (
                                 <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg p-1 z-50 min-w-40 shadow-xl">
                                     <div className="text-[10px] text-gray-400 px-2 py-1">Insert Variable</div>
                                     {VARIABLES.map((v) => (
                                         <button
                                             key={v.key}
                                             className="w-full px-2 py-1.5 text-left text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors"
-                                            onClick={() => { insertAtCursor(v.key); setShowVariables(false); }}
+                                            onClick={() => { insertAtCursor(v.key); setShowCodeVariables(false); }}
                                         >
-                                            <code className="text-indigo-400 mr-2">{v.key}</code>
+                                            <code className="text-indigo-500 mr-2">{v.key}</code>
                                             {v.label}
                                         </button>
                                     ))}
@@ -188,17 +403,41 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                     </div>
                 )}
 
-                {/* Preview badge when in Preview mode */}
                 {activeView === "preview" && (
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">Live preview with sample data</span>
-                    </div>
+                    <span className="text-xs text-gray-400">Live preview with sample data</span>
                 )}
             </div>
 
-            {/* Content Area */}
+            {/* ── Visual Toolbar (only in visual mode) ── */}
+            {activeView === "visual" && editor && (
+                <div className="px-3 py-2 border-b border-gray-100 bg-gray-50/50">
+                    <VisualToolbar editor={editor} />
+                </div>
+            )}
+
+            {/* ── Content Area ── */}
             <div className="flex-1 overflow-hidden">
-                {activeView === "write" ? (
+                {/* ── VISUAL MODE ── */}
+                {activeView === "visual" && (
+                    <div className="h-full flex flex-col">
+                        {isEmpty && (
+                            <div className="px-3 py-2 border-b border-gray-100 bg-gray-50/50">
+                                <button
+                                    onClick={loadStarterTemplate}
+                                    className="px-3 py-1.5 text-xs bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-md text-indigo-600 transition-all"
+                                >
+                                    📄 Load Starter Template
+                                </button>
+                            </div>
+                        )}
+                        <div className="flex-1 overflow-auto">
+                            <EditorContent editor={editor} className="h-full" />
+                        </div>
+                    </div>
+                )}
+
+                {/* ── CODE MODE ── */}
+                {activeView === "code" && (
                     <div className="h-full flex flex-col">
                         {/* Component Snippets */}
                         <div className="px-3 py-2 border-b border-gray-100 bg-gray-50/50">
@@ -219,7 +458,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                                     {isEmpty && (
                                         <button
                                             onClick={loadStarterTemplate}
-                                            className="px-2 py-1 text-xs bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 rounded-md text-indigo-400 transition-all ml-2"
+                                            className="px-2 py-1 text-xs bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-md text-indigo-600 transition-all ml-2"
                                         >
                                             📄 Load Template
                                         </button>
@@ -228,21 +467,23 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject }: EmailEd
                             </div>
                         </div>
 
-                        {/* HTML Editor */}
+                        {/* HTML Textarea */}
                         <textarea
                             ref={textareaRef}
                             value={htmlBody}
                             onChange={(e) => onHtmlChange(e.target.value)}
                             onKeyDown={handleKeyDown}
                             className="flex-1 w-full p-4 bg-transparent text-gray-800 font-mono text-sm leading-relaxed resize-none focus:outline-none placeholder:text-gray-300"
-                            placeholder="Start typing your email content...
+                            placeholder={`Start typing your email HTML...
 
 Press Enter for line break
-Press Shift+Enter for new paragraph"
+Press Shift+Enter for new paragraph`}
                         />
                     </div>
-                ) : (
-                    /* Preview Mode - Gmail Style */
+                )}
+
+                {/* ── PREVIEW MODE ── */}
+                {activeView === "preview" && (
                     <div className="h-full flex flex-col bg-white">
                         {/* Gmail Header */}
                         <div className="px-4 py-3 border-b border-gray-200">

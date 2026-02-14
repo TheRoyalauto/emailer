@@ -490,3 +490,115 @@ p {
 .text-white\/70 {
   color: var(--text-muted) !important;
 }
+
+/* ============================================
+   TIPTAP VISUAL EDITOR
+   ============================================ */
+
+/* Placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--text-muted);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* Focus state */
+.tiptap:focus {
+  outline: none;
+}
+
+/* Content styles */
+.tiptap h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: var(--text-primary);
+}
+
+.tiptap h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--text-primary);
+}
+
+.tiptap h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: var(--text-primary);
+}
+
+.tiptap p {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.tiptap ul,
+.tiptap ol {
+  margin: 0 0 12px;
+  padding-left: 24px;
+}
+
+.tiptap li {
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+
+.tiptap li p {
+  margin: 0;
+}
+
+.tiptap blockquote {
+  margin: 0 0 16px;
+  padding: 12px 20px;
+  border-left: 4px solid var(--accent-primary);
+  background: var(--bg-tertiary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.tiptap blockquote p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.tiptap a {
+  color: #4f46e5;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.tiptap a:hover {
+  color: #4338ca;
+}
+
+.tiptap code {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #e11d48;
+}
+
+.tiptap hr {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid var(--border-default);
+}
+
+/* Selection highlight */
+.tiptap ::selection {
+  background: rgba(79, 70, 229, 0.15);
+}
+
+.tiptap .ProseMirror-selectednode {
+  outline: 2px solid var(--accent-primary);
+  border-radius: 4px;
+}
