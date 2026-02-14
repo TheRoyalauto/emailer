@@ -5,7 +5,7 @@ import { getAuthUserId } from "./auth";
 // Get campaign stats
 export const getCampaignStats = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         campaignId: v.string(),
     },
@@ -45,7 +45,7 @@ export const getCampaignStats = query({
 
 // Get overall email analytics
 export const getEmailAnalytics = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -98,7 +98,7 @@ export const getEmailAnalytics = query({
 // Get top performing contacts (most engaged)
 export const getTopContacts = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         limit: v.optional(v.number()),
     },
@@ -145,7 +145,7 @@ export const getTopContacts = query({
 // Get chart data for dashboard (time-series email stats)
 export const getChartData = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         days: v.optional(v.number()), // Number of days to fetch (default 30)
         isLive: v.optional(v.boolean()), // If true, return hourly data for last 24h

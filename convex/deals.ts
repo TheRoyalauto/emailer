@@ -23,7 +23,7 @@ export type DealStage = typeof DEAL_STAGES[number]["id"];
 // List all deals for the current user
 export const list = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         stage: v.optional(v.string()),
         limit: v.optional(v.number()),
@@ -58,7 +58,7 @@ export const list = query({
 // Get deal by ID
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("deals") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -75,7 +75,7 @@ export const get = query({
 // Get deals by contact
 export const getByContact = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         contactId: v.id("contacts") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -92,7 +92,7 @@ export const getByContact = query({
 // Create a new deal
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         contactId: v.id("contacts"),
         name: v.string(),
@@ -140,7 +140,7 @@ export const create = mutation({
 // Update deal stage
 export const updateStage = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("deals"),
         stage: v.string(),
@@ -190,7 +190,7 @@ export const updateStage = mutation({
 // Update deal details
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("deals"),
         name: v.optional(v.string()),
@@ -223,7 +223,7 @@ export const update = mutation({
 // Delete a deal
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("deals") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -239,7 +239,7 @@ export const remove = mutation({
 
 // Get pipeline stats
 export const getStats = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -288,7 +288,7 @@ export const getStats = query({
 // Create deal from contact (quick action)
 export const createFromContact = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         contactId: v.id("contacts"),
         value: v.optional(v.number()),

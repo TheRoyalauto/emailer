@@ -8,7 +8,7 @@ import { getAuthUserId } from "./auth";
 
 // List all brand rules for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -23,7 +23,7 @@ export const list = query({
 
 // Get default brand rule
 export const getDefault = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -46,7 +46,7 @@ export const getDefault = query({
 // Get a specific brand rule
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("emailBrandRules") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -62,7 +62,7 @@ export const get = query({
 // Create a new brand rule
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         name: v.string(),
         isDefault: v.optional(v.boolean()),
@@ -110,7 +110,7 @@ export const create = mutation({
 // Update a brand rule
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("emailBrandRules"),
         name: v.optional(v.string()),
@@ -168,7 +168,7 @@ export const update = mutation({
 // Delete a brand rule
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("emailBrandRules") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

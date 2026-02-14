@@ -3,7 +3,7 @@ import { query, mutation } from "./_generated/server";
 
 // List all mailing lists
 export const list = query({
-    args: { sessionToken: v.optional(v.string()),},
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())),},
     handler: async (ctx) => {
         return await ctx.db.query("lists").order("desc").collect();
     },
@@ -35,7 +35,7 @@ export const get = query({
 // Create a new list
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         name: v.string(),
         description: v.optional(v.string()),
     },
@@ -50,7 +50,7 @@ export const create = mutation({
 // Update a list
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("lists"),
         name: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -86,7 +86,7 @@ export const remove = mutation({
 // Add contacts to list
 export const addContacts = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         listId: v.id("lists"),
         contactIds: v.array(v.id("contacts")),
     },
@@ -125,7 +125,7 @@ export const addContacts = mutation({
 // Remove contact from list
 export const removeContact = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         listId: v.id("lists"),
         contactId: v.id("contacts"),
     },

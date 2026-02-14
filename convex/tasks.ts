@@ -14,7 +14,7 @@ const TASK_TYPES = ["follow_up", "call", "email", "meeting", "proposal", "other"
 // List tasks with filters
 export const list = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         status: v.optional(v.string()),
         priority: v.optional(v.string()),
@@ -64,7 +64,7 @@ export const list = query({
 
 // Get upcoming tasks (next 7 days)
 export const getUpcoming = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -91,7 +91,7 @@ export const getUpcoming = query({
 
 // Get overdue tasks
 export const getOverdue = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -114,7 +114,7 @@ export const getOverdue = query({
 
 // Get task stats
 export const getStats = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return { total: 0, pending: 0, inProgress: 0, overdue: 0, completedToday: 0 };
@@ -149,7 +149,7 @@ export const getStats = query({
 // Create a new task
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         title: v.string(),
         description: v.optional(v.string()),
@@ -187,7 +187,7 @@ export const create = mutation({
 // Update a task
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("tasks"),
         title: v.optional(v.string()),
@@ -219,7 +219,7 @@ export const update = mutation({
 // Complete a task
 export const complete = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("tasks"),
     },
@@ -242,7 +242,7 @@ export const complete = mutation({
 // Quick-complete (one-click)
 export const quickComplete = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("tasks") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -263,7 +263,7 @@ export const quickComplete = mutation({
 // Change task status
 export const setStatus = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("tasks"),
         status: v.string(),
@@ -291,7 +291,7 @@ export const setStatus = mutation({
 // Delete a task
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("tasks") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

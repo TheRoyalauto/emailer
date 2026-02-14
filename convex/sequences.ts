@@ -4,7 +4,7 @@ import { getAuthUserId } from "./auth";
 
 // List all sequences
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -42,7 +42,7 @@ export const list = query({
 // Get sequence with steps
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sequences") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -77,7 +77,7 @@ export const get = query({
 // Create a new sequence
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         name: v.string(),
         description: v.optional(v.string()),
@@ -105,7 +105,7 @@ export const create = mutation({
 // Add a step to a sequence
 export const addStep = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         sequenceId: v.id("sequences"),
         templateId: v.id("templates"),
@@ -146,7 +146,7 @@ export const addStep = mutation({
 // Remove a step
 export const removeStep = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         stepId: v.id("sequenceSteps") },
     handler: async (ctx, args) => {
         const step = await ctx.db.get(args.stepId);
@@ -166,7 +166,7 @@ export const removeStep = mutation({
 // Activate a sequence
 export const activate = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sequences") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -183,7 +183,7 @@ export const activate = mutation({
 // Pause a sequence
 export const pause = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sequences") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -200,7 +200,7 @@ export const pause = mutation({
 // Enroll a contact in a sequence
 export const enrollContact = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         sequenceId: v.id("sequences"),
         contactId: v.id("contacts"),
@@ -249,7 +249,7 @@ export const enrollContact = mutation({
 // Unenroll a contact
 export const unenrollContact = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         enrollmentId: v.id("sequenceEnrollments") },
     handler: async (ctx, args) => {
         const enrollment = await ctx.db.get(args.enrollmentId);
@@ -263,7 +263,7 @@ export const unenrollContact = mutation({
 // Delete a sequence
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sequences") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

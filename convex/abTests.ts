@@ -4,7 +4,7 @@ import { getAuthUserId } from "./auth";
 
 // List all A/B tests
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -35,7 +35,7 @@ export const list = query({
 // Get a single A/B test
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("abTests") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -52,7 +52,7 @@ export const get = query({
 // Create a new A/B test
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         name: v.string(),
         templateAId: v.id("templates"),
@@ -80,7 +80,7 @@ export const create = mutation({
 // Start an A/B test
 export const start = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("abTests") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -97,7 +97,7 @@ export const start = mutation({
 // Record A/B test event
 export const recordEvent = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         testId: v.id("abTests"),
         variant: v.union(v.literal("A"), v.literal("B")),
@@ -124,7 +124,7 @@ export const recordEvent = mutation({
 // Complete A/B test and declare winner
 export const complete = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("abTests"),
         winningVariant: v.union(v.literal("A"), v.literal("B")),
@@ -149,7 +149,7 @@ export const complete = mutation({
 // Delete an A/B test
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("abTests") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -166,7 +166,7 @@ export const remove = mutation({
 // Get which variant to send to (A or B) based on split
 export const getVariant = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         testId: v.id("abTests") },
     handler: async (ctx, args) => {
         const test = await ctx.db.get(args.testId);

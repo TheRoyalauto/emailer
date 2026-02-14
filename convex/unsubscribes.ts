@@ -4,7 +4,7 @@ import { getAuthUserId } from "./auth";
 
 // List all unsubscribes
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -20,7 +20,7 @@ export const list = query({
 // Check if email is unsubscribed
 export const isUnsubscribed = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         email: v.string() },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -40,7 +40,7 @@ export const isUnsubscribed = query({
 // Unsubscribe an email
 export const unsubscribe = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         email: v.string(),
         contactId: v.optional(v.id("contacts")),
@@ -119,7 +119,7 @@ export const unsubscribe = mutation({
 // Resubscribe an email
 export const resubscribe = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         email: v.string() },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -155,7 +155,7 @@ export const resubscribe = mutation({
 
 // Get unsubscribe count
 export const getCount = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return 0;

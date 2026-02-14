@@ -8,7 +8,7 @@ import { getAuthUserId } from "./auth";
 
 // List all send policies for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -34,7 +34,7 @@ export const list = query({
 // Get active policy for a sender (or global)
 export const getActive = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         senderId: v.optional(v.id("senders")),
     },
@@ -68,7 +68,7 @@ export const getActive = query({
 // Get a specific policy
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -84,7 +84,7 @@ export const get = query({
 // Create a new send policy
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         senderId: v.optional(v.id("senders")),
         name: v.string(),
@@ -135,7 +135,7 @@ export const create = mutation({
 // Update a send policy
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         id: v.id("sendPolicies"),
         senderId: v.optional(v.id("senders")),
@@ -180,7 +180,7 @@ export const update = mutation({
 // Toggle active status
 export const toggle = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -201,7 +201,7 @@ export const toggle = mutation({
 // Delete a send policy
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("sendPolicies") },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -218,7 +218,7 @@ export const remove = mutation({
 // Get today's usage for a sender/global
 export const getTodayUsage = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
        
         senderId: v.optional(v.id("senders")),
     },

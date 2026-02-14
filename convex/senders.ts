@@ -11,7 +11,7 @@ async function getAuthUserId(ctx: any, args: any) {
 
 // List all senders for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
@@ -26,7 +26,7 @@ export const list = query({
 // Get a single sender
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("senders")
     },
     handler: async (ctx, args) => {
@@ -40,7 +40,7 @@ export const get = query({
 
 // Get default sender for the current user
 export const getDefault = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
@@ -56,7 +56,7 @@ export const getDefault = query({
 // Create a new sender
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         name: v.string(),
         email: v.string(),
@@ -93,7 +93,7 @@ export const create = mutation({
 // Update a sender
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         id: v.id("senders"),
         name: v.optional(v.string()),
@@ -134,7 +134,7 @@ export const update = mutation({
 // Delete a sender
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("senders")
     },
     handler: async (ctx, args) => {

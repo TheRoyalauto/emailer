@@ -4,7 +4,7 @@ import { auth, getAuthUserId } from "./auth";
 
 // List all batches for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
@@ -18,7 +18,7 @@ export const list = query({
 
 // List only top-level (parent) batches
 export const listParentBatches = query({
-    args: { sessionToken: v.optional(v.string()) },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null_())) },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
@@ -33,7 +33,7 @@ export const listParentBatches = query({
 // List child batches of a parent
 export const listChildBatches = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         parentBatchId: v.id("batches"),
     },
     handler: async (ctx, args) => {
@@ -53,7 +53,7 @@ export const listChildBatches = query({
 // Get a single batch with contacts and child batches
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("batches"),
     },
     handler: async (ctx, args) => {
@@ -80,7 +80,7 @@ export const get = query({
 // Create a new batch (optionally nested under a parent batch)
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         name: v.string(),
         description: v.optional(v.string()),
         color: v.optional(v.string()),
@@ -112,7 +112,7 @@ export const create = mutation({
 // Update batch
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("batches"),
         name: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -137,7 +137,7 @@ export const update = mutation({
 // Delete batch (contacts remain, just unassigned)
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("batches"),
     },
     handler: async (ctx, args) => {
@@ -164,7 +164,7 @@ export const remove = mutation({
 // Get contacts by batch
 export const getContacts = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         batchId: v.id("batches"),
     },
     handler: async (ctx, args) => {
@@ -184,7 +184,7 @@ export const getContacts = query({
 // Update batch contact count
 export const updateCount = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("batches"),
     },
     handler: async (ctx, args) => {
@@ -206,7 +206,7 @@ export const updateCount = mutation({
 // Create a new batch from selected contacts
 export const createFromSelection = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         name: v.string(),
         description: v.optional(v.string()),
         color: v.optional(v.string()),
@@ -248,7 +248,7 @@ export const createFromSelection = mutation({
 // Add contacts to existing batch
 export const addContactsToBatch = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         batchId: v.id("batches"),
         contactIds: v.array(v.id("contacts")),
     },

@@ -12,7 +12,7 @@ async function getAuthUserId(ctx: any, args: any) {
 // List all contacts for the current user
 export const list = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         status: v.optional(
             v.union(v.literal("active"), v.literal("unsubscribed"), v.literal("bounced"))
@@ -38,7 +38,7 @@ export const list = query({
 // Get a single contact
 export const get = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("contacts")
     },
     handler: async (ctx, args) => {
@@ -53,7 +53,7 @@ export const get = query({
 // Create a new contact
 export const create = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         email: v.string(),
         name: v.optional(v.string()),
@@ -89,7 +89,7 @@ export const create = mutation({
 // Bulk create contacts
 export const bulkCreate = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         contacts: v.array(
             v.object({
@@ -183,7 +183,7 @@ export const bulkCreate = mutation({
 // Update a contact
 export const update = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
 
         id: v.id("contacts"),
         email: v.optional(v.string()),
@@ -214,7 +214,7 @@ export const update = mutation({
 // Delete a contact
 export const remove = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         id: v.id("contacts")
     },
     handler: async (ctx, args) => {

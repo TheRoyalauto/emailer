@@ -62,7 +62,7 @@ export async function getSessionUserId(
  */
 export const register = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         email: v.string(),
         password: v.string(),
         name: v.string(),
@@ -145,7 +145,7 @@ export const register = mutation({
  */
 export const login = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         email: v.string(),
         password: v.string(),
     },
@@ -212,7 +212,7 @@ export const login = mutation({
  */
 export const getSession = query({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
@@ -242,7 +242,7 @@ export const getSession = query({
  */
 export const logout = mutation({
     args: {
-        sessionToken: v.optional(v.string()),
+        sessionToken: v.optional(v.union(v.string(), v.null_())),
         token: v.string(),
     },
     handler: async (ctx, args) => {
