@@ -164,6 +164,11 @@ export const login = mutation({
             return { success: false as const, error: "Invalid email or password" };
         }
 
+        // Legacy users from old auth system won't have salt/passwordHash
+        if (!user.salt || !user.passwordHash) {
+            return { success: false as const, error: "Please re-register — your account uses a legacy auth format" };
+        }
+
         // Verify password
         const hash = await hashPassword(args.password, user.salt);
         if (hash !== user.passwordHash) {
