@@ -4,7 +4,8 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { AuthProvider } from "../contexts/AuthContext";
 import { ReactNode } from "react";
 
-const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL!;
+// Fallback to production Convex URL if env var is not set (Vercel build safety)
+const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL || "https://fearless-kookabura-668.convex.cloud";
 
 const convex = new ConvexReactClient(CONVEX_URL);
 
