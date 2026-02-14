@@ -35,9 +35,9 @@ export default function Navbar() {
                         <img
                             src="/logo.png"
                             alt="E-mailer"
-                            className="w-9 h-9 object-contain"
+                            className="w-14 h-14 object-contain drop-shadow-sm"
                         />
-                        <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+                        <span className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                             E-mailer
                         </span>
                     </Link>
