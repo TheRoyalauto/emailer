@@ -24,7 +24,7 @@ export default function ContactPage() {
 
     if (submitted) {
         return (
-            <section className="pt-32 pb-24 lg:pt-40 lg:pb-32 min-h-screen bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+            <section className="pt-32 pb-24 lg:pt-40 lg:pb-32 min-h-screen bg-gradient-to-br from-sky-50 via-white to-cyan-50">
                 <div className="max-w-2xl mx-auto px-6 lg:px-8 text-center">
                     <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-bounce">
                         <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,7 +51,7 @@ export default function ContactPage() {
     return (
         <>
             {/* Hero */}
-            <section className="pt-32 pb-12 lg:pt-40 lg:pb-16 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+            <section className="pt-32 pb-12 lg:pt-40 lg:pb-16 bg-gradient-to-br from-sky-50 via-white to-cyan-50">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
                     <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
                         Get in Touch
@@ -79,14 +79,14 @@ export default function ContactPage() {
 
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4 group">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg className="w-6 h-6 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
                                     </div>
                                     <div>
                                         <h3 className="font-semibold text-slate-900">Email</h3>
-                                        <a href="mailto:support@e-mailer.app" className="text-indigo-600 hover:text-indigo-700 transition-colors">
+                                        <a href="mailto:support@e-mailer.app" className="text-sky-600 hover:text-sky-700 transition-colors">
                                             support@e-mailer.app
                                         </a>
                                     </div>
@@ -105,8 +105,8 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="flex items-start gap-4 group">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <svg className="w-6 h-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg className="w-6 h-6 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                                         </svg>
                                     </div>
@@ -148,7 +148,7 @@ export default function ContactPage() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all outline-none"
                                             placeholder="John Doe"
                                         />
                                     </div>
@@ -161,7 +161,7 @@ export default function ContactPage() {
                                             required
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all outline-none"
                                             placeholder="john@company.com"
                                         />
                                     </div>
@@ -176,7 +176,7 @@ export default function ContactPage() {
                                             type="text"
                                             value={formData.company}
                                             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all outline-none"
                                             placeholder="Acme Inc."
                                         />
                                     </div>
@@ -187,7 +187,7 @@ export default function ContactPage() {
                                         <select
                                             value={formData.subject}
                                             onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none bg-white"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all outline-none bg-white"
                                         >
                                             <option value="general">General Inquiry</option>
                                             <option value="sales">Sales / Enterprise</option>
@@ -207,7 +207,7 @@ export default function ContactPage() {
                                         rows={5}
                                         value={formData.message}
                                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none resize-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all outline-none resize-none"
                                         placeholder="How can we help you?"
                                     />
                                 </div>
@@ -215,7 +215,7 @@ export default function ContactPage() {
                                 <button
                                     type="submit"
                                     disabled={sending}
-                                    className="w-full py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                    className="w-full py-4 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-sky-500/25 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
                                     {sending ? (
                                         <>

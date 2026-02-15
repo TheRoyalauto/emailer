@@ -57,7 +57,7 @@ export default function Navbar() {
                         {isLoggedIn ? (
                             <Link
                                 href="/dashboard"
-                                className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
                             >
                                 <span>Go to Dashboard</span>
                                 <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -74,7 +74,7 @@ export default function Navbar() {
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                    className="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
                                 >
                                     Start Free →
                                 </Link>
@@ -115,7 +115,7 @@ export default function Navbar() {
                             {isLoggedIn ? (
                                 <Link
                                     href="/dashboard"
-                                    className="py-3 text-center bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg flex items-center justify-center gap-2"
+                                    className="py-3 text-center bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg flex items-center justify-center gap-2"
                                 >
                                     <span>Go to Dashboard</span>
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -129,7 +129,7 @@ export default function Navbar() {
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="py-3 text-center bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg"
+                                        className="py-3 text-center bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg"
                                     >
                                         Start Free →
                                     </Link>

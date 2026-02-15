@@ -113,20 +113,20 @@ export default function PricingPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
                         <div className="text-center">
-                            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full flex items-center justify-center">
-                                <svg className="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-sky-100 to-cyan-100 rounded-full flex items-center justify-center">
+                                <svg className="w-8 h-8 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-2">Coming Soon!</h3>
                             <p className="text-slate-600 mb-6">
                                 Paid plans are launching very soon. Join the waitlist to get notified and receive
-                                <span className="font-semibold text-indigo-600"> 3 months free</span> when we launch.
+                                <span className="font-semibold text-sky-600"> 3 months free</span> when we launch.
                             </p>
                             <div className="space-y-3">
                                 <Link
                                     href="/register"
-                                    className="block w-full py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                                    className="block w-full py-3 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl hover:shadow-lg transition-all"
                                 >
                                     Join Waitlist →
                                 </Link>
@@ -143,7 +143,7 @@ export default function PricingPage() {
             )}
 
             {/* Hero */}
-            <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+            <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-gradient-to-br from-sky-50 via-white to-cyan-50">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
                     <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
                         Simple, transparent pricing
@@ -159,7 +159,7 @@ export default function PricingPage() {
                         </span>
                         <button
                             onClick={() => setYearly(!yearly)}
-                            className={`relative w-14 h-8 rounded-full transition-colors ${yearly ? "bg-indigo-600" : "bg-slate-300"
+                            className={`relative w-14 h-8 rounded-full transition-colors ${yearly ? "bg-sky-500" : "bg-slate-300"
                                 }`}
                         >
                             <div
@@ -187,7 +187,7 @@ export default function PricingPage() {
                             <div
                                 key={i}
                                 className={`relative p-6 rounded-2xl ${plan.featured
-                                    ? "bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-2xl shadow-indigo-500/25 ring-4 ring-indigo-500/20"
+                                    ? "bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-2xl shadow-sky-500/25 ring-4 ring-sky-500/20"
                                     : "bg-white border border-slate-200"
                                     }`}
                             >
@@ -201,7 +201,7 @@ export default function PricingPage() {
                                     <h3 className={`text-lg font-bold mb-1 ${plan.featured ? "text-white" : "text-slate-900"}`}>
                                         {plan.name}
                                     </h3>
-                                    <p className={`text-sm ${plan.featured ? "text-indigo-100" : "text-slate-600"}`}>
+                                    <p className={`text-sm ${plan.featured ? "text-sky-100" : "text-slate-600"}`}>
                                         {plan.description}
                                     </p>
                                 </div>
@@ -210,11 +210,11 @@ export default function PricingPage() {
                                     <span className={`text-3xl font-bold ${plan.featured ? "text-white" : "text-slate-900"}`}>
                                         ${yearly ? plan.yearlyPrice : plan.monthlyPrice}
                                     </span>
-                                    <span className={plan.featured ? "text-indigo-200" : "text-slate-500"}>
+                                    <span className={plan.featured ? "text-sky-200" : "text-slate-500"}>
                                         /month
                                     </span>
                                 </div>
-                                <p className={`text-sm mb-4 ${plan.featured ? "text-indigo-200" : "text-slate-500"}`}>
+                                <p className={`text-sm mb-4 ${plan.featured ? "text-sky-200" : "text-slate-500"}`}>
                                     {plan.emails}
                                 </p>
 
@@ -222,7 +222,7 @@ export default function PricingPage() {
                                     <button
                                         onClick={() => setShowComingSoon(true)}
                                         className={`block w-full py-2.5 rounded-xl font-semibold text-center transition-all text-sm ${plan.featured
-                                            ? "bg-white text-indigo-600 hover:bg-indigo-50"
+                                            ? "bg-white text-sky-600 hover:bg-sky-50"
                                             : "bg-slate-900 text-white hover:bg-slate-800"
                                             }`}
                                     >
@@ -232,7 +232,7 @@ export default function PricingPage() {
                                     <Link
                                         href={plan.href}
                                         className={`block w-full py-2.5 rounded-xl font-semibold text-center transition-all text-sm ${plan.featured
-                                            ? "bg-white text-indigo-600 hover:bg-indigo-50"
+                                            ? "bg-white text-sky-600 hover:bg-sky-50"
                                             : "bg-slate-900 text-white hover:bg-slate-800"
                                             }`}
                                     >
@@ -244,14 +244,14 @@ export default function PricingPage() {
                                     {plan.features.map((feature, j) => (
                                         <li key={j} className="flex items-start gap-2">
                                             <svg
-                                                className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.featured ? "text-indigo-200" : "text-green-500"}`}
+                                                className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.featured ? "text-sky-200" : "text-green-500"}`}
                                                 fill="none"
                                                 viewBox="0 0 24 24"
                                                 stroke="currentColor"
                                             >
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                             </svg>
-                                            <span className={`text-sm ${plan.featured ? "text-indigo-100" : "text-slate-600"}`}>
+                                            <span className={`text-sm ${plan.featured ? "text-sky-100" : "text-slate-600"}`}>
                                                 {feature}
                                             </span>
                                         </li>

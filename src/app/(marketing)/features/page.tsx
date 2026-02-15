@@ -105,7 +105,7 @@ export default function FeaturesPage() {
     return (
         <>
             {/* Hero */}
-            <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+            <section className="pt-32 pb-16 lg:pt-40 lg:pb-24 bg-gradient-to-br from-sky-50 via-white to-cyan-50">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
                     <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
                         Everything you need to scale outreach
@@ -131,9 +131,9 @@ export default function FeaturesPage() {
                             {section.items.map((feature, j) => (
                                 <div
                                     key={j}
-                                    className="group p-8 bg-white rounded-2xl border border-slate-200 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300"
+                                    className="group p-8 bg-white rounded-2xl border border-slate-200 hover:border-sky-200 hover:shadow-xl hover:shadow-sky-500/5 transition-all duration-300"
                                 >
-                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                                         {feature.icon}
                                     </div>
                                     <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -160,17 +160,17 @@ export default function FeaturesPage() {
             ))}
 
             {/* CTA */}
-            <section className="py-20 lg:py-32 bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+            <section className="py-20 lg:py-32 bg-gradient-to-br from-sky-500 to-cyan-500 text-white">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
                     <h2 className="text-3xl lg:text-4xl font-bold mb-6">
                         Ready to supercharge your outreach?
                     </h2>
-                    <p className="text-xl text-indigo-100 mb-10">
+                    <p className="text-xl text-sky-100 mb-10">
                         Start your free trial today. No credit card required.
                     </p>
                     <Link
                         href="/register"
-                        className="inline-flex px-10 py-5 bg-white text-indigo-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
+                        className="inline-flex px-10 py-5 bg-white text-sky-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
                     >
                         Start Free Trial →
                     </Link>

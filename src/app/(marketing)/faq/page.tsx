@@ -183,14 +183,14 @@ export default function FAQPage() {
     return (
         <>
             {/* Hero */}
-            <section className="pt-32 pb-16 lg:pt-40 lg:pb-20 bg-gradient-to-br from-indigo-50 via-white to-violet-50">
+            <section className="pt-32 pb-16 lg:pt-40 lg:pb-20 bg-gradient-to-br from-sky-50 via-white to-cyan-50">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
                     <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
                         Frequently Asked Questions
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                         Everything you need to know about E-mailer. Can't find what you're looking for?{" "}
-                        <a href="mailto:support@e-mailer.app" className="text-indigo-600 hover:text-indigo-700 font-medium">
+                        <a href="mailto:support@e-mailer.app" className="text-sky-600 hover:text-sky-700 font-medium">
                             Contact our support team
                         </a>
                         .
@@ -211,7 +211,7 @@ export default function FAQPage() {
                                     setOpenQuestion(null);
                                 }}
                                 className={`px-5 py-2.5 rounded-full font-medium transition-all ${activeCategory === cat.name
-                                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/25"
+                                    ? "bg-sky-500 text-white shadow-lg shadow-sky-500/25"
                                     : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                                     }`}
                             >
@@ -269,7 +269,7 @@ export default function FAQPage() {
                     </p>
                     <a
                         href="mailto:support@e-mailer.app"
-                        className="inline-block px-8 py-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors"
+                        className="inline-block px-8 py-4 bg-sky-500 text-white font-semibold rounded-xl hover:bg-sky-600 transition-colors"
                     >
                         Contact Support →
                     </a>

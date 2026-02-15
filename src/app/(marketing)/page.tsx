@@ -75,14 +75,14 @@ export default function LandingPage() {
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
                 {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-indigo-400/20 to-violet-400/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-violet-400/10 to-indigo-400/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+                <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-cyan-50" />
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-sky-400/20 to-cyan-400/20 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-400/10 to-sky-400/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
                 <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="text-center max-w-4xl mx-auto">
                         {/* Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-sky-100 text-sky-700 rounded-full text-sm font-medium mb-8">
                             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             Live: 2,847 emails sent in the last hour
                         </div>
@@ -90,7 +90,7 @@ export default function LandingPage() {
                         {/* Headline */}
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-[1.1] mb-6">
                             Send cold emails that
-                            <span className="block bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                            <span className="block bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent">
                                 actually get replies
                             </span>
                         </h1>
@@ -105,7 +105,7 @@ export default function LandingPage() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                             <Link
                                 href="/register"
-                                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
+                                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
                             >
                                 Start Free Trial →
                             </Link>
@@ -140,7 +140,7 @@ export default function LandingPage() {
                                 </div>
                                 <div className="aspect-[16/9] bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
                                     <div className="text-center">
-                                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+                                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center">
                                             <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                             </svg>
@@ -160,7 +160,7 @@ export default function LandingPage() {
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                         {stats.map((stat, i) => (
                             <div key={i} className="text-center">
-                                <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent mb-2">
+                                <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent mb-2">
                                     {stat.value}
                                 </div>
                                 <div className="text-slate-600 font-medium">{stat.label}</div>
@@ -187,9 +187,9 @@ export default function LandingPage() {
                         {features.map((feature, i) => (
                             <div
                                 key={i}
-                                className="group p-8 bg-white rounded-2xl border border-slate-200 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-300"
+                                className="group p-8 bg-white rounded-2xl border border-slate-200 hover:border-sky-200 hover:shadow-xl hover:shadow-sky-500/5 transition-all duration-300"
                             >
-                                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                                     {feature.icon}
                                 </div>
                                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -233,7 +233,7 @@ export default function LandingPage() {
                                     "{t.quote}"
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-semibold">
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center font-semibold">
                                         {t.avatar}
                                     </div>
                                     <div>
@@ -278,7 +278,7 @@ export default function LandingPage() {
                             },
                         ].map((item, i) => (
                             <div key={i} className="text-center">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-white font-bold text-xl mb-6">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white font-bold text-xl mb-6">
                                     {item.step}
                                 </div>
                                 <h3 className="text-xl font-semibold text-slate-900 mb-3">
@@ -294,23 +294,23 @@ export default function LandingPage() {
             </section>
 
             {/* Final CTA Section */}
-            <section className="py-20 lg:py-32 bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+            <section className="py-20 lg:py-32 bg-gradient-to-br from-sky-500 to-cyan-500 text-white">
                 <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
                     <h2 className="text-3xl lg:text-5xl font-bold mb-6">
                         Ready to 10x your outreach?
                     </h2>
-                    <p className="text-xl text-indigo-100 mb-10 max-w-2xl mx-auto">
+                    <p className="text-xl text-sky-100 mb-10 max-w-2xl mx-auto">
                         Join over 10,000 sales professionals who use E-mailer to send better emails and close more deals.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link
                             href="/register"
-                            className="px-10 py-5 bg-white text-indigo-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
+                            className="px-10 py-5 bg-white text-sky-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all text-lg"
                         >
                             Start Your Free Trial →
                         </Link>
                     </div>
-                    <p className="mt-6 text-indigo-200 text-sm">
+                    <p className="mt-6 text-sky-200 text-sm">
                         Free 14-day trial · No credit card required · Cancel anytime
                     </p>
                 </div>

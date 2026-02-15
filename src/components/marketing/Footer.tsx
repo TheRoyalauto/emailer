@@ -44,7 +44,7 @@ export default function Footer() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
                                 href="/register"
-                                className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="px-8 py-4 bg-gradient-to-r from-sky-400 to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
                             >
                                 Start Free Trial →
                             </Link>
@@ -65,7 +65,7 @@ export default function Footer() {
                     {/* Brand Column */}
                     <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
                         <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center">
                                 <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
