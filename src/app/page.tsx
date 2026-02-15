@@ -183,9 +183,9 @@ export default function Home() {
                     <div className="h-20 lg:h-24" />
 
                     {/* Animated Background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-violet-50" />
-                    <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-indigo-400/30 to-violet-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-violet-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s' }} />
+                    <div className="absolute inset-0 bg-gradient-to-br from-sky-50 via-white to-cyan-50" />
+                    <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-br from-sky-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-cyan-400/20 to-sky-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s' }} />
 
                     <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
                         {/* Live Counter */}
@@ -205,9 +205,9 @@ export default function Home() {
                                 <span className="block text-slate-400 text-2xl sm:text-3xl lg:text-4xl font-medium mb-2">
                                     Outreach, simplified.
                                 </span>
-                                <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 bg-clip-text text-transparent whitespace-nowrap">
+                                <span className="bg-gradient-to-r from-sky-500 via-cyan-500 to-teal-500 bg-clip-text text-transparent whitespace-nowrap">
                                     {typedText}
-                                    <span className="animate-pulse text-indigo-500">|</span>
+                                    <span className="animate-pulse text-sky-500">|</span>
                                 </span>
                             </h1>
 
@@ -221,7 +221,7 @@ export default function Home() {
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
                                 <Link
                                     href="/register"
-                                    className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-2xl shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
+                                    className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-2xl shadow-xl shadow-sky-500/30 hover:shadow-sky-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all text-lg flex items-center justify-center gap-2"
                                 >
                                     Start Free
                                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,11 +253,11 @@ export default function Home() {
                                 {/* Interactive cards */}
                                 <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
                                     {/* Step 1: Import */}
-                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-indigo-100/50 hover:border-indigo-200 transition-all duration-300 hover:-translate-y-1">
-                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">1</div>
+                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-sky-100/50 hover:border-sky-200 transition-all duration-300 hover:-translate-y-1">
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">1</div>
 
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                            <svg className="w-7 h-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                             </svg>
                                         </div>
@@ -272,19 +272,19 @@ export default function Home() {
                                                 leads.csv
                                             </div>
                                             <div className="space-y-1">
-                                                <div className="h-2 bg-indigo-200 rounded animate-pulse" style={{ width: '80%' }} />
-                                                <div className="h-2 bg-indigo-100 rounded animate-pulse" style={{ width: '65%', animationDelay: '150ms' }} />
-                                                <div className="h-2 bg-indigo-100 rounded animate-pulse" style={{ width: '90%', animationDelay: '300ms' }} />
+                                                <div className="h-2 bg-sky-200 rounded animate-pulse" style={{ width: '80%' }} />
+                                                <div className="h-2 bg-sky-100 rounded animate-pulse" style={{ width: '65%', animationDelay: '150ms' }} />
+                                                <div className="h-2 bg-sky-100 rounded animate-pulse" style={{ width: '90%', animationDelay: '300ms' }} />
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Step 2: Write */}
-                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-violet-100/50 hover:border-violet-200 transition-all duration-300 hover:-translate-y-1 md:-translate-y-2">
-                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">2</div>
+                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-sky-100/50 hover:border-sky-200 transition-all duration-300 hover:-translate-y-1 md:-translate-y-2">
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">2</div>
 
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                            <svg className="w-7 h-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                             </svg>
                                         </div>
@@ -295,11 +295,11 @@ export default function Home() {
                                         {/* Mini preview */}
                                         <div className="bg-slate-50 rounded-xl p-3 border border-slate-100">
                                             <div className="text-xs text-slate-600 space-y-1">
-                                                <p>Hi <span className="text-violet-600 font-medium">{"{{first_name}}"}</span>,</p>
+                                                <p>Hi <span className="text-cyan-600 font-medium">{"{{first_name}}"}</span>,</p>
                                                 <p className="text-slate-400">I noticed you&apos;re using...</p>
                                                 <div className="flex gap-1 mt-2">
-                                                    <span className="px-1.5 py-0.5 bg-violet-100 text-violet-600 text-[10px] rounded">AI powered</span>
-                                                    <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-600 text-[10px] rounded">Variables</span>
+                                                    <span className="px-1.5 py-0.5 bg-cyan-100 text-cyan-600 text-[10px] rounded">AI powered</span>
+                                                    <span className="px-1.5 py-0.5 bg-sky-100 text-sky-600 text-[10px] rounded">Variables</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -307,7 +307,7 @@ export default function Home() {
 
                                     {/* Step 3: Track */}
                                     <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-100/50 hover:border-green-200 transition-all duration-300 hover:-translate-y-1">
-                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-lg">3</div>
+                                        <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">3</div>
 
                                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                                             <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -330,7 +330,7 @@ export default function Home() {
                                                     <div className="text-[10px] text-slate-400">Opens</div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-lg font-bold text-violet-500">12%</div>
+                                                    <div className="text-lg font-bold text-cyan-500">12%</div>
                                                     <div className="text-[10px] text-slate-400">Replies</div>
                                                 </div>
                                             </div>
@@ -346,12 +346,12 @@ export default function Home() {
                 <section className="py-20 lg:py-28 bg-white">
                     <div className="max-w-6xl mx-auto px-6 lg:px-8">
                         <div className="text-center mb-12">
-                            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-indigo-100 to-violet-100 text-indigo-700 text-sm font-semibold rounded-full mb-4">
+                            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-sky-100 to-cyan-100 text-sky-700 text-sm font-semibold rounded-full mb-4">
                                 Our Philosophy
                             </span>
                             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4">
                                 Built different.{" "}
-                                <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">On purpose.</span>
+                                <span className="bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent">On purpose.</span>
                             </h2>
                             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
                                 We were tired of bloated sales tools that cost too much and did too little.
@@ -388,7 +388,7 @@ export default function Home() {
                                     ),
                                     title: "No BS",
                                     desc: "Stop configuring. Start closing. Results in your first 10 minutes.",
-                                    color: "from-indigo-500 to-violet-500"
+                                    color: "from-sky-500 to-cyan-500"
                                 },
                             ].map((item, i) => (
                                 <div key={i} className="group relative bg-white p-6 rounded-2xl border border-slate-200 hover:border-transparent hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -410,7 +410,7 @@ export default function Home() {
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                             {stats.map((stat, i) => (
                                 <div key={i} className="text-center group">
-                                    <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                                    <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-sky-500 to-cyan-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
                                         {stat.value}
                                     </div>
                                     <div className="text-slate-600 font-medium">{stat.label}</div>
@@ -436,9 +436,9 @@ export default function Home() {
                             {features.map((feature, i) => (
                                 <div
                                     key={i}
-                                    className="group p-6 bg-white rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300"
+                                    className="group p-6 bg-white rounded-2xl border border-slate-200 hover:border-sky-300 hover:shadow-xl hover:shadow-sky-500/10 hover:-translate-y-1 transition-all duration-300"
                                 >
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
                                         {feature.icon}
                                     </div>
                                     <h3 className="text-lg font-semibold text-slate-900 mb-2">
@@ -479,7 +479,7 @@ export default function Home() {
                                         &ldquo;{t.quote}&rdquo;
                                     </p>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-sm font-semibold">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center text-sm font-semibold">
                                             {t.avatar}
                                         </div>
                                         <div>

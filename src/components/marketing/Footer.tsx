@@ -65,12 +65,11 @@ export default function Footer() {
                     {/* Brand Column */}
                     <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-8 lg:mb-0">
                         <Link href="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center">
-                                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-bold">E-mailer</span>
+                            <img
+                                src="/logo.png"
+                                alt="E-Mailer"
+                                className="h-10 w-auto object-contain"
+                            />
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed">
                             The intelligent email outreach platform for modern sales teams.
