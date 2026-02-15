@@ -88,12 +88,12 @@ function DashboardPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Hero Section with Chart */}
-                <div className="relative mb-8 rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-lg">
+                <div className="relative mb-8 rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg">
                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-sky-500/5" />
 
                     <div className="relative p-6 md:p-8">
@@ -101,7 +101,7 @@ function DashboardPage() {
                         <div className="flex items-start justify-between mb-6">
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <p className="text-slate-500 text-sm font-medium">Emails Sent</p>
+                                    <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Emails Sent</p>
                                     {isLive && (
                                         <div className="flex items-center gap-1.5">
                                             <span className="relative flex h-2 w-2">
@@ -113,11 +113,11 @@ function DashboardPage() {
                                     )}
                                 </div>
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-4xl md:text-5xl font-bold font-heading text-slate-900 tracking-[-0.04em]">
+                                    <span className="text-4xl md:text-5xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.04em]">
                                         {currentValue.toLocaleString()}
                                     </span>
                                     {hasData && change !== 0 && (
-                                        <span className={`text-sm font-semibold px-2 py-0.5 rounded-full ${change >= 0 ? "text-emerald-600 bg-emerald-50" : "text-red-500 bg-red-50"}`}>
+                                        <span className={`text-sm font-semibold px-2 py-0.5 rounded-full ${change >= 0 ? "text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10" : "text-red-500 bg-red-50 dark:bg-red-500/10"}`}>
                                             {change >= 0 ? "+" : ""}{change} ({changePercent}%)
                                         </span>
                                     )}
@@ -225,12 +225,12 @@ function DashboardPage() {
                                     </svg>
 
                                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                        <div className="w-12 h-12 mb-3 rounded-full bg-cyan-50 border border-cyan-200/50 flex items-center justify-center">
+                                        <div className="w-12 h-12 mb-3 rounded-full bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200/50 dark:border-cyan-500/20 flex items-center justify-center">
                                             <svg className="w-6 h-6 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
                                             </svg>
                                         </div>
-                                        <p className="text-slate-900 font-semibold font-heading">Ready to grow</p>
+                                        <p className="text-slate-900 dark:text-white font-semibold font-heading">Ready to grow</p>
                                         <p className="text-sm text-slate-400 mt-1">Send your first campaign to track growth</p>
                                     </div>
                                 </div>
@@ -238,14 +238,14 @@ function DashboardPage() {
                         </div>
 
                         {/* Time Range Selector */}
-                        <div className="flex items-center justify-center gap-1 mt-4 pt-4 border-t border-slate-200">
+                        <div className="flex items-center justify-center gap-1 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                             {(["LIVE", "1D", "1W", "1M", "3M", "YTD", "1Y", "ALL"] as const).map((range) => (
                                 <button
                                     key={range}
                                     onClick={() => setTimeRange(range)}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 ${timeRange === range
-                                        ? "bg-slate-900 text-white shadow-md"
-                                        : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                                        ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md"
+                                        : "text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                                         }`}
                                 >
                                     {range}
@@ -258,7 +258,7 @@ function DashboardPage() {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <Link href="/contacts" className="group">
-                        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all duration-200 hover:-translate-y-1">
+                        <div className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-cyan-300 dark:hover:border-cyan-500/50 transition-all duration-200 hover:-translate-y-1">
                             <div className="text-3xl font-bold font-heading text-cyan-500 group-hover:scale-105 transition-transform tracking-[-0.04em]">
                                 {totalContacts}
                             </div>
@@ -266,7 +266,7 @@ function DashboardPage() {
                         </div>
                     </Link>
                     <Link href="/campaigns" className="group">
-                        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-emerald-300 transition-all duration-200 hover:-translate-y-1">
+                        <div className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-emerald-300 dark:hover:border-emerald-500/50 transition-all duration-200 hover:-translate-y-1">
                             <div className="text-3xl font-bold font-heading text-emerald-500 group-hover:scale-105 transition-transform tracking-[-0.04em]">
                                 {activeCampaigns}
                             </div>
@@ -274,7 +274,7 @@ function DashboardPage() {
                         </div>
                     </Link>
                     <Link href="/campaigns" className="group">
-                        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-sky-300 transition-all duration-200 hover:-translate-y-1">
+                        <div className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-sky-300 dark:hover:border-sky-500/50 transition-all duration-200 hover:-translate-y-1">
                             <div className="text-3xl font-bold font-heading text-sky-500 group-hover:scale-105 transition-transform tracking-[-0.04em]">
                                 {totalCampaigns}
                             </div>
@@ -282,7 +282,7 @@ function DashboardPage() {
                         </div>
                     </Link>
                     <Link href="/templates" className="group">
-                        <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-violet-300 transition-all duration-200 hover:-translate-y-1">
+                        <div className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-violet-300 dark:hover:border-violet-500/50 transition-all duration-200 hover:-translate-y-1">
                             <div className="text-3xl font-bold font-heading text-violet-500 group-hover:scale-105 transition-transform tracking-[-0.04em]">
                                 {totalTemplates}
                             </div>
@@ -294,12 +294,12 @@ function DashboardPage() {
                 {/* Two Column Layout */}
                 <div className="grid md:grid-cols-2 gap-6">
                     {/* Quick Actions */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-                        <h2 className="text-xl font-bold font-heading text-slate-900 mb-5 tracking-[-0.03em]">Quick Actions</h2>
+                    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                        <h2 className="text-xl font-bold font-heading text-slate-900 dark:text-white mb-5 tracking-[-0.03em]">Quick Actions</h2>
                         <div className="space-y-3">
                             <Link
                                 href="/campaigns"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-cyan-50/50 hover:bg-cyan-50 border border-cyan-100 transition-all duration-200 group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-cyan-50/50 dark:bg-cyan-500/10 hover:bg-cyan-50 dark:hover:bg-cyan-500/15 border border-cyan-100 dark:border-cyan-500/20 transition-all duration-200 group"
                             >
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-500 flex items-center justify-center shadow-lg shadow-sm group-hover:scale-110 transition-transform">
                                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -307,35 +307,35 @@ function DashboardPage() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-slate-900">New Campaign</div>
+                                    <div className="font-semibold text-slate-900 dark:text-white">New Campaign</div>
                                     <div className="text-sm text-slate-400">Send emails to your contacts</div>
                                 </div>
                             </Link>
                             <Link
                                 href="/scraper"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all duration-200 group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-slate-900">Find Leads</div>
+                                    <div className="font-semibold text-slate-900 dark:text-white">Find Leads</div>
                                     <div className="text-sm text-slate-400">Discover new business contacts</div>
                                 </div>
                             </Link>
                             <Link
                                 href="/contacts"
-                                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-all duration-200 group"
+                                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all duration-200 group"
                             >
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-slate-900">Add Contacts</div>
+                                    <div className="font-semibold text-slate-900 dark:text-white">Add Contacts</div>
                                     <div className="text-sm text-slate-400">Import or add manually</div>
                                 </div>
                             </Link>
@@ -343,9 +343,9 @@ function DashboardPage() {
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                         <div className="flex items-center justify-between mb-5">
-                            <h2 className="text-xl font-bold font-heading text-slate-900 tracking-[-0.03em]">Recent Activity</h2>
+                            <h2 className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">Recent Activity</h2>
                         </div>
 
                         {recentActivity === undefined ? (
@@ -354,12 +354,12 @@ function DashboardPage() {
                             </div>
                         ) : recentActivity.length === 0 ? (
                             <div className="text-center py-12">
-                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                     <svg className="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 00-2.15-1.588H6.911a2.25 2.25 0 00-2.15 1.588L2.35 13.177a2.25 2.25 0 00-.1.661z" />
                                     </svg>
                                 </div>
-                                <p className="text-slate-500 font-medium">No activity yet</p>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium">No activity yet</p>
                                 <p className="text-sm text-slate-400 mt-1">Start a campaign to see activity here</p>
                             </div>
                         ) : (
@@ -367,9 +367,9 @@ function DashboardPage() {
                                 {recentActivity.map((activity) => (
                                     <div
                                         key={activity._id}
-                                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                             <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                                 {activity.type === "email_sent" ? (
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
@@ -380,7 +380,7 @@ function DashboardPage() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="text-sm truncate">
-                                                <span className="font-semibold text-slate-900">
+                                                <span className="font-semibold text-slate-900 dark:text-white">
                                                     {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                                 </span>
                                                 {activity.contact && (

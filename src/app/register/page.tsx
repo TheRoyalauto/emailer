@@ -174,7 +174,7 @@ export default function RegisterPage() {
 
             <div className="w-full max-w-md relative">
                 {/* Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8">
                     {/* Logo */}
                     <div className="text-center mb-6">
                         <div className="flex items-center justify-center gap-2 mb-2">
@@ -215,7 +215,7 @@ export default function RegisterPage() {
                             )}
 
                             <div>
-                                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">
                                     Full Name <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -223,13 +223,13 @@ export default function RegisterPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                                     placeholder="John Doe"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 mb-2">
                                     Email Address <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -237,7 +237,7 @@ export default function RegisterPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                                     placeholder="you@example.com"
                                 />
                             </div>
@@ -250,7 +250,7 @@ export default function RegisterPage() {
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                                     placeholder="+1 (555) 000-0000"
                                 />
                             </div>
@@ -265,7 +265,7 @@ export default function RegisterPage() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
+                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -278,7 +278,7 @@ export default function RegisterPage() {
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
+                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -332,7 +332,7 @@ export default function RegisterPage() {
                                     type="text"
                                     value={otp}
                                     onChange={(e) => handleOtpChange(e.target.value)}
-                                    className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-center text-2xl tracking-[0.5em] font-mono text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-4 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-center text-2xl tracking-[0.5em] font-mono text-slate-900 dark:text-white placeholder:text-slate-400"
                                     placeholder="000000"
                                     maxLength={6}
                                     autoFocus
@@ -374,8 +374,8 @@ export default function RegisterPage() {
                             <div className="w-20 h-20 mx-auto mb-6 bg-emerald-50 rounded-full flex items-center justify-center">
                                 <span className="text-4xl">🎉</span>
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome aboard, {name}!</h2>
-                            <p className="text-slate-500 mb-6">Your account has been created successfully.</p>
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Welcome aboard, {name}!</h2>
+                            <p className="text-slate-500 dark:text-slate-400 mb-6">Your account has been created successfully.</p>
                             <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
                                 <span className="animate-spin w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 Redirecting to dashboard...
@@ -396,7 +396,7 @@ export default function RegisterPage() {
 
                 {/* Footer */}
                 <p className="text-center mt-6 text-sm text-slate-400">
-                    © 2024 Emailer. Professional email campaigns.
+                    © 2026 E-Mailer. Professional email campaigns.
                 </p>
             </div>
         </div>

@@ -186,7 +186,7 @@ function ScraperPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] pb-20 md:pb-0">
+        <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 pb-20 md:pb-0">
             {/* Robot Animation Overlay */}
             <LeadSearchAnimation isActive={isSearching} prompt={prompt} />
 
@@ -198,7 +198,7 @@ function ScraperPage() {
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#A855F7] mb-4 shadow-lg shadow-[#8B5CF6]/25">
                         <span className="text-3xl">🤖</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-[#0f172a] mb-2">
+                    <h1 className="text-3xl font-bold text-[#0f172a] dark:text-white mb-2">
                         AI Lead Scraper
                     </h1>
                     <p className="text-[#9CA3AF]">
@@ -207,13 +207,13 @@ function ScraperPage() {
                 </div>
 
                 {/* Search Input */}
-                <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 mb-6">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E5E7EB] dark:border-slate-700 shadow-sm p-6 mb-6">
                     <div className="relative">
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder="Describe the leads you're looking for..."
-                            className="w-full h-32 px-4 py-3 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/20 resize-none text-lg text-[#0f172a] placeholder:text-[#9CA3AF] transition-all"
+                            className="w-full h-32 px-4 py-3 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-xl focus:outline-none focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/20 resize-none text-lg text-[#0f172a] dark:text-white placeholder:text-[#9CA3AF] transition-all"
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" && e.metaKey) {
                                     handleSearch();
@@ -234,7 +234,7 @@ function ScraperPage() {
                                     <button
                                         key={i}
                                         onClick={() => setPrompt(example)}
-                                        className="px-3 py-1.5 bg-[#f8fafc] border border-[#E5E7EB] hover:bg-[#F1F3F8] hover:border-[#0891b2]/30 rounded-lg text-sm text-[#4B5563] hover:text-[#0f172a] transition-all"
+                                        className="px-3 py-1.5 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 hover:bg-[#F1F3F8] dark:hover:bg-slate-700 hover:border-[#0891b2]/30 rounded-lg text-sm text-[#4B5563] dark:text-slate-300 hover:text-[#0f172a] dark:hover:text-white transition-all"
                                     >
                                         {example}
                                     </button>
@@ -253,9 +253,9 @@ function ScraperPage() {
 
                     {/* Search History Panel */}
                     {showSearchHistory && searchHistory && searchHistory.length > 0 && (
-                        <div className="mt-4 p-4 bg-[#f8fafc] rounded-xl border border-[#E5E7EB]">
+                        <div className="mt-4 p-4 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
                             <div className="flex items-center justify-between mb-3">
-                                <span className="text-sm font-semibold text-[#0f172a]">Recent Searches</span>
+                                <span className="text-sm font-semibold text-[#0f172a] dark:text-white">Recent Searches</span>
                                 <button
                                     onClick={async () => {
                                         await clearSearchHistory({});
@@ -274,9 +274,9 @@ function ScraperPage() {
                                             setPrompt(search.prompt);
                                             setShowSearchHistory(false);
                                         }}
-                                        className="w-full text-left p-3 rounded-lg bg-white border border-[#E5E7EB] hover:border-[#0891b2]/30 hover:shadow-sm transition-all"
+                                        className="w-full text-left p-3 rounded-lg bg-white dark:bg-slate-900 border border-[#E5E7EB] dark:border-slate-700 hover:border-[#0891b2]/30 hover:shadow-sm transition-all"
                                     >
-                                        <div className="text-sm font-medium text-[#0f172a] truncate">{search.prompt}</div>
+                                        <div className="text-sm font-medium text-[#0f172a] dark:text-white truncate">{search.prompt}</div>
                                         <div className="text-xs text-[#9CA3AF] flex items-center gap-2 mt-1">
                                             <span>{search.resultsCount} leads found</span>
                                             <span>•</span>
@@ -334,9 +334,9 @@ function ScraperPage() {
 
                 {/* Results */}
                 {results.length > 0 && (
-                    <div className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E5E7EB] dark:border-slate-700 shadow-sm overflow-hidden">
                         {/* Results Header */}
-                        <div className="p-4 border-b border-[#E5E7EB] bg-[#f8fafc] flex items-center justify-between">
+                        <div className="p-4 border-b border-[#E5E7EB] dark:border-slate-700 bg-[#f8fafc] dark:bg-slate-800/50 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={toggleAll}
@@ -349,7 +349,7 @@ function ScraperPage() {
                                         className="w-4 h-4 rounded bg-[#F1F3F8] border-[#E5E7EB] text-[#0891b2] focus:ring-[#0891b2]"
                                     />
                                 </button>
-                                <span className="font-semibold text-[#0f172a]">
+                                <span className="font-semibold text-[#0f172a] dark:text-white">
                                     Found {results.length} leads
                                 </span>
                                 <span className="text-[#9CA3AF] text-sm">
@@ -374,7 +374,7 @@ function ScraperPage() {
                                             value={newBatchName}
                                             onChange={(e) => setNewBatchName(e.target.value)}
                                             placeholder="New batch name..."
-                                            className="px-3 py-1.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-lg text-sm w-40 focus:border-[#0891b2] focus:outline-none"
+                                            className="px-3 py-1.5 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm w-40 focus:border-[#0891b2] focus:outline-none dark:text-white"
                                             autoFocus
                                         />
                                         <button
@@ -398,7 +398,7 @@ function ScraperPage() {
                                                 setSelectedBatchId(e.target.value);
                                             }
                                         }}
-                                        className="px-3 py-1.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-lg text-sm text-[#0f172a] focus:border-[#0891b2] focus:outline-none"
+                                        className="px-3 py-1.5 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm text-[#0f172a] dark:text-white focus:border-[#0891b2] focus:outline-none"
                                     >
                                         <option value="">No batch</option>
                                         <option value="__new__">➕ Create New Batch</option>
@@ -429,7 +429,7 @@ function ScraperPage() {
                                         a.click();
                                     }}
                                     disabled={selectedContacts.size === 0}
-                                    className="px-3 py-1.5 bg-[#F1F3F8] hover:bg-[#E5E7EB] border border-[#E5E7EB] rounded-lg font-medium text-sm text-[#4B5563] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="px-3 py-1.5 bg-[#F1F3F8] dark:bg-slate-800 hover:bg-[#E5E7EB] dark:hover:bg-slate-700 border border-[#E5E7EB] dark:border-slate-700 rounded-lg font-medium text-sm text-[#4B5563] dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     📥 Export CSV
                                 </button>
@@ -446,12 +446,12 @@ function ScraperPage() {
                         </div>
 
                         {/* Results List */}
-                        <div className="divide-y divide-[#F1F3F8] max-h-[400px] overflow-y-auto">
+                        <div className="divide-y divide-[#F1F3F8] dark:divide-slate-800 max-h-[400px] overflow-y-auto">
                             {results.map((contact, i) => (
                                 <div
                                     key={i}
                                     onClick={() => toggleContact(i)}
-                                    className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-[#f8fafc] transition-colors ${selectedContacts.has(i) ? "bg-[#0891b2]/5" : ""
+                                    className={`p-4 flex items-center gap-4 cursor-pointer hover:bg-[#f8fafc] dark:hover:bg-slate-800 transition-colors ${selectedContacts.has(i) ? "bg-[#0891b2]/5" : ""
                                         }`}
                                 >
                                     <input
@@ -462,13 +462,13 @@ function ScraperPage() {
                                     />
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${selectedContacts.has(i)
                                         ? "bg-gradient-to-br from-[#0891b2] to-[#0284c7] text-white"
-                                        : "bg-[#F1F3F8] text-[#4B5563]"
+                                        : "bg-[#F1F3F8] dark:bg-slate-800 text-[#4B5563] dark:text-slate-400"
                                         }`}>
                                         {(contact.name || contact.email).charAt(0).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <span className={`font-medium truncate ${!contact.name ? 'italic text-[#9CA3AF]' : 'text-[#0f172a]'}`}>
+                                            <span className={`font-medium truncate ${!contact.name ? 'italic text-[#9CA3AF]' : 'text-[#0f172a] dark:text-white'}`}>
                                                 {contact.name || 'Name not found'}
                                             </span>
                                             <span className={`text-sm truncate ${contact.company ? 'text-[#9CA3AF]' : 'text-[#E5E7EB] italic'}`}>
@@ -521,11 +521,11 @@ function ScraperPage() {
 
                 {/* Empty State */}
                 {!isSearching && results.length === 0 && !importSuccess && (
-                    <div className="text-center py-16 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
+                    <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#8B5CF6]/10 to-[#A855F7]/10 border border-[#8B5CF6]/20 flex items-center justify-center text-4xl">
                             🤖
                         </div>
-                        <h2 className="text-xl font-semibold text-[#0f172a] mb-2">Ready to Find Leads</h2>
+                        <h2 className="text-xl font-semibold text-[#0f172a] dark:text-white mb-2">Ready to Find Leads</h2>
                         <p className="text-[#9CA3AF]">Enter a prompt above to start finding leads</p>
                     </div>
                 )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
@@ -8,6 +8,7 @@ import { PageTransition, FadeInContainer } from "@/components/PageTransition";
 import Link from "next/link";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 import { useSearchParams } from "next/navigation";
+import { useAuth } from "../../contexts/AuthContext";
 
 type SettingsSection = "profile" | "email-config" | "sending" | "brand" | "billing";
 
@@ -120,6 +121,7 @@ const sidebarSections: { id: SettingsSection; label: string; icon: React.ReactNo
 function SettingsPage() {
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab");
+    const { userName, userEmail } = useAuth();
     const [activeSection, setActiveSection] = useState<SettingsSection>(
         (tabParam as SettingsSection) || "profile"
     );
@@ -129,12 +131,86 @@ function SettingsPage() {
     const senders = useAuthQuery(api.senders.list);
     const sendPolicies = useAuthQuery(api.sendPolicies.list, {});
     const todayUsage = useAuthQuery(api.sendPolicies.getTodayUsage, {});
+    const brandRules = useAuthQuery(api.brandRules.list);
 
     // Send Policy mutations
     const createPolicy = useAuthMutation(api.sendPolicies.create);
     const updatePolicy = useAuthMutation(api.sendPolicies.update);
     const togglePolicy = useAuthMutation(api.sendPolicies.toggle);
     const deletePolicy = useAuthMutation(api.sendPolicies.remove);
+
+    // Brand Rules mutations
+    const createBrandRule = useAuthMutation(api.brandRules.create);
+    const updateBrandRule = useAuthMutation(api.brandRules.update);
+    const deleteBrandRule = useAuthMutation(api.brandRules.remove);
+
+    // Profile state — wired to real user data
+    const [profileName, setProfileName] = useState("");
+    const [profileCompany, setProfileCompany] = useState("");
+    const [profileSaved, setProfileSaved] = useState(false);
+    const [showEmailTicketModal, setShowEmailTicketModal] = useState(false);
+    const [emailTicketReason, setEmailTicketReason] = useState("");
+    const [emailTicketNewEmail, setEmailTicketNewEmail] = useState("");
+    const [emailTicketSent, setEmailTicketSent] = useState(false);
+
+    // Sync profile from auth
+    useEffect(() => {
+        if (userName) setProfileName(userName);
+    }, [userName]);
+
+    // Brand Rules state
+    const [showBrandForm, setShowBrandForm] = useState(false);
+    const [editingBrandRule, setEditingBrandRule] = useState<Id<"emailBrandRules"> | null>(null);
+    const [brandForm, setBrandForm] = useState({
+        name: "Default",
+        voiceDescription: "",
+        forbiddenPhrases: "",
+        requiredPhrases: "",
+        companyName: "",
+        senderPersona: "",
+        productFacts: "",
+        maxParagraphs: 4,
+        maxSubjectLength: 60,
+        signatureTemplate: "",
+        isDefault: true,
+    });
+
+    const resetBrandForm = useCallback(() => {
+        setBrandForm({ name: "Default", voiceDescription: "", forbiddenPhrases: "", requiredPhrases: "", companyName: "", senderPersona: "", productFacts: "", maxParagraphs: 4, maxSubjectLength: 60, signatureTemplate: "", isDefault: true });
+        setEditingBrandRule(null);
+    }, []);
+
+    const handleSaveBrandRule = async () => {
+        const forbiddenArr = brandForm.forbiddenPhrases.split("\n").map(s => s.trim()).filter(Boolean);
+        const requiredArr = brandForm.requiredPhrases.split("\n").map(s => s.trim()).filter(Boolean);
+        const factsArr = brandForm.productFacts.split("\n").map(s => s.trim()).filter(Boolean).map(f => ({ fact: f }));
+
+        if (editingBrandRule) {
+            await updateBrandRule({ id: editingBrandRule, name: brandForm.name, voiceDescription: brandForm.voiceDescription, forbiddenPhrases: forbiddenArr, requiredPhrases: requiredArr, productFacts: factsArr, companyName: brandForm.companyName, senderPersona: brandForm.senderPersona, maxParagraphs: brandForm.maxParagraphs, maxSubjectLength: brandForm.maxSubjectLength, signatureTemplate: brandForm.signatureTemplate, isDefault: brandForm.isDefault });
+        } else {
+            await createBrandRule({ name: brandForm.name, voiceDescription: brandForm.voiceDescription, forbiddenPhrases: forbiddenArr, requiredPhrases: requiredArr, productFacts: factsArr, companyName: brandForm.companyName, senderPersona: brandForm.senderPersona, maxParagraphs: brandForm.maxParagraphs, maxSubjectLength: brandForm.maxSubjectLength, signatureTemplate: brandForm.signatureTemplate, isDefault: brandForm.isDefault });
+        }
+        setShowBrandForm(false);
+        resetBrandForm();
+    };
+
+    const handleEditBrandRule = (rule: NonNullable<typeof brandRules>[0]) => {
+        setBrandForm({
+            name: rule.name,
+            voiceDescription: rule.voiceDescription || "",
+            forbiddenPhrases: (rule.forbiddenPhrases || []).join("\n"),
+            requiredPhrases: (rule.requiredPhrases || []).join("\n"),
+            companyName: rule.companyName || "",
+            senderPersona: rule.senderPersona || "",
+            productFacts: (rule.productFacts || []).map((f: { fact: string }) => f.fact).join("\n"),
+            maxParagraphs: rule.maxParagraphs || 4,
+            maxSubjectLength: rule.maxSubjectLength || 60,
+            signatureTemplate: rule.signatureTemplate || "",
+            isDefault: rule.isDefault || false,
+        });
+        setEditingBrandRule(rule._id);
+        setShowBrandForm(true);
+    };
 
     // Policy form state
     const [showPolicyForm, setShowPolicyForm] = useState(false);
@@ -206,7 +282,7 @@ function SettingsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 md:pb-0">
             <AppHeader />
 
             <PageTransition>
@@ -214,7 +290,7 @@ function SettingsPage() {
                     <FadeInContainer>
                         {/* Header */}
                         <div className="mb-8">
-                            <h1 className="text-2xl font-bold font-heading text-slate-900 tracking-[-0.03em]">
+                            <h1 className="text-2xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">
                                 Settings
                             </h1>
                             <p className="text-slate-500 text-sm mt-1">Manage your account, email infrastructure, and billing.</p>
@@ -224,15 +300,15 @@ function SettingsPage() {
                         <div className="flex flex-col lg:flex-row gap-6">
                             {/* ─── Left Sidebar ─── */}
                             <aside className="lg:w-56 flex-shrink-0">
-                                <nav className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <nav className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                                     {sidebarSections.map((section, i) => (
                                         <button
                                             key={section.id}
                                             onClick={() => setActiveSection(section.id)}
-                                            className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 ${i > 0 ? "border-t border-slate-100" : ""
+                                            className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 ${i > 0 ? "border-t border-slate-100 dark:border-slate-800" : ""
                                                 } ${activeSection === section.id
-                                                    ? "bg-cyan-50 text-cyan-700 border-l-[3px] border-l-cyan-500"
-                                                    : "text-slate-600 hover:bg-slate-50 border-l-[3px] border-l-transparent"
+                                                    ? "bg-cyan-50 dark:bg-cyan-950/50 text-cyan-700 dark:text-cyan-400 border-l-[3px] border-l-cyan-500"
+                                                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 border-l-[3px] border-l-transparent"
                                                 }`}
                                         >
                                             <span className={activeSection === section.id ? "text-cyan-500" : "text-slate-400"}>
@@ -254,38 +330,60 @@ function SettingsPage() {
                                 {/* === PROFILE === */}
                                 {activeSection === "profile" && (
                                     <div className="space-y-6">
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-                                            <h2 className="text-lg font-bold font-heading text-slate-900 mb-6">Profile Information</h2>
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                            <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white mb-6">Profile Information</h2>
                                             <div className="space-y-5">
                                                 <div className="grid sm:grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
                                                         <input
                                                             type="text"
+                                                            value={profileName}
+                                                            onChange={(e) => { setProfileName(e.target.value); setProfileSaved(false); }}
                                                             placeholder="Your name"
-                                                            className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                                            className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
-                                                        <input
-                                                            type="email"
-                                                            placeholder="your@email.com"
-                                                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-500 cursor-not-allowed"
-                                                            disabled
-                                                        />
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email</label>
+                                                        <div className="relative">
+                                                            <input
+                                                                type="email"
+                                                                value={userEmail || ""}
+                                                                className="w-full px-3.5 py-2.5 pr-24 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
+                                                                disabled
+                                                            />
+                                                            <button
+                                                                onClick={() => setShowEmailTicketModal(true)}
+                                                                className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 rounded-md text-xs font-semibold hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition-colors"
+                                                            >
+                                                                Change
+                                                            </button>
+                                                        </div>
+                                                        <p className="text-[11px] text-slate-400 mt-1">Email changes require support verification</p>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Company</label>
+                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Company</label>
                                                     <input
                                                         type="text"
+                                                        value={profileCompany}
+                                                        onChange={(e) => { setProfileCompany(e.target.value); setProfileSaved(false); }}
                                                         placeholder="Your company"
-                                                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                                        className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
                                                     />
                                                 </div>
-                                                <div className="flex justify-end pt-2">
-                                                    <button className="px-5 py-2.5 bg-slate-900 text-white rounded-lg font-medium text-sm hover:bg-slate-800 transition-colors active:scale-[0.98]">
+                                                <div className="flex items-center justify-end gap-3 pt-2">
+                                                    {profileSaved && (
+                                                        <span className="text-xs text-emerald-500 font-medium flex items-center gap-1">
+                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                                            Saved
+                                                        </span>
+                                                    )}
+                                                    <button
+                                                        onClick={() => setProfileSaved(true)}
+                                                        className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg font-medium text-sm hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98]"
+                                                    >
                                                         Save Changes
                                                     </button>
                                                 </div>
@@ -293,15 +391,71 @@ function SettingsPage() {
                                         </div>
 
                                         {/* Danger Zone */}
-                                        <div className="bg-white rounded-xl border border-red-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-red-200 dark:border-red-900/50 shadow-sm p-6">
                                             <h3 className="text-sm font-semibold text-red-600 uppercase tracking-wider mb-3">Danger Zone</h3>
                                             <p className="text-sm text-slate-500 mb-4">
                                                 Permanently delete your account and all associated data. This action cannot be undone.
                                             </p>
-                                            <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors">
+                                            <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
                                                 Delete Account
                                             </button>
                                         </div>
+
+                                        {/* Email Change Support Ticket Modal */}
+                                        {showEmailTicketModal && (
+                                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => { setShowEmailTicketModal(false); setEmailTicketSent(false); }}>
+                                                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+                                                    {emailTicketSent ? (
+                                                        <div className="text-center py-4">
+                                                            <div className="w-14 h-14 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center mb-4">
+                                                                <svg className="w-7 h-7 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                                            </div>
+                                                            <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Request Submitted</h3>
+                                                            <p className="text-sm text-slate-500 mt-2">Our support team will verify your identity and process the email change within 24–48 hours.</p>
+                                                            <button onClick={() => { setShowEmailTicketModal(false); setEmailTicketSent(false); setEmailTicketReason(""); setEmailTicketNewEmail(""); }} className="mt-5 px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors">
+                                                                Done
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <div className="flex items-center justify-between mb-5">
+                                                                <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Request Email Change</h3>
+                                                                <button onClick={() => setShowEmailTicketModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                                </button>
+                                                            </div>
+                                                            <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-lg mb-5">
+                                                                <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">⚠️ For security, email changes are processed by our support team with identity verification.</p>
+                                                            </div>
+                                                            <div className="space-y-4">
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Current Email</label>
+                                                                    <input type="email" value={userEmail || ""} disabled className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 cursor-not-allowed text-sm" />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">New Email Address</label>
+                                                                    <input type="email" value={emailTicketNewEmail} onChange={(e) => setEmailTicketNewEmail(e.target.value)} placeholder="new@email.com" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                                </div>
+                                                                <div>
+                                                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Reason for change</label>
+                                                                    <textarea value={emailTicketReason} onChange={(e) => setEmailTicketReason(e.target.value)} placeholder="Let us know why you need to change your email..." rows={3} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                                                <button onClick={() => setShowEmailTicketModal(false)} className="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-medium">Cancel</button>
+                                                                <button
+                                                                    onClick={() => setEmailTicketSent(true)}
+                                                                    disabled={!emailTicketNewEmail.trim()}
+                                                                    className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                                                >
+                                                                    Submit Request
+                                                                </button>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -309,15 +463,15 @@ function SettingsPage() {
                                 {activeSection === "email-config" && (
                                     <div className="space-y-6">
                                         {/* SMTP Configs */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-5">
                                                 <div>
-                                                    <h2 className="text-lg font-bold font-heading text-slate-900">SMTP Configurations</h2>
+                                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">SMTP Configurations</h2>
                                                     <p className="text-sm text-slate-400 mt-0.5">Connect your email providers</p>
                                                 </div>
                                                 <Link
                                                     href="/smtp-settings"
-                                                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+                                                    className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                                                 >
                                                     + Add Config
                                                 </Link>
@@ -328,7 +482,7 @@ function SettingsPage() {
                                                     <div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                                 </div>
                                             ) : smtpConfigs.length === 0 ? (
-                                                <div className="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                                                <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
                                                     <svg className="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                                     </svg>
@@ -340,7 +494,7 @@ function SettingsPage() {
                                             ) : (
                                                 <div className="space-y-2">
                                                     {smtpConfigs.map((config) => (
-                                                        <div key={config._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors">
+                                                        <div key={config._id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
                                                             <div className="flex items-center gap-3">
                                                                 <div className="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center">
                                                                     <span className="text-lg">
@@ -350,7 +504,7 @@ function SettingsPage() {
                                                                     </span>
                                                                 </div>
                                                                 <div>
-                                                                    <div className="font-semibold text-sm text-slate-900">{config.name}</div>
+                                                                    <div className="font-semibold text-sm text-slate-900 dark:text-white">{config.name}</div>
                                                                     <div className="text-xs text-slate-400">{config.fromEmail}</div>
                                                                 </div>
                                                             </div>
@@ -366,15 +520,15 @@ function SettingsPage() {
                                         </div>
 
                                         {/* Sender Identities */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-5">
                                                 <div>
-                                                    <h2 className="text-lg font-bold font-heading text-slate-900">Sender Identities</h2>
+                                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Sender Identities</h2>
                                                     <p className="text-sm text-slate-400 mt-0.5">Your &quot;From&quot; addresses</p>
                                                 </div>
                                                 <Link
                                                     href="/senders"
-                                                    className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+                                                    className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                                                 >
                                                     + Add Sender
                                                 </Link>
@@ -385,7 +539,7 @@ function SettingsPage() {
                                                     <div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                                 </div>
                                             ) : senders.length === 0 ? (
-                                                <div className="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                                                <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
                                                     <p className="text-slate-500 font-medium">No senders configured</p>
                                                     <Link href="/senders" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
                                                         Add your first sender →
@@ -394,9 +548,9 @@ function SettingsPage() {
                                             ) : (
                                                 <div className="space-y-2">
                                                     {senders.map((sender) => (
-                                                        <div key={sender._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors">
+                                                        <div key={sender._id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
                                                             <div>
-                                                                <div className="font-semibold text-sm text-slate-900">{sender.name}</div>
+                                                                <div className="font-semibold text-sm text-slate-900 dark:text-white">{sender.name}</div>
                                                                 <div className="text-xs text-slate-400">{sender.email}</div>
                                                             </div>
                                                             {sender.isDefault && (
@@ -423,7 +577,7 @@ function SettingsPage() {
                                                 { label: "Policies", value: sendPolicies?.length || 0, color: "text-violet-500" },
                                                 { label: "Active", value: sendPolicies?.filter(p => p.isActive).length || 0, color: "text-amber-500" },
                                             ].map((stat) => (
-                                                <div key={stat.label} className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                                                <div key={stat.label} className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                                                     <div className={`text-2xl font-bold font-heading tracking-[-0.03em] ${stat.color}`}>{stat.value}</div>
                                                     <div className="text-xs text-slate-400 font-medium mt-1">{stat.label}</div>
                                                 </div>
@@ -432,9 +586,9 @@ function SettingsPage() {
 
                                         {/* Policy Form */}
                                         {showPolicyForm && (
-                                            <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                                 <div className="flex items-center justify-between mb-5">
-                                                    <h3 className="text-lg font-bold font-heading text-slate-900">{editingPolicy ? "Edit" : "Create"} Send Policy</h3>
+                                                    <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">{editingPolicy ? "Edit" : "Create"} Send Policy</h3>
                                                     <button onClick={() => { setShowPolicyForm(false); setEditingPolicy(null); }} className="text-slate-400 hover:text-slate-600 transition-colors">
                                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -535,7 +689,7 @@ function SettingsPage() {
 
                                                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
                                                     <button onClick={() => { setShowPolicyForm(false); setEditingPolicy(null); }} className="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-medium">Cancel</button>
-                                                    <button onClick={handleSavePolicy} className="px-5 py-2.5 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors active:scale-[0.98]">
+                                                    <button onClick={handleSavePolicy} className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98]">
                                                         {editingPolicy ? "Save Changes" : "Create Policy"}
                                                     </button>
                                                 </div>
@@ -543,13 +697,13 @@ function SettingsPage() {
                                         )}
 
                                         {/* Policy List */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-5">
-                                                <h2 className="text-lg font-bold font-heading text-slate-900">Send Policies</h2>
+                                                <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Send Policies</h2>
                                                 {!showPolicyForm && (
                                                     <button
                                                         onClick={() => setShowPolicyForm(true)}
-                                                        className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
+                                                        className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                                                     >
                                                         + Add Policy
                                                     </button>
@@ -561,7 +715,7 @@ function SettingsPage() {
                                                     <div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                                 </div>
                                             ) : sendPolicies.length === 0 ? (
-                                                <div className="text-center py-10 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                                                <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
                                                     <p className="text-slate-500 font-medium">No send policies configured</p>
                                                     <button onClick={() => setShowPolicyForm(true)} className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2">
                                                         Create your first policy →
@@ -570,7 +724,7 @@ function SettingsPage() {
                                             ) : (
                                                 <div className="space-y-2">
                                                     {sendPolicies.map((policy) => (
-                                                        <div key={policy._id} className="p-4 bg-slate-50 rounded-lg border border-slate-100 hover:border-slate-200 transition-colors">
+                                                        <div key={policy._id} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
                                                             <div className="flex items-center justify-between mb-2">
                                                                 <div className="flex items-center gap-3">
                                                                     <button
@@ -579,7 +733,7 @@ function SettingsPage() {
                                                                     >
                                                                         <div className={`absolute top-[3px] w-4 h-4 bg-white rounded-full shadow transition-all ${policy.isActive ? "left-[22px]" : "left-[3px]"}`} />
                                                                     </button>
-                                                                    <span className="font-semibold text-sm text-slate-900">{policy.name}</span>
+                                                                    <span className="font-semibold text-sm text-slate-900 dark:text-white">{policy.name}</span>
                                                                     {policy.isWarmupMode && (
                                                                         <span className="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs font-semibold">🔥 Warmup</span>
                                                                     )}
@@ -604,31 +758,126 @@ function SettingsPage() {
 
                                 {/* === BRAND RULES === */}
                                 {activeSection === "brand" && (
-                                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-                                        <div className="flex items-center justify-between mb-6">
-                                            <div>
-                                                <h2 className="text-lg font-bold font-heading text-slate-900">Brand Rules</h2>
-                                                <p className="text-sm text-slate-400 mt-0.5">Configure AI voice, tone, and content rules</p>
-                                            </div>
-                                            <Link
-                                                href="/brand-rules"
-                                                className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors"
-                                            >
-                                                Open Brand Rules →
-                                            </Link>
-                                        </div>
-                                        <div className="grid md:grid-cols-3 gap-4">
-                                            {[
-                                                { icon: "🎨", title: "Voice & Tone", desc: "Define your brand personality" },
-                                                { icon: "🚫", title: "Forbidden Phrases", desc: "Words AI should never use" },
-                                                { icon: "📋", title: "Product Facts", desc: "Key info for accurate copy" },
-                                            ].map((item) => (
-                                                <div key={item.title} className="p-5 bg-slate-50 rounded-xl border border-slate-100 text-center hover:border-slate-200 transition-colors">
-                                                    <span className="text-2xl">{item.icon}</span>
-                                                    <h4 className="font-semibold text-sm text-slate-900 mt-2">{item.title}</h4>
-                                                    <p className="text-xs text-slate-400 mt-1">{item.desc}</p>
+                                    <div className="space-y-6">
+                                        {/* Brand Form */}
+                                        {showBrandForm && (
+                                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                                <div className="flex items-center justify-between mb-5">
+                                                    <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">{editingBrandRule ? "Edit" : "Create"} Brand Rule</h3>
+                                                    <button onClick={() => { setShowBrandForm(false); resetBrandForm(); }} className="text-slate-400 hover:text-slate-600 transition-colors">
+                                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    </button>
                                                 </div>
-                                            ))}
+                                                <div className="space-y-5">
+                                                    <div className="grid sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Rule Name</label>
+                                                            <input type="text" value={brandForm.name} onChange={(e) => setBrandForm({ ...brandForm, name: e.target.value })} placeholder="e.g. Professional Outreach" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Company Name</label>
+                                                            <input type="text" value={brandForm.companyName} onChange={(e) => setBrandForm({ ...brandForm, companyName: e.target.value })} placeholder="Your company" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">🎨 Voice & Tone</label>
+                                                        <textarea value={brandForm.voiceDescription} onChange={(e) => setBrandForm({ ...brandForm, voiceDescription: e.target.value })} placeholder="Describe your brand voice. E.g. 'Professional but approachable, confident without being pushy. Use data-driven language.'" rows={3} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">👤 Sender Persona</label>
+                                                        <input type="text" value={brandForm.senderPersona} onChange={(e) => setBrandForm({ ...brandForm, senderPersona: e.target.value })} placeholder="e.g. Sales Director, Growth Consultant" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                    </div>
+                                                    <div className="grid sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">🚫 Forbidden Phrases <span className="text-slate-400 font-normal">(one per line)</span></label>
+                                                            <textarea value={brandForm.forbiddenPhrases} onChange={(e) => setBrandForm({ ...brandForm, forbiddenPhrases: e.target.value })} placeholder={"synergy\ntouch base\nlow-hanging fruit"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">✅ Required Phrases <span className="text-slate-400 font-normal">(one per line)</span></label>
+                                                            <textarea value={brandForm.requiredPhrases} onChange={(e) => setBrandForm({ ...brandForm, requiredPhrases: e.target.value })} placeholder={"Your brand name\nKey product term"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">📋 Product Facts <span className="text-slate-400 font-normal">(one per line)</span></label>
+                                                        <textarea value={brandForm.productFacts} onChange={(e) => setBrandForm({ ...brandForm, productFacts: e.target.value })} placeholder={"We help customers save 30% on average\nAI-powered automation included\nTrusted by 500+ businesses"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
+                                                    </div>
+                                                    <div className="grid sm:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Max Paragraphs</label>
+                                                            <input type="number" min={1} max={10} value={brandForm.maxParagraphs} onChange={(e) => setBrandForm({ ...brandForm, maxParagraphs: parseInt(e.target.value) || 4 })} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Max Subject Length</label>
+                                                            <input type="number" min={10} max={200} value={brandForm.maxSubjectLength} onChange={(e) => setBrandForm({ ...brandForm, maxSubjectLength: parseInt(e.target.value) || 60 })} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">✍️ Signature Template</label>
+                                                        <textarea value={brandForm.signatureTemplate} onChange={(e) => setBrandForm({ ...brandForm, signatureTemplate: e.target.value })} placeholder={"Best regards,\n{{name}}\n{{company}}"} rows={3} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <button onClick={() => setBrandForm({ ...brandForm, isDefault: !brandForm.isDefault })} className={`relative w-11 h-6 rounded-full transition-colors ${brandForm.isDefault ? "bg-cyan-500" : "bg-slate-300 dark:bg-slate-600"}`}>
+                                                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${brandForm.isDefault ? "translate-x-6" : "translate-x-1"}`} />
+                                                        </button>
+                                                        <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">Set as default rule</span>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+                                                    <button onClick={() => { setShowBrandForm(false); resetBrandForm(); }} className="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-medium">Cancel</button>
+                                                    <button onClick={handleSaveBrandRule} disabled={!brandForm.name.trim()} className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                                                        {editingBrandRule ? "Save Changes" : "Create Rule"}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Brand Rules List */}
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                            <div className="flex items-center justify-between mb-5">
+                                                <div>
+                                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Brand Rules</h2>
+                                                    <p className="text-sm text-slate-400 mt-0.5">Configure AI voice, tone, and content rules</p>
+                                                </div>
+                                                {!showBrandForm && (
+                                                    <button onClick={() => setShowBrandForm(true)} className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors">
+                                                        + Add Rule
+                                                    </button>
+                                                )}
+                                            </div>
+
+                                            {!brandRules ? (
+                                                <div className="flex justify-center py-8"><div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" /></div>
+                                            ) : brandRules.length === 0 ? (
+                                                <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
+                                                    <span className="text-3xl">🎨</span>
+                                                    <p className="text-slate-500 font-medium mt-3">No brand rules configured</p>
+                                                    <p className="text-xs text-slate-400 mt-1">Brand rules tell AI how to write emails in your voice</p>
+                                                    <button onClick={() => setShowBrandForm(true)} className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-3">Create your first rule →</button>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-3">
+                                                    {brandRules.map((rule) => (
+                                                        <div key={rule._id} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
+                                                            <div className="flex items-center justify-between mb-2">
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="font-semibold text-sm text-slate-900 dark:text-white">{rule.name}</span>
+                                                                    {rule.isDefault && <span className="px-2 py-0.5 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 rounded text-xs font-semibold">Default</span>}
+                                                                </div>
+                                                                <div className="flex items-center gap-3">
+                                                                    <button onClick={() => handleEditBrandRule(rule)} className="text-slate-400 hover:text-slate-600 text-sm font-medium">Edit</button>
+                                                                    <button onClick={() => deleteBrandRule({ id: rule._id })} className="text-red-400 hover:text-red-500 text-sm font-medium">Delete</button>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex flex-wrap gap-3 text-xs text-slate-400 font-medium">
+                                                                {rule.voiceDescription && <span className="truncate max-w-[200px]">🎨 {rule.voiceDescription}</span>}
+                                                                {rule.forbiddenPhrases && rule.forbiddenPhrases.length > 0 && <span>🚫 {rule.forbiddenPhrases.length} forbidden</span>}
+                                                                {rule.productFacts && rule.productFacts.length > 0 && <span>📋 {rule.productFacts.length} facts</span>}
+                                                                {rule.companyName && <span>🏢 {rule.companyName}</span>}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -637,10 +886,10 @@ function SettingsPage() {
                                 {activeSection === "billing" && (
                                     <div className="space-y-6">
                                         {/* Current Plan */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-4">
                                                 <div>
-                                                    <h2 className="text-lg font-bold font-heading text-slate-900">Current Plan</h2>
+                                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Current Plan</h2>
                                                     <p className="text-sm text-slate-400 mt-0.5">You&apos;re on the <span className="font-semibold text-cyan-600">Starter</span> plan</p>
                                                 </div>
                                                 <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-lg">
@@ -648,35 +897,35 @@ function SettingsPage() {
                                                     <span className="text-xs font-semibold text-emerald-600">Active</span>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100">
+                                            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                                                 <div>
                                                     <div className="text-xs text-slate-400 font-medium">Monthly cost</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 tracking-[-0.03em]">$29</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">$29</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-xs text-slate-400 font-medium">Emails/month</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 tracking-[-0.03em]">500</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">500</div>
                                                 </div>
                                                 <div>
                                                     <div className="text-xs text-slate-400 font-medium">Next billing</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 tracking-[-0.03em]">Mar 1</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">Mar 1</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Plan Comparison */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-6">
-                                                <h2 className="text-lg font-bold font-heading text-slate-900">Available Plans</h2>
+                                                <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Available Plans</h2>
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`text-sm font-medium ${!isYearly ? "text-slate-900" : "text-slate-400"}`}>Monthly</span>
+                                                    <span className={`text-sm font-medium ${!isYearly ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>Monthly</span>
                                                     <button
                                                         onClick={() => setIsYearly(!isYearly)}
                                                         className={`relative w-11 h-6 rounded-full transition-colors ${isYearly ? "bg-cyan-500" : "bg-slate-300"}`}
                                                     >
                                                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isYearly ? "translate-x-6" : "translate-x-1"}`} />
                                                     </button>
-                                                    <span className={`text-sm font-medium ${isYearly ? "text-slate-900" : "text-slate-400"}`}>
+                                                    <span className={`text-sm font-medium ${isYearly ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>
                                                         Yearly
                                                         <span className="ml-1 text-xs text-cyan-500 font-semibold">Save 17%</span>
                                                     </span>
@@ -690,10 +939,10 @@ function SettingsPage() {
                                                         <div
                                                             key={plan.id}
                                                             className={`relative rounded-xl p-5 border transition-all ${plan.featured
-                                                                    ? "border-cyan-300 bg-cyan-50/30 shadow-md ring-1 ring-cyan-200/50"
-                                                                    : isCurrent
-                                                                        ? "border-slate-300 bg-slate-50"
-                                                                        : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                                                                ? "border-cyan-300 bg-cyan-50/30 shadow-md ring-1 ring-cyan-200/50"
+                                                                : isCurrent
+                                                                    ? "border-slate-300 bg-slate-50"
+                                                                    : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
                                                                 }`}
                                                         >
                                                             {plan.featured && (
@@ -701,11 +950,11 @@ function SettingsPage() {
                                                                     Popular
                                                                 </div>
                                                             )}
-                                                            <h3 className="font-heading text-base font-bold text-slate-900 tracking-[-0.02em]">{plan.name}</h3>
+                                                            <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white tracking-[-0.02em]">{plan.name}</h3>
                                                             <p className="text-xs text-slate-400 mt-1 mb-4">{plan.description}</p>
 
                                                             <div className="mb-4">
-                                                                <span className="font-heading text-3xl font-bold text-slate-900 tracking-[-0.04em]">
+                                                                <span className="font-heading text-3xl font-bold text-slate-900 dark:text-white tracking-[-0.04em]">
                                                                     ${isYearly ? plan.yearlyPrice : plan.monthlyPrice}
                                                                 </span>
                                                                 <span className="text-xs text-slate-400 ml-1">/mo</span>
@@ -713,17 +962,17 @@ function SettingsPage() {
 
                                                             <button
                                                                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.98] ${isCurrent
-                                                                        ? "bg-slate-200 text-slate-500 cursor-default"
-                                                                        : plan.featured
-                                                                            ? "bg-cyan-500 text-white hover:bg-cyan-600 shadow-sm"
-                                                                            : "bg-slate-900 text-white hover:bg-slate-800"
+                                                                    ? "bg-slate-200 text-slate-500 cursor-default"
+                                                                    : plan.featured
+                                                                        ? "bg-cyan-500 text-white hover:bg-cyan-600 shadow-sm"
+                                                                        : "bg-slate-900 text-white hover:bg-slate-800"
                                                                     }`}
                                                                 disabled={isCurrent}
                                                             >
                                                                 {isCurrent ? "Current Plan" : plan.id === "enterprise" ? "Contact Sales" : "Upgrade"}
                                                             </button>
 
-                                                            <ul className="mt-4 pt-4 border-t border-slate-200 space-y-2.5">
+                                                            <ul className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2.5">
                                                                 {plan.features.map((feature, j) => (
                                                                     <li key={j} className="flex items-center gap-2">
                                                                         <svg className="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -740,25 +989,25 @@ function SettingsPage() {
                                         </div>
 
                                         {/* Payment Method */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-4">
-                                                <h2 className="text-lg font-bold font-heading text-slate-900">Payment Method</h2>
+                                                <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Payment Method</h2>
                                                 <button className="text-cyan-500 hover:text-cyan-600 text-sm font-medium">Update</button>
                                             </div>
-                                            <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-100">
+                                            <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
                                                 <div className="w-12 h-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded flex items-center justify-center">
                                                     <span className="text-white text-[10px] font-bold">VISA</span>
                                                 </div>
                                                 <div>
-                                                    <div className="text-sm font-semibold text-slate-900">•••• •••• •••• 4242</div>
+                                                    <div className="text-sm font-semibold text-slate-900 dark:text-white">•••• •••• •••• 4242</div>
                                                     <div className="text-xs text-slate-400">Expires 12/2027</div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Billing History */}
-                                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
-                                            <h2 className="text-lg font-bold font-heading text-slate-900 mb-4">Billing History</h2>
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                            <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white mb-4">Billing History</h2>
                                             <div className="text-center py-8">
                                                 <svg className="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />

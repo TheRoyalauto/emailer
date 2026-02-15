@@ -254,16 +254,16 @@ function TemplatesPage() {
     if (isEditing && wizardStep === 1) {
         return (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl border border-slate-200 max-w-lg w-full p-6 shadow-2xl">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-lg w-full p-6 shadow-2xl">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h2 className="text-xl font-bold font-heading text-slate-900 tracking-[-0.03em]">Create Template</h2>
+                            <h2 className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">Create Template</h2>
                             <p className="text-sm text-slate-400 mt-1">Step 1 of 2 — Choose type</p>
                         </div>
                         <button
                             onClick={handleCancel}
-                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-900"
+                            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-900 dark:hover:text-white"
                         >
                             ✕
                         </button>
@@ -284,13 +284,13 @@ function TemplatesPage() {
                                 }}
                                 className={`w-full p-4 rounded-xl border transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center gap-4 text-left ${templateCategory === cat.id
                                     ? `border-slate-300 bg-white shadow-sm`
-                                    : "bg-slate-50 border-slate-200 hover:border-slate-300 hover:bg-white"
+                                    : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 hover:bg-white dark:hover:bg-slate-700"
                                     }`}
                                 style={templateCategory === cat.id ? { backgroundColor: `${cat.color}10`, borderColor: `${cat.color}50` } : {}}
                             >
                                 <div className="text-3xl">{cat.icon}</div>
                                 <div className="flex-1">
-                                    <div className="font-semibold text-slate-900">{cat.label}</div>
+                                    <div className="font-semibold text-slate-900 dark:text-white">{cat.label}</div>
                                     <div className="text-sm text-slate-400">{cat.desc}</div>
                                 </div>
                                 <span className="text-slate-400">→</span>
@@ -306,9 +306,9 @@ function TemplatesPage() {
     if (isEditing && wizardStep === 2) {
         return (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl border border-slate-200 max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl overflow-hidden">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                         <div className="flex items-center gap-3">
                             {!editingId && (
                                 <button
@@ -320,7 +320,7 @@ function TemplatesPage() {
                             )}
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <h2 className="text-lg font-bold font-heading text-slate-900 tracking-[-0.02em]">
+                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white tracking-[-0.02em]">
                                         {editingId ? "Edit Template" : "New Template"}
                                     </h2>
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${getCategoryColor(templateCategory)}`}>
@@ -340,7 +340,7 @@ function TemplatesPage() {
                             <button
                                 onClick={handleSave}
                                 disabled={!templateName.trim() || !subject.trim()}
-                                className="px-5 py-2 bg-slate-900 rounded-lg font-semibold text-sm text-white hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-5 py-2 bg-slate-900 dark:bg-white rounded-lg font-semibold text-sm text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {editingId ? "Save" : "Create"}
                             </button>
@@ -348,7 +348,7 @@ function TemplatesPage() {
                     </div>
 
                     {/* Form Fields */}
-                    <div className="px-6 py-4 border-b border-slate-200 bg-white">
+                    <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-semibold text-slate-500 mb-1.5">Template Name</label>
@@ -357,7 +357,7 @@ function TemplatesPage() {
                                     value={templateName}
                                     onChange={(e) => setTemplateName(e.target.value)}
                                     placeholder="e.g., Initial Outreach"
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm text-slate-900 dark:text-white placeholder:text-slate-400"
                                 />
                             </div>
                             <div>
@@ -367,14 +367,14 @@ function TemplatesPage() {
                                     value={subject}
                                     onChange={(e) => setSubject(e.target.value)}
                                     placeholder="e.g., Quick question, {{firstName}}"
-                                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm text-slate-900 placeholder:text-slate-400"
+                                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-sm text-slate-900 dark:text-white placeholder:text-slate-400"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* Email Editor */}
-                    <div className="flex-1 min-h-0 p-4 h-full bg-slate-50">
+                    <div className="flex-1 min-h-0 p-4 h-full bg-slate-50 dark:bg-slate-950">
                         <EmailEditor
                             htmlBody={htmlContent}
                             onHtmlChange={setHtmlContent}
@@ -388,7 +388,7 @@ function TemplatesPage() {
 
     // Template List View
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -396,7 +396,7 @@ function TemplatesPage() {
                 <div className="mb-8">
                     <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-bold font-heading text-slate-900 tracking-[-0.04em]">
+                            <h1 className="text-3xl md:text-4xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.04em]">
                                 Email Templates
                             </h1>
                             <p className="text-slate-400 mt-2">Craft, organize, and reuse your email templates</p>
@@ -404,13 +404,13 @@ function TemplatesPage() {
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={() => setShowLibrary(true)}
-                                className="px-4 py-2.5 bg-white border border-slate-200 rounded-xl font-medium text-slate-500 hover:border-slate-300 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 shadow-sm"
+                                className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-500 dark:text-slate-300 hover:border-slate-300 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 shadow-sm"
                             >
                                 <span className="text-lg">📚</span> Template Library
                             </button>
                             <button
                                 onClick={handleStartNew}
-                                className="px-5 py-2.5 bg-slate-900 rounded-xl font-semibold text-white hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+                                className="px-5 py-2.5 bg-slate-900 dark:bg-white rounded-xl font-semibold text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                             >
                                 <span className="text-lg">+</span> New Template
                             </button>
@@ -452,7 +452,7 @@ function TemplatesPage() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search templates..."
-                            className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400 shadow-sm"
+                            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm"
                         />
                     </div>
                 </div>
@@ -463,13 +463,13 @@ function TemplatesPage() {
                         <div className="animate-spin w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full" />
                     </div>
                 ) : filteredTemplates?.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-cyan-50 border border-cyan-200/50 flex items-center justify-center">
                             <svg className="w-8 h-8 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
                         </div>
-                        <h2 className="text-xl font-semibold font-heading text-slate-900 mb-2">
+                        <h2 className="text-xl font-semibold font-heading text-slate-900 dark:text-white mb-2">
                             {searchQuery ? "No matching templates" : `No ${activeCategory === "all" ? "" : activeCategory} templates yet`}
                         </h2>
                         <p className="text-slate-400 mb-6 max-w-md mx-auto">
@@ -491,7 +491,7 @@ function TemplatesPage() {
                         {filteredTemplates?.map((template) => (
                             <div
                                 key={template._id}
-                                className="group relative p-5 rounded-2xl bg-white border border-slate-200 hover:border-cyan-300 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+                                className="group relative p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-cyan-300 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
                                 onClick={() => handleEdit(template)}
                             >
                                 {/* Category Badge */}
@@ -528,7 +528,7 @@ function TemplatesPage() {
                                 </div>
 
                                 {/* Template Info */}
-                                <h3 className="text-lg font-semibold text-slate-900 group-hover:text-cyan-600 transition-colors mb-2 line-clamp-1">
+                                <h3 className="text-lg font-semibold text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors mb-2 line-clamp-1">
                                     {template.name}
                                 </h3>
                                 <p className="text-slate-400 text-sm line-clamp-2 mb-4">
@@ -556,11 +556,11 @@ function TemplatesPage() {
             {/* Template Library Modal */}
             {showLibrary && (
                 <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-                    <div className="bg-white rounded-2xl border border-slate-200 max-w-3xl w-full flex flex-col shadow-2xl overflow-hidden" style={{ maxHeight: 'calc(100vh - 160px)' }}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-3xl w-full flex flex-col shadow-2xl overflow-hidden" style={{ maxHeight: 'calc(100vh - 160px)' }}>
                         {/* Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                             <div>
-                                <h2 className="text-xl font-bold font-heading text-slate-900 flex items-center gap-2 tracking-[-0.03em]">
+                                <h2 className="text-xl font-bold font-heading text-slate-900 dark:text-white flex items-center gap-2 tracking-[-0.03em]">
                                     <span className="text-2xl">📚</span> Template Library
                                 </h2>
                                 <p className="text-sm text-slate-400">Professional templates ready to use</p>
@@ -577,7 +577,7 @@ function TemplatesPage() {
                         </div>
 
                         {/* Category Tabs */}
-                        <div className="px-5 py-3 border-b border-slate-200 bg-white">
+                        <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
                             <div className="flex items-center gap-2">
                                 {LIBRARY_CATEGORIES.map((cat) => (
                                     <button
@@ -602,14 +602,14 @@ function TemplatesPage() {
                         </div>
 
                         {/* Template Grid */}
-                        <div className="flex-1 overflow-auto p-4 bg-slate-50">
+                        <div className="flex-1 overflow-auto p-4 bg-slate-50 dark:bg-slate-950">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {LIBRARY_TEMPLATES
                                     .filter(t => libraryCategory === "all" || t.category === libraryCategory)
                                     .map((template, index) => (
                                         <div
                                             key={template.id}
-                                            className="group relative p-4 rounded-xl bg-white border border-slate-200 hover:border-cyan-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                                            className="group relative p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-cyan-300 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                                             style={{ animationDelay: `${index * 50}ms` }}
                                         >
                                             {/* Category Badge */}
@@ -626,7 +626,7 @@ function TemplatesPage() {
                                             </div>
 
                                             {/* Template Info */}
-                                            <h3 className="relative text-base font-bold text-slate-900 mb-1 group-hover:text-cyan-600 transition-colors">{template.name}</h3>
+                                            <h3 className="relative text-base font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cyan-600 transition-colors">{template.name}</h3>
                                             <p className="relative text-xs text-slate-400 mb-1.5 line-clamp-1">{template.description}</p>
                                             <p className="relative text-[11px] text-slate-400 mb-3 truncate font-mono">📧 {template.subject}</p>
 
@@ -671,11 +671,11 @@ function TemplatesPage() {
                 if (!template) return null;
                 return (
                     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-                        <div className="bg-white rounded-2xl border border-slate-200 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
                             {/* Header */}
-                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                                 <div>
-                                    <h2 className="text-lg font-bold font-heading text-slate-900">{template.name}</h2>
+                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">{template.name}</h2>
                                     <p className="text-sm text-slate-400">Subject: {template.subject}</p>
                                 </div>
                                 <button
@@ -687,7 +687,7 @@ function TemplatesPage() {
                             </div>
 
                             {/* Email Preview */}
-                            <div className="flex-1 overflow-auto bg-slate-50">
+                            <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950">
                                 <iframe
                                     srcDoc={template.htmlBody}
                                     className="w-full h-full min-h-[350px] bg-white"
@@ -697,7 +697,7 @@ function TemplatesPage() {
                             </div>
 
                             {/* Footer */}
-                            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50">
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                                 <button
                                     onClick={() => setPreviewLibraryTemplate(null)}
                                     className="px-4 py-2 text-sm text-slate-500 hover:text-slate-900 hover:bg-white rounded-lg transition-all border border-slate-200"
