@@ -128,7 +128,7 @@ function BrandRulesContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 py-6">
@@ -136,7 +136,7 @@ function BrandRulesContent() {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Brand Rules</h1>
-                        <p className="text-white/50 text-sm">Configure voice, tone, and content rules for AI-generated emails</p>
+                        <p className="text-slate-500 text-sm">Configure voice, tone, and content rules for AI-generated emails</p>
                     </div>
                     {!isCreating && !editingId && (
                         <button
@@ -150,25 +150,25 @@ function BrandRulesContent() {
 
                 {/* Form */}
                 {(isCreating || editingId) && (
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-6 mb-6">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-6 mb-6">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-semibold text-white">
                                 {editingId ? "Edit Brand Rule" : "Create Brand Rule"}
                             </h2>
-                            <button onClick={resetForm} className="text-white/50 hover:text-white">✕</button>
+                            <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Basic Info */}
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Rule Name</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Rule Name</label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         placeholder="e.g., Main Brand, Enterprise Outreach"
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                     />
                                 </div>
 
@@ -179,71 +179,71 @@ function BrandRulesContent() {
                                         onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
                                         className="w-4 h-4 rounded"
                                     />
-                                    <label className="text-sm text-white/70">Set as default</label>
+                                    <label className="text-sm text-slate-700">Set as default</label>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Company Name</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Company Name</label>
                                     <input
                                         type="text"
                                         value={formData.companyName}
                                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                                         placeholder="Your company name"
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Sender Persona</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Sender Persona</label>
                                     <input
                                         type="text"
                                         value={formData.senderPersona}
                                         onChange={(e) => setFormData({ ...formData, senderPersona: e.target.value })}
                                         placeholder="e.g., Sales Director, Account Manager"
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Voice Description</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Voice Description</label>
                                     <textarea
                                         value={formData.voiceDescription}
                                         onChange={(e) => setFormData({ ...formData, voiceDescription: e.target.value })}
                                         placeholder="Describe your brand's voice and tone..."
                                         rows={3}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 resize-none"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 resize-none"
                                     />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm text-white/70 mb-1">Max Paragraphs</label>
+                                        <label className="block text-sm text-slate-700 mb-1">Max Paragraphs</label>
                                         <input
                                             type="number"
                                             value={formData.maxParagraphs}
                                             onChange={(e) => setFormData({ ...formData, maxParagraphs: parseInt(e.target.value) || 4 })}
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm text-white/70 mb-1">Max Subject Length</label>
+                                        <label className="block text-sm text-slate-700 mb-1">Max Subject Length</label>
                                         <input
                                             type="number"
                                             value={formData.maxSubjectLength}
                                             onChange={(e) => setFormData({ ...formData, maxSubjectLength: parseInt(e.target.value) || 60 })}
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Signature Template</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Signature Template</label>
                                     <textarea
                                         value={formData.signatureTemplate}
                                         onChange={(e) => setFormData({ ...formData, signatureTemplate: e.target.value })}
                                         placeholder="Your email signature template..."
                                         rows={2}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 resize-none"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 resize-none"
                                     />
                                 </div>
                             </div>
@@ -252,15 +252,15 @@ function BrandRulesContent() {
                             <div className="space-y-4">
                                 {/* Voice Samples */}
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Voice Samples</label>
-                                    <p className="text-xs text-white/40 mb-2">Example emails that match your brand voice</p>
+                                    <label className="block text-sm text-slate-700 mb-1">Voice Samples</label>
+                                    <p className="text-xs text-slate-400 mb-2">Example emails that match your brand voice</p>
                                     <div className="flex gap-2 mb-2">
                                         <textarea
                                             value={newVoiceSample}
                                             onChange={(e) => setNewVoiceSample(e.target.value)}
                                             placeholder="Paste an example email..."
                                             rows={2}
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 resize-none text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 resize-none text-sm"
                                         />
                                         <button
                                             onClick={() => { addToArray("voiceSamples", newVoiceSample); setNewVoiceSample(""); }}
@@ -271,8 +271,8 @@ function BrandRulesContent() {
                                     </div>
                                     <div className="space-y-1 max-h-24 overflow-y-auto">
                                         {formData.voiceSamples.map((sample, i) => (
-                                            <div key={i} className="flex items-center gap-2 bg-white/5 rounded px-2 py-1">
-                                                <span className="text-xs text-white/70 flex-1 truncate">{sample.slice(0, 50)}...</span>
+                                            <div key={i} className="flex items-center gap-2 bg-white rounded px-2 py-1">
+                                                <span className="text-xs text-slate-700 flex-1 truncate">{sample.slice(0, 50)}...</span>
                                                 <button onClick={() => removeFromArray("voiceSamples", i)} className="text-red-400 text-xs">✕</button>
                                             </div>
                                         ))}
@@ -281,7 +281,7 @@ function BrandRulesContent() {
 
                                 {/* Forbidden Phrases */}
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">🚫 Forbidden Phrases</label>
+                                    <label className="block text-sm text-slate-700 mb-1">🚫 Forbidden Phrases</label>
                                     <div className="flex gap-2 mb-2">
                                         <input
                                             type="text"
@@ -289,7 +289,7 @@ function BrandRulesContent() {
                                             onChange={(e) => setNewForbidden(e.target.value)}
                                             placeholder="e.g., synergy, circle back"
                                             onKeyDown={(e) => e.key === "Enter" && (addToArray("forbiddenPhrases", newForbidden), setNewForbidden(""))}
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                         <button
                                             onClick={() => { addToArray("forbiddenPhrases", newForbidden); setNewForbidden(""); }}
@@ -310,7 +310,7 @@ function BrandRulesContent() {
 
                                 {/* Required Phrases */}
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">✓ Required Phrases</label>
+                                    <label className="block text-sm text-slate-700 mb-1">✓ Required Phrases</label>
                                     <div className="flex gap-2 mb-2">
                                         <input
                                             type="text"
@@ -318,7 +318,7 @@ function BrandRulesContent() {
                                             onChange={(e) => setNewRequired(e.target.value)}
                                             placeholder="e.g., complimentary consultation"
                                             onKeyDown={(e) => e.key === "Enter" && (addToArray("requiredPhrases", newRequired), setNewRequired(""))}
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                         <button
                                             onClick={() => { addToArray("requiredPhrases", newRequired); setNewRequired(""); }}
@@ -339,7 +339,7 @@ function BrandRulesContent() {
 
                                 {/* Preferred Phrases */}
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">★ Preferred Phrases</label>
+                                    <label className="block text-sm text-slate-700 mb-1">★ Preferred Phrases</label>
                                     <div className="flex gap-2 mb-2">
                                         <input
                                             type="text"
@@ -347,7 +347,7 @@ function BrandRulesContent() {
                                             onChange={(e) => setNewPreferred(e.target.value)}
                                             placeholder="e.g., partner, solution"
                                             onKeyDown={(e) => e.key === "Enter" && (addToArray("preferredPhrases", newPreferred), setNewPreferred(""))}
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                         <button
                                             onClick={() => { addToArray("preferredPhrases", newPreferred); setNewPreferred(""); }}
@@ -368,22 +368,22 @@ function BrandRulesContent() {
 
                                 {/* Product Facts */}
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">📋 Product Facts</label>
-                                    <p className="text-xs text-white/40 mb-2">Key facts AI should know about your product</p>
+                                    <label className="block text-sm text-slate-700 mb-1">📋 Product Facts</label>
+                                    <p className="text-xs text-slate-400 mb-2">Key facts AI should know about your product</p>
                                     <div className="flex gap-2 mb-2">
                                         <input
                                             type="text"
                                             value={newFact.fact}
                                             onChange={(e) => setNewFact({ ...newFact, fact: e.target.value })}
                                             placeholder="Fact"
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                         <input
                                             type="text"
                                             value={newFact.context}
                                             onChange={(e) => setNewFact({ ...newFact, context: e.target.value })}
                                             placeholder="Context (optional)"
-                                            className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                         <button
                                             onClick={addProductFact}
@@ -396,7 +396,7 @@ function BrandRulesContent() {
                                         {formData.productFacts.map((fact, i) => (
                                             <div key={i} className="flex items-center gap-2 bg-amber-500/10 rounded px-2 py-1">
                                                 <span className="text-xs text-amber-400 font-medium">{fact.fact}</span>
-                                                {fact.context && <span className="text-xs text-white/50">({fact.context})</span>}
+                                                {fact.context && <span className="text-xs text-slate-500">({fact.context})</span>}
                                                 <button onClick={() => removeProductFact(i)} className="text-red-400 text-xs ml-auto">✕</button>
                                             </div>
                                         ))}
@@ -406,8 +406,8 @@ function BrandRulesContent() {
                         </div>
 
                         {/* Save Button */}
-                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/10">
-                            <button onClick={resetForm} className="px-4 py-2 text-white/50 hover:text-white">Cancel</button>
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                            <button onClick={resetForm} className="px-4 py-2 text-slate-500 hover:text-slate-900">Cancel</button>
                             <button
                                 onClick={handleSave}
                                 disabled={!formData.name}
@@ -423,10 +423,10 @@ function BrandRulesContent() {
                 {!isCreating && !editingId && (
                     <div className="grid gap-4">
                         {rules?.length === 0 && (
-                            <div className="bg-[#12121a] border border-white/10 rounded-xl p-12 text-center">
+                            <div className="bg-[#12121a] border border-slate-200 rounded-xl p-12 text-center">
                                 <div className="text-4xl mb-4">🎨</div>
                                 <h3 className="text-lg font-medium text-white mb-2">No Brand Rules Yet</h3>
-                                <p className="text-white/50 text-sm mb-4">Create your first brand rule to guide AI-generated content</p>
+                                <p className="text-slate-500 text-sm mb-4">Create your first brand rule to guide AI-generated content</p>
                                 <button
                                     onClick={() => setIsCreating(true)}
                                     className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg font-medium transition-all"
@@ -437,7 +437,7 @@ function BrandRulesContent() {
                         )}
 
                         {rules?.map((rule) => (
-                            <div key={rule._id} className="bg-[#12121a] border border-white/10 rounded-xl p-5 hover:border-white/20 transition-all">
+                            <div key={rule._id} className="bg-[#12121a] border border-slate-200 rounded-xl p-5 hover:border-slate-200 transition-all">
                                 <div className="flex items-center justify-between mb-3">
                                     <div className="flex items-center gap-3">
                                         <h3 className="font-semibold text-white">{rule.name}</h3>
@@ -448,7 +448,7 @@ function BrandRulesContent() {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => handleEdit(rule)}
-                                            className="px-3 py-1.5 text-white/50 hover:text-white text-sm"
+                                            className="px-3 py-1.5 text-slate-500 hover:text-slate-900 text-sm"
                                         >
                                             Edit
                                         </button>
@@ -462,10 +462,10 @@ function BrandRulesContent() {
                                 </div>
 
                                 {rule.voiceDescription && (
-                                    <p className="text-white/60 text-sm mb-3">{rule.voiceDescription}</p>
+                                    <p className="text-slate-500 text-sm mb-3">{rule.voiceDescription}</p>
                                 )}
 
-                                <div className="flex flex-wrap gap-4 text-sm text-white/40">
+                                <div className="flex flex-wrap gap-4 text-sm text-slate-400">
                                     {rule.voiceSamples?.length ? (
                                         <span>📝 {rule.voiceSamples.length} voice samples</span>
                                     ) : null}

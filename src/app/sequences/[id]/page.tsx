@@ -56,7 +56,7 @@ function SequenceEditorPage() {
 
     if (sequence === undefined) {
         return (
-            <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full" />
             </div>
         );
@@ -64,37 +64,37 @@ function SequenceEditorPage() {
 
     if (sequence === null) {
         return (
-            <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center">
-                <p className="text-white/50">Sequence not found</p>
+            <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+                <p className="text-slate-500">Sequence not found</p>
                 <Link href="/sequences" className="mt-4 text-indigo-400">← Back to Sequences</Link>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-6">
-                    <Link href="/sequences" className="text-white/50 hover:text-white">
+                    <Link href="/sequences" className="text-slate-500 hover:text-slate-900">
                         ← Back
                     </Link>
                     <div className="flex-1">
                         <h1 className="text-2xl font-bold">{sequence.name}</h1>
-                        <p className="text-white/50 text-sm">{sequence.description || "No description"}</p>
+                        <p className="text-slate-500 text-sm">{sequence.description || "No description"}</p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm ${sequence.status === "active" ? "bg-green-500/20 text-green-400" :
                             sequence.status === "paused" ? "bg-amber-500/20 text-amber-400" :
-                                "bg-white/10 text-white/50"
+                                "bg-slate-50 text-slate-500"
                         }`}>
                         {sequence.status}
                     </span>
                 </div>
 
                 {/* Steps Timeline */}
-                <div className="bg-[#12121f] rounded-xl border border-white/10 p-6 mb-6">
+                <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold">Sequence Steps</h2>
                         <button
@@ -106,7 +106,7 @@ function SequenceEditorPage() {
                     </div>
 
                     {sequence.steps.length === 0 ? (
-                        <div className="text-center py-8 text-white/30">
+                        <div className="text-center py-8 text-slate-400">
                             <p>No steps yet. Add your first step to get started.</p>
                         </div>
                     ) : (
@@ -119,18 +119,18 @@ function SequenceEditorPage() {
                                             {index + 1}
                                         </div>
                                         {index < sequence.steps.length - 1 && (
-                                            <div className="w-0.5 h-16 bg-white/10 mt-2" />
+                                            <div className="w-0.5 h-16 bg-slate-50 mt-2" />
                                         )}
                                     </div>
 
                                     {/* Step content */}
-                                    <div className="flex-1 bg-white/5 rounded-lg p-4">
+                                    <div className="flex-1 bg-white rounded-lg p-4">
                                         <div className="flex items-start justify-between">
                                             <div>
                                                 <div className="font-medium">
                                                     {step.template?.name || "Unknown template"}
                                                 </div>
-                                                <div className="text-sm text-white/50 mt-1">
+                                                <div className="text-sm text-slate-500 mt-1">
                                                     Wait {step.delayDays}d {step.delayHours || 0}h before sending
                                                 </div>
                                                 {step.condition && step.condition !== "always" && (
@@ -154,7 +154,7 @@ function SequenceEditorPage() {
                 </div>
 
                 {/* Enrollments */}
-                <div className="bg-[#12121f] rounded-xl border border-white/10 p-6">
+                <div className="bg-white rounded-xl border border-slate-200 p-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold">Enrolled Contacts</h2>
                         <button
@@ -166,21 +166,21 @@ function SequenceEditorPage() {
                     </div>
 
                     {sequence.enrollments.length === 0 ? (
-                        <div className="text-center py-8 text-white/30">
+                        <div className="text-center py-8 text-slate-400">
                             <p>No contacts enrolled yet.</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-white/5">
+                        <div className="divide-y divide-slate-200">
                             {sequence.enrollments.map((enrollment) => (
                                 <div key={enrollment._id} className="py-3 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-2 h-2 rounded-full ${enrollment.status === "active" ? "bg-green-400" :
                                                 enrollment.status === "completed" ? "bg-blue-400" :
-                                                    "bg-white/30"
+                                                    "bg-white0"
                                             }`} />
                                         <div>
                                             <div className="text-sm">Contact ID: {enrollment.contactId}</div>
-                                            <div className="text-xs text-white/40">
+                                            <div className="text-xs text-slate-400">
                                                 Step {enrollment.currentStep} • {enrollment.status}
                                             </div>
                                         </div>
@@ -195,16 +195,16 @@ function SequenceEditorPage() {
             {/* Add Step Modal */}
             {showAddStep && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12121f] rounded-2xl border border-white/10 w-full max-w-lg p-6">
+                    <div className="bg-white rounded-2xl border border-slate-200 w-full max-w-lg p-6">
                         <h2 className="text-xl font-bold mb-4">Add Step</h2>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-sm text-white/50 mb-1 block">Email Template</label>
+                                <label className="text-sm text-slate-500 mb-1 block">Email Template</label>
                                 <select
                                     value={templateId}
                                     onChange={(e) => setTemplateId(e.target.value)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                 >
                                     <option value="">Select template</option>
                                     {templates?.map((t) => (
@@ -215,34 +215,34 @@ function SequenceEditorPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm text-white/50 mb-1 block">Delay (days)</label>
+                                    <label className="text-sm text-slate-500 mb-1 block">Delay (days)</label>
                                     <input
                                         type="number"
                                         min={0}
                                         value={delayDays}
                                         onChange={(e) => setDelayDays(parseInt(e.target.value) || 0)}
-                                        className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                        className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-sm text-white/50 mb-1 block">Delay (hours)</label>
+                                    <label className="text-sm text-slate-500 mb-1 block">Delay (hours)</label>
                                     <input
                                         type="number"
                                         min={0}
                                         max={23}
                                         value={delayHours}
                                         onChange={(e) => setDelayHours(parseInt(e.target.value) || 0)}
-                                        className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                        className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-sm text-white/50 mb-1 block">Condition</label>
+                                <label className="text-sm text-slate-500 mb-1 block">Condition</label>
                                 <select
                                     value={condition}
                                     onChange={(e) => setCondition(e.target.value as any)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                 >
                                     <option value="always">Always send</option>
                                     <option value="if_not_opened">Only if previous not opened</option>
@@ -252,7 +252,7 @@ function SequenceEditorPage() {
                         </div>
 
                         <div className="flex justify-end gap-3 mt-6">
-                            <button onClick={() => setShowAddStep(false)} className="px-4 py-2 bg-white/10 rounded-lg">
+                            <button onClick={() => setShowAddStep(false)} className="px-4 py-2 bg-slate-50 rounded-lg">
                                 Cancel
                             </button>
                             <button
@@ -270,12 +270,12 @@ function SequenceEditorPage() {
             {/* Enroll Modal */}
             {showEnroll && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12121f] rounded-2xl border border-white/10 w-full max-w-lg p-6">
+                    <div className="bg-white rounded-2xl border border-slate-200 w-full max-w-lg p-6">
                         <h2 className="text-xl font-bold mb-4">Enroll Contacts</h2>
 
                         <div className="max-h-64 overflow-y-auto space-y-2 mb-4">
                             {contacts?.map((contact) => (
-                                <label key={contact._id} className="flex items-center gap-3 p-2 hover:bg-white/5 rounded cursor-pointer">
+                                <label key={contact._id} className="flex items-center gap-3 p-2 hover:bg-white rounded cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={selectedContacts.includes(contact._id)}
@@ -290,16 +290,16 @@ function SequenceEditorPage() {
                                     />
                                     <div>
                                         <div className="text-sm">{contact.name || contact.email}</div>
-                                        <div className="text-xs text-white/40">{contact.email}</div>
+                                        <div className="text-xs text-slate-400">{contact.email}</div>
                                     </div>
                                 </label>
                             ))}
                         </div>
 
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-white/50">{selectedContacts.length} selected</span>
+                            <span className="text-sm text-slate-500">{selectedContacts.length} selected</span>
                             <div className="flex gap-3">
-                                <button onClick={() => setShowEnroll(false)} className="px-4 py-2 bg-white/10 rounded-lg">
+                                <button onClick={() => setShowEnroll(false)} className="px-4 py-2 bg-slate-50 rounded-lg">
                                     Cancel
                                 </button>
                                 <button

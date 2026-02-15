@@ -2,12 +2,12 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "./auth";
 
-// Tier limits configuration
+// Tier limits configuration — standardized to match pricing page
 export const TIER_LIMITS = {
     free: { dailyEmails: 30, monthlyEmails: 900, emailAccounts: 1 },
     starter: { dailyEmails: 100, monthlyEmails: 3000, emailAccounts: 3 },
-    growth: { dailyEmails: 350, monthlyEmails: 10000, emailAccounts: 10 },
-    scale: { dailyEmails: Infinity, monthlyEmails: Infinity, emailAccounts: Infinity },
+    professional: { dailyEmails: 350, monthlyEmails: 10000, emailAccounts: 10 },
+    enterprise: { dailyEmails: Infinity, monthlyEmails: Infinity, emailAccounts: Infinity },
 } as const;
 
 export type Tier = keyof typeof TIER_LIMITS;
@@ -59,7 +59,7 @@ export const ensureProfile = mutation({
         const user = await ctx.db.get(userId);
         const email = (user?.email || "unknown@email.com") as string;
 
-        // Create new profile with free tier (upgrade via admin panel)
+        // Create new profile with free tier (upgrade via admin panel or Stripe)
         const profileId = await ctx.db.insert("userProfiles", {
             userId,
             email,
@@ -117,7 +117,8 @@ export const checkEmailLimit = query({
 export const incrementEmailCount = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        count: v.optional(v.number()) },
+        count: v.optional(v.number()),
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");

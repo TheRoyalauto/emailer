@@ -98,7 +98,7 @@ function CallsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -106,19 +106,19 @@ function CallsPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20 rounded-xl p-4">
                         <div className="text-3xl font-bold text-green-400">{callStats?.today || 0}</div>
-                        <div className="text-sm text-white/50">Calls Today</div>
+                        <div className="text-sm text-slate-500">Calls Today</div>
                     </div>
                     <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/20 rounded-xl p-4">
                         <div className="text-3xl font-bold text-blue-400">{callStats?.week || 0}</div>
-                        <div className="text-sm text-white/50">This Week</div>
+                        <div className="text-sm text-slate-500">This Week</div>
                     </div>
                     <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/20 rounded-xl p-4">
                         <div className="text-3xl font-bold text-purple-400">{callStats?.month || 0}</div>
-                        <div className="text-sm text-white/50">This Month</div>
+                        <div className="text-sm text-slate-500">This Month</div>
                     </div>
                     <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/20 rounded-xl p-4">
                         <div className="text-3xl font-bold text-amber-400">{todayFollowUps?.length || 0}</div>
-                        <div className="text-sm text-white/50">Follow-ups Due</div>
+                        <div className="text-sm text-slate-500">Follow-ups Due</div>
                     </div>
                 </div>
 
@@ -128,7 +128,7 @@ function CallsPage() {
                         onClick={() => setActiveTab("today")}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === "today"
                             ? "bg-indigo-500 text-white"
-                            : "bg-white/5 text-white/60 hover:bg-white/10"
+                            : "bg-white text-slate-500 hover:bg-slate-50"
                             }`}
                     >
                         📞 Call Queue
@@ -137,7 +137,7 @@ function CallsPage() {
                         onClick={() => setActiveTab("followups")}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === "followups"
                             ? "bg-amber-500 text-white"
-                            : "bg-white/5 text-white/60 hover:bg-white/10"
+                            : "bg-white text-slate-500 hover:bg-slate-50"
                             }`}
                     >
                         ⏰ Follow-ups ({todayFollowUps?.length || 0})
@@ -146,7 +146,7 @@ function CallsPage() {
                         onClick={() => setActiveTab("all")}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === "all"
                             ? "bg-white/20 text-white"
-                            : "bg-white/5 text-white/60 hover:bg-white/10"
+                            : "bg-white text-slate-500 hover:bg-slate-50"
                             }`}
                     >
                         📊 Activity Feed
@@ -155,18 +155,18 @@ function CallsPage() {
 
                 {/* Call Queue */}
                 {activeTab === "today" && (
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 overflow-hidden">
-                        <div className="p-4 border-b border-white/10">
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <div className="p-4 border-b border-slate-200">
                             <h2 className="font-semibold">Call Queue</h2>
-                            <p className="text-sm text-white/50">Contacts with phone numbers, sorted by priority</p>
+                            <p className="text-sm text-slate-500">Contacts with phone numbers, sorted by priority</p>
                         </div>
 
                         {sortedCallQueue.length > 0 ? (
-                            <div className="divide-y divide-white/5">
+                            <div className="divide-y divide-slate-200">
                                 {sortedCallQueue.slice(0, 20).map((contact) => (
                                     <div
                                         key={contact._id}
-                                        className="p-4 hover:bg-white/5 transition-colors flex items-center gap-4"
+                                        className="p-4 hover:bg-white transition-colors flex items-center gap-4"
                                     >
                                         {/* Avatar */}
                                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center font-bold flex-shrink-0">
@@ -176,14 +176,14 @@ function CallsPage() {
                                         {/* Info */}
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{contact.name || contact.email}</div>
-                                            <div className="text-sm text-white/50 truncate">{contact.company || contact.email}</div>
+                                            <div className="text-sm text-slate-500 truncate">{contact.company || contact.email}</div>
                                             {contact.nextFollowUpAt && contact.nextFollowUpAt <= Date.now() && (
                                                 <div className="text-xs text-amber-400 mt-1">⏰ Follow-up due</div>
                                             )}
                                         </div>
 
                                         {/* Stats */}
-                                        <div className="text-right text-sm text-white/50 hidden md:block">
+                                        <div className="text-right text-sm text-slate-500 hidden md:block">
                                             <div>{contact.callCount || 0} calls</div>
                                             <div>{contact.lastCallAt ? formatDate(contact.lastCallAt) : "Never called"}</div>
                                         </div>
@@ -199,7 +199,7 @@ function CallsPage() {
                                             </a>
                                             <button
                                                 onClick={() => setViewContactId(contact._id)}
-                                                className="px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors text-sm"
+                                                className="px-3 py-2 bg-slate-50 rounded-lg hover:bg-white/20 transition-colors text-sm"
                                             >
                                                 View
                                             </button>
@@ -208,7 +208,7 @@ function CallsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-12 text-center text-white/40">
+                            <div className="p-12 text-center text-slate-400">
                                 <p className="text-4xl mb-2">📞</p>
                                 <p>No contacts with phone numbers</p>
                                 <p className="text-sm">Add phone numbers to contacts to start calling</p>
@@ -219,18 +219,18 @@ function CallsPage() {
 
                 {/* Follow-ups Due */}
                 {activeTab === "followups" && (
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 overflow-hidden">
-                        <div className="p-4 border-b border-white/10">
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <div className="p-4 border-b border-slate-200">
                             <h2 className="font-semibold">Follow-ups Due Today</h2>
-                            <p className="text-sm text-white/50">Contacts that need your attention</p>
+                            <p className="text-sm text-slate-500">Contacts that need your attention</p>
                         </div>
 
                         {todayFollowUps && todayFollowUps.length > 0 ? (
-                            <div className="divide-y divide-white/5">
+                            <div className="divide-y divide-slate-200">
                                 {todayFollowUps.map((contact) => (
                                     <div
                                         key={contact._id}
-                                        className="p-4 hover:bg-white/5 transition-colors flex items-center gap-4"
+                                        className="p-4 hover:bg-white transition-colors flex items-center gap-4"
                                     >
                                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center font-bold flex-shrink-0">
                                             {(contact.name || contact.email).charAt(0).toUpperCase()}
@@ -238,7 +238,7 @@ function CallsPage() {
 
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{contact.name || contact.email}</div>
-                                            <div className="text-sm text-white/50 truncate">{contact.company || contact.email}</div>
+                                            <div className="text-sm text-slate-500 truncate">{contact.company || contact.email}</div>
                                             <div className="text-xs text-amber-400 mt-1">
                                                 Scheduled: {contact.nextFollowUpAt ? new Date(contact.nextFollowUpAt).toLocaleTimeString() : "Today"}
                                             </div>
@@ -262,7 +262,7 @@ function CallsPage() {
                                             </a>
                                             <button
                                                 onClick={() => setViewContactId(contact._id)}
-                                                className="px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors text-sm"
+                                                className="px-3 py-2 bg-slate-50 rounded-lg hover:bg-white/20 transition-colors text-sm"
                                             >
                                                 View
                                             </button>
@@ -271,7 +271,7 @@ function CallsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-12 text-center text-white/40">
+                            <div className="p-12 text-center text-slate-400">
                                 <p className="text-4xl mb-2">✅</p>
                                 <p>No follow-ups due today</p>
                                 <p className="text-sm">You're all caught up!</p>
@@ -282,18 +282,18 @@ function CallsPage() {
 
                 {/* Activity Feed */}
                 {activeTab === "all" && (
-                    <div className="bg-[#12121f] rounded-xl border border-white/10 overflow-hidden">
-                        <div className="p-4 border-b border-white/10">
+                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                        <div className="p-4 border-b border-slate-200">
                             <h2 className="font-semibold">Recent Activity</h2>
-                            <p className="text-sm text-white/50">Your latest interactions</p>
+                            <p className="text-sm text-slate-500">Your latest interactions</p>
                         </div>
 
                         {recentActivity && recentActivity.length > 0 ? (
-                            <div className="divide-y divide-white/5">
+                            <div className="divide-y divide-slate-200">
                                 {recentActivity.map((activity) => (
                                     <div
                                         key={activity._id}
-                                        className="p-4 hover:bg-white/5 transition-colors flex items-start gap-3"
+                                        className="p-4 hover:bg-white transition-colors flex items-start gap-3"
                                     >
                                         <div className="text-xl">{getActivityIcon(activity.type)}</div>
                                         <div className="flex-1 min-w-0">
@@ -314,21 +314,21 @@ function CallsPage() {
                                                 )}
                                             </div>
                                             {activity.contact && (
-                                                <div className="text-sm text-white/60 mt-0.5">
+                                                <div className="text-sm text-slate-500 mt-0.5">
                                                     {activity.contact.name || activity.contact.email}
                                                     {activity.contact.company && ` • ${activity.contact.company}`}
                                                 </div>
                                             )}
                                             {activity.notes && (
-                                                <div className="text-sm text-white/50 mt-1">{activity.notes}</div>
+                                                <div className="text-sm text-slate-500 mt-1">{activity.notes}</div>
                                             )}
                                         </div>
-                                        <div className="text-xs text-white/40">{formatDate(activity.createdAt)}</div>
+                                        <div className="text-xs text-slate-400">{formatDate(activity.createdAt)}</div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-12 text-center text-white/40">
+                            <div className="p-12 text-center text-slate-400">
                                 <p className="text-4xl mb-2">📊</p>
                                 <p>No activity yet</p>
                                 <p className="text-sm">Start calling or emailing to see activity here</p>
@@ -349,7 +349,7 @@ function CallsPage() {
             {/* Log Call Modal */}
             {showLogCall && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12121f] rounded-xl p-6 w-full max-w-md border border-white/10">
+                    <div className="bg-white rounded-xl p-6 w-full max-w-md border border-slate-200">
                         <h3 className="text-lg font-bold mb-4">Log Call Outcome</h3>
 
                         <div className="grid grid-cols-2 gap-2 mb-4">
@@ -375,16 +375,16 @@ function CallsPage() {
                             value={callNotes}
                             onChange={(e) => setCallNotes(e.target.value)}
                             placeholder="Call notes (optional)"
-                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg mb-4 resize-none h-24"
+                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg mb-4 resize-none h-24"
                         />
 
                         <div className="mb-4">
-                            <label className="text-sm text-white/50 mb-1 block">Schedule follow-up</label>
+                            <label className="text-sm text-slate-500 mb-1 block">Schedule follow-up</label>
                             <input
                                 type="datetime-local"
                                 value={callFollowUp}
                                 onChange={(e) => setCallFollowUp(e.target.value)}
-                                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg"
+                                className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg"
                             />
                         </div>
 
@@ -395,7 +395,7 @@ function CallsPage() {
                                     setCallNotes("");
                                     setCallFollowUp("");
                                 }}
-                                className="flex-1 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                                className="flex-1 px-4 py-2 bg-slate-50 rounded-lg hover:bg-white/20 transition-colors"
                             >
                                 Skip
                             </button>

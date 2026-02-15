@@ -18,6 +18,9 @@ export default defineSchema({
         token: v.string(),
         expiresAt: v.number(),
         createdAt: v.number(),
+        // Impersonation support
+        impersonatedBy: v.optional(v.id("users")), // Super admin who created this session
+        isImpersonation: v.optional(v.boolean()),
     })
         .index("by_token", ["token"])
         .index("by_userId", ["userId"]),
@@ -43,8 +46,8 @@ export default defineSchema({
         tier: v.union(
             v.literal("free"),
             v.literal("starter"),
-            v.literal("growth"),
-            v.literal("scale")
+            v.literal("professional"),
+            v.literal("enterprise")
         ),
         tierUpdatedAt: v.optional(v.number()),
         tierUpdatedBy: v.optional(v.id("users")), // Admin who changed the tier
@@ -917,5 +920,32 @@ export default defineSchema({
         .index("by_status", ["status"])
         .index("by_token", ["publicToken"])
         .index("by_user_status", ["userId", "status"]),
+
+    // Admin audit log for compliance
+    adminAuditLog: defineTable({
+        actorId: v.id("users"),           // Admin who performed the action
+        actorEmail: v.string(),
+        action: v.union(
+            v.literal("tier_change"),
+            v.literal("status_change"),
+            v.literal("admin_toggle"),
+            v.literal("super_admin_grant"),
+            v.literal("super_admin_revoke"),
+            v.literal("usage_reset"),
+            v.literal("data_deletion"),
+            v.literal("note_added"),
+            v.literal("impersonation_start"),
+            v.literal("impersonation_end")
+        ),
+        targetProfileId: v.optional(v.id("userProfiles")),
+        targetEmail: v.optional(v.string()),
+        details: v.string(),              // Human-readable description
+        metadata: v.optional(v.string()), // JSON stringified extra data
+        timestamp: v.number(),
+    })
+        .index("by_actor", ["actorId"])
+        .index("by_target", ["targetProfileId"])
+        .index("by_action", ["action"])
+        .index("by_timestamp", ["timestamp"]),
 });
 

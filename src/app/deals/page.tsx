@@ -114,7 +114,7 @@ function DealsPage() {
     const selectedDealData = deals?.find(d => d._id === selectedDeal);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-[1800px] mx-auto px-4 py-6">
@@ -122,7 +122,7 @@ function DealsPage() {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Deals Pipeline</h1>
-                        <p className="text-white/50 text-sm">Manage your sales opportunities</p>
+                        <p className="text-slate-500 text-sm">Manage your sales opportunities</p>
                     </div>
                     <button
                         onClick={() => setShowCreate(true)}
@@ -134,25 +134,25 @@ function DealsPage() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
-                        <div className="text-xs text-white/50">Total Deals</div>
+                        <div className="text-xs text-slate-500">Total Deals</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-blue-400">{formatCurrency(stats?.totalValue || 0)}</div>
-                        <div className="text-xs text-white/50">Pipeline Value</div>
+                        <div className="text-xs text-slate-500">Pipeline Value</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-purple-400">{formatCurrency(stats?.weightedValue || 0)}</div>
-                        <div className="text-xs text-white/50">Weighted Value</div>
+                        <div className="text-xs text-slate-500">Weighted Value</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-green-400">{formatCurrency(stats?.wonValueThisMonth || 0)}</div>
-                        <div className="text-xs text-white/50">Won This Month</div>
+                        <div className="text-xs text-slate-500">Won This Month</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-amber-400">{formatCurrency(avgDealSize)}</div>
-                        <div className="text-xs text-white/50">Avg Deal Size</div>
+                        <div className="text-xs text-slate-500">Avg Deal Size</div>
                     </div>
                 </div>
 
@@ -171,19 +171,19 @@ function DealsPage() {
                                 onDrop={() => handleDrop(stage.id)}
                                 className={`flex-shrink-0 w-72 bg-[#0f0f15] rounded-xl border transition-all ${isDragOver
                                     ? "border-blue-500/50 bg-blue-500/5"
-                                    : "border-white/10"
+                                    : "border-slate-200"
                                     }`}
                             >
                                 {/* Stage Header */}
                                 <div
-                                    className="p-3 border-b border-white/10"
+                                    className="p-3 border-b border-slate-200"
                                     style={{ borderLeftColor: stage.color, borderLeftWidth: "3px" }}
                                 >
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <span className="text-lg">{stage.icon}</span>
                                             <span className="font-medium text-white text-sm">{stage.label}</span>
-                                            <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs text-white/60">
+                                            <span className="px-1.5 py-0.5 bg-slate-50 rounded text-xs text-slate-500">
                                                 {stageDeals.length}
                                             </span>
                                         </div>
@@ -191,7 +191,7 @@ function DealsPage() {
                                             {stage.probability}%
                                         </span>
                                     </div>
-                                    <div className="text-sm text-white/40 mt-1">
+                                    <div className="text-sm text-slate-400 mt-1">
                                         {formatCurrency(stageValue)}
                                     </div>
                                 </div>
@@ -199,7 +199,7 @@ function DealsPage() {
                                 {/* Deals List */}
                                 <div className="p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-400px)] overflow-y-auto">
                                     {stageDeals.length === 0 && (
-                                        <div className="text-center py-8 text-white/30 text-sm">
+                                        <div className="text-center py-8 text-slate-400 text-sm">
                                             No deals
                                         </div>
                                     )}
@@ -212,14 +212,14 @@ function DealsPage() {
                                             onClick={() => setSelectedDeal(deal._id)}
                                             className={`bg-[#12121a] border rounded-lg p-3 cursor-pointer transition-all hover:border-white/30 ${draggedDeal === deal._id
                                                 ? "opacity-50 border-blue-500/50"
-                                                : "border-white/10"
+                                                : "border-slate-200"
                                                 } ${selectedDeal === deal._id ? "ring-1 ring-blue-500/50" : ""}`}
                                         >
                                             <div className="text-white font-medium text-sm mb-1 truncate">
                                                 {deal.name}
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-white/60 text-xs truncate">
+                                                <span className="text-slate-500 text-xs truncate">
                                                     {deal.contact?.company || deal.contact?.name || deal.contact?.email}
                                                 </span>
                                                 <span className="text-green-400 font-medium text-sm">
@@ -227,7 +227,7 @@ function DealsPage() {
                                                 </span>
                                             </div>
                                             {deal.expectedCloseDate && (
-                                                <div className="text-xs text-white/40 mt-2">
+                                                <div className="text-xs text-slate-400 mt-2">
                                                     Close: {formatDate(deal.expectedCloseDate)}
                                                 </div>
                                             )}
@@ -242,18 +242,18 @@ function DealsPage() {
                 {/* Create Modal */}
                 {showCreate && (
                     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                        <div className="bg-[#12121a] border border-white/10 rounded-2xl w-full max-w-md">
-                            <div className="p-6 border-b border-white/10">
+                        <div className="bg-[#12121a] border border-slate-200 rounded-2xl w-full max-w-md">
+                            <div className="p-6 border-b border-slate-200">
                                 <h2 className="text-xl font-bold text-white">Create Deal</h2>
                             </div>
 
                             <div className="p-6 space-y-4">
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Contact</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Contact</label>
                                     <select
                                         value={createForm.contactId}
                                         onChange={(e) => setCreateForm({ ...createForm, contactId: e.target.value as Id<"contacts"> })}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
                                     >
                                         <option value="">Select contact...</option>
                                         {contacts?.map((contact) => (
@@ -265,33 +265,33 @@ function DealsPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Deal Name</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Deal Name</label>
                                     <input
                                         type="text"
                                         value={createForm.name}
                                         onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
                                         placeholder="e.g., Enterprise License - Acme Corp"
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Value ($)</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Value ($)</label>
                                     <input
                                         type="number"
                                         value={createForm.value}
                                         onChange={(e) => setCreateForm({ ...createForm, value: parseInt(e.target.value) || 0 })}
                                         placeholder="1000"
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Stage</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Stage</label>
                                     <select
                                         value={createForm.stage}
                                         onChange={(e) => setCreateForm({ ...createForm, stage: e.target.value as DealStage })}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
                                     >
                                         {DEAL_STAGES.map((s) => (
                                             <option key={s.id} value={s.id}>
@@ -302,20 +302,20 @@ function DealsPage() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-2">Expected Close Date</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Expected Close Date</label>
                                     <input
                                         type="date"
                                         value={createForm.expectedCloseDate}
                                         onChange={(e) => setCreateForm({ ...createForm, expectedCloseDate: e.target.value })}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
                             </div>
 
-                            <div className="p-6 border-t border-white/10 flex justify-end gap-3">
+                            <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
                                 <button
                                     onClick={() => setShowCreate(false)}
-                                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white/70 rounded-lg text-sm font-medium transition-all"
+                                    className="px-4 py-2 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm font-medium transition-all"
                                 >
                                     Cancel
                                 </button>
@@ -333,10 +333,10 @@ function DealsPage() {
 
                 {/* Deal Detail Drawer */}
                 {selectedDealData && (
-                    <div className="fixed right-0 top-0 h-full w-96 bg-[#12121a] border-l border-white/10 z-50 overflow-y-auto">
-                        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                    <div className="fixed right-0 top-0 h-full w-96 bg-[#12121a] border-l border-slate-200 z-50 overflow-y-auto">
+                        <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                             <h3 className="font-semibold text-white">Deal Details</h3>
-                            <button onClick={() => setSelectedDeal(null)} className="text-white/50 hover:text-white">
+                            <button onClick={() => setSelectedDeal(null)} className="text-slate-500 hover:text-slate-900">
                                 ✕
                             </button>
                         </div>
@@ -350,41 +350,41 @@ function DealsPage() {
                             </div>
 
                             <div>
-                                <div className="text-sm text-white/50 mb-2">Stage</div>
+                                <div className="text-sm text-slate-500 mb-2">Stage</div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-lg">{getStageInfo(selectedDealData.stage)?.icon}</span>
                                     <span className="text-white">{getStageInfo(selectedDealData.stage)?.label}</span>
-                                    <span className="text-white/40">({selectedDealData.probability}%)</span>
+                                    <span className="text-slate-400">({selectedDealData.probability}%)</span>
                                 </div>
                             </div>
 
                             {selectedDealData.contact && (
                                 <div>
-                                    <div className="text-sm text-white/50 mb-2">Contact</div>
+                                    <div className="text-sm text-slate-500 mb-2">Contact</div>
                                     <div className="text-white">{selectedDealData.contact.name || selectedDealData.contact.email}</div>
                                     {selectedDealData.contact.company && (
-                                        <div className="text-white/60">{selectedDealData.contact.company}</div>
+                                        <div className="text-slate-500">{selectedDealData.contact.company}</div>
                                     )}
                                 </div>
                             )}
 
                             {selectedDealData.expectedCloseDate && (
                                 <div>
-                                    <div className="text-sm text-white/50 mb-2">Expected Close</div>
+                                    <div className="text-sm text-slate-500 mb-2">Expected Close</div>
                                     <div className="text-white">{formatDate(selectedDealData.expectedCloseDate)}</div>
                                 </div>
                             )}
 
                             {selectedDealData.notes && (
                                 <div>
-                                    <div className="text-sm text-white/50 mb-2">Notes</div>
-                                    <div className="text-white/80 text-sm bg-white/5 rounded-lg p-3">
+                                    <div className="text-sm text-slate-500 mb-2">Notes</div>
+                                    <div className="text-slate-800 text-sm bg-white rounded-lg p-3">
                                         {selectedDealData.notes}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="pt-4 border-t border-white/10">
+                            <div className="pt-4 border-t border-slate-200">
                                 <button
                                     onClick={async () => {
                                         await deleteDeal({ id: selectedDealData._id });

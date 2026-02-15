@@ -112,7 +112,7 @@ function TasksContent() {
     }) || [];
 
     const getPriorityStyle = (priority: string) => {
-        return PRIORITIES.find(p => p.id === priority)?.color || "text-white/50 bg-white/10";
+        return PRIORITIES.find(p => p.id === priority)?.color || "text-slate-500 bg-slate-50";
     };
 
     const getTaskTypeInfo = (type?: string) => {
@@ -128,8 +128,8 @@ function TasksContent() {
         if (diffDays < 0) return { text: `${Math.abs(diffDays)}d overdue`, color: "text-red-400" };
         if (diffDays === 0) return { text: "Today", color: "text-amber-400" };
         if (diffDays === 1) return { text: "Tomorrow", color: "text-blue-400" };
-        if (diffDays <= 7) return { text: `${diffDays}d`, color: "text-white/60" };
-        return { text: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }), color: "text-white/40" };
+        if (diffDays <= 7) return { text: `${diffDays}d`, color: "text-slate-500" };
+        return { text: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }), color: "text-slate-400" };
     };
 
     // Group tasks by status for Kanban
@@ -140,7 +140,7 @@ function TasksContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-7xl mx-auto px-4 py-6">
@@ -148,20 +148,20 @@ function TasksContent() {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Tasks</h1>
-                        <p className="text-white/50 text-sm">Manage follow-ups, reminders, and to-dos</p>
+                        <p className="text-slate-500 text-sm">Manage follow-ups, reminders, and to-dos</p>
                     </div>
                     <div className="flex items-center gap-3">
                         {/* View Toggle */}
-                        <div className="flex bg-white/5 rounded-lg p-1">
+                        <div className="flex bg-white rounded-lg p-1">
                             <button
                                 onClick={() => setView("list")}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "list" ? "bg-white/10 text-white" : "text-white/50"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "list" ? "bg-slate-50 text-white" : "text-slate-500"}`}
                             >
                                 List
                             </button>
                             <button
                                 onClick={() => setView("kanban")}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "kanban" ? "bg-white/10 text-white" : "text-white/50"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "kanban" ? "bg-slate-50 text-white" : "text-slate-500"}`}
                             >
                                 Kanban
                             </button>
@@ -177,42 +177,42 @@ function TasksContent() {
 
                 {/* Stats Bar */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
-                        <div className="text-sm text-white/50">Active</div>
+                        <div className="text-sm text-slate-500">Active</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-amber-400">{stats?.pending || 0}</div>
-                        <div className="text-sm text-white/50">Pending</div>
+                        <div className="text-sm text-slate-500">Pending</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-blue-400">{stats?.inProgress || 0}</div>
-                        <div className="text-sm text-white/50">In Progress</div>
+                        <div className="text-sm text-slate-500">In Progress</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-red-400">{stats?.overdue || 0}</div>
-                        <div className="text-sm text-white/50">Overdue</div>
+                        <div className="text-sm text-slate-500">Overdue</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-emerald-400">{stats?.completedToday || 0}</div>
-                        <div className="text-sm text-white/50">Done Today</div>
+                        <div className="text-sm text-slate-500">Done Today</div>
                     </div>
                 </div>
 
                 {/* Filters */}
                 <div className="flex items-center gap-3 mb-6 flex-wrap">
-                    <div className="flex bg-white/5 rounded-lg p-1">
+                    <div className="flex bg-white rounded-lg p-1">
                         {["all", "pending", "in_progress", "overdue"].map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${filter === f ? "bg-white/10 text-white" : "text-white/50"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${filter === f ? "bg-slate-50 text-white" : "text-slate-500"}`}
                             >
                                 {f === "all" ? "All" : f === "in_progress" ? "In Progress" : f.charAt(0).toUpperCase() + f.slice(1)}
                             </button>
                         ))}
                     </div>
-                    <label className="flex items-center gap-2 text-sm text-white/50">
+                    <label className="flex items-center gap-2 text-sm text-slate-500">
                         <input
                             type="checkbox"
                             checked={includeCompleted}
@@ -227,10 +227,10 @@ function TasksContent() {
                 {view === "list" && (
                     <div className="space-y-2">
                         {filteredTasks.length === 0 && (
-                            <div className="bg-[#12121a] border border-white/10 rounded-xl p-12 text-center">
+                            <div className="bg-[#12121a] border border-slate-200 rounded-xl p-12 text-center">
                                 <div className="text-4xl mb-4">✅</div>
                                 <h3 className="text-lg font-medium text-white mb-2">No Tasks</h3>
-                                <p className="text-white/50 text-sm mb-4">Create your first task to get started</p>
+                                <p className="text-slate-500 text-sm mb-4">Create your first task to get started</p>
                                 <button
                                     onClick={() => setShowCreateModal(true)}
                                     className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium"
@@ -247,7 +247,7 @@ function TasksContent() {
                             return (
                                 <div
                                     key={task._id}
-                                    className={`bg-[#12121a] border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all ${task.status === "completed" ? "opacity-60" : ""
+                                    className={`bg-[#12121a] border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all ${task.status === "completed" ? "opacity-60" : ""
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
@@ -266,7 +266,7 @@ function TasksContent() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span className="text-lg">{typeInfo.icon}</span>
-                                                <span className={`font-medium ${task.status === "completed" ? "line-through text-white/50" : "text-white"}`}>
+                                                <span className={`font-medium ${task.status === "completed" ? "line-through text-slate-500" : "text-white"}`}>
                                                     {task.title}
                                                 </span>
                                                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${getPriorityStyle(task.priority)}`}>
@@ -274,14 +274,14 @@ function TasksContent() {
                                                 </span>
                                             </div>
                                             {task.description && (
-                                                <p className="text-sm text-white/50 truncate">{task.description}</p>
+                                                <p className="text-sm text-slate-500 truncate">{task.description}</p>
                                             )}
                                             <div className="flex items-center gap-3 mt-1 text-xs">
                                                 {task.contact && (
-                                                    <span className="text-white/40">👤 {task.contact.name || task.contact.email}</span>
+                                                    <span className="text-slate-400">👤 {task.contact.name || task.contact.email}</span>
                                                 )}
                                                 {task.deal && (
-                                                    <span className="text-white/40">💼 {task.deal.name}</span>
+                                                    <span className="text-slate-400">💼 {task.deal.name}</span>
                                                 )}
                                             </div>
                                         </div>
@@ -297,7 +297,7 @@ function TasksContent() {
                                         <select
                                             value={task.status}
                                             onChange={(e) => handleStatusChange(task._id, e.target.value)}
-                                            className="px-2 py-1 bg-white/5 border border-white/10 rounded text-sm text-white/70"
+                                            className="px-2 py-1 bg-white border border-slate-200 rounded text-sm text-slate-700"
                                         >
                                             {STATUSES.map((s) => (
                                                 <option key={s.id} value={s.id}>{s.label}</option>
@@ -307,7 +307,7 @@ function TasksContent() {
                                         {/* Delete */}
                                         <button
                                             onClick={() => handleDelete(task._id)}
-                                            className="text-white/30 hover:text-red-400 transition-colors"
+                                            className="text-slate-400 hover:text-red-400 transition-colors"
                                         >
                                             🗑
                                         </button>
@@ -322,11 +322,11 @@ function TasksContent() {
                 {view === "kanban" && (
                     <div className="grid grid-cols-3 gap-4">
                         {STATUSES.map((status) => (
-                            <div key={status.id} className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                            <div key={status.id} className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-4">
                                     <div className={`w-3 h-3 rounded-full ${status.color}`} />
                                     <span className="font-medium text-white">{status.label}</span>
-                                    <span className="text-white/40 text-sm">
+                                    <span className="text-slate-400 text-sm">
                                         ({tasksByStatus[status.id as keyof typeof tasksByStatus]?.length || 0})
                                     </span>
                                 </div>
@@ -366,42 +366,42 @@ function TasksContent() {
             {/* Create Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[#12121a] border border-white/10 rounded-2xl w-full max-w-lg p-6">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-2xl w-full max-w-lg p-6">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-semibold text-white">Create Task</h2>
-                            <button onClick={resetForm} className="text-white/50 hover:text-white">✕</button>
+                            <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm text-white/70 mb-1">Title *</label>
+                                <label className="block text-sm text-slate-700 mb-1">Title *</label>
                                 <input
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="What needs to be done?"
-                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm text-white/70 mb-1">Description</label>
+                                <label className="block text-sm text-slate-700 mb-1">Description</label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Add more details..."
                                     rows={2}
-                                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Priority</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Priority</label>
                                     <select
                                         value={formData.priority}
                                         onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                     >
                                         {PRIORITIES.map((p) => (
                                             <option key={p.id} value={p.id}>{p.label}</option>
@@ -410,11 +410,11 @@ function TasksContent() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Type</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Type</label>
                                     <select
                                         value={formData.taskType}
                                         onChange={(e) => setFormData({ ...formData, taskType: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                     >
                                         <option value="">Select...</option>
                                         {TASK_TYPES.map((t) => (
@@ -426,28 +426,28 @@ function TasksContent() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Due Date</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Due Date</label>
                                     <input
                                         type="date"
                                         value={formData.dueDate}
                                         onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Time</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Time</label>
                                     <input
                                         type="time"
                                         value={formData.dueTime}
                                         onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/10">
-                            <button onClick={resetForm} className="px-4 py-2 text-white/50 hover:text-white">Cancel</button>
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                            <button onClick={resetForm} className="px-4 py-2 text-slate-500 hover:text-slate-900">Cancel</button>
                             <button
                                 onClick={handleCreate}
                                 disabled={!formData.title}

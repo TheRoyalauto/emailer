@@ -53,7 +53,7 @@ function ContactCard({
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
             onClick={onClick}
-            className={`bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-white/5 hover:border-white/20 ${isDragging ? "opacity-50 scale-95" : ""
+            className={`bg-black/40 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:bg-black/60 transition-all border border-slate-200 hover:border-slate-200 ${isDragging ? "opacity-50 scale-95" : ""
                 }`}
         >
             <div className="flex items-center gap-2">
@@ -67,11 +67,11 @@ function ContactCard({
                     <div className="font-medium text-sm truncate">
                         {contact.name || contact.email.split("@")[0]}
                     </div>
-                    <div className="text-xs text-white/40 truncate">
+                    <div className="text-xs text-slate-400 truncate">
                         {contact.company || contact.email}
                     </div>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-white/50">
+                <div className="flex items-center gap-1 text-xs text-slate-500">
                     {(contact.emailCount ?? 0) > 0 && <span>📧{contact.emailCount}</span>}
                     {(contact.callCount ?? 0) > 0 && <span>📞{contact.callCount}</span>}
                 </div>
@@ -150,20 +150,20 @@ function StageColumn({
 
             {/* Search Bar */}
             {contacts.length > 5 && (
-                <div className="bg-[#12121f] border-x border-white/10 px-2 py-2">
+                <div className="bg-white border-x border-slate-200 px-2 py-2">
                     <input
                         type="text"
                         placeholder="Search..."
                         value={searchQuery}
                         onChange={(e) => onSearchChange(e.target.value)}
-                        className="w-full px-3 py-1.5 text-xs bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500/50"
+                        className="w-full px-3 py-1.5 text-xs bg-black/40 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500/50"
                     />
                 </div>
             )}
 
             {/* Cards Container - Fixed Height with Scroll */}
             <div
-                className={`bg-[#12121f] rounded-b-xl border border-white/10 flex-1 p-2 space-y-2 overflow-y-auto transition-colors ${isDragTarget ? "border-2" : ""
+                className={`bg-white rounded-b-xl border border-slate-200 flex-1 p-2 space-y-2 overflow-y-auto transition-colors ${isDragTarget ? "border-2" : ""
                     }`}
                 style={{
                     borderColor: isDragTarget ? stage.color : undefined,
@@ -184,7 +184,7 @@ function StageColumn({
                         />
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-24 text-white/20 text-sm">
+                    <div className="flex flex-col items-center justify-center h-24 text-slate-300 text-sm">
                         {searchQuery ? (
                             <>
                                 <span className="text-xl mb-1">🔍</span>
@@ -202,7 +202,7 @@ function StageColumn({
 
             {/* Show filtered count if searching */}
             {searchQuery && filteredContacts.length !== contacts.length && (
-                <div className="text-center text-xs text-white/30 py-1 bg-[#12121f] border-x border-b border-white/10 rounded-b-xl -mt-2">
+                <div className="text-center text-xs text-slate-400 py-1 bg-white border-x border-b border-slate-200 rounded-b-xl -mt-2">
                     Showing {filteredContacts.length} of {contacts.length}
                 </div>
             )}
@@ -289,7 +289,7 @@ function PipelinePage() {
     const filteredTotal = Object.values(contactsByStage).reduce((sum, arr) => sum + arr.length, 0);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
             <AppHeader />
 
             <main className="px-4 sm:px-6 lg:px-8 py-6">
@@ -297,7 +297,7 @@ function PipelinePage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <div>
                         <h1 className="text-2xl font-bold">Sales Pipeline</h1>
-                        <p className="text-white/50 text-sm">Drag contacts to move through stages</p>
+                        <p className="text-slate-500 text-sm">Drag contacts to move through stages</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
@@ -308,15 +308,15 @@ function PipelinePage() {
                                 placeholder="Search all contacts..."
                                 value={globalSearch}
                                 onChange={(e) => setGlobalSearch(e.target.value)}
-                                className="w-64 px-4 py-2 pl-9 bg-white/5 border border-white/10 rounded-lg text-sm focus:outline-none focus:border-indigo-500/50"
+                                className="w-64 px-4 py-2 pl-9 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500/50"
                             />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30">🔍</span>
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
                         </div>
 
                         {/* Stats */}
                         <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-2">
-                                <span className="text-white/50">Total:</span>
+                                <span className="text-slate-500">Total:</span>
                                 <span className="font-medium">
                                     {globalSearch ? `${filteredTotal} / ${totalContacts}` : totalContacts}
                                 </span>

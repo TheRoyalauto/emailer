@@ -41,27 +41,27 @@ export default function CampaignsPage() {
 
     return (
         <AuthGuard>
-            <div className="min-h-screen bg-[#F8F9FC] pb-20 md:pb-0">
+            <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
                 <AppHeader />
 
                 <main className="max-w-4xl mx-auto px-6 py-8">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-[#1A1D26]">New Campaign</h1>
-                        <p className="text-[#9CA3AF] mt-1">Select a template, sender, and batch to start sending emails</p>
+                        <h1 className="text-3xl font-bold font-heading text-slate-900 tracking-[-0.03em]">New Campaign</h1>
+                        <p className="text-slate-400 mt-1">Select a template, sender, and batch to start sending emails</p>
                     </div>
 
                     <div className="space-y-6">
                         {/* Step 1: Select Template */}
-                        <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-sm">
+                        <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm">
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[#FF6B4A]/20">1</div>
-                                    <h2 className="text-lg font-semibold text-[#1A1D26]">Select Email Template</h2>
+                                    <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm">1</div>
+                                    <h2 className="text-lg font-semibold font-heading text-slate-900 tracking-[-0.02em]">Select Email Template</h2>
                                 </div>
                                 {templates && templates.length > 0 && (
                                     <Link
                                         href="/templates"
-                                        className="text-sm text-[#9CA3AF] hover:text-[#FF6B4A] transition-colors flex items-center gap-1"
+                                        className="text-sm text-slate-400 hover:text-cyan-600 transition-colors flex items-center gap-1"
                                     >
                                         ← Back to Templates
                                     </Link>
@@ -70,14 +70,14 @@ export default function CampaignsPage() {
 
                             {templates === undefined ? (
                                 <div className="py-4 flex items-center justify-center">
-                                    <div className="animate-spin w-6 h-6 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                                    <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : templates.length === 0 ? (
                                 <div className="py-6 text-center">
-                                    <p className="text-[#9CA3AF] mb-4">No templates yet</p>
+                                    <p className="text-slate-400 mb-4">No templates yet</p>
                                     <Link
                                         href="/templates?action=add"
-                                        className="px-4 py-2 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-lg font-medium text-white hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all inline-block"
+                                        className="px-5 py-2.5 bg-slate-900 rounded-lg font-semibold text-white hover:bg-slate-800 transition-all inline-block"
                                     >
                                         + Create Your First Template
                                     </Link>
@@ -92,15 +92,17 @@ export default function CampaignsPage() {
                                             <button
                                                 onClick={() => setSelectedTemplate(template._id)}
                                                 className={`w-full p-4 rounded-xl border text-left transition-all duration-200 hover:scale-[1.02] ${selectedTemplate === template._id
-                                                    ? "bg-[#FF6B4A]/5 border-[#FF6B4A]/30 ring-2 ring-[#FF6B4A]/20"
-                                                    : "bg-[#F8F9FC] border-[#E5E7EB] hover:border-[#FF6B4A]/20 hover:shadow-md"
+                                                    ? "bg-cyan-50 border-cyan-300 ring-2 ring-cyan-200"
+                                                    : "bg-slate-50 border-slate-200 hover:border-cyan-300 hover:shadow-md"
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <span className="text-lg">📝</span>
-                                                    <div className="font-semibold truncate text-sm text-[#1A1D26]">{template.name}</div>
+                                                    <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                    </svg>
+                                                    <div className="font-semibold truncate text-sm text-slate-900">{template.name}</div>
                                                 </div>
-                                                <div className="text-xs text-[#9CA3AF] truncate">{template.subject}</div>
+                                                <div className="text-xs text-slate-400 truncate">{template.subject}</div>
                                             </button>
                                             {/* Action buttons on hover */}
                                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-all">
@@ -109,18 +111,23 @@ export default function CampaignsPage() {
                                                         e.stopPropagation();
                                                         setPreviewTemplate(template._id);
                                                     }}
-                                                    className="p-1.5 bg-white border border-[#E5E7EB] hover:border-[#FF6B4A] hover:bg-[#FF6B4A]/5 rounded-lg text-xs shadow-sm"
+                                                    className="p-1.5 bg-white border border-slate-200 hover:border-cyan-300 hover:bg-cyan-50 rounded-lg text-xs shadow-sm"
                                                     title="Preview"
                                                 >
-                                                    👁️
+                                                    <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    </svg>
                                                 </button>
                                                 <Link
                                                     href={`/templates?edit=${template._id}`}
-                                                    className="p-1.5 bg-white border border-[#E5E7EB] hover:border-[#FF6B4A] hover:bg-[#FF6B4A]/5 rounded-lg text-xs shadow-sm"
+                                                    className="p-1.5 bg-white border border-slate-200 hover:border-cyan-300 hover:bg-cyan-50 rounded-lg text-xs shadow-sm"
                                                     title="Edit Template"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    ✏️
+                                                    <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                    </svg>
                                                 </Link>
                                             </div>
                                         </div>
@@ -130,20 +137,20 @@ export default function CampaignsPage() {
                         </div>
 
                         {/* Step 2: Select Sender */}
-                        <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-sm">
+                        <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[#FF6B4A]/20">2</div>
-                                <h2 className="text-lg font-semibold text-[#1A1D26]">Select Sender Account</h2>
+                                <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm">2</div>
+                                <h2 className="text-lg font-semibold font-heading text-slate-900 tracking-[-0.02em]">Select Sender Account</h2>
                             </div>
 
                             {senders === undefined ? (
                                 <div className="py-4 flex items-center justify-center">
-                                    <div className="animate-spin w-6 h-6 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                                    <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : senders.length === 0 ? (
                                 <div className="py-4 text-center">
-                                    <p className="text-[#9CA3AF] mb-3">No sender accounts configured</p>
-                                    <Link href="/senders" className="text-[#FF6B4A] hover:text-[#F43F5E] font-medium transition-colors">
+                                    <p className="text-slate-400 mb-3">No sender accounts configured</p>
+                                    <Link href="/senders" className="text-cyan-600 hover:text-cyan-700 font-medium transition-colors">
                                         Add a sender account →
                                     </Link>
                                 </div>
@@ -154,12 +161,12 @@ export default function CampaignsPage() {
                                             key={sender._id}
                                             onClick={() => setSelectedSender(sender._id)}
                                             className={`p-4 rounded-xl border text-left transition-all duration-200 ${selectedSender === sender._id
-                                                ? "bg-[#FF6B4A]/5 border-[#FF6B4A]/30 ring-2 ring-[#FF6B4A]/20"
-                                                : "bg-[#F8F9FC] border-[#E5E7EB] hover:border-[#FF6B4A]/20 hover:shadow-md"
+                                                ? "bg-cyan-50 border-cyan-300 ring-2 ring-cyan-200"
+                                                : "bg-slate-50 border-slate-200 hover:border-cyan-300 hover:shadow-md"
                                                 }`}
                                         >
-                                            <div className="font-semibold truncate text-[#1A1D26]">{sender.name}</div>
-                                            <div className="text-sm text-[#9CA3AF] truncate mt-1">{sender.email}</div>
+                                            <div className="font-semibold truncate text-slate-900">{sender.name}</div>
+                                            <div className="text-sm text-slate-400 truncate mt-1">{sender.email}</div>
                                         </button>
                                     ))}
                                 </div>
@@ -167,20 +174,20 @@ export default function CampaignsPage() {
                         </div>
 
                         {/* Step 3: Select Batch */}
-                        <div className="p-6 rounded-xl bg-white border border-[#E5E7EB] shadow-sm">
+                        <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[#FF6B4A]/20">3</div>
-                                <h2 className="text-lg font-semibold text-[#1A1D26]">Select Contact Batch</h2>
+                                <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white font-bold text-sm">3</div>
+                                <h2 className="text-lg font-semibold font-heading text-slate-900 tracking-[-0.02em]">Select Contact Batch</h2>
                             </div>
 
                             {batches === undefined ? (
                                 <div className="py-4 flex items-center justify-center">
-                                    <div className="animate-spin w-6 h-6 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                                    <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : batches.length === 0 ? (
                                 <div className="py-4 text-center">
-                                    <p className="text-[#9CA3AF] mb-3">No contact batches yet</p>
-                                    <Link href="/contacts" className="text-[#FF6B4A] hover:text-[#F43F5E] font-medium transition-colors">
+                                    <p className="text-slate-400 mb-3">No contact batches yet</p>
+                                    <Link href="/contacts" className="text-cyan-600 hover:text-cyan-700 font-medium transition-colors">
                                         Import contacts →
                                     </Link>
                                 </div>
@@ -191,18 +198,18 @@ export default function CampaignsPage() {
                                             key={batch._id}
                                             onClick={() => setSelectedBatch(batch._id)}
                                             className={`p-4 rounded-xl border text-left transition-all duration-200 ${selectedBatch === batch._id
-                                                ? "bg-[#FF6B4A]/5 border-[#FF6B4A]/30 ring-2 ring-[#FF6B4A]/20"
-                                                : "bg-[#F8F9FC] border-[#E5E7EB] hover:border-[#FF6B4A]/20 hover:shadow-md"
+                                                ? "bg-cyan-50 border-cyan-300 ring-2 ring-cyan-200"
+                                                : "bg-slate-50 border-slate-200 hover:border-cyan-300 hover:shadow-md"
                                                 }`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 <div
                                                     className="w-3 h-3 rounded-full"
-                                                    style={{ backgroundColor: batch.color || "#FF6B4A" }}
+                                                    style={{ backgroundColor: batch.color || "#06B6D4" }}
                                                 />
-                                                <span className="font-semibold truncate text-[#1A1D26]">{batch.name}</span>
+                                                <span className="font-semibold truncate text-slate-900">{batch.name}</span>
                                             </div>
-                                            <div className="text-sm text-[#9CA3AF] mt-1">
+                                            <div className="text-sm text-slate-400 mt-1">
                                                 {batch.contactCount} contacts
                                             </div>
                                         </button>
@@ -212,25 +219,25 @@ export default function CampaignsPage() {
                         </div>
 
                         {/* Summary & Start Button */}
-                        <div className="p-6 rounded-xl bg-gradient-to-br from-[#FF6B4A]/5 to-[#F43F5E]/5 border border-[#FF6B4A]/10">
-                            <h2 className="text-lg font-semibold text-[#1A1D26] mb-4">Campaign Summary</h2>
+                        <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm">
+                            <h2 className="text-lg font-semibold font-heading text-slate-900 mb-4 tracking-[-0.02em]">Campaign Summary</h2>
 
                             <div className="space-y-3 mb-6">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[#9CA3AF]">Template:</span>
-                                    <span className="font-semibold text-[#1A1D26]">{selectedTemplateData?.name || "Not selected"}</span>
+                                    <span className="text-slate-400">Template:</span>
+                                    <span className="font-semibold text-slate-900">{selectedTemplateData?.name || "Not selected"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[#9CA3AF]">Sender:</span>
-                                    <span className="font-semibold text-[#1A1D26]">{selectedSenderData?.email || "Not selected"}</span>
+                                    <span className="text-slate-400">Sender:</span>
+                                    <span className="font-semibold text-slate-900">{selectedSenderData?.email || "Not selected"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[#9CA3AF]">Batch:</span>
-                                    <span className="font-semibold text-[#1A1D26]">{selectedBatchData?.name || "Not selected"}</span>
+                                    <span className="text-slate-400">Batch:</span>
+                                    <span className="font-semibold text-slate-900">{selectedBatchData?.name || "Not selected"}</span>
                                 </div>
-                                <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-3">
-                                    <span className="text-[#9CA3AF]">Total emails to send:</span>
-                                    <span className="text-xl font-bold text-[#FF6B4A]">
+                                <div className="flex items-center justify-between border-t border-slate-200 pt-3">
+                                    <span className="text-slate-400">Total emails to send:</span>
+                                    <span className="text-xl font-bold font-heading text-cyan-600 tracking-[-0.04em]">
                                         {batchContacts?.length || 0}
                                     </span>
                                 </div>
@@ -238,13 +245,13 @@ export default function CampaignsPage() {
 
                             {sendProgress ? (
                                 <div className="space-y-3">
-                                    <div className="flex items-center justify-between text-sm text-[#4B5563]">
+                                    <div className="flex items-center justify-between text-sm text-slate-500">
                                         <span>Sending emails...</span>
                                         <span>{sendProgress.sent} / {sendProgress.total}</span>
                                     </div>
-                                    <div className="h-2 bg-[#E5E7EB] rounded-full overflow-hidden">
+                                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] transition-all"
+                                            className="h-full bg-gradient-to-r from-cyan-500 to-sky-500 transition-all"
                                             style={{ width: `${(sendProgress.sent / sendProgress.total) * 100}%` }}
                                         />
                                     </div>
@@ -253,15 +260,17 @@ export default function CampaignsPage() {
                                 <button
                                     onClick={handleStartCampaign}
                                     disabled={!canStartCampaign || isSending}
-                                    className="w-full py-4 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-lg text-white hover:shadow-xl hover:shadow-[#FF6B4A]/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-[0.98]"
+                                    className="w-full py-4 bg-slate-900 rounded-xl font-semibold text-lg text-white hover:bg-slate-800 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-[0.98]"
                                 >
-                                    <span className="text-xl">🚀</span>
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                    </svg>
                                     Start Campaign
                                 </button>
                             )}
 
                             {!canStartCampaign && !isSending && (
-                                <p className="text-center text-[#9CA3AF] text-sm mt-3">
+                                <p className="text-center text-slate-400 text-sm mt-3">
                                     Select a template, sender, and batch to start
                                 </p>
                             )}
@@ -291,23 +300,23 @@ export default function CampaignsPage() {
                 {/* Template Preview Modal */}
                 {previewTemplate && previewTemplateData && (
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-2xl border border-[#E5E7EB] max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+                        <div className="bg-white rounded-2xl border border-slate-200 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
                             {/* Header */}
-                            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB]">
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
                                 <div>
-                                    <h2 className="text-lg font-bold text-[#1A1D26]">{previewTemplateData.name}</h2>
-                                    <p className="text-sm text-[#9CA3AF]">Subject: {previewTemplateData.subject}</p>
+                                    <h2 className="text-lg font-bold font-heading text-slate-900">{previewTemplateData.name}</h2>
+                                    <p className="text-sm text-slate-400">Subject: {previewTemplateData.subject}</p>
                                 </div>
                                 <button
                                     onClick={() => setPreviewTemplate(null)}
-                                    className="p-2 hover:bg-[#F1F3F8] rounded-lg transition-colors text-[#9CA3AF] hover:text-[#1A1D26]"
+                                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-900"
                                 >
                                     ✕
                                 </button>
                             </div>
 
                             {/* Email Preview */}
-                            <div className="flex-1 overflow-auto bg-[#F8F9FC]">
+                            <div className="flex-1 overflow-auto bg-slate-50">
                                 <iframe
                                     srcDoc={previewTemplateData.htmlBody}
                                     className="w-full h-full min-h-[400px] bg-white"
@@ -317,19 +326,19 @@ export default function CampaignsPage() {
                             </div>
 
                             {/* Footer */}
-                            <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E7EB] bg-[#F8F9FC]">
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50">
                                 <Link
                                     href={`/templates?edit=${previewTemplateData._id}`}
-                                    className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-[#1A1D26] hover:bg-white rounded-lg transition-all border border-[#E5E7EB]"
+                                    className="px-4 py-2 text-sm text-slate-500 hover:text-slate-900 hover:bg-white rounded-lg transition-all border border-slate-200"
                                 >
-                                    ✏️ Edit Template
+                                    Edit Template
                                 </Link>
                                 <button
                                     onClick={() => {
                                         setSelectedTemplate(previewTemplateData._id);
                                         setPreviewTemplate(null);
                                     }}
-                                    className="px-5 py-2 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-lg font-semibold text-sm text-white hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all"
+                                    className="px-5 py-2 bg-slate-900 rounded-lg font-semibold text-sm text-white hover:bg-slate-800 transition-all"
                                 >
                                     Use This Template
                                 </button>

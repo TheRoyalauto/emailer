@@ -116,13 +116,13 @@ function SMTPSettingsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F9FC] pb-20 md:pb-0">
+        <div className="min-h-screen bg-[#f8fafc] pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {/* Hero Section */}
                 <div className="relative mb-8 rounded-2xl overflow-hidden bg-white border border-[#E5E7EB] shadow-lg">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/5 to-[#FF6B4A]/5" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/5 to-[#0891b2]/5" />
 
                     <div className="relative p-8 flex items-center justify-between">
                         <div>
@@ -131,14 +131,14 @@ function SMTPSettingsPage() {
                                     📧
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold text-[#1A1D26]">Account Center</h1>
+                                    <h1 className="text-3xl font-bold text-[#0f172a]">Account Center</h1>
                                     <p className="text-[#9CA3AF]">Manage your email sending accounts</p>
                                 </div>
                             </div>
                         </div>
                         <button
                             onClick={() => setShowAdd(true)}
-                            className="group px-5 py-3 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white shadow-lg shadow-[#FF6B4A]/25 hover:shadow-xl hover:shadow-[#FF6B4A]/30 transition-all hover:scale-105"
+                            className="group px-5 py-3 bg-gradient-to-r from-[#0891b2] to-[#0284c7] rounded-xl font-semibold text-white shadow-lg shadow-[#0891b2]/25 hover:shadow-xl hover:shadow-[#0891b2]/30 transition-all hover:scale-105"
                         >
                             <span className="flex items-center gap-2">
                                 <span className="text-lg">+</span>
@@ -167,7 +167,7 @@ function SMTPSettingsPage() {
                                     {stat.icon}
                                 </div>
                                 <div>
-                                    <div className="text-lg font-bold text-[#1A1D26] truncate max-w-[120px]">
+                                    <div className="text-lg font-bold text-[#0f172a] truncate max-w-[120px]">
                                         {typeof stat.value === 'number' ? stat.value : stat.value}
                                     </div>
                                     <div className="text-xs text-[#9CA3AF]">{stat.label}</div>
@@ -180,21 +180,21 @@ function SMTPSettingsPage() {
                 {/* Accounts Grid */}
                 {configs === undefined ? (
                     <div className="flex justify-center py-16">
-                        <div className="animate-spin w-8 h-8 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                        <div className="animate-spin w-8 h-8 border-2 border-[#0891b2] border-t-transparent rounded-full" />
                     </div>
                 ) : configs.length === 0 ? (
                     <div className="relative overflow-hidden text-center py-20 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
                         <div className="relative">
-                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#8B5CF6]/10 to-[#FF6B4A]/10 border border-[#E5E7EB] flex items-center justify-center text-4xl">
+                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#8B5CF6]/10 to-[#0891b2]/10 border border-[#E5E7EB] flex items-center justify-center text-4xl">
                                 📧
                             </div>
-                            <h2 className="text-2xl font-bold text-[#1A1D26] mb-2">No Email Accounts Yet</h2>
+                            <h2 className="text-2xl font-bold text-[#0f172a] mb-2">No Email Accounts Yet</h2>
                             <p className="text-[#9CA3AF] mb-6 max-w-md mx-auto">
                                 Connect your email accounts to start sending campaigns. We support Gmail, Outlook, Yahoo, and more.
                             </p>
                             <button
                                 onClick={() => setShowAdd(true)}
-                                className="px-6 py-3 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white shadow-lg shadow-[#FF6B4A]/25 hover:shadow-xl hover:scale-105 transition-all"
+                                className="px-6 py-3 bg-gradient-to-r from-[#0891b2] to-[#0284c7] rounded-xl font-semibold text-white shadow-lg shadow-[#0891b2]/25 hover:shadow-xl hover:scale-105 transition-all"
                             >
                                 + Add Your First Account
                             </button>
@@ -212,7 +212,7 @@ function SMTPSettingsPage() {
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >
                                 {config.isDefault && (
-                                    <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/5 to-[#FF6B4A]/5" />
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[#8B5CF6]/5 to-[#0891b2]/5" />
                                 )}
 
                                 <div className="relative p-5">
@@ -225,7 +225,7 @@ function SMTPSettingsPage() {
                                                 {config.fromName?.charAt(0).toUpperCase() || config.name?.charAt(0).toUpperCase() || "?"}
                                             </div>
                                             <div>
-                                                <h3 className="font-semibold text-lg text-[#1A1D26] flex items-center gap-2">
+                                                <h3 className="font-semibold text-lg text-[#0f172a] flex items-center gap-2">
                                                     {config.name}
                                                     {config.isDefault && (
                                                         <span className="px-2 py-0.5 bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs rounded-full font-medium">
@@ -243,7 +243,7 @@ function SMTPSettingsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="p-3 bg-[#F8F9FC] rounded-lg mb-4 font-mono text-xs text-[#9CA3AF]">
+                                    <div className="p-3 bg-[#f8fafc] rounded-lg mb-4 font-mono text-xs text-[#9CA3AF]">
                                         {config.host}:{config.port} • {config.secure ? "SSL" : "TLS"}
                                     </div>
 
@@ -251,11 +251,11 @@ function SMTPSettingsPage() {
                                         <button
                                             onClick={() => handleTest(config._id)}
                                             disabled={testing === config._id}
-                                            className="flex-1 px-3 py-2 bg-[#F8F9FC] hover:bg-[#F1F3F8] border border-[#E5E7EB] rounded-lg text-sm text-[#4B5563] transition-all hover:scale-[1.02] disabled:opacity-50"
+                                            className="flex-1 px-3 py-2 bg-[#f8fafc] hover:bg-[#F1F3F8] border border-[#E5E7EB] rounded-lg text-sm text-[#4B5563] transition-all hover:scale-[1.02] disabled:opacity-50"
                                         >
                                             {testing === config._id ? (
                                                 <span className="flex items-center justify-center gap-2">
-                                                    <div className="w-4 h-4 border-2 border-[#9CA3AF] border-t-[#1A1D26] rounded-full animate-spin" />
+                                                    <div className="w-4 h-4 border-2 border-[#9CA3AF] border-t-[#0f172a] rounded-full animate-spin" />
                                                     Testing...
                                                 </span>
                                             ) : "🔌 Test"}
@@ -290,12 +290,12 @@ function SMTPSettingsPage() {
 
                         <button
                             onClick={() => setShowAdd(true)}
-                            className="group p-8 bg-white rounded-xl border-2 border-dashed border-[#E5E7EB] hover:border-[#FF6B4A]/50 transition-all hover:bg-[#FF6B4A]/5 flex flex-col items-center justify-center gap-3 min-h-[200px]"
+                            className="group p-8 bg-white rounded-xl border-2 border-dashed border-[#E5E7EB] hover:border-[#0891b2]/50 transition-all hover:bg-[#0891b2]/5 flex flex-col items-center justify-center gap-3 min-h-[200px]"
                         >
-                            <div className="w-14 h-14 rounded-xl bg-[#F1F3F8] group-hover:bg-[#FF6B4A]/20 flex items-center justify-center text-2xl transition-all group-hover:scale-110 text-[#9CA3AF] group-hover:text-[#FF6B4A]">
+                            <div className="w-14 h-14 rounded-xl bg-[#F1F3F8] group-hover:bg-[#0891b2]/20 flex items-center justify-center text-2xl transition-all group-hover:scale-110 text-[#9CA3AF] group-hover:text-[#0891b2]">
                                 +
                             </div>
-                            <span className="text-[#9CA3AF] group-hover:text-[#FF6B4A] font-medium transition-colors">Add Another Account</span>
+                            <span className="text-[#9CA3AF] group-hover:text-[#0891b2] font-medium transition-colors">Add Another Account</span>
                         </button>
                     </div>
                 )}
@@ -311,9 +311,9 @@ function SMTPSettingsPage() {
                                 <div
                                     key={step.n}
                                     className={`flex-1 py-3 text-center text-sm font-medium transition-all ${wizardStep === step.n
-                                        ? "bg-[#FF6B4A]/10 text-[#FF6B4A] border-b-2 border-[#FF6B4A]"
+                                        ? "bg-[#0891b2]/10 text-[#0891b2] border-b-2 border-[#0891b2]"
                                         : wizardStep > step.n
-                                            ? "text-[#4B5563] bg-[#F8F9FC]"
+                                            ? "text-[#4B5563] bg-[#f8fafc]"
                                             : "text-[#9CA3AF]"
                                         }`}
                                 >
@@ -326,7 +326,7 @@ function SMTPSettingsPage() {
                             {/* Step 1: Choose Provider */}
                             {wizardStep === 1 && (
                                 <div className="animate-in fade-in">
-                                    <h2 className="text-xl font-bold text-[#1A1D26] mb-2">Choose Your Email Provider</h2>
+                                    <h2 className="text-xl font-bold text-[#0f172a] mb-2">Choose Your Email Provider</h2>
                                     <p className="text-[#9CA3AF] text-sm mb-6">Select your email service to auto-configure settings</p>
 
                                     <div className="grid grid-cols-3 gap-3">
@@ -338,9 +338,9 @@ function SMTPSettingsPage() {
                                                     const needsInstructions = ["Gmail", "Yahoo", "iCloud"].includes(p.name);
                                                     setWizardStep(needsInstructions ? 2 : 3);
                                                 }}
-                                                className={`p-4 rounded-xl border text-center transition-all hover:scale-[1.02] hover:border-[#FF6B4A]/50 ${preset === p.name
-                                                    ? "border-[#FF6B4A] bg-[#FF6B4A]/10"
-                                                    : "border-[#E5E7EB] bg-[#F8F9FC] hover:bg-white"
+                                                className={`p-4 rounded-xl border text-center transition-all hover:scale-[1.02] hover:border-[#0891b2]/50 ${preset === p.name
+                                                    ? "border-[#0891b2] bg-[#0891b2]/10"
+                                                    : "border-[#E5E7EB] bg-[#f8fafc] hover:bg-white"
                                                     }`}
                                             >
                                                 <div className="text-2xl mb-2">
@@ -354,7 +354,7 @@ function SMTPSettingsPage() {
                                                     {p.name === "Mailgun" && "🔫"}
                                                     {p.name === "Custom" && "⚙️"}
                                                 </div>
-                                                <div className="font-medium text-sm text-[#1A1D26]">{p.name}</div>
+                                                <div className="font-medium text-sm text-[#0f172a]">{p.name}</div>
                                             </button>
                                         ))}
                                     </div>
@@ -364,29 +364,29 @@ function SMTPSettingsPage() {
                             {/* Step 2: Provider Setup Instructions */}
                             {wizardStep === 2 && (
                                 <div className="animate-in fade-in">
-                                    <h2 className="text-xl font-bold text-[#1A1D26] mb-2">📱 {preset} Setup Required</h2>
+                                    <h2 className="text-xl font-bold text-[#0f172a] mb-2">📱 {preset} Setup Required</h2>
                                     <p className="text-[#9CA3AF] text-sm mb-6">
                                         {preset} requires an App Password for security. Follow these steps:
                                     </p>
 
-                                    <div className="bg-[#F8F9FC] rounded-xl p-5 border border-[#E5E7EB]">
+                                    <div className="bg-[#f8fafc] rounded-xl p-5 border border-[#E5E7EB]">
                                         <ol className="space-y-3 text-sm">
                                             {preset === "Gmail" && (
                                                 <>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">1</span>
-                                                        <span className="text-[#4B5563]">Go to <a href="https://myaccount.google.com" target="_blank" className="text-[#FF6B4A] hover:underline">myaccount.google.com</a></span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">1</span>
+                                                        <span className="text-[#4B5563]">Go to <a href="https://myaccount.google.com" target="_blank" className="text-[#0891b2] hover:underline">myaccount.google.com</a></span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">2</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">2</span>
                                                         <span className="text-[#4B5563]">Enable 2-Factor Authentication if not already enabled</span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">3</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">3</span>
                                                         <span className="text-[#4B5563]">Go to Security → 2-Step Verification → App passwords</span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">4</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">4</span>
                                                         <span className="text-[#4B5563]">Generate a new app password for "Mail"</span>
                                                     </li>
                                                     <li className="flex gap-3">
@@ -398,15 +398,15 @@ function SMTPSettingsPage() {
                                             {preset === "Yahoo" && (
                                                 <>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">1</span>
-                                                        <span className="text-[#4B5563]">Go to <a href="https://login.yahoo.com/account/security" target="_blank" className="text-[#FF6B4A] hover:underline">Yahoo Account Security</a></span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">1</span>
+                                                        <span className="text-[#4B5563]">Go to <a href="https://login.yahoo.com/account/security" target="_blank" className="text-[#0891b2] hover:underline">Yahoo Account Security</a></span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">2</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">2</span>
                                                         <span className="text-[#4B5563]">Click "Generate app password"</span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">3</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">3</span>
                                                         <span className="text-[#4B5563]">Select "Other App" and enter a name</span>
                                                     </li>
                                                     <li className="flex gap-3">
@@ -418,15 +418,15 @@ function SMTPSettingsPage() {
                                             {preset === "iCloud" && (
                                                 <>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">1</span>
-                                                        <span className="text-[#4B5563]">Go to <a href="https://appleid.apple.com" target="_blank" className="text-[#FF6B4A] hover:underline">appleid.apple.com</a></span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">1</span>
+                                                        <span className="text-[#4B5563]">Go to <a href="https://appleid.apple.com" target="_blank" className="text-[#0891b2] hover:underline">appleid.apple.com</a></span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">2</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">2</span>
                                                         <span className="text-[#4B5563]">Sign in and go to Security section</span>
                                                     </li>
                                                     <li className="flex gap-3">
-                                                        <span className="w-6 h-6 rounded-full bg-[#FF6B4A]/20 text-[#FF6B4A] flex items-center justify-center text-xs font-bold">3</span>
+                                                        <span className="w-6 h-6 rounded-full bg-[#0891b2]/20 text-[#0891b2] flex items-center justify-center text-xs font-bold">3</span>
                                                         <span className="text-[#4B5563]">Click "Generate Password" under App-Specific Passwords</span>
                                                     </li>
                                                     <li className="flex gap-3">
@@ -447,7 +447,7 @@ function SMTPSettingsPage() {
                             {/* Step 3: Login Credentials */}
                             {wizardStep === 3 && (
                                 <div className="animate-in fade-in">
-                                    <h2 className="text-xl font-bold text-[#1A1D26] mb-2">Enter Your Login</h2>
+                                    <h2 className="text-xl font-bold text-[#0f172a] mb-2">Enter Your Login</h2>
                                     <p className="text-[#9CA3AF] text-sm mb-6">
                                         {preset === "Gmail"
                                             ? "Use an App Password (not your Gmail password)"
@@ -465,7 +465,7 @@ function SMTPSettingsPage() {
                                                     setUsername(e.target.value);
                                                     if (!fromEmail) setFromEmail(e.target.value);
                                                 }}
-                                                className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl text-lg text-[#1A1D26] focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-colors"
+                                                className="w-full px-4 py-3 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-lg text-[#0f172a] focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/20 focus:outline-none transition-colors"
                                                 placeholder="your@email.com"
                                                 autoFocus
                                             />
@@ -479,7 +479,7 @@ function SMTPSettingsPage() {
                                                 type="password"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl text-lg text-[#1A1D26] focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-colors"
+                                                className="w-full px-4 py-3 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-lg text-[#0f172a] focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/20 focus:outline-none transition-colors"
                                                 placeholder={["Gmail", "Yahoo", "iCloud"].includes(preset) ? "xxxx xxxx xxxx xxxx" : "••••••••"}
                                             />
                                         </div>
@@ -493,7 +493,7 @@ function SMTPSettingsPage() {
                                                             type="text"
                                                             value={host}
                                                             onChange={(e) => setHost(e.target.value)}
-                                                            className="w-full px-3 py-2 bg-[#F8F9FC] border border-[#E5E7EB] rounded-lg text-[#1A1D26] focus:border-[#FF6B4A] focus:outline-none"
+                                                            className="w-full px-3 py-2 bg-[#f8fafc] border border-[#E5E7EB] rounded-lg text-[#0f172a] focus:border-[#0891b2] focus:outline-none"
                                                             placeholder="smtp.example.com"
                                                         />
                                                     </div>
@@ -503,7 +503,7 @@ function SMTPSettingsPage() {
                                                             type="number"
                                                             value={port}
                                                             onChange={(e) => setPort(parseInt(e.target.value))}
-                                                            className="w-full px-3 py-2 bg-[#F8F9FC] border border-[#E5E7EB] rounded-lg text-[#1A1D26] focus:border-[#FF6B4A] focus:outline-none"
+                                                            className="w-full px-3 py-2 bg-[#f8fafc] border border-[#E5E7EB] rounded-lg text-[#0f172a] focus:border-[#0891b2] focus:outline-none"
                                                         />
                                                     </div>
                                                 </div>
@@ -512,7 +512,7 @@ function SMTPSettingsPage() {
                                                         type="checkbox"
                                                         checked={secure}
                                                         onChange={(e) => setSecure(e.target.checked)}
-                                                        className="w-4 h-4 rounded accent-[#FF6B4A]"
+                                                        className="w-4 h-4 rounded accent-[#0891b2]"
                                                     />
                                                     <span className="text-sm text-[#4B5563]">Use SSL (port 465)</span>
                                                 </label>
@@ -525,7 +525,7 @@ function SMTPSettingsPage() {
                             {/* Step 4: Display Name */}
                             {wizardStep === 4 && (
                                 <div className="animate-in fade-in">
-                                    <h2 className="text-xl font-bold text-[#1A1D26] mb-2">Almost Done!</h2>
+                                    <h2 className="text-xl font-bold text-[#0f172a] mb-2">Almost Done!</h2>
                                     <p className="text-[#9CA3AF] text-sm mb-6">How should your name appear in emails?</p>
 
                                     <div className="space-y-4">
@@ -535,7 +535,7 @@ function SMTPSettingsPage() {
                                                 type="text"
                                                 value={displayName}
                                                 onChange={(e) => setDisplayName(e.target.value)}
-                                                className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl text-lg text-[#1A1D26] focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-colors"
+                                                className="w-full px-4 py-3 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-lg text-[#0f172a] focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/20 focus:outline-none transition-colors"
                                                 placeholder="Your Name or Company"
                                                 autoFocus
                                             />
@@ -547,21 +547,21 @@ function SMTPSettingsPage() {
                                         <div className="p-4 bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 rounded-xl">
                                             <div className="text-sm font-medium text-[#8B5CF6] mb-2">Account Summary</div>
                                             <div className="space-y-1 text-sm text-[#4B5563]">
-                                                <div>Provider: <span className="text-[#1A1D26] font-medium">{preset || "Custom"}</span></div>
-                                                <div>Email: <span className="text-[#1A1D26] font-medium">{username}</span></div>
-                                                <div>Server: <span className="text-[#1A1D26] font-medium">{host}:{port}</span></div>
+                                                <div>Provider: <span className="text-[#0f172a] font-medium">{preset || "Custom"}</span></div>
+                                                <div>Email: <span className="text-[#0f172a] font-medium">{username}</span></div>
+                                                <div>Server: <span className="text-[#0f172a] font-medium">{host}:{port}</span></div>
                                             </div>
                                         </div>
 
-                                        <label className="flex items-center gap-3 p-3 bg-[#F8F9FC] rounded-xl cursor-pointer hover:bg-[#F1F3F8] transition-colors border border-[#E5E7EB]">
+                                        <label className="flex items-center gap-3 p-3 bg-[#f8fafc] rounded-xl cursor-pointer hover:bg-[#F1F3F8] transition-colors border border-[#E5E7EB]">
                                             <input
                                                 type="checkbox"
                                                 checked={makeDefault}
                                                 onChange={(e) => setMakeDefault(e.target.checked)}
-                                                className="w-5 h-5 rounded accent-[#FF6B4A]"
+                                                className="w-5 h-5 rounded accent-[#0891b2]"
                                             />
                                             <div>
-                                                <div className="font-medium text-[#1A1D26]">Set as default account</div>
+                                                <div className="font-medium text-[#0f172a]">Set as default account</div>
                                                 <div className="text-xs text-[#9CA3AF]">Use this account for new campaigns</div>
                                             </div>
                                         </label>
@@ -571,7 +571,7 @@ function SMTPSettingsPage() {
                         </div>
 
                         {/* Footer with Navigation */}
-                        <div className="flex justify-between items-center p-6 border-t border-[#E5E7EB] bg-[#F8F9FC]">
+                        <div className="flex justify-between items-center p-6 border-t border-[#E5E7EB] bg-[#f8fafc]">
                             <button
                                 onClick={() => {
                                     if (wizardStep === 1) {
@@ -584,7 +584,7 @@ function SMTPSettingsPage() {
                                         setWizardStep(wizardStep - 1);
                                     }
                                 }}
-                                className="px-4 py-2 text-[#9CA3AF] hover:text-[#1A1D26] transition-colors"
+                                className="px-4 py-2 text-[#9CA3AF] hover:text-[#0f172a] transition-colors"
                             >
                                 {wizardStep === 1 ? "Cancel" : "← Back"}
                             </button>
@@ -593,7 +593,7 @@ function SMTPSettingsPage() {
                                 <button
                                     onClick={() => setWizardStep(wizardStep + 1)}
                                     disabled={wizardStep === 3 && (!username || !password)}
-                                    className="px-6 py-2 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-[#FF6B4A]/25"
+                                    className="px-6 py-2 bg-gradient-to-r from-[#0891b2] to-[#0284c7] rounded-lg font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-[#0891b2]/25"
                                 >
                                     Continue →
                                 </button>

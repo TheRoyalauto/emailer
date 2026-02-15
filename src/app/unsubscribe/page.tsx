@@ -33,8 +33,8 @@ function UnsubscribeContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-[#12121f] rounded-2xl border border-white/10 p-8">
+        <div className="min-h-screen bg-slate-50 text-white flex items-center justify-center p-4">
+            <div className="max-w-md w-full bg-white rounded-2xl border border-slate-200 p-8">
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -46,34 +46,34 @@ function UnsubscribeContent() {
                     <div className="text-center">
                         <div className="text-5xl mb-4">✅</div>
                         <h2 className="text-xl font-semibold mb-2">You{"'"}ve Been Unsubscribed</h2>
-                        <p className="text-white/50">
+                        <p className="text-slate-500">
                             {email} has been removed from our mailing list.
                         </p>
-                        <p className="text-white/40 text-sm mt-4">
+                        <p className="text-slate-400 text-sm mt-4">
                             You will no longer receive emails from us.
                         </p>
                     </div>
                 ) : (
                     <>
                         <h2 className="text-xl font-semibold text-center mb-2">Unsubscribe</h2>
-                        <p className="text-white/50 text-center mb-6">
+                        <p className="text-slate-500 text-center mb-6">
                             You are about to unsubscribe:
                         </p>
 
-                        <div className="p-4 bg-white/5 rounded-lg mb-6">
+                        <div className="p-4 bg-white rounded-lg mb-6">
                             <div className="text-center font-mono text-sm text-indigo-400">
                                 {email || "No email provided"}
                             </div>
                         </div>
 
                         <div className="mb-6">
-                            <label className="text-sm text-white/50 mb-2 block">
+                            <label className="text-sm text-slate-500 mb-2 block">
                                 Why are you unsubscribing? (optional)
                             </label>
                             <select
                                 value={reason}
                                 onChange={(e) => setReason(e.target.value)}
-                                className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-sm"
+                                className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg text-sm"
                             >
                                 <option value="">Select a reason...</option>
                                 <option value="too_many">Too many emails</option>
@@ -97,7 +97,7 @@ function UnsubscribeContent() {
                             </p>
                         )}
 
-                        <p className="text-white/30 text-xs text-center mt-6">
+                        <p className="text-slate-400 text-xs text-center mt-6">
                             If you unsubscribe by mistake, contact support to resubscribe.
                         </p>
                     </>
@@ -110,7 +110,7 @@ function UnsubscribeContent() {
 export default function UnsubscribePage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center">
+            <div className="min-h-screen bg-slate-50 text-white flex items-center justify-center">
                 <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full" />
             </div>
         }>

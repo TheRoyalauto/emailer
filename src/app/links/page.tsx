@@ -81,7 +81,7 @@ function LinksContent() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 py-6">
@@ -89,7 +89,7 @@ function LinksContent() {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Tracked Links</h1>
-                        <p className="text-white/50 text-sm">Create and manage click-tracked URLs with UTM parameters</p>
+                        <p className="text-slate-500 text-sm">Create and manage click-tracked URLs with UTM parameters</p>
                     </div>
                     {!isCreating && (
                         <button
@@ -103,50 +103,50 @@ function LinksContent() {
 
                 {/* Stats Bar */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-blue-400">{stats?.total || 0}</div>
-                        <div className="text-sm text-white/50">Total Links</div>
+                        <div className="text-sm text-slate-500">Total Links</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-emerald-400">{stats?.totalClicks || 0}</div>
-                        <div className="text-sm text-white/50">Total Clicks</div>
+                        <div className="text-sm text-slate-500">Total Clicks</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-white/10 rounded-xl">
+                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-purple-400">{stats?.activeLinks || 0}</div>
-                        <div className="text-sm text-white/50">Active Links</div>
+                        <div className="text-sm text-slate-500">Active Links</div>
                     </div>
                 </div>
 
                 {/* Create Form */}
                 {isCreating && (
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-6 mb-6">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-6 mb-6">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-semibold text-white">Create Tracked Link</h2>
-                            <button onClick={resetForm} className="text-white/50 hover:text-white">✕</button>
+                            <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
                             {/* Left Column - Core */}
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Destination URL *</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Destination URL *</label>
                                     <input
                                         type="url"
                                         value={formData.destinationUrl}
                                         onChange={(e) => setFormData({ ...formData, destinationUrl: e.target.value })}
                                         placeholder="https://example.com/landing-page"
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm text-white/70 mb-1">Label (optional)</label>
+                                    <label className="block text-sm text-slate-700 mb-1">Label (optional)</label>
                                     <input
                                         type="text"
                                         value={formData.label}
                                         onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                                         placeholder="e.g., CTA Button, Email Footer"
-                                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
                                     />
                                 </div>
                             </div>
@@ -154,49 +154,49 @@ function LinksContent() {
                             {/* Right Column - UTM */}
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-sm font-medium text-white/70">UTM Parameters</span>
+                                    <span className="text-sm font-medium text-slate-700">UTM Parameters</span>
                                     <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">Optional</span>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-xs text-white/50 mb-1">Source</label>
+                                        <label className="block text-xs text-slate-500 mb-1">Source</label>
                                         <input
                                             type="text"
                                             value={formData.utmSource}
                                             onChange={(e) => setFormData({ ...formData, utmSource: e.target.value })}
                                             placeholder="newsletter"
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-white/50 mb-1">Medium</label>
+                                        <label className="block text-xs text-slate-500 mb-1">Medium</label>
                                         <input
                                             type="text"
                                             value={formData.utmMedium}
                                             onChange={(e) => setFormData({ ...formData, utmMedium: e.target.value })}
                                             placeholder="email"
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-white/50 mb-1">Campaign</label>
+                                        <label className="block text-xs text-slate-500 mb-1">Campaign</label>
                                         <input
                                             type="text"
                                             value={formData.utmCampaign}
                                             onChange={(e) => setFormData({ ...formData, utmCampaign: e.target.value })}
                                             placeholder="spring_sale"
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-white/50 mb-1">Content</label>
+                                        <label className="block text-xs text-slate-500 mb-1">Content</label>
                                         <input
                                             type="text"
                                             value={formData.utmContent}
                                             onChange={(e) => setFormData({ ...formData, utmContent: e.target.value })}
                                             placeholder="cta_button"
-                                            className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                 </div>
@@ -206,15 +206,15 @@ function LinksContent() {
                         {/* Preview */}
                         {formData.destinationUrl && (
                             <div className="mt-4 p-3 bg-black/30 rounded-lg">
-                                <span className="text-xs text-white/50">Preview: </span>
+                                <span className="text-xs text-slate-500">Preview: </span>
                                 <span className="text-xs text-cyan-400 font-mono">{baseUrl}/api/r/[code]</span>
-                                <span className="text-xs text-white/30"> → </span>
-                                <span className="text-xs text-white/70 truncate">{formData.destinationUrl}</span>
+                                <span className="text-xs text-slate-400"> → </span>
+                                <span className="text-xs text-slate-700 truncate">{formData.destinationUrl}</span>
                             </div>
                         )}
 
-                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-white/10">
-                            <button onClick={resetForm} className="px-4 py-2 text-white/50 hover:text-white">Cancel</button>
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                            <button onClick={resetForm} className="px-4 py-2 text-slate-500 hover:text-slate-900">Cancel</button>
                             <button
                                 onClick={handleCreate}
                                 disabled={!formData.destinationUrl}
@@ -229,10 +229,10 @@ function LinksContent() {
                 {/* Links List */}
                 <div className="space-y-3">
                     {links?.length === 0 && !isCreating && (
-                        <div className="bg-[#12121a] border border-white/10 rounded-xl p-12 text-center">
+                        <div className="bg-[#12121a] border border-slate-200 rounded-xl p-12 text-center">
                             <div className="text-4xl mb-4">🔗</div>
                             <h3 className="text-lg font-medium text-white mb-2">No Tracked Links Yet</h3>
-                            <p className="text-white/50 text-sm mb-4">Create tracked links to monitor clicks and add UTM parameters</p>
+                            <p className="text-slate-500 text-sm mb-4">Create tracked links to monitor clicks and add UTM parameters</p>
                             <button
                                 onClick={() => setIsCreating(true)}
                                 className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-medium"
@@ -243,7 +243,7 @@ function LinksContent() {
                     )}
 
                     {links?.map((link) => (
-                        <div key={link._id} className="bg-[#12121a] border border-white/10 rounded-xl p-4 hover:border-white/20 transition-all">
+                        <div key={link._id} className="bg-[#12121a] border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
                                     <button
@@ -259,7 +259,7 @@ function LinksContent() {
                                                 {link.code}
                                             </span>
                                         </div>
-                                        <div className="text-sm text-white/50 truncate max-w-md">
+                                        <div className="text-sm text-slate-500 truncate max-w-md">
                                             {link.destinationUrl}
                                         </div>
                                     </div>
@@ -269,7 +269,7 @@ function LinksContent() {
                                     {/* Click Stats */}
                                     <div className="text-right">
                                         <div className="text-lg font-bold text-emerald-400">{link.clickCount}</div>
-                                        <div className="text-xs text-white/40">clicks</div>
+                                        <div className="text-xs text-slate-400">clicks</div>
                                     </div>
 
                                     {/* Actions */}
@@ -278,14 +278,14 @@ function LinksContent() {
                                             onClick={() => copyToClipboard(link.code, link._id)}
                                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${copiedId === link._id
                                                     ? "bg-emerald-500/20 text-emerald-400"
-                                                    : "bg-white/5 text-white/60 hover:bg-white/10"
+                                                    : "bg-white text-slate-500 hover:bg-slate-50"
                                                 }`}
                                         >
                                             {copiedId === link._id ? "✓ Copied" : "📋 Copy"}
                                         </button>
                                         <button
                                             onClick={() => handleDelete(link._id)}
-                                            className="px-3 py-1.5 bg-white/5 text-red-400/70 hover:text-red-400 rounded-lg text-sm"
+                                            className="px-3 py-1.5 bg-white text-red-400/70 hover:text-red-400 rounded-lg text-sm"
                                         >
                                             🗑
                                         </button>
@@ -321,7 +321,7 @@ function LinksContent() {
 
                             {/* Last Click */}
                             {link.lastClickedAt && (
-                                <div className="text-xs text-white/30 mt-2">
+                                <div className="text-xs text-slate-400 mt-2">
                                     Last click: {new Date(link.lastClickedAt).toLocaleString()}
                                 </div>
                             )}

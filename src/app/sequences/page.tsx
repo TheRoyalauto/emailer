@@ -30,7 +30,7 @@ function SequencesPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -40,7 +40,7 @@ function SequencesPage() {
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                             Email Sequences
                         </h1>
-                        <p className="text-white/50 mt-1">Automated multi-step drip campaigns</p>
+                        <p className="text-slate-500 mt-1">Automated multi-step drip campaigns</p>
                     </div>
                     <button
                         onClick={() => setShowCreate(true)}
@@ -56,10 +56,10 @@ function SequencesPage() {
                         <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full" />
                     </div>
                 ) : sequences.length === 0 ? (
-                    <div className="text-center py-16 bg-[#12121f] rounded-xl border border-white/10">
+                    <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
                         <div className="text-5xl mb-4">📧</div>
                         <h2 className="text-xl font-semibold mb-2">No Sequences Yet</h2>
-                        <p className="text-white/50 mb-4">Create automated email sequences to nurture leads</p>
+                        <p className="text-slate-500 mb-4">Create automated email sequences to nurture leads</p>
                         <button
                             onClick={() => setShowCreate(true)}
                             className="px-4 py-2 bg-indigo-500/20 text-indigo-400 rounded-lg"
@@ -70,13 +70,13 @@ function SequencesPage() {
                 ) : (
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {sequences.map((seq) => (
-                            <div key={seq._id} className="bg-[#12121f] rounded-xl border border-white/10 p-5">
+                            <div key={seq._id} className="bg-white rounded-xl border border-slate-200 p-5">
                                 <div className="flex items-start justify-between mb-3">
                                     <div>
                                         <h3 className="font-semibold">{seq.name}</h3>
                                         <span className={`inline-block px-2 py-0.5 rounded text-xs mt-1 ${seq.status === "active" ? "bg-green-500/20 text-green-400" :
                                                 seq.status === "paused" ? "bg-amber-500/20 text-amber-400" :
-                                                    "bg-white/10 text-white/50"
+                                                    "bg-slate-50 text-slate-500"
                                             }`}>
                                             {seq.status}
                                         </span>
@@ -84,10 +84,10 @@ function SequencesPage() {
                                 </div>
 
                                 {seq.description && (
-                                    <p className="text-sm text-white/50 mb-3 line-clamp-2">{seq.description}</p>
+                                    <p className="text-sm text-slate-500 mb-3 line-clamp-2">{seq.description}</p>
                                 )}
 
-                                <div className="flex items-center gap-4 text-sm text-white/40 mb-4">
+                                <div className="flex items-center gap-4 text-sm text-slate-400 mb-4">
                                     <span>📋 {seq.stepCount} steps</span>
                                     <span>👥 {seq.activeEnrollments} active</span>
                                 </div>
@@ -95,7 +95,7 @@ function SequencesPage() {
                                 <div className="flex items-center gap-2">
                                     <Link
                                         href={`/sequences/${seq._id}`}
-                                        className="flex-1 text-center px-3 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-colors"
+                                        className="flex-1 text-center px-3 py-2 bg-white hover:bg-slate-50 rounded-lg text-sm transition-colors"
                                     >
                                         Edit Steps
                                     </Link>
@@ -130,38 +130,38 @@ function SequencesPage() {
             {/* Create Modal */}
             {showCreate && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#12121f] rounded-2xl border border-white/10 w-full max-w-lg p-6">
+                    <div className="bg-white rounded-2xl border border-slate-200 w-full max-w-lg p-6">
                         <h2 className="text-xl font-bold mb-4">Create Sequence</h2>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-sm text-white/50 mb-1 block">Sequence Name</label>
+                                <label className="text-sm text-slate-500 mb-1 block">Sequence Name</label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                     placeholder="e.g., Welcome Series"
                                 />
                             </div>
 
                             <div>
-                                <label className="text-sm text-white/50 mb-1 block">Description</label>
+                                <label className="text-sm text-slate-500 mb-1 block">Description</label>
                                 <textarea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg resize-none"
+                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg resize-none"
                                     rows={2}
                                     placeholder="Optional description..."
                                 />
                             </div>
 
                             <div>
-                                <label className="text-sm text-white/50 mb-1 block">Trigger Type</label>
+                                <label className="text-sm text-slate-500 mb-1 block">Trigger Type</label>
                                 <select
                                     value={triggerType}
                                     onChange={(e) => setTriggerType(e.target.value as any)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg"
+                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
                                 >
                                     <option value="manual">Manual enrollment</option>
                                     <option value="on_contact_create">When contact is created</option>
@@ -173,7 +173,7 @@ function SequencesPage() {
                         <div className="flex justify-end gap-3 mt-6">
                             <button
                                 onClick={() => setShowCreate(false)}
-                                className="px-4 py-2 bg-white/10 rounded-lg"
+                                className="px-4 py-2 bg-slate-50 rounded-lg"
                             >
                                 Cancel
                             </button>

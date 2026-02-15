@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
+    darkMode: 'class',
     content: [
         './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
         './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -31,29 +32,17 @@ const config: Config = {
                     '0%': { backgroundPosition: '-200% center' },
                     '100%': { backgroundPosition: '200% center' },
                 },
+                'fadeIn': {
+                    '0%': { opacity: '0', transform: 'translateY(4px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
             },
             animation: {
                 'drift-slow': 'drift-slow 20s ease-in-out infinite',
                 'drift-medium': 'drift-medium 15s ease-in-out infinite',
                 'drift-fast': 'drift-fast 12s ease-in-out infinite',
                 'shimmer': 'shimmer 3s linear infinite',
-            },
-            colors: {
-                background: 'var(--background)',
-                foreground: 'var(--foreground)',
-                primary: {
-                    DEFAULT: '#6366f1',
-                    foreground: '#ffffff',
-                },
-                muted: {
-                    DEFAULT: '#1a1a2e',
-                    foreground: '#a1a1aa',
-                },
-                card: {
-                    DEFAULT: '#0f0f1a',
-                    foreground: '#ffffff',
-                },
-                border: '#27272a',
+                'fadeIn': 'fadeIn 0.2s ease-out',
             },
         },
     },

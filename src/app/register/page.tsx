@@ -165,22 +165,22 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-[#F1F3F8] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-[#FF6B4A]/10 to-[#F43F5E]/5 blur-3xl" />
-                <div className="absolute -bottom-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-[#0EA5E9]/10 to-[#06B6D4]/5 blur-3xl" />
+                <div className="absolute -top-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-cyan-500/10 to-sky-500/5 blur-3xl" />
+                <div className="absolute -bottom-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-sky-500/10 to-cyan-500/5 blur-3xl" />
             </div>
 
             <div className="w-full max-w-md relative">
                 {/* Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-[#E5E7EB] p-8">
+                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
                     {/* Logo */}
                     <div className="text-center mb-6">
-                        <h1 className="text-3xl font-bold text-gradient mb-2">
-                            E-mailer
-                        </h1>
-                        <p className="text-[#9CA3AF]">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                            <img src="/logo.png" alt="E-mailer" className="h-8 w-auto" />
+                        </div>
+                        <p className="text-slate-400">
                             {step === "details" && "Create your account"}
                             {step === "verify" && "Verify your email"}
                             {step === "success" && "You're all set!"}
@@ -192,14 +192,14 @@ export default function RegisterPage() {
                         {["details", "verify", "success"].map((s, i) => (
                             <div key={s} className="flex items-center gap-2">
                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${step === s
-                                    ? "bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] text-white shadow-lg shadow-[#FF6B4A]/20"
+                                    ? "bg-slate-900 text-white shadow-lg"
                                     : ["details", "verify", "success"].indexOf(step) > i
-                                        ? "bg-[#10B981] text-white"
-                                        : "bg-[#F1F3F8] text-[#9CA3AF]"
+                                        ? "bg-emerald-500 text-white"
+                                        : "bg-slate-100 text-slate-400"
                                     }`}>
                                     {["details", "verify", "success"].indexOf(step) > i ? "✓" : i + 1}
                                 </div>
-                                {i < 2 && <div className={`w-8 h-0.5 rounded-full ${["details", "verify", "success"].indexOf(step) > i ? "bg-[#10B981]" : "bg-[#E5E7EB]"}`} />}
+                                {i < 2 && <div className={`w-8 h-0.5 rounded-full ${["details", "verify", "success"].indexOf(step) > i ? "bg-emerald-500" : "bg-slate-200"}`} />}
                             </div>
                         ))}
                     </div>
@@ -208,77 +208,77 @@ export default function RegisterPage() {
                     {step === "details" && (
                         <form onSubmit={handleDetailsSubmit} className="space-y-4">
                             {error && (
-                                <div className="p-4 rounded-xl bg-[#FEF2F2] border border-[#EF4444]/20 text-[#EF4444] text-sm flex items-center gap-2">
+                                <div className="p-4 rounded-xl bg-red-50 border border-red-500/20 text-red-500 text-sm flex items-center gap-2">
                                     <span>⚠️</span>
                                     <span>{error}</span>
                                 </div>
                             )}
 
                             <div>
-                                <label className="block text-sm font-semibold text-[#4B5563] mb-2">
-                                    Full Name <span className="text-[#EF4444]">*</span>
+                                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                    Full Name <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                     placeholder="John Doe"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-[#4B5563] mb-2">
-                                    Email Address <span className="text-[#EF4444]">*</span>
+                                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                    Email Address <span className="text-red-500">*</span>
                                 </label>
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                     placeholder="you@example.com"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-[#4B5563] mb-2">
-                                    Phone Number <span className="text-[#9CA3AF]">(optional)</span>
+                                <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                    Phone Number <span className="text-slate-400">(optional)</span>
                                 </label>
                                 <input
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-                                    className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                     placeholder="+1 (555) 000-0000"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-sm font-semibold text-[#4B5563] mb-2">
-                                        Password <span className="text-[#EF4444]">*</span>
+                                    <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                        Password <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                         placeholder="••••••••"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-[#4B5563] mb-2">
-                                        Confirm <span className="text-[#EF4444]">*</span>
+                                    <label className="block text-sm font-semibold text-slate-500 mb-2">
+                                        Confirm <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -287,7 +287,7 @@ export default function RegisterPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-3.5 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] mt-2"
+                                className="w-full py-3.5 bg-slate-900 rounded-xl font-semibold text-white hover:bg-slate-800 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] mt-2"
                             >
                                 {loading ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -299,11 +299,11 @@ export default function RegisterPage() {
                                 )}
                             </button>
 
-                            <p className="text-center text-[#9CA3AF] text-sm">
+                            <p className="text-center text-slate-400 text-sm">
                                 By signing up, you agree to our{" "}
-                                <Link href="/terms" className="text-[#FF6B4A] hover:underline">Terms</Link>
+                                <Link href="/terms" className="text-cyan-600 hover:underline">Terms</Link>
                                 {" "}and{" "}
-                                <Link href="/privacy" className="text-[#FF6B4A] hover:underline">Privacy Policy</Link>
+                                <Link href="/privacy" className="text-cyan-600 hover:underline">Privacy Policy</Link>
                             </p>
                         </form>
                     )}
@@ -312,17 +312,17 @@ export default function RegisterPage() {
                     {step === "verify" && (
                         <form onSubmit={handleVerifySubmit} className="space-y-6">
                             <div className="text-center mb-4">
-                                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#FF6B4A]/10 to-[#F43F5E]/10 rounded-full flex items-center justify-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-cyan-50 rounded-full flex items-center justify-center">
                                     <span className="text-3xl">📧</span>
                                 </div>
-                                <p className="text-[#4B5563]">
+                                <p className="text-slate-500">
                                     We sent a 6-digit code to<br />
-                                    <span className="text-[#1A1D26] font-semibold">{email}</span>
+                                    <span className="text-slate-900 font-semibold">{email}</span>
                                 </p>
                             </div>
 
                             {error && (
-                                <div className="p-4 rounded-xl bg-[#FEF2F2] border border-[#EF4444]/20 text-[#EF4444] text-sm text-center">
+                                <div className="p-4 rounded-xl bg-red-50 border border-red-500/20 text-red-500 text-sm text-center">
                                     {error}
                                 </div>
                             )}
@@ -332,7 +332,7 @@ export default function RegisterPage() {
                                     type="text"
                                     value={otp}
                                     onChange={(e) => handleOtpChange(e.target.value)}
-                                    className="w-full px-4 py-4 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-center text-2xl tracking-[0.5em] font-mono text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                    className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-center text-2xl tracking-[0.5em] font-mono text-slate-900 placeholder:text-slate-400"
                                     placeholder="000000"
                                     maxLength={6}
                                     autoFocus
@@ -342,7 +342,7 @@ export default function RegisterPage() {
                             <button
                                 type="submit"
                                 disabled={loading || otp.length !== 6}
-                                className="w-full py-3.5 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                                className="w-full py-3.5 bg-slate-900 rounded-xl font-semibold text-white hover:bg-slate-800 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
                             >
                                 {loading ? "Verifying..." : "Verify & Create Account"}
                             </button>
@@ -352,7 +352,7 @@ export default function RegisterPage() {
                                     type="button"
                                     onClick={handleResendOTP}
                                     disabled={loading}
-                                    className="text-[#FF6B4A] hover:text-[#F43F5E] text-sm font-medium transition-colors disabled:opacity-50"
+                                    className="text-cyan-600 hover:text-cyan-700 text-sm font-medium transition-colors disabled:opacity-50"
                                 >
                                     Didn't receive the code? Resend
                                 </button>
@@ -361,7 +361,7 @@ export default function RegisterPage() {
                             <button
                                 type="button"
                                 onClick={() => setStep("details")}
-                                className="w-full py-2 text-[#9CA3AF] hover:text-[#4B5563] text-sm transition-colors"
+                                className="w-full py-2 text-slate-400 hover:text-slate-500 text-sm transition-colors"
                             >
                                 ← Back to details
                             </button>
@@ -371,13 +371,13 @@ export default function RegisterPage() {
                     {/* Step 3: Success */}
                     {step === "success" && (
                         <div className="text-center py-8">
-                            <div className="w-20 h-20 mx-auto mb-6 bg-[#ECFDF5] rounded-full flex items-center justify-center">
+                            <div className="w-20 h-20 mx-auto mb-6 bg-emerald-50 rounded-full flex items-center justify-center">
                                 <span className="text-4xl">🎉</span>
                             </div>
-                            <h2 className="text-2xl font-bold text-[#1A1D26] mb-2">Welcome aboard, {name}!</h2>
-                            <p className="text-[#4B5563] mb-6">Your account has been created successfully.</p>
-                            <p className="text-[#9CA3AF] text-sm flex items-center justify-center gap-2">
-                                <span className="animate-spin w-4 h-4 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                            <h2 className="text-2xl font-bold text-slate-900 mb-2">Welcome aboard, {name}!</h2>
+                            <p className="text-slate-500 mb-6">Your account has been created successfully.</p>
+                            <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
+                                <span className="animate-spin w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 Redirecting to dashboard...
                             </p>
                         </div>
@@ -385,9 +385,9 @@ export default function RegisterPage() {
 
                     {/* Login link */}
                     {step === "details" && (
-                        <p className="text-center mt-6 text-[#9CA3AF]">
+                        <p className="text-center mt-6 text-slate-400">
                             Already have an account?{" "}
-                            <Link href="/login" className="text-[#FF6B4A] hover:text-[#F43F5E] font-semibold transition-colors">
+                            <Link href="/login" className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors">
                                 Sign in
                             </Link>
                         </p>
@@ -395,7 +395,7 @@ export default function RegisterPage() {
                 </div>
 
                 {/* Footer */}
-                <p className="text-center mt-6 text-sm text-[#9CA3AF]">
+                <p className="text-center mt-6 text-sm text-slate-400">
                     © 2024 Emailer. Professional email campaigns.
                 </p>
             </div>

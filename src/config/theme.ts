@@ -1,15 +1,14 @@
 /**
  * ============================================
- * E-MAILER THEME CONFIGURATION
+ * E-MAILER DESIGN SYSTEM — UNIFIED TOKENS
  * ============================================
- * 
- * Central source of truth for all design tokens.
- * Change fonts, colors, or spacing here and it
- * propagates app-wide automatically.
- * 
- * USAGE: Import and use in components/pages:
- *   import { theme, fonts } from '@/config/theme';
- * 
+ *
+ * Single source of truth for all design tokens.
+ * Aligned with marketing pages (slate/cyan palette).
+ *
+ * USAGE: Import in components/pages:
+ *   import { theme, colors } from '@/config/theme';
+ *
  */
 
 // ============================================
@@ -17,17 +16,18 @@
 // ============================================
 
 export const fonts = {
-    // Primary font for all body text
-    primary: "'Plus Jakarta Sans', system-ui, sans-serif",
+    // Headings — Space Grotesk (loaded via --font-heading)
+    heading: "var(--font-heading), system-ui, -apple-system, sans-serif",
 
-    // Display font for headings (can be different for branding)
-    display: "'Plus Jakarta Sans', system-ui, sans-serif",
+    // Body — Outfit (loaded via --font-body)
+    body: "var(--font-body), system-ui, -apple-system, sans-serif",
 
     // Monospace for code, data, technical content
     mono: "'JetBrains Mono', 'Fira Code', monospace",
 
     // Weights
     weights: {
+        light: 300,
         regular: 400,
         medium: 500,
         semibold: 600,
@@ -49,40 +49,41 @@ export const fonts = {
 } as const;
 
 // ============================================
-// COLORS
+// COLORS — Slate/Cyan palette (matches marketing)
 // ============================================
 
 export const colors = {
     // Backgrounds
     bg: {
-        primary: '#FFFFFF',
-        secondary: '#F8F9FC',
-        tertiary: '#F1F3F8',
+        primary: '#FFFFFF',         // Cards, modals, elevated surfaces
+        secondary: '#F8FAFC',       // Page backgrounds (slate-50)
+        tertiary: '#F1F5F9',        // Subtle section fills (slate-100)
         elevated: '#FFFFFF',
         overlay: 'rgba(0, 0, 0, 0.5)',
     },
 
     // Text
     text: {
-        primary: '#1A1D26',
-        secondary: '#4B5563',
-        muted: '#9CA3AF',
+        primary: '#0F172A',         // slate-900 — headings, bold content
+        secondary: '#64748B',       // slate-500 — body copy, descriptions
+        muted: '#94A3B8',           // slate-400 — placeholders, timestamps
         inverse: '#FFFFFF',
     },
 
     // Brand / Accent
     accent: {
-        primary: '#FF6B4A',      // Electric Coral
-        primaryHover: '#FF5533',
-        secondary: '#0EA5E9',    // Deep Teal
-        secondaryHover: '#0284C7',
+        primary: '#06B6D4',         // cyan-500 — active states, links, highlights
+        primaryHover: '#0891B2',    // cyan-600
+        primaryLight: '#ECFEFF',    // cyan-50 — active backgrounds
+        secondary: '#0F172A',       // slate-900 — primary CTAs
+        secondaryHover: '#1E293B',  // slate-800
     },
 
     // Gradients (as CSS strings)
     gradients: {
-        coral: 'linear-gradient(135deg, #FF6B4A 0%, #F43F5E 100%)',
-        teal: 'linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%)',
-        subtle: 'linear-gradient(135deg, #F8F9FC 0%, #F1F3F8 100%)',
+        brand: 'linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%)',
+        dark: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+        subtle: 'linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%)',
     },
 
     // Semantic
@@ -97,9 +98,9 @@ export const colors = {
 
     // Borders
     border: {
-        default: '#E5E7EB',
-        subtle: '#F3F4F6',
-        focus: '#FF6B4A',
+        default: '#E2E8F0',         // slate-200
+        subtle: '#F1F5F9',          // slate-100
+        focus: '#06B6D4',           // cyan-500
     },
 } as const;
 
@@ -119,9 +120,10 @@ export const spacing = {
 
 export const radius = {
     sm: 6,
-    md: 10,
-    lg: 14,
-    xl: 20,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    '2xl': 20,
     full: 9999,
 } as const;
 
@@ -134,8 +136,8 @@ export const shadows = {
     md: '0 4px 12px rgba(0, 0, 0, 0.06)',
     lg: '0 8px 24px rgba(0, 0, 0, 0.08)',
     xl: '0 16px 48px rgba(0, 0, 0, 0.12)',
-    glow: '0 0 20px rgba(255, 107, 74, 0.15)',
-    glowStrong: '0 0 30px rgba(255, 107, 74, 0.25)',
+    glow: '0 0 20px rgba(6, 182, 212, 0.15)',
+    glowStrong: '0 0 30px rgba(6, 182, 212, 0.25)',
 } as const;
 
 // ============================================
@@ -163,34 +165,3 @@ export const theme = {
 } as const;
 
 export default theme;
-
-// ============================================
-// HELPER: Generate CSS custom properties
-// ============================================
-
-export function getThemeCSSVariables(): string {
-    return `
-        --font-primary: ${fonts.primary};
-        --font-display: ${fonts.display};
-        --font-mono: ${fonts.mono};
-        
-        --bg-primary: ${colors.bg.primary};
-        --bg-secondary: ${colors.bg.secondary};
-        --bg-tertiary: ${colors.bg.tertiary};
-        
-        --text-primary: ${colors.text.primary};
-        --text-secondary: ${colors.text.secondary};
-        --text-muted: ${colors.text.muted};
-        
-        --accent-primary: ${colors.accent.primary};
-        --accent-secondary: ${colors.accent.secondary};
-        
-        --border-default: ${colors.border.default};
-        --border-subtle: ${colors.border.subtle};
-        
-        --radius-sm: ${radius.sm}px;
-        --radius-md: ${radius.md}px;
-        --radius-lg: ${radius.lg}px;
-        --radius-xl: ${radius.xl}px;
-    `;
-}

@@ -30,7 +30,6 @@ export default function LoginPage() {
             if (!result.success) {
                 setError(result.error || "Invalid email or password");
             }
-            // On success, the useEffect above will redirect
         } catch (err: any) {
             setError(err.message || "Login failed");
         } finally {
@@ -38,43 +37,42 @@ export default function LoginPage() {
         }
     };
 
-    // Don't show login form if already authenticated
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-[#F1F3F8] flex items-center justify-center">
-                <div className="animate-spin w-8 h-8 border-3 border-[#FF6B4A] border-t-transparent rounded-full" />
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+                <div className="animate-spin w-8 h-8 border-3 border-cyan-500 border-t-transparent rounded-full" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-[#F1F3F8] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
             {/* Background decoration */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-[#FF6B4A]/10 to-[#F43F5E]/5 blur-3xl" />
-                <div className="absolute -bottom-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-[#0EA5E9]/10 to-[#06B6D4]/5 blur-3xl" />
+                <div className="absolute -top-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-cyan-500/10 to-sky-500/5 blur-3xl" />
+                <div className="absolute -bottom-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-gradient-to-br from-sky-500/10 to-cyan-500/5 blur-3xl" />
             </div>
 
             <div className="w-full max-w-md relative">
                 {/* Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-[#E5E7EB] p-8">
+                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gradient mb-2">
-                            Emailer
-                        </h1>
-                        <p className="text-[#9CA3AF]">Sign in to your account</p>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                            <img src="/logo.png" alt="Emailer" className="h-8 w-auto" />
+                        </div>
+                        <p className="text-slate-400">Sign in to your account</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {error && (
-                            <div className="p-4 rounded-xl bg-[#FEF2F2] border border-[#EF4444]/20 text-[#EF4444] text-sm flex items-center gap-2">
+                            <div className="p-4 rounded-xl bg-red-50 border border-red-500/20 text-red-500 text-sm flex items-center gap-2">
                                 <span>⚠️</span>
                                 <span>{error}</span>
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-semibold text-[#4B5563] mb-2">
+                            <label className="block text-sm font-semibold text-slate-500 mb-2">
                                 Email
                             </label>
                             <input
@@ -82,13 +80,13 @@ export default function LoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                 placeholder="you@example.com"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-[#4B5563] mb-2">
+                            <label className="block text-sm font-semibold text-slate-500 mb-2">
                                 Password
                             </label>
                             <input
@@ -96,7 +94,7 @@ export default function LoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:outline-none focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all text-slate-900 placeholder:text-slate-400"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -104,7 +102,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3.5 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                            className="w-full py-3.5 bg-slate-900 rounded-xl font-semibold text-white hover:bg-slate-800 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -117,16 +115,16 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <p className="text-center mt-6 text-[#9CA3AF]">
+                    <p className="text-center mt-6 text-slate-400">
                         Don&apos;t have an account?{" "}
-                        <Link href="/register" className="text-[#FF6B4A] hover:text-[#F43F5E] font-semibold transition-colors">
+                        <Link href="/register" className="text-cyan-600 hover:text-cyan-700 font-semibold transition-colors">
                             Sign up
                         </Link>
                     </p>
                 </div>
 
                 {/* Footer */}
-                <p className="text-center mt-6 text-sm text-[#9CA3AF]">
+                <p className="text-center mt-6 text-sm text-slate-400">
                     © 2024 Emailer. Professional email campaigns.
                 </p>
             </div>

@@ -66,7 +66,7 @@ function InsightsPage() {
     const deliveryRate = stats?.rates?.deliveryRate ? Number(stats.rates.deliveryRate) : 100;
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 text-white pb-20 md:pb-0">
             <AppHeader />
 
             <PageTransition>
@@ -78,7 +78,7 @@ function InsightsPage() {
                                 <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                                     Insights
                                 </h1>
-                                <p className="text-white/50 mt-1">Performance metrics and analytics</p>
+                                <p className="text-slate-500 mt-1">Performance metrics and analytics</p>
                             </div>
                             <div className="flex gap-2">
                                 {(["7d", "30d", "90d"] as const).map((range) => (
@@ -87,7 +87,7 @@ function InsightsPage() {
                                         onClick={() => setTimeRange(range)}
                                         className={`px-4 py-2 rounded-lg font-medium transition-all ${timeRange === range
                                             ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                            : "bg-white/5 text-white/60 hover:bg-white/10"
+                                            : "bg-white text-slate-500 hover:bg-slate-50"
                                             }`}
                                     >
                                         {range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : "90 Days"}
@@ -106,7 +106,7 @@ function InsightsPage() {
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`px-4 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id
                                         ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/50"
-                                        : "bg-white/5 text-white/60 hover:bg-white/10 hover:text-white border border-transparent"
+                                        : "bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900 border border-transparent"
                                         }`}
                                 >
                                     <span>{tab.icon}</span>
@@ -125,67 +125,67 @@ function InsightsPage() {
                                     <div className="text-3xl font-bold text-indigo-400">
                                         {stats?.totals?.sent || 0}
                                     </div>
-                                    <div className="text-sm text-white/50 mt-1">Emails Sent</div>
+                                    <div className="text-sm text-slate-500 mt-1">Emails Sent</div>
                                 </div>
                                 <div className="p-5 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-2xl border border-emerald-500/20">
                                     <div className="text-3xl font-bold text-emerald-400">
                                         {openRate > 0 ? `${openRate.toFixed(1)}%` : "—"}
                                     </div>
-                                    <div className="text-sm text-white/50 mt-1">Open Rate</div>
+                                    <div className="text-sm text-slate-500 mt-1">Open Rate</div>
                                 </div>
                                 <div className="p-5 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-2xl border border-purple-500/20">
                                     <div className="text-3xl font-bold text-purple-400">
                                         {callStats?.today || 0}
                                     </div>
-                                    <div className="text-sm text-white/50 mt-1">Calls Today</div>
+                                    <div className="text-sm text-slate-500 mt-1">Calls Today</div>
                                 </div>
-                                <div className={`p-5 bg-gradient-to-br ${getReputationBg(stats?.reputationScore || 0)} rounded-2xl border border-white/10`}>
+                                <div className={`p-5 bg-gradient-to-br ${getReputationBg(stats?.reputationScore || 0)} rounded-2xl border border-slate-200`}>
                                     <div className={`text-3xl font-bold ${getReputationColor(stats?.reputationScore || 0)}`}>
                                         {stats?.reputationScore || 0}
                                     </div>
-                                    <div className="text-sm text-white/50 mt-1">Reputation Score</div>
+                                    <div className="text-sm text-slate-500 mt-1">Reputation Score</div>
                                 </div>
                             </div>
 
                             {/* Two Column Layout */}
                             <div className="grid md:grid-cols-2 gap-6">
                                 {/* Performance Summary */}
-                                <div className="bg-[#12121f] rounded-2xl border border-white/10 p-6">
+                                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                                     <h3 className="text-lg font-semibold mb-4">Performance Summary</h3>
                                     <div className="space-y-4">
                                         <div>
                                             <div className="flex justify-between text-sm mb-1">
-                                                <span className="text-white/60">Delivery Rate</span>
+                                                <span className="text-slate-500">Delivery Rate</span>
                                                 <span className="text-emerald-400">{deliveryRate.toFixed(1)}%</span>
                                             </div>
-                                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
                                                 <div className="h-full bg-emerald-500 rounded-full transition-all" style={{ width: `${deliveryRate}%` }} />
                                             </div>
                                         </div>
                                         <div>
                                             <div className="flex justify-between text-sm mb-1">
-                                                <span className="text-white/60">Open Rate</span>
+                                                <span className="text-slate-500">Open Rate</span>
                                                 <span className="text-blue-400">{openRate.toFixed(1)}%</span>
                                             </div>
-                                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
                                                 <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${Math.min(openRate * 2, 100)}%` }} />
                                             </div>
                                         </div>
                                         <div>
                                             <div className="flex justify-between text-sm mb-1">
-                                                <span className="text-white/60">Click Rate</span>
+                                                <span className="text-slate-500">Click Rate</span>
                                                 <span className="text-purple-400">{clickRate.toFixed(1)}%</span>
                                             </div>
-                                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
                                                 <div className="h-full bg-purple-500 rounded-full transition-all" style={{ width: `${Math.min(clickRate * 5, 100)}%` }} />
                                             </div>
                                         </div>
                                         <div>
                                             <div className="flex justify-between text-sm mb-1">
-                                                <span className="text-white/60">Bounce Rate</span>
+                                                <span className="text-slate-500">Bounce Rate</span>
                                                 <span className="text-red-400">{bounceRate.toFixed(2)}%</span>
                                             </div>
-                                            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
                                                 <div className="h-full bg-red-500 rounded-full transition-all" style={{ width: `${Math.min(bounceRate * 10, 100)}%` }} />
                                             </div>
                                         </div>
@@ -193,18 +193,18 @@ function InsightsPage() {
                                 </div>
 
                                 {/* Recent Activity */}
-                                <div className="bg-[#12121f] rounded-2xl border border-white/10 p-6">
+                                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                                     <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
                                     {recentActivity === undefined ? (
                                         <div className="flex justify-center py-8">
                                             <div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" />
                                         </div>
                                     ) : recentActivity.length === 0 ? (
-                                        <div className="text-center py-8 text-white/30">
+                                        <div className="text-center py-8 text-slate-400">
                                             <p>No recent activity</p>
                                         </div>
                                     ) : (
-                                        <div className="divide-y divide-white/5 max-h-64 overflow-y-auto">
+                                        <div className="divide-y divide-slate-200 max-h-64 overflow-y-auto">
                                             {recentActivity.map((activity) => (
                                                 <div key={activity._id} className="py-3 flex items-center gap-3">
                                                     <span className="text-lg">{getActivityIcon(activity.type)}</span>
@@ -213,10 +213,10 @@ function InsightsPage() {
                                                             {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                                         </div>
                                                         {activity.notes && (
-                                                            <div className="text-xs text-white/40 truncate">{activity.notes}</div>
+                                                            <div className="text-xs text-slate-400 truncate">{activity.notes}</div>
                                                         )}
                                                     </div>
-                                                    <div className="text-xs text-white/30">{formatRelativeTime(activity.createdAt)}</div>
+                                                    <div className="text-xs text-slate-400">{formatRelativeTime(activity.createdAt)}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -231,28 +231,28 @@ function InsightsPage() {
                         <FadeInContainer delay={0.15}>
                             <div className="space-y-6">
                                 {/* Email Stats */}
-                                <div className="bg-[#12121f] rounded-2xl border border-white/10 p-6">
+                                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                                     <h3 className="text-lg font-semibold mb-6">Email Performance</h3>
                                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                                         <div className="p-4 bg-black/30 rounded-xl text-center">
                                             <div className="text-2xl font-bold text-white">{stats?.totals?.sent || 0}</div>
-                                            <div className="text-xs text-white/50 mt-1">Sent</div>
+                                            <div className="text-xs text-slate-500 mt-1">Sent</div>
                                         </div>
                                         <div className="p-4 bg-black/30 rounded-xl text-center">
                                             <div className="text-2xl font-bold text-emerald-400">{stats?.totals?.delivered || 0}</div>
-                                            <div className="text-xs text-white/50 mt-1">Delivered</div>
+                                            <div className="text-xs text-slate-500 mt-1">Delivered</div>
                                         </div>
                                         <div className="p-4 bg-black/30 rounded-xl text-center">
                                             <div className="text-2xl font-bold text-blue-400">{stats?.totals?.opened || 0}</div>
-                                            <div className="text-xs text-white/50 mt-1">Opened</div>
+                                            <div className="text-xs text-slate-500 mt-1">Opened</div>
                                         </div>
                                         <div className="p-4 bg-black/30 rounded-xl text-center">
                                             <div className="text-2xl font-bold text-purple-400">{stats?.totals?.clicked || 0}</div>
-                                            <div className="text-xs text-white/50 mt-1">Clicked</div>
+                                            <div className="text-xs text-slate-500 mt-1">Clicked</div>
                                         </div>
                                         <div className="p-4 bg-black/30 rounded-xl text-center">
                                             <div className="text-2xl font-bold text-red-400">{stats?.totals?.bounced || 0}</div>
-                                            <div className="text-xs text-white/50 mt-1">Bounced</div>
+                                            <div className="text-xs text-slate-500 mt-1">Bounced</div>
                                         </div>
                                     </div>
                                 </div>
@@ -260,24 +260,24 @@ function InsightsPage() {
                                 {/* Rate Cards */}
                                 <div className="grid md:grid-cols-4 gap-4">
                                     <div className="p-6 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 rounded-2xl border border-emerald-500/20">
-                                        <div className="text-sm text-white/50 mb-2">Delivery Rate</div>
+                                        <div className="text-sm text-slate-500 mb-2">Delivery Rate</div>
                                         <div className="text-4xl font-bold text-emerald-400">{deliveryRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/40 mt-2">Target: 95%+</div>
+                                        <div className="text-xs text-slate-400 mt-2">Target: 95%+</div>
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-2xl border border-blue-500/20">
-                                        <div className="text-sm text-white/50 mb-2">Open Rate</div>
+                                        <div className="text-sm text-slate-500 mb-2">Open Rate</div>
                                         <div className="text-4xl font-bold text-blue-400">{openRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/40 mt-2">Industry avg: 20%</div>
+                                        <div className="text-xs text-slate-400 mt-2">Industry avg: 20%</div>
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-2xl border border-purple-500/20">
-                                        <div className="text-sm text-white/50 mb-2">Click Rate</div>
+                                        <div className="text-sm text-slate-500 mb-2">Click Rate</div>
                                         <div className="text-4xl font-bold text-purple-400">{clickRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/40 mt-2">Industry avg: 2.5%</div>
+                                        <div className="text-xs text-slate-400 mt-2">Industry avg: 2.5%</div>
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-amber-500/10 to-amber-500/5 rounded-2xl border border-amber-500/20">
-                                        <div className="text-sm text-white/50 mb-2">Reply Rate</div>
+                                        <div className="text-sm text-slate-500 mb-2">Reply Rate</div>
                                         <div className="text-4xl font-bold text-amber-400">—</div>
-                                        <div className="text-xs text-white/40 mt-2">Coming soon</div>
+                                        <div className="text-xs text-slate-400 mt-2">Coming soon</div>
                                     </div>
                                 </div>
                             </div>
@@ -289,14 +289,14 @@ function InsightsPage() {
                         <FadeInContainer delay={0.15}>
                             <div className="space-y-6">
                                 {/* Score Hero */}
-                                <div className={`bg-gradient-to-br ${getReputationBg(stats?.reputationScore || 0)} rounded-2xl border border-white/10 p-8`}>
+                                <div className={`bg-gradient-to-br ${getReputationBg(stats?.reputationScore || 0)} rounded-2xl border border-slate-200 p-8`}>
                                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                                         <div>
-                                            <h2 className="text-sm text-white/50 uppercase tracking-wider mb-2">Sender Reputation Score</h2>
+                                            <h2 className="text-sm text-slate-500 uppercase tracking-wider mb-2">Sender Reputation Score</h2>
                                             <div className={`text-7xl font-bold ${getReputationColor(stats?.reputationScore || 0)}`}>
                                                 {stats?.reputationScore || 0}
                                             </div>
-                                            <p className="text-white/50 mt-2">
+                                            <p className="text-slate-500 mt-2">
                                                 {(stats?.reputationScore || 0) >= 90 ? "Excellent - Your emails are highly trusted" :
                                                     (stats?.reputationScore || 0) >= 70 ? "Good - Minor improvements possible" :
                                                         (stats?.reputationScore || 0) >= 50 ? "Fair - Consider improving practices" :
@@ -306,11 +306,11 @@ function InsightsPage() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="p-4 bg-black/30 rounded-xl text-center">
                                                 <div className="text-2xl font-bold text-emerald-400">{deliveryRate.toFixed(0)}%</div>
-                                                <div className="text-xs text-white/50 mt-1">Deliverability</div>
+                                                <div className="text-xs text-slate-500 mt-1">Deliverability</div>
                                             </div>
                                             <div className="p-4 bg-black/30 rounded-xl text-center">
                                                 <div className="text-2xl font-bold text-red-400">{bounceRate.toFixed(2)}%</div>
-                                                <div className="text-xs text-white/50 mt-1">Bounce Rate</div>
+                                                <div className="text-xs text-slate-500 mt-1">Bounce Rate</div>
                                             </div>
                                         </div>
                                     </div>
@@ -318,75 +318,75 @@ function InsightsPage() {
 
                                 {/* Detailed Metrics */}
                                 <div className="grid md:grid-cols-5 gap-4">
-                                    <div className="p-5 bg-[#12121f] rounded-xl border border-white/10 text-center">
+                                    <div className="p-5 bg-white rounded-xl border border-slate-200 text-center">
                                         <div className="text-2xl font-bold text-emerald-400">{deliveryRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/50 mt-1">Delivery</div>
-                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                        <div className="text-xs text-slate-500 mt-1">Delivery</div>
+                                        <div className="w-full h-1 bg-slate-50 rounded-full mt-2 overflow-hidden">
                                             <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${deliveryRate}%` }} />
                                         </div>
                                     </div>
-                                    <div className="p-5 bg-[#12121f] rounded-xl border border-white/10 text-center">
+                                    <div className="p-5 bg-white rounded-xl border border-slate-200 text-center">
                                         <div className="text-2xl font-bold text-blue-400">{openRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/50 mt-1">Opens</div>
-                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                        <div className="text-xs text-slate-500 mt-1">Opens</div>
+                                        <div className="w-full h-1 bg-slate-50 rounded-full mt-2 overflow-hidden">
                                             <div className="h-full bg-blue-500 rounded-full" style={{ width: `${Math.min(openRate * 2, 100)}%` }} />
                                         </div>
                                     </div>
-                                    <div className="p-5 bg-[#12121f] rounded-xl border border-white/10 text-center">
+                                    <div className="p-5 bg-white rounded-xl border border-slate-200 text-center">
                                         <div className="text-2xl font-bold text-purple-400">{clickRate.toFixed(1)}%</div>
-                                        <div className="text-xs text-white/50 mt-1">Clicks</div>
-                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                        <div className="text-xs text-slate-500 mt-1">Clicks</div>
+                                        <div className="w-full h-1 bg-slate-50 rounded-full mt-2 overflow-hidden">
                                             <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min(clickRate * 5, 100)}%` }} />
                                         </div>
                                     </div>
-                                    <div className="p-5 bg-[#12121f] rounded-xl border border-white/10 text-center">
+                                    <div className="p-5 bg-white rounded-xl border border-slate-200 text-center">
                                         <div className="text-2xl font-bold text-amber-400">{bounceRate.toFixed(2)}%</div>
-                                        <div className="text-xs text-white/50 mt-1">Bounces</div>
-                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                        <div className="text-xs text-slate-500 mt-1">Bounces</div>
+                                        <div className="w-full h-1 bg-slate-50 rounded-full mt-2 overflow-hidden">
                                             <div className="h-full bg-amber-500 rounded-full" style={{ width: `${Math.min(bounceRate * 10, 100)}%` }} />
                                         </div>
                                     </div>
-                                    <div className="p-5 bg-[#12121f] rounded-xl border border-white/10 text-center">
+                                    <div className="p-5 bg-white rounded-xl border border-slate-200 text-center">
                                         <div className="text-2xl font-bold text-red-400">
                                             {stats?.rates?.complaintRate ? Number(stats.rates.complaintRate).toFixed(3) : 0}%
                                         </div>
-                                        <div className="text-xs text-white/50 mt-1">Complaints</div>
-                                        <div className="w-full h-1 bg-white/10 rounded-full mt-2 overflow-hidden">
+                                        <div className="text-xs text-slate-500 mt-1">Complaints</div>
+                                        <div className="w-full h-1 bg-slate-50 rounded-full mt-2 overflow-hidden">
                                             <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min(Number(stats?.rates?.complaintRate || 0) * 100, 100)}%` }} />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Tips */}
-                                <div className="bg-[#12121f] rounded-2xl border border-white/10 p-6">
+                                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                                     <h3 className="text-lg font-semibold mb-4">Reputation Tips</h3>
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div className="flex gap-3 p-4 bg-black/30 rounded-xl">
                                             <span className="text-2xl">✅</span>
                                             <div>
                                                 <div className="font-medium">Clean Your List</div>
-                                                <div className="text-sm text-white/50">Remove bounced and inactive contacts regularly</div>
+                                                <div className="text-sm text-slate-500">Remove bounced and inactive contacts regularly</div>
                                             </div>
                                         </div>
                                         <div className="flex gap-3 p-4 bg-black/30 rounded-xl">
                                             <span className="text-2xl">📧</span>
                                             <div>
                                                 <div className="font-medium">Warm Up Domains</div>
-                                                <div className="text-sm text-white/50">Gradually increase sending volume for new domains</div>
+                                                <div className="text-sm text-slate-500">Gradually increase sending volume for new domains</div>
                                             </div>
                                         </div>
                                         <div className="flex gap-3 p-4 bg-black/30 rounded-xl">
                                             <span className="text-2xl">🎯</span>
                                             <div>
                                                 <div className="font-medium">Personalize Content</div>
-                                                <div className="text-sm text-white/50">Higher engagement = better reputation</div>
+                                                <div className="text-sm text-slate-500">Higher engagement = better reputation</div>
                                             </div>
                                         </div>
                                         <div className="flex gap-3 p-4 bg-black/30 rounded-xl">
                                             <span className="text-2xl">⏰</span>
                                             <div>
                                                 <div className="font-medium">Optimal Timing</div>
-                                                <div className="text-sm text-white/50">Send during business hours for better opens</div>
+                                                <div className="text-sm text-slate-500">Send during business hours for better opens</div>
                                             </div>
                                         </div>
                                     </div>
@@ -403,27 +403,27 @@ function InsightsPage() {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="p-6 bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-2xl border border-green-500/20">
                                         <div className="text-4xl font-bold text-green-400">{callStats?.today || 0}</div>
-                                        <div className="text-sm text-white/50 mt-2">Calls Today</div>
+                                        <div className="text-sm text-slate-500 mt-2">Calls Today</div>
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-2xl border border-blue-500/20">
                                         <div className="text-4xl font-bold text-blue-400">{callStats?.week || 0}</div>
-                                        <div className="text-sm text-white/50 mt-2">This Week</div>
+                                        <div className="text-sm text-slate-500 mt-2">This Week</div>
                                     </div>
                                     <div className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-2xl border border-purple-500/20">
                                         <div className="text-4xl font-bold text-purple-400">{callStats?.month || 0}</div>
-                                        <div className="text-sm text-white/50 mt-2">This Month</div>
+                                        <div className="text-sm text-slate-500 mt-2">This Month</div>
                                     </div>
                                 </div>
 
                                 {/* Recent Call Activity */}
-                                <div className="bg-[#12121f] rounded-2xl border border-white/10 p-6">
+                                <div className="bg-white rounded-2xl border border-slate-200 p-6">
                                     <h3 className="text-lg font-semibold mb-4">Recent Call Activity</h3>
                                     {recentActivity === undefined ? (
                                         <div className="flex justify-center py-8">
                                             <div className="animate-spin w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full" />
                                         </div>
                                     ) : (
-                                        <div className="divide-y divide-white/5">
+                                        <div className="divide-y divide-slate-200">
                                             {recentActivity
                                                 .filter(a => a.type.includes('call') || a.type.includes('voicemail'))
                                                 .slice(0, 10)
@@ -435,14 +435,14 @@ function InsightsPage() {
                                                                 {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                                             </div>
                                                             {activity.notes && (
-                                                                <div className="text-sm text-white/40 truncate">{activity.notes}</div>
+                                                                <div className="text-sm text-slate-400 truncate">{activity.notes}</div>
                                                             )}
                                                         </div>
-                                                        <div className="text-sm text-white/30">{formatRelativeTime(activity.createdAt)}</div>
+                                                        <div className="text-sm text-slate-400">{formatRelativeTime(activity.createdAt)}</div>
                                                     </div>
                                                 ))}
                                             {recentActivity.filter(a => a.type.includes('call') || a.type.includes('voicemail')).length === 0 && (
-                                                <div className="text-center py-8 text-white/30">
+                                                <div className="text-center py-8 text-slate-400">
                                                     <span className="text-4xl block mb-2">📞</span>
                                                     <p>No call activity yet</p>
                                                 </div>

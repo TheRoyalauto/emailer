@@ -1,11 +1,15 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/../convex/_generated/api";
-import { useState } from "react";
+import { api } from "../../../convex/_generated/api";
+import { Id } from "../../../convex/_generated/dataModel";
+import { useState, useMemo, useCallback } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
-import { Id } from "@/../convex/_generated/dataModel";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
+import ContactFilters from "@/components/contacts/ContactFilters";
+import BulkActionBar from "@/components/contacts/BulkActionBar";
+import CsvImportModal from "@/components/contacts/CsvImportModal";
+import ContactSlideOver from "@/components/contacts/ContactSlideOver";
+import MergeContactsModal from "@/components/contacts/MergeContactsModal";
 
 const SALES_STAGES = [
     { id: "new", label: "New", color: "#9CA3AF", icon: "🆕" },
@@ -16,126 +20,167 @@ const SALES_STAGES = [
     { id: "closed_lost", label: "Closed Lost", color: "#EF4444", icon: "❌" },
 ];
 
-interface Contact {
-    _id: Id<"contacts">;
-    email: string;
-    name?: string;
-    company?: string;
-    phone?: string;
-    location?: string;
-    website?: string;
-    address?: string;
-    status?: string;
-    salesStage?: string;
-    batchId?: Id<"batches">;
-    lastEmailAt?: number;
-    lastCallAt?: number;
-    emailCount?: number;
-    callCount?: number;
-    tags?: string[];
-}
-
 function ContactsContent() {
-    const contacts = useAuthQuery(api.contacts.list, {});
+    // ── Queries ──────────────────────────────────────────
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("all");
+    const [selectedStage, setSelectedStage] = useState("all");
+    const [selectedBatch, setSelectedBatch] = useState("all");
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [sortBy, setSortBy] = useState("name");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+    const contacts = useAuthQuery(api.contacts.list, {
+        searchQuery: searchQuery || undefined,
+        status: selectedStatus !== "all" ? (selectedStatus as any) : undefined,
+        salesStage: selectedStage !== "all" ? selectedStage : undefined,
+        batchId: selectedBatch !== "all" ? selectedBatch : undefined,
+        tags: selectedTags.length > 0 ? selectedTags : undefined,
+        sortBy,
+        sortOrder,
+    });
     const batches = useAuthQuery(api.batches.list);
+    const allTags = useAuthQuery(api.contacts.getAllTags, {});
+
+    // ── Mutations ───────────────────────────────────────
     const createContact = useAuthMutation(api.contacts.create);
     const updateContact = useAuthMutation(api.contacts.update);
-    const deleteContact = useAuthMutation(api.contacts.remove);
-    const updateSalesStage = useAuthMutation(api.activities.updateSalesStage);
+    const bulkCreate = useAuthMutation(api.contacts.bulkCreate);
+    const bulkDelete = useAuthMutation(api.contacts.bulkDelete);
+    const bulkUpdateStage = useAuthMutation(api.contacts.bulkUpdateStage);
+    const bulkAddTags = useAuthMutation(api.contacts.bulkAddTags);
+    const bulkAssignBatch = useAuthMutation(api.contacts.bulkAssignBatch);
+    const mergeContacts = useAuthMutation(api.contacts.merge);
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedBatch, setSelectedBatch] = useState<string>("all");
-    const [showAdd, setShowAdd] = useState(false);
-    const [newContact, setNewContact] = useState({ email: "", name: "", company: "" });
-    const [viewMode, setViewMode] = useState<"grid" | "list">("list");
-    const [selectedContacts, setSelectedContacts] = useState<Set<string>>(new Set());
+    // ── State ───────────────────────────────────────────
+    const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+    const [selectedIds, setSelectedIds] = useState<Set<Id<"contacts">>>(new Set());
+    const [slideOverContact, setSlideOverContact] = useState<any>(null);
+    const [showImportModal, setShowImportModal] = useState(false);
+    const [showMergeModal, setShowMergeModal] = useState(false);
+    const [showAddContact, setShowAddContact] = useState(false);
+    const [newContact, setNewContact] = useState({ email: "", name: "", company: "", phone: "" });
 
-    // Profile modal state
-    const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editForm, setEditForm] = useState<Partial<Contact>>({});
+    // ── Computed ─────────────────────────────────────────
+    const activeFilterCount = useMemo(() => {
+        let count = 0;
+        if (selectedStatus !== "all") count++;
+        if (selectedStage !== "all") count++;
+        if (selectedBatch !== "all") count++;
+        if (selectedTags.length > 0) count++;
+        return count;
+    }, [selectedStatus, selectedStage, selectedBatch, selectedTags]);
 
-    // Activity for selected contact
-    const contactActivities = useQuery(
-        api.activities.getContactActivities,
-        selectedContact ? { contactId: selectedContact._id, limit: 20 } : "skip"
-    );
+    const stageDistribution = useMemo(() => {
+        if (!contacts) return {};
+        const dist: Record<string, number> = {};
+        for (const c of contacts) {
+            const stage = c.salesStage || "new";
+            dist[stage] = (dist[stage] || 0) + 1;
+        }
+        return dist;
+    }, [contacts]);
 
-    const filteredContacts = contacts?.filter(c => {
-        const matchesBatch = selectedBatch === "all" || c.batchId === selectedBatch;
-        const matchesSearch = !searchQuery ||
-            c.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            c.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            c.company?.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesBatch && matchesSearch;
-    });
+    // ── Handlers ────────────────────────────────────────
+    const handleSelectAll = useCallback(() => {
+        if (!contacts) return;
+        if (selectedIds.size === contacts.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(contacts.map(c => c._id)));
+        }
+    }, [contacts, selectedIds]);
+
+    const handleToggleSelect = useCallback((id: Id<"contacts">) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    }, []);
+
+    const handleBulkChangeStage = async (stage: string) => {
+        await bulkUpdateStage({ ids: Array.from(selectedIds), stage: stage as any });
+        setSelectedIds(new Set());
+    };
+
+    const handleBulkAddTags = async (tags: string[]) => {
+        await bulkAddTags({ ids: Array.from(selectedIds), tags });
+        setSelectedIds(new Set());
+    };
+
+    const handleBulkAssignBatch = async (batchId: Id<"batches">) => {
+        await bulkAssignBatch({ ids: Array.from(selectedIds), batchId });
+        setSelectedIds(new Set());
+    };
+
+    const handleBulkDelete = async () => {
+        if (!confirm(`Delete ${selectedIds.size} contact${selectedIds.size > 1 ? "s" : ""}? This cannot be undone.`)) return;
+        await bulkDelete({ ids: Array.from(selectedIds) });
+        setSelectedIds(new Set());
+    };
+
+    const handleExport = useCallback(() => {
+        if (!contacts) return;
+        const toExport = selectedIds.size > 0
+            ? contacts.filter(c => selectedIds.has(c._id))
+            : contacts;
+
+        const headers = ["Email", "Name", "Company", "Phone", "Location", "Website", "Address", "Status", "Sales Stage", "Tags", "Lead Score"];
+        const rows = toExport.map(c => [
+            c.email, c.name || "", c.company || "", c.phone || "",
+            c.location || "", c.website || "", c.address || "",
+            c.status || "active", c.salesStage || "new",
+            (c.tags || []).join("; "), c.leadScore || "",
+        ]);
+
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `contacts-${new Date().toISOString().split("T")[0]}.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }, [contacts, selectedIds]);
+
+    const handleImport = async (importedContacts: any[]) => {
+        await bulkCreate({ contacts: importedContacts });
+        setShowImportModal(false);
+    };
+
+    const handleMerge = async (primaryId: Id<"contacts">, mergeIds: Id<"contacts">[]) => {
+        await mergeContacts({ primaryId, mergeIds });
+        setShowMergeModal(false);
+        setSelectedIds(new Set());
+    };
 
     const handleAddContact = async () => {
         if (!newContact.email.trim()) return;
         await createContact({
-            email: newContact.email,
-            name: newContact.name || undefined,
-            company: newContact.company || undefined,
+            email: newContact.email.trim(),
+            name: newContact.name.trim() || undefined,
+            company: newContact.company.trim() || undefined,
+            phone: newContact.phone.trim() || undefined,
         });
-        setNewContact({ email: "", name: "", company: "" });
-        setShowAdd(false);
+        setNewContact({ email: "", name: "", company: "", phone: "" });
+        setShowAddContact(false);
     };
 
-    const toggleContact = (id: string) => {
-        const newSet = new Set(selectedContacts);
-        if (newSet.has(id)) {
-            newSet.delete(id);
-        } else {
-            newSet.add(id);
-        }
-        setSelectedContacts(newSet);
+    const clearAllFilters = () => {
+        setSelectedStatus("all");
+        setSelectedStage("all");
+        setSelectedBatch("all");
+        setSelectedTags([]);
+        setSearchQuery("");
     };
 
-    const selectAll = () => {
-        if (selectedContacts.size === filteredContacts?.length) {
-            setSelectedContacts(new Set());
-        } else {
-            setSelectedContacts(new Set(filteredContacts?.map(c => c._id)));
-        }
-    };
-
-    const openContactProfile = (contact: Contact) => {
-        setSelectedContact(contact);
-        setEditForm({
-            email: contact.email,
-            name: contact.name || "",
-            company: contact.company || "",
-            phone: contact.phone || "",
-            location: contact.location || "",
-            website: contact.website || "",
-        });
-        setIsEditing(false);
-    };
-
-    const handleSaveContact = async () => {
-        if (!selectedContact) return;
-        await updateContact({
-            id: selectedContact._id,
-            email: editForm.email,
-            name: editForm.name || undefined,
-            company: editForm.company || undefined,
-            phone: editForm.phone || undefined,
-            location: editForm.location || undefined,
-        });
-        setIsEditing(false);
-        // Refresh the contact data
-        const updated = contacts?.find(c => c._id === selectedContact._id);
-        if (updated) setSelectedContact({ ...updated, ...editForm } as Contact);
-    };
-
-    const handleStageChange = async (stage: string) => {
-        if (!selectedContact) return;
-        await updateSalesStage({
-            contactId: selectedContact._id,
-            stage: stage as any,
-        });
-        setSelectedContact({ ...selectedContact, salesStage: stage });
-    };
+    const getStageInfo = (stageId: string) => SALES_STAGES.find(s => s.id === stageId) || SALES_STAGES[0];
 
     const formatRelativeTime = (timestamp: number) => {
         const diff = Date.now() - timestamp;
@@ -148,615 +193,398 @@ function ContactsContent() {
         return `${days}d ago`;
     };
 
-    const companiesCount = new Set(contacts?.map(c => c.company).filter(Boolean)).size;
-    const listsCount = batches?.length ?? 0;
-
     return (
-        <div className="min-h-screen bg-[#F8F9FC] pb-20 md:pb-0">
+        <div className="min-h-screen bg-[#f8fafc] pb-20 md:pb-0">
             <AppHeader />
-
-            <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                {/* Hero Section */}
-                <div className="relative mb-8 rounded-2xl overflow-hidden bg-white border border-[#E5E7EB] shadow-lg">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0EA5E9]/5 to-[#10B981]/5" />
-
-                    <div className="relative p-8 flex items-center justify-between">
-                        <div>
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#10B981] flex items-center justify-center text-2xl shadow-lg shadow-[#0EA5E9]/25">
-                                    👥
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl font-bold text-[#1A1D26]">Contacts</h1>
-                                    <p className="text-[#9CA3AF]">Manage your email recipients</p>
-                                </div>
-                            </div>
-                        </div>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                {/* ── Page Header ──────────────────────────────── */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold text-[#0f172a]">Contacts</h1>
+                        <p className="text-sm text-[#9CA3AF] mt-0.5">
+                            {contacts === undefined ? "Loading..." : `${contacts.length} contact${contacts.length !== 1 ? "s" : ""}`}
+                            {activeFilterCount > 0 && ` · ${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""} active`}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {selectedIds.size >= 2 && (
+                            <button
+                                onClick={() => setShowMergeModal(true)}
+                                className="px-4 py-2.5 bg-[#8B5CF6]/10 text-[#8B5CF6] border border-[#8B5CF6]/20 rounded-xl text-sm font-medium hover:bg-[#8B5CF6]/20 transition-all"
+                            >
+                                Merge ({selectedIds.size})
+                            </button>
+                        )}
                         <button
-                            onClick={() => setShowAdd(true)}
-                            className="group px-5 py-3 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white shadow-lg shadow-[#FF6B4A]/25 hover:shadow-xl hover:shadow-[#FF6B4A]/30 transition-all hover:scale-105"
+                            onClick={handleExport}
+                            className="px-4 py-2.5 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-xl text-sm font-medium hover:bg-[#f8fafc] transition-all"
                         >
-                            <span className="flex items-center gap-2">
-                                <span className="text-lg">+</span>
-                                Add Contact
-                            </span>
+                            Export
+                        </button>
+                        <button
+                            onClick={() => setShowImportModal(true)}
+                            className="px-4 py-2.5 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-xl text-sm font-medium hover:bg-[#f8fafc] transition-all"
+                        >
+                            Import CSV
+                        </button>
+                        <button
+                            onClick={() => setShowAddContact(true)}
+                            className="px-4 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold hover:bg-[#0f172a]/90 transition-all shadow-sm"
+                        >
+                            + Add Contact
                         </button>
                     </div>
                 </div>
 
-                {/* Stats Row */}
-                <div className="grid grid-cols-4 gap-4 mb-8">
-                    {[
-                        { label: "Total Contacts", value: contacts?.length ?? 0, icon: "👥", color: "#0EA5E9" },
-                        { label: "Companies", value: companiesCount, icon: "🏢", color: "#3B82F6" },
-                        { label: "Contact Lists", value: listsCount, icon: "📋", color: "#8B5CF6" },
-                        { label: "Selected", value: selectedContacts.size, icon: "✓", color: "#F59E0B" },
-                    ].map((stat) => (
-                        <div
-                            key={stat.label}
-                            className="group p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div
-                                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg group-hover:scale-110 transition-transform"
-                                    style={{ backgroundColor: `${stat.color}15` }}
-                                >
-                                    {stat.icon}
-                                </div>
-                                <div>
-                                    <div className="text-xl font-bold text-[#1A1D26]">{stat.value}</div>
-                                    <div className="text-xs text-[#9CA3AF]">{stat.label}</div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Search & Filter Bar */}
-                <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm p-4 mb-6">
-                    <div className="flex flex-wrap gap-4 items-center">
-                        <div className="flex-1 min-w-[250px] relative">
-                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">🔍</div>
-                            <input
-                                type="text"
-                                placeholder="Search by email, name, or company..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
-                            />
-                        </div>
-
-                        <select
-                            value={selectedBatch}
-                            onChange={(e) => setSelectedBatch(e.target.value)}
-                            className="px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-all text-[#1A1D26] appearance-none cursor-pointer min-w-[150px]"
-                        >
-                            <option value="all">All Lists</option>
-                            {batches?.map(b => (
-                                <option key={b._id} value={b._id}>{b.name}</option>
-                            ))}
-                        </select>
-
-                        <div className="flex bg-[#F8F9FC] rounded-lg p-1 border border-[#E5E7EB]">
-                            <button
-                                onClick={() => setViewMode("list")}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === "list" ? "bg-[#FF6B4A]/10 text-[#FF6B4A]" : "text-[#9CA3AF] hover:text-[#1A1D26]"}`}
-                            >
-                                ≡ List
-                            </button>
-                            <button
-                                onClick={() => setViewMode("grid")}
-                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === "grid" ? "bg-[#FF6B4A]/10 text-[#FF6B4A]" : "text-[#9CA3AF] hover:text-[#1A1D26]"}`}
-                            >
-                                ⊞ Grid
-                            </button>
-                        </div>
-
-                        <button
-                            onClick={() => setShowAdd(!showAdd)}
-                            className={`px-4 py-3 rounded-xl font-semibold transition-all ${showAdd
-                                ? "bg-[#F1F3F8] text-[#9CA3AF]"
-                                : "bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] text-white shadow-lg shadow-[#FF6B4A]/25 hover:shadow-xl"
-                                }`}
-                        >
-                            {showAdd ? "Cancel" : "+ Add"}
-                        </button>
-                    </div>
-
-                    {showAdd && (
-                        <div className="mt-4 pt-4 border-t border-[#E5E7EB]">
-                            <div className="grid md:grid-cols-4 gap-3">
-                                <input
-                                    type="email"
-                                    placeholder="Email address *"
-                                    value={newContact.email}
-                                    onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
-                                    className="px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
-                                    autoFocus
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Name (optional)"
-                                    value={newContact.name}
-                                    onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
-                                    className="px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Company (optional)"
-                                    value={newContact.company}
-                                    onChange={(e) => setNewContact({ ...newContact, company: e.target.value })}
-                                    className="px-4 py-3 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none transition-all text-[#1A1D26] placeholder:text-[#9CA3AF]"
-                                />
+                {/* ── Stage Distribution Bar ──────────────────── */}
+                {contacts && contacts.length > 0 && (
+                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+                        {SALES_STAGES.map(stage => {
+                            const count = stageDistribution[stage.id] || 0;
+                            const pct = contacts.length > 0 ? Math.round((count / contacts.length) * 100) : 0;
+                            return (
                                 <button
-                                    onClick={handleAddContact}
-                                    disabled={!newContact.email.trim()}
-                                    className="px-4 py-3 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all"
+                                    key={stage.id}
+                                    onClick={() => setSelectedStage(selectedStage === stage.id ? "all" : stage.id)}
+                                    className={`p-3 rounded-xl border transition-all text-left ${selectedStage === stage.id
+                                        ? "ring-2 ring-offset-1 shadow-sm"
+                                        : "hover:border-[#9CA3AF]"
+                                        }`}
+                                    style={{
+                                        backgroundColor: selectedStage === stage.id ? `${stage.color}12` : "white",
+                                        borderColor: selectedStage === stage.id ? `${stage.color}40` : "#E5E7EB",
+                                        ...(selectedStage === stage.id ? { boxShadow: `0 0 0 2px white, 0 0 0 3.5px ${stage.color}` } : {}),
+                                    }}
                                 >
-                                    ✓ Save Contact
+                                    <div className="text-lg font-bold text-[#0f172a]">{count}</div>
+                                    <div className="text-xs text-[#9CA3AF] flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stage.color }} />
+                                        {stage.label}
+                                    </div>
+                                    <div className="h-1 bg-[#E5E7EB] rounded-full mt-2 overflow-hidden">
+                                        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: stage.color }} />
+                                    </div>
                                 </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Contacts Display */}
-                {contacts === undefined ? (
-                    <div className="flex justify-center py-16">
-                        <div className="animate-spin w-8 h-8 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
+                            );
+                        })}
                     </div>
-                ) : filteredContacts?.length === 0 ? (
-                    <div className="relative overflow-hidden text-center py-20 bg-white rounded-2xl border border-[#E5E7EB] shadow-sm">
-                        <div className="relative">
-                            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#0EA5E9]/10 to-[#10B981]/10 border border-[#E5E7EB] flex items-center justify-center text-4xl">
-                                {searchQuery ? "🔍" : "👥"}
+                )}
+
+                {/* ── Filter Bar ──────────────────────────────── */}
+                <ContactFilters
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    selectedStatus={selectedStatus}
+                    onStatusChange={setSelectedStatus}
+                    selectedStage={selectedStage}
+                    onStageChange={setSelectedStage}
+                    selectedBatch={selectedBatch}
+                    onBatchChange={setSelectedBatch}
+                    selectedTags={selectedTags}
+                    onTagsChange={setSelectedTags}
+                    sortBy={sortBy}
+                    onSortChange={setSortBy}
+                    sortOrder={sortOrder}
+                    onSortOrderChange={setSortOrder}
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    batches={(batches || []).map(b => ({ _id: b._id, name: b.name }))}
+                    allTags={allTags || []}
+                    activeFilterCount={activeFilterCount}
+                    onClearAll={clearAllFilters}
+                />
+
+                {/* ── Bulk Action Bar ─────────────────────────── */}
+                <BulkActionBar
+                    selectedCount={selectedIds.size}
+                    onChangeStage={handleBulkChangeStage}
+                    onAddTags={handleBulkAddTags}
+                    onAssignBatch={handleBulkAssignBatch}
+                    onExport={handleExport}
+                    onDelete={handleBulkDelete}
+                    onClearSelection={() => setSelectedIds(new Set())}
+                    batches={(batches || []).map(b => ({ _id: b._id, name: b.name }))}
+                    allTags={allTags || []}
+                />
+
+                {/* ── Loading State ───────────────────────────── */}
+                {contacts === undefined && (
+                    <div className="space-y-3">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="bg-white rounded-xl border border-[#E5E7EB] p-4 animate-pulse">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-[#E5E7EB]" />
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-4 bg-[#E5E7EB] rounded w-1/3" />
+                                        <div className="h-3 bg-[#F1F3F8] rounded w-1/4" />
+                                    </div>
+                                </div>
                             </div>
-                            <h2 className="text-2xl font-bold text-[#1A1D26] mb-2">
-                                {searchQuery ? `No results for "${searchQuery}"` : "No Contacts Yet"}
-                            </h2>
-                            <p className="text-[#9CA3AF] mb-6 max-w-md mx-auto">
-                                {searchQuery
-                                    ? "Try adjusting your search or filters"
-                                    : "Add contacts manually or use the Lead Finder to discover new leads"
-                                }
-                            </p>
-                            {!searchQuery && (
-                                <div className="flex items-center justify-center gap-4">
-                                    <button
-                                        onClick={() => setShowAdd(true)}
-                                        className="px-6 py-3 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] rounded-xl font-semibold text-white shadow-lg shadow-[#FF6B4A]/25 hover:shadow-xl hover:scale-105 transition-all"
-                                    >
+                        ))}
+                    </div>
+                )}
+
+                {/* ── Empty State ─────────────────────────────── */}
+                {contacts && contacts.length === 0 && (
+                    <div className="bg-white rounded-2xl border border-[#E5E7EB] p-16 text-center">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#f8fafc] border border-[#E5E7EB] flex items-center justify-center text-4xl">
+                            👥
+                        </div>
+                        <h3 className="text-xl font-bold text-[#0f172a] mb-2">
+                            {activeFilterCount > 0 ? "No contacts match your filters" : "No contacts yet"}
+                        </h3>
+                        <p className="text-[#9CA3AF] max-w-md mx-auto mb-6">
+                            {activeFilterCount > 0
+                                ? "Try adjusting your filters or clearing them to see all contacts."
+                                : "Add your first contact manually or import a CSV file to get started."
+                            }
+                        </p>
+                        <div className="flex gap-3 justify-center">
+                            {activeFilterCount > 0 ? (
+                                <button onClick={clearAllFilters} className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold">
+                                    Clear Filters
+                                </button>
+                            ) : (
+                                <>
+                                    <button onClick={() => setShowAddContact(true)} className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold">
                                         + Add Contact
                                     </button>
-                                    <a
-                                        href="/scraper"
-                                        className="px-6 py-3 bg-[#F1F3F8] border border-[#E5E7EB] rounded-xl font-semibold text-[#4B5563] hover:bg-[#E5E7EB] transition-all"
-                                    >
-                                        🔎 Lead Finder
-                                    </a>
-                                </div>
+                                    <button onClick={() => setShowImportModal(true)} className="px-5 py-2.5 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-xl text-sm font-medium">
+                                        Import CSV
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>
-                ) : viewMode === "grid" ? (
-                    <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {filteredContacts?.slice(0, 100).map((contact) => {
-                            const batch = batches?.find(b => b._id === contact.batchId);
-                            const isSelected = selectedContacts.has(contact._id);
-                            const stage = SALES_STAGES.find(s => s.id === contact.salesStage) || SALES_STAGES[0];
+                )}
+
+                {/* ── List View ───────────────────────────────── */}
+                {contacts && contacts.length > 0 && viewMode === "list" && (
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden">
+                        {/* Table header */}
+                        <div className="grid grid-cols-[auto,2fr,1fr,1fr,1fr,auto] gap-4 px-5 py-3 bg-[#f8fafc] border-b border-[#E5E7EB] text-xs font-semibold uppercase tracking-wider text-[#9CA3AF]">
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={contacts.length > 0 && selectedIds.size === contacts.length}
+                                    onChange={handleSelectAll}
+                                    className="rounded border-[#E5E7EB] text-[#0EA5E9] focus:ring-[#0EA5E9]/20"
+                                />
+                            </div>
+                            <div>Contact</div>
+                            <div>Company</div>
+                            <div>Stage</div>
+                            <div>Tags</div>
+                            <div>Activity</div>
+                        </div>
+
+                        {/* Table rows */}
+                        {contacts.map(contact => {
+                            const stage = getStageInfo(contact.salesStage || "new");
                             return (
                                 <div
                                     key={contact._id}
-                                    onClick={() => openContactProfile(contact as Contact)}
-                                    className={`group relative p-4 bg-white rounded-xl border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer ${isSelected
-                                        ? "border-[#FF6B4A]/30 shadow-lg shadow-[#FF6B4A]/10 bg-[#FF6B4A]/5"
-                                        : "border-[#E5E7EB] hover:border-[#FF6B4A]/20"
+                                    className={`grid grid-cols-[auto,2fr,1fr,1fr,1fr,auto] gap-4 px-5 py-3.5 items-center border-b border-[#F1F3F8] last:border-0 hover:bg-[#f8fafc]/50 transition-colors cursor-pointer group ${selectedIds.has(contact._id) ? "bg-[#0EA5E9]/[0.03]" : ""
                                         }`}
+                                    onClick={() => setSlideOverContact(contact)}
                                 >
-                                    <div
-                                        className="absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all text-xs cursor-pointer z-10"
-                                        style={{ borderColor: isSelected ? '#FF6B4A' : '#E5E7EB', backgroundColor: isSelected ? '#FF6B4A' : 'transparent', color: isSelected ? 'white' : 'transparent' }}
-                                        onClick={(e) => { e.stopPropagation(); toggleContact(contact._id); }}
-                                    >
-                                        {isSelected && "✓"}
+                                    <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.has(contact._id)}
+                                            onChange={() => handleToggleSelect(contact._id)}
+                                            className="rounded border-[#E5E7EB] text-[#0EA5E9] focus:ring-[#0EA5E9]/20"
+                                        />
                                     </div>
-
-                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold mb-3 ${isSelected
-                                        ? "bg-gradient-to-br from-[#FF6B4A] to-[#F43F5E] text-white"
-                                        : "bg-[#F1F3F8] text-[#4B5563]"
-                                        }`}>
-                                        {contact.name?.charAt(0).toUpperCase() || contact.email.charAt(0).toUpperCase()}
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0EA5E9]/20 to-[#10B981]/20 flex items-center justify-center text-sm font-bold text-[#0EA5E9] flex-shrink-0">
+                                            {contact.name?.charAt(0).toUpperCase() || contact.email.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="text-sm font-medium text-[#0f172a] truncate">
+                                                {contact.name || contact.email.split("@")[0]}
+                                            </div>
+                                            <div className="text-xs text-[#9CA3AF] truncate">{contact.email}</div>
+                                        </div>
                                     </div>
-
-                                    <h3 className="font-semibold text-[#1A1D26] truncate">{contact.name || contact.email.split('@')[0]}</h3>
-                                    <p className="text-sm text-[#9CA3AF] truncate">{contact.email}</p>
-                                    {contact.company && (
-                                        <p className="text-xs text-[#9CA3AF] truncate mt-1">🏢 {contact.company}</p>
-                                    )}
-
-                                    <div className="mt-3 flex items-center gap-2">
+                                    <div className="text-sm text-[#4B5563] truncate">{contact.company || "—"}</div>
+                                    <div>
                                         <span
-                                            className="inline-block px-2 py-1 text-xs font-medium rounded-full"
-                                            style={{ backgroundColor: `${stage.color}15`, color: stage.color }}
+                                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium"
+                                            style={{
+                                                backgroundColor: `${stage.color}15`,
+                                                color: stage.color,
+                                            }}
                                         >
-                                            {stage.icon} {stage.label}
+                                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stage.color }} />
+                                            {stage.label}
                                         </span>
-                                        {batch && (
-                                            <span className="px-2 py-1 bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs font-medium rounded-full">
-                                                {batch.name}
+                                    </div>
+                                    <div className="flex flex-wrap gap-1">
+                                        {(contact.tags || []).slice(0, 2).map(tag => (
+                                            <span key={tag} className="px-1.5 py-0.5 bg-[#f8fafc] text-[#4B5563] text-xs rounded border border-[#E5E7EB]">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                        {(contact.tags || []).length > 2 && (
+                                            <span className="px-1.5 py-0.5 bg-[#f8fafc] text-[#9CA3AF] text-xs rounded">
+                                                +{(contact.tags || []).length - 2}
                                             </span>
                                         )}
+                                    </div>
+                                    <div className="text-xs text-[#9CA3AF] whitespace-nowrap">
+                                        {contact.lastEmailAt ? formatRelativeTime(contact.lastEmailAt) : "—"}
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
-                ) : (
-                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-sm overflow-hidden">
-                        <div className="grid grid-cols-12 gap-4 px-5 py-3 text-xs uppercase tracking-wider text-[#9CA3AF] font-semibold border-b border-[#E5E7EB] bg-[#F8F9FC]">
-                            <div className="col-span-1 flex items-center">
-                                <button
-                                    onClick={selectAll}
-                                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all text-xs ${selectedContacts.size === filteredContacts?.length && filteredContacts.length > 0
-                                        ? "bg-[#FF6B4A] border-[#FF6B4A] text-white"
-                                        : "border-[#E5E7EB] hover:border-[#9CA3AF]"
-                                        }`}
-                                >
-                                    {selectedContacts.size === filteredContacts?.length && filteredContacts.length > 0 && "✓"}
-                                </button>
-                            </div>
-                            <div className="col-span-3">Contact</div>
-                            <div className="col-span-2">Company</div>
-                            <div className="col-span-2">Stage</div>
-                            <div className="col-span-2">List</div>
-                            <div className="col-span-2">Last Activity</div>
-                        </div>
+                )}
 
-                        <div className="max-h-[500px] overflow-y-auto">
-                            {filteredContacts?.slice(0, 100).map((contact) => {
-                                const batch = batches?.find(b => b._id === contact.batchId);
-                                const isSelected = selectedContacts.has(contact._id);
-                                const stage = SALES_STAGES.find(s => s.id === contact.salesStage) || SALES_STAGES[0];
-                                return (
-                                    <div
-                                        key={contact._id}
-                                        onClick={() => openContactProfile(contact as Contact)}
-                                        className={`grid grid-cols-12 gap-4 items-center px-5 py-3 border-b border-[#F1F3F8] hover:bg-[#F8F9FC] transition-all cursor-pointer ${isSelected ? "bg-[#FF6B4A]/5" : ""
-                                            }`}
-                                    >
-                                        <div className="col-span-1">
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); toggleContact(contact._id); }}
-                                                className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all text-xs ${isSelected
-                                                    ? "bg-[#FF6B4A] border-[#FF6B4A] text-white"
-                                                    : "border-[#E5E7EB] hover:border-[#9CA3AF]"
-                                                    }`}
-                                            >
-                                                {isSelected && "✓"}
-                                            </button>
-                                        </div>
-                                        <div className="col-span-3 flex items-center gap-3">
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${isSelected
-                                                ? "bg-gradient-to-br from-[#FF6B4A] to-[#F43F5E] text-white"
-                                                : "bg-[#F1F3F8] text-[#4B5563]"
-                                                }`}>
+                {/* ── Grid View ───────────────────────────────── */}
+                {contacts && contacts.length > 0 && viewMode === "grid" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {contacts.map(contact => {
+                            const stage = getStageInfo(contact.salesStage || "new");
+                            return (
+                                <div
+                                    key={contact._id}
+                                    className={`p-4 bg-white rounded-xl border transition-all cursor-pointer group hover:shadow-md hover:border-[#0EA5E9]/30 ${selectedIds.has(contact._id) ? "border-[#0EA5E9] bg-[#0EA5E9]/[0.02]" : "border-[#E5E7EB]"
+                                        }`}
+                                    onClick={() => setSlideOverContact(contact)}
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0EA5E9]/20 to-[#10B981]/20 flex items-center justify-center text-lg font-bold text-[#0EA5E9]">
                                                 {contact.name?.charAt(0).toUpperCase() || contact.email.charAt(0).toUpperCase()}
                                             </div>
-                                            <div className="min-w-0">
-                                                <div className="font-medium text-[#1A1D26] truncate">{contact.name || "—"}</div>
-                                                <div className="text-sm text-[#9CA3AF] truncate">{contact.email}</div>
+                                            <div>
+                                                <div className="text-sm font-semibold text-[#0f172a]">
+                                                    {contact.name || contact.email.split("@")[0]}
+                                                </div>
+                                                <div className="text-xs text-[#9CA3AF]">{contact.email}</div>
                                             </div>
                                         </div>
-                                        <div className="col-span-2 text-[#9CA3AF] truncate">{contact.company || "—"}</div>
-                                        <div className="col-span-2">
-                                            <span
-                                                className="inline-block px-2 py-1 text-xs font-medium rounded-full"
-                                                style={{ backgroundColor: `${stage.color}15`, color: stage.color }}
-                                            >
-                                                {stage.icon} {stage.label}
-                                            </span>
+                                        <div onClick={(e) => e.stopPropagation()}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedIds.has(contact._id)}
+                                                onChange={() => handleToggleSelect(contact._id)}
+                                                className="rounded border-[#E5E7EB] text-[#0EA5E9] focus:ring-[#0EA5E9]/20"
+                                            />
                                         </div>
-                                        <div className="col-span-2">
-                                            {batch ? (
-                                                <span className="px-2 py-1 bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs font-medium rounded-full">
-                                                    {batch.name}
+                                    </div>
+                                    {contact.company && (
+                                        <div className="text-xs text-[#4B5563] mb-2">🏢 {contact.company}</div>
+                                    )}
+                                    <div className="flex items-center justify-between">
+                                        <span
+                                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium"
+                                            style={{ backgroundColor: `${stage.color}15`, color: stage.color }}
+                                        >
+                                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: stage.color }} />
+                                            {stage.label}
+                                        </span>
+                                        <div className="flex gap-1">
+                                            {(contact.tags || []).slice(0, 1).map(tag => (
+                                                <span key={tag} className="px-1.5 py-0.5 bg-[#f8fafc] text-[#4B5563] text-xs rounded border border-[#E5E7EB]">
+                                                    {tag}
                                                 </span>
-                                            ) : (
-                                                <span className="text-[#E5E7EB] text-sm">—</span>
+                                            ))}
+                                            {(contact.tags || []).length > 1 && (
+                                                <span className="px-1.5 py-0.5 text-[#9CA3AF] text-xs">
+                                                    +{(contact.tags || []).length - 1}
+                                                </span>
                                             )}
                                         </div>
-                                        <div className="col-span-2 text-sm text-[#9CA3AF]">
-                                            {contact.lastEmailAt ? formatRelativeTime(contact.lastEmailAt) : "—"}
-                                        </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-
-                        {(filteredContacts?.length ?? 0) > 0 && (
-                            <div className="flex items-center justify-between px-5 py-3 border-t border-[#E5E7EB] bg-[#F8F9FC]">
-                                <div className="text-sm text-[#9CA3AF]">
-                                    {selectedContacts.size > 0 && (
-                                        <span className="text-[#FF6B4A] font-medium">{selectedContacts.size} selected • </span>
-                                    )}
-                                    Showing {Math.min(100, filteredContacts?.length ?? 0)} of {filteredContacts?.length} contacts
                                 </div>
-                                {selectedContacts.size > 0 && (
-                                    <div className="flex gap-2">
-                                        <button className="px-3 py-1.5 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-lg text-sm hover:bg-[#F1F3F8] transition-all">
-                                            Export Selected
-                                        </button>
-                                        <button className="px-3 py-1.5 bg-[#FEF2F2] text-[#EF4444] rounded-lg text-sm hover:bg-[#EF4444]/20 transition-all">
-                                            Delete Selected
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                            );
+                        })}
                     </div>
                 )}
             </main>
 
-            {/* Contact Profile Modal */}
-            {selectedContact && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl border border-[#E5E7EB] max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] bg-[#F8F9FC]">
-                            <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#FF6B4A] to-[#F43F5E] flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-[#FF6B4A]/25">
-                                    {selectedContact.name?.charAt(0).toUpperCase() || selectedContact.email.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-[#1A1D26]">
-                                        {selectedContact.name || selectedContact.email.split('@')[0]}
-                                    </h2>
-                                    <p className="text-sm text-[#9CA3AF]">{selectedContact.email}</p>
-                                </div>
+            {/* ── Add Contact Inline Modal ────────────────── */}
+            {showAddContact && (
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowAddContact(false)}>
+                    <div className="bg-white rounded-2xl border border-[#E5E7EB] max-w-md w-full shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="text-lg font-bold text-[#0f172a] mb-4">Add Contact</h2>
+                        <div className="space-y-3">
+                            <input
+                                type="email"
+                                placeholder="Email *"
+                                value={newContact.email}
+                                onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+                                className="w-full px-4 py-2.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-sm text-[#0f172a] focus:border-[#0EA5E9] focus:ring-2 focus:ring-[#0EA5E9]/20 focus:outline-none"
+                                autoFocus
+                            />
+                            <div className="grid grid-cols-2 gap-3">
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    value={newContact.name}
+                                    onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                                    className="px-4 py-2.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-sm text-[#0f172a] focus:border-[#0EA5E9] focus:outline-none"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Company"
+                                    value={newContact.company}
+                                    onChange={(e) => setNewContact({ ...newContact, company: e.target.value })}
+                                    className="px-4 py-2.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-sm text-[#0f172a] focus:border-[#0EA5E9] focus:outline-none"
+                                />
                             </div>
-                            <div className="flex items-center gap-2">
-                                {!isEditing ? (
-                                    <button
-                                        onClick={() => setIsEditing(true)}
-                                        className="px-4 py-2 bg-[#F1F3F8] border border-[#E5E7EB] text-[#4B5563] rounded-lg text-sm font-medium hover:bg-[#E5E7EB] transition-all"
-                                    >
-                                        ✏️ Edit
-                                    </button>
-                                ) : (
-                                    <>
-                                        <button
-                                            onClick={() => setIsEditing(false)}
-                                            className="px-4 py-2 text-[#9CA3AF] hover:text-[#1A1D26] text-sm font-medium transition-all"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handleSaveContact}
-                                            className="px-4 py-2 bg-gradient-to-r from-[#FF6B4A] to-[#F43F5E] text-white rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-[#FF6B4A]/25 transition-all"
-                                        >
-                                            Save Changes
-                                        </button>
-                                    </>
-                                )}
-                                <button
-                                    onClick={() => setSelectedContact(null)}
-                                    className="p-2 hover:bg-white rounded-lg transition-colors text-[#9CA3AF] hover:text-[#1A1D26]"
-                                >
-                                    ✕
-                                </button>
-                            </div>
+                            <input
+                                type="tel"
+                                placeholder="Phone"
+                                value={newContact.phone}
+                                onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                                className="w-full px-4 py-2.5 bg-[#f8fafc] border border-[#E5E7EB] rounded-xl text-sm text-[#0f172a] focus:border-[#0EA5E9] focus:outline-none"
+                            />
                         </div>
-
-                        {/* Body */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {/* Sales Stage */}
-                            <div className="mb-6">
-                                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider mb-3">Sales Stage</label>
-                                <div className="flex flex-wrap gap-2">
-                                    {SALES_STAGES.map((stage) => (
-                                        <button
-                                            key={stage.id}
-                                            onClick={() => handleStageChange(stage.id)}
-                                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${selectedContact.salesStage === stage.id || (!selectedContact.salesStage && stage.id === "new")
-                                                ? "ring-2 ring-offset-2"
-                                                : "hover:scale-105"
-                                                }`}
-                                            style={{
-                                                backgroundColor: `${stage.color}15`,
-                                                color: stage.color,
-                                                boxShadow: (selectedContact.salesStage === stage.id || (!selectedContact.salesStage && stage.id === "new")) ? `0 0 0 2px white, 0 0 0 4px ${stage.color}` : undefined
-                                            }}
-                                        >
-                                            {stage.icon} {stage.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Contact Details */}
-                            <div className="mb-6">
-                                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider mb-3">Contact Details</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Name</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="text"
-                                                value={editForm.name || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">{selectedContact.name || "—"}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Email</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="email"
-                                                value={editForm.email || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">{selectedContact.email}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Company</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="text"
-                                                value={editForm.company || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, company: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">{selectedContact.company || "—"}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Phone</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="tel"
-                                                value={editForm.phone || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">{selectedContact.phone || "—"}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Location</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="text"
-                                                value={editForm.location || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">{selectedContact.location || "—"}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm text-[#9CA3AF] mb-1">Website</label>
-                                        {isEditing ? (
-                                            <input
-                                                type="url"
-                                                value={editForm.website || ""}
-                                                onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
-                                                className="w-full px-4 py-2.5 bg-[#F8F9FC] border border-[#E5E7EB] rounded-xl focus:border-[#FF6B4A] focus:ring-2 focus:ring-[#FF6B4A]/20 focus:outline-none text-[#1A1D26]"
-                                            />
-                                        ) : (
-                                            <p className="px-4 py-2.5 bg-[#F8F9FC] rounded-xl text-[#1A1D26]">
-                                                {selectedContact.website ? (
-                                                    <a href={selectedContact.website} target="_blank" rel="noopener noreferrer" className="text-[#FF6B4A] hover:underline">
-                                                        {selectedContact.website}
-                                                    </a>
-                                                ) : "—"}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Stats */}
-                            <div className="mb-6">
-                                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider mb-3">Engagement Stats</label>
-                                <div className="grid grid-cols-4 gap-3">
-                                    <div className="p-3 bg-[#F8F9FC] rounded-xl text-center">
-                                        <div className="text-2xl font-bold text-[#1A1D26]">{selectedContact.emailCount || 0}</div>
-                                        <div className="text-xs text-[#9CA3AF]">Emails Sent</div>
-                                    </div>
-                                    <div className="p-3 bg-[#F8F9FC] rounded-xl text-center">
-                                        <div className="text-2xl font-bold text-[#1A1D26]">{selectedContact.callCount || 0}</div>
-                                        <div className="text-xs text-[#9CA3AF]">Calls Made</div>
-                                    </div>
-                                    <div className="p-3 bg-[#F8F9FC] rounded-xl text-center">
-                                        <div className="text-sm font-medium text-[#1A1D26]">
-                                            {selectedContact.lastEmailAt ? formatRelativeTime(selectedContact.lastEmailAt) : "—"}
-                                        </div>
-                                        <div className="text-xs text-[#9CA3AF]">Last Email</div>
-                                    </div>
-                                    <div className="p-3 bg-[#F8F9FC] rounded-xl text-center">
-                                        <div className="text-sm font-medium text-[#1A1D26]">
-                                            {selectedContact.lastCallAt ? formatRelativeTime(selectedContact.lastCallAt) : "—"}
-                                        </div>
-                                        <div className="text-xs text-[#9CA3AF]">Last Call</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Activity Timeline */}
-                            <div>
-                                <label className="block text-xs font-semibold text-[#4B5563] uppercase tracking-wider mb-3">Activity History</label>
-                                {contactActivities === undefined ? (
-                                    <div className="flex justify-center py-8">
-                                        <div className="animate-spin w-6 h-6 border-2 border-[#FF6B4A] border-t-transparent rounded-full" />
-                                    </div>
-                                ) : contactActivities.length === 0 ? (
-                                    <div className="text-center py-8 bg-[#F8F9FC] rounded-xl">
-                                        <div className="text-3xl mb-2">📭</div>
-                                        <p className="text-[#9CA3AF]">No activity yet</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
-                                        {contactActivities.map((activity) => (
-                                            <div key={activity._id} className="flex items-center gap-3 p-3 bg-[#F8F9FC] rounded-xl">
-                                                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-sm border border-[#E5E7EB]">
-                                                    {activity.type === "email_sent" ? "📧" :
-                                                        activity.type === "email_opened" ? "👁️" :
-                                                            activity.type === "email_clicked" ? "🔗" :
-                                                                activity.type === "call_made" ? "📞" :
-                                                                    activity.type === "status_changed" ? "🔄" :
-                                                                        activity.type === "note_added" ? "📝" : "📌"}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="text-sm font-medium text-[#1A1D26]">
-                                                        {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
-                                                    </div>
-                                                    {activity.notes && (
-                                                        <div className="text-xs text-[#9CA3AF] truncate">{activity.notes}</div>
-                                                    )}
-                                                </div>
-                                                <div className="text-xs text-[#9CA3AF]">
-                                                    {formatRelativeTime(activity.createdAt)}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Footer Actions */}
-                        <div className="flex items-center justify-between px-6 py-4 border-t border-[#E5E7EB] bg-[#F8F9FC]">
+                        <div className="flex gap-3 justify-end mt-6">
                             <button
-                                onClick={async () => {
-                                    if (confirm("Are you sure you want to delete this contact?")) {
-                                        await deleteContact({ id: selectedContact._id });
-                                        setSelectedContact(null);
-                                    }
-                                }}
-                                className="px-4 py-2 text-[#EF4444] hover:bg-[#FEF2F2] rounded-lg text-sm font-medium transition-all"
+                                onClick={() => setShowAddContact(false)}
+                                className="px-4 py-2.5 text-sm text-[#4B5563] hover:text-[#0f172a] transition-colors"
                             >
-                                🗑️ Delete Contact
+                                Cancel
                             </button>
-                            <div className="flex gap-2">
-                                <button className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-lg text-sm font-medium hover:bg-[#F1F3F8] transition-all">
-                                    📧 Send Email
-                                </button>
-                                <button className="px-4 py-2 bg-white border border-[#E5E7EB] text-[#4B5563] rounded-lg text-sm font-medium hover:bg-[#F1F3F8] transition-all">
-                                    📞 Log Call
-                                </button>
-                            </div>
+                            <button
+                                onClick={handleAddContact}
+                                disabled={!newContact.email.trim()}
+                                className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold disabled:opacity-40 hover:bg-[#0f172a]/90 transition-all"
+                            >
+                                Create Contact
+                            </button>
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* ── Modals & Panels ─────────────────────────── */}
+            {showImportModal && (
+                <CsvImportModal
+                    onImport={handleImport}
+                    onClose={() => setShowImportModal(false)}
+                />
+            )}
+
+            {slideOverContact && (
+                <ContactSlideOver
+                    contact={slideOverContact}
+                    onClose={() => setSlideOverContact(null)}
+                    onUpdated={() => { }}
+                    onDeleted={() => setSlideOverContact(null)}
+                />
+            )}
+
+            {showMergeModal && contacts && (
+                <MergeContactsModal
+                    contacts={contacts.filter((c: any) => selectedIds.has(c._id))}
+                    onMerge={handleMerge}
+                    onClose={() => setShowMergeModal(false)}
+                />
             )}
         </div>
     );

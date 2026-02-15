@@ -99,33 +99,33 @@ function RepliesPage() {
     const selectedReplyData = replies?.find(r => r._id === selectedReply);
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f]">
+        <div className="min-h-screen bg-slate-50">
             <AppHeader />
 
             <main className="max-w-7xl mx-auto px-4 py-6">
                 {/* Stats Bar */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
-                        <div className="text-xs text-white/50">Total Replies</div>
+                        <div className="text-xs text-slate-500">Total Replies</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-amber-400">{stats?.unprocessed || 0}</div>
-                        <div className="text-xs text-white/50">Unprocessed</div>
+                        <div className="text-xs text-slate-500">Unprocessed</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-blue-400">{stats?.pending || 0}</div>
-                        <div className="text-xs text-white/50">Pending Response</div>
+                        <div className="text-xs text-slate-500">Pending Response</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-green-400">{stats?.responded || 0}</div>
-                        <div className="text-xs text-white/50">Responded</div>
+                        <div className="text-xs text-slate-500">Responded</div>
                     </div>
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold" style={{ color: stats?.averageSentiment && stats.averageSentiment > 0 ? "#22c55e" : stats?.averageSentiment && stats.averageSentiment < 0 ? "#ef4444" : "#9ca3af" }}>
                             {stats?.averageSentiment || 0}
                         </div>
-                        <div className="text-xs text-white/50">Avg Sentiment</div>
+                        <div className="text-xs text-slate-500">Avg Sentiment</div>
                     </div>
                 </div>
 
@@ -134,8 +134,8 @@ function RepliesPage() {
                     <button
                         onClick={() => setFilter("all")}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filter === "all"
-                            ? "bg-white/10 text-white"
-                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            ? "bg-slate-50 text-white"
+                            : "text-slate-500 hover:text-slate-900 hover:bg-white"
                             }`}
                     >
                         All
@@ -144,7 +144,7 @@ function RepliesPage() {
                         onClick={() => setFilter("unprocessed")}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filter === "unprocessed"
                             ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                            : "text-white/50 hover:text-white hover:bg-white/5"
+                            : "text-slate-500 hover:text-slate-900 hover:bg-white"
                             }`}
                     >
                         📥 Unprocessed ({stats?.unprocessed || 0})
@@ -155,7 +155,7 @@ function RepliesPage() {
                             onClick={() => setFilter(c.id)}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filter === c.id
                                 ? `text-white border`
-                                : "text-white/50 hover:text-white hover:bg-white/5"
+                                : "text-slate-500 hover:text-slate-900 hover:bg-white"
                                 }`}
                             style={filter === c.id ? { backgroundColor: c.bg, borderColor: c.color + "40" } : {}}
                         >
@@ -168,13 +168,13 @@ function RepliesPage() {
                     {/* Reply List */}
                     <div className="lg:col-span-2 space-y-2">
                         {!replies && (
-                            <div className="text-center py-12 text-white/50">Loading replies...</div>
+                            <div className="text-center py-12 text-slate-500">Loading replies...</div>
                         )}
 
                         {replies?.length === 0 && (
                             <div className="text-center py-12">
                                 <div className="text-4xl mb-3">📭</div>
-                                <div className="text-white/50">No replies found</div>
+                                <div className="text-slate-500">No replies found</div>
                             </div>
                         )}
 
@@ -188,7 +188,7 @@ function RepliesPage() {
                                     onClick={() => setSelectedReply(reply._id)}
                                     className={`bg-[#12121a] border rounded-xl p-4 cursor-pointer transition-all ${isSelected
                                         ? "border-blue-500/50 ring-1 ring-blue-500/20"
-                                        : "border-white/10 hover:border-white/20"
+                                        : "border-slate-200 hover:border-slate-200"
                                         }`}
                                 >
                                     <div className="flex items-start gap-3">
@@ -206,20 +206,20 @@ function RepliesPage() {
                                                     {reply.contact?.name || reply.contact?.company || reply.fromEmail}
                                                 </span>
                                                 {reply.contact?.company && reply.contact?.name && (
-                                                    <span className="text-white/40 text-sm truncate">
+                                                    <span className="text-slate-400 text-sm truncate">
                                                         @ {reply.contact.company}
                                                     </span>
                                                 )}
-                                                <span className="text-white/30 text-xs ml-auto shrink-0">
+                                                <span className="text-slate-400 text-xs ml-auto shrink-0">
                                                     {formatDate(reply.receivedAt)}
                                                 </span>
                                             </div>
 
-                                            <div className="text-sm text-white/70 font-medium mb-1 truncate">
+                                            <div className="text-sm text-slate-700 font-medium mb-1 truncate">
                                                 {reply.subject}
                                             </div>
 
-                                            <div className="text-sm text-white/40 line-clamp-2">
+                                            <div className="text-sm text-slate-400 line-clamp-2">
                                                 {reply.body.replace(/<[^>]*>/g, "").slice(0, 150)}...
                                             </div>
 
@@ -261,9 +261,9 @@ function RepliesPage() {
                     </div>
 
                     {/* Detail Panel */}
-                    <div className="bg-[#12121a] border border-white/10 rounded-xl p-4 h-fit sticky top-4">
+                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4 h-fit sticky top-4">
                         {!selectedReplyData ? (
-                            <div className="text-center py-12 text-white/50">
+                            <div className="text-center py-12 text-slate-500">
                                 <div className="text-4xl mb-3">👈</div>
                                 <div>Select a reply to view details</div>
                             </div>
@@ -273,39 +273,39 @@ function RepliesPage() {
                                     <h3 className="font-semibold text-white">Reply Details</h3>
                                     <button
                                         onClick={() => setSelectedReply(null)}
-                                        className="text-white/50 hover:text-white"
+                                        className="text-slate-500 hover:text-slate-900"
                                     >
                                         ✕
                                     </button>
                                 </div>
 
                                 {/* Contact Info */}
-                                <div className="mb-4 pb-4 border-b border-white/10">
-                                    <div className="text-sm text-white/50 mb-1">From</div>
+                                <div className="mb-4 pb-4 border-b border-slate-200">
+                                    <div className="text-sm text-slate-500 mb-1">From</div>
                                     <div className="text-white font-medium">
                                         {selectedReplyData.contact?.name || selectedReplyData.fromEmail}
                                     </div>
                                     {selectedReplyData.contact?.company && (
-                                        <div className="text-sm text-white/60">{selectedReplyData.contact.company}</div>
+                                        <div className="text-sm text-slate-500">{selectedReplyData.contact.company}</div>
                                     )}
-                                    <div className="text-sm text-white/40">{selectedReplyData.fromEmail}</div>
+                                    <div className="text-sm text-slate-400">{selectedReplyData.fromEmail}</div>
                                 </div>
 
                                 {/* Subject & Body */}
-                                <div className="mb-4 pb-4 border-b border-white/10">
-                                    <div className="text-sm text-white/50 mb-1">Subject</div>
+                                <div className="mb-4 pb-4 border-b border-slate-200">
+                                    <div className="text-sm text-slate-500 mb-1">Subject</div>
                                     <div className="text-white mb-3">{selectedReplyData.subject}</div>
 
-                                    <div className="text-sm text-white/50 mb-1">Message</div>
-                                    <div className="text-white/80 text-sm bg-white/5 rounded-lg p-3 max-h-48 overflow-y-auto">
+                                    <div className="text-sm text-slate-500 mb-1">Message</div>
+                                    <div className="text-slate-800 text-sm bg-white rounded-lg p-3 max-h-48 overflow-y-auto">
                                         {selectedReplyData.body.replace(/<[^>]*>/g, "")}
                                     </div>
                                 </div>
 
                                 {/* Quick Classify */}
-                                <div className="mb-4 pb-4 border-b border-white/10">
+                                <div className="mb-4 pb-4 border-b border-slate-200">
                                     <div className="flex items-center justify-between mb-2">
-                                        <div className="text-sm text-white/50">Classify As</div>
+                                        <div className="text-sm text-slate-500">Classify As</div>
                                         {!selectedReplyData.isProcessed && (
                                             <button
                                                 onClick={() => handleAIClassify(selectedReplyData)}
@@ -344,36 +344,36 @@ function RepliesPage() {
 
                                 {/* BANT Signals */}
                                 {selectedReplyData.buyingSignals && (
-                                    <div className="mb-4 pb-4 border-b border-white/10">
-                                        <div className="text-sm text-white/50 mb-2">Buying Signals (BANT)</div>
+                                    <div className="mb-4 pb-4 border-b border-slate-200">
+                                        <div className="text-sm text-slate-500 mb-2">Buying Signals (BANT)</div>
                                         <div className="space-y-2 text-sm">
                                             {selectedReplyData.buyingSignals.budget && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-white/50">Budget</span>
+                                                    <span className="text-slate-500">Budget</span>
                                                     <span className="text-white">{selectedReplyData.buyingSignals.budget}</span>
                                                 </div>
                                             )}
                                             {selectedReplyData.buyingSignals.authority && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-white/50">Authority</span>
+                                                    <span className="text-slate-500">Authority</span>
                                                     <span className="text-white">{selectedReplyData.buyingSignals.authority}</span>
                                                 </div>
                                             )}
                                             {selectedReplyData.buyingSignals.need && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-white/50">Need</span>
+                                                    <span className="text-slate-500">Need</span>
                                                     <span className="text-white">{selectedReplyData.buyingSignals.need}</span>
                                                 </div>
                                             )}
                                             {selectedReplyData.buyingSignals.timeline && (
                                                 <div className="flex justify-between">
-                                                    <span className="text-white/50">Timeline</span>
+                                                    <span className="text-slate-500">Timeline</span>
                                                     <span className="text-white">{selectedReplyData.buyingSignals.timeline}</span>
                                                 </div>
                                             )}
                                             {selectedReplyData.buyingSignals.score && (
-                                                <div className="flex justify-between pt-2 border-t border-white/10">
-                                                    <span className="text-white/50">Score</span>
+                                                <div className="flex justify-between pt-2 border-t border-slate-200">
+                                                    <span className="text-slate-500">Score</span>
                                                     <span className="text-green-400 font-bold">{selectedReplyData.buyingSignals.score}/100</span>
                                                 </div>
                                             )}
@@ -383,15 +383,15 @@ function RepliesPage() {
 
                                 {/* AI Suggested Responses */}
                                 {selectedReplyData.suggestedResponses && selectedReplyData.suggestedResponses.length > 0 && (
-                                    <div className="mb-4 pb-4 border-b border-white/10">
-                                        <div className="text-sm text-white/50 mb-2">AI Suggested Responses</div>
+                                    <div className="mb-4 pb-4 border-b border-slate-200">
+                                        <div className="text-sm text-slate-500 mb-2">AI Suggested Responses</div>
                                         <div className="space-y-2">
                                             {selectedReplyData.suggestedResponses.map((resp, i) => (
-                                                <div key={i} className="bg-white/5 rounded-lg p-3 text-sm">
-                                                    <div className="text-white/70 font-medium mb-1">
+                                                <div key={i} className="bg-white rounded-lg p-3 text-sm">
+                                                    <div className="text-slate-700 font-medium mb-1">
                                                         {i === 0 ? "✨ Best" : `Option ${i + 1}`}: {resp.subject}
                                                     </div>
-                                                    <div className="text-white/50 text-xs line-clamp-2">
+                                                    <div className="text-slate-500 text-xs line-clamp-2">
                                                         {resp.body.slice(0, 100)}...
                                                     </div>
                                                 </div>
@@ -410,7 +410,7 @@ function RepliesPage() {
                                     </button>
                                     <button
                                         onClick={() => markIgnored({ id: selectedReplyData._id })}
-                                        className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white/70 rounded-lg text-sm font-medium transition-all"
+                                        className="px-4 py-2 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm font-medium transition-all"
                                     >
                                         Skip
                                     </button>

@@ -35,7 +35,7 @@ function SendersPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] text-white pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 text-white pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -45,7 +45,7 @@ function SendersPage() {
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                             Sender Identities
                         </h1>
-                        <p className="text-white/50 mt-1">Configure your email sender profiles</p>
+                        <p className="text-slate-500 mt-1">Configure your email sender profiles</p>
                     </div>
                     <button
                         onClick={() => setIsCreating(true)}
@@ -57,7 +57,7 @@ function SendersPage() {
 
                 {isCreating && (
                     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={() => setIsCreating(false)}>
-                        <div className="bg-[#1a1a2e] p-6 rounded-xl border border-white/10 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                        <div className="bg-white p-6 rounded-xl border border-slate-200 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                             <h2 className="text-xl font-semibold mb-4">Add Sender</h2>
                             <div className="space-y-4">
                                 <input
@@ -65,7 +65,7 @@ function SendersPage() {
                                     placeholder="Sender name (e.g., Your Company)"
                                     value={newName}
                                     onChange={(e) => setNewName(e.target.value)}
-                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500"
+                                    className="w-full px-4 py-3 bg-black/40 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500"
                                     autoFocus
                                 />
                                 <input
@@ -73,18 +73,18 @@ function SendersPage() {
                                     placeholder="From email address"
                                     value={newEmail}
                                     onChange={(e) => setNewEmail(e.target.value)}
-                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500"
+                                    className="w-full px-4 py-3 bg-black/40 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500"
                                 />
                                 <input
                                     type="email"
                                     placeholder="Reply-to address (optional)"
                                     value={newReplyTo}
                                     onChange={(e) => setNewReplyTo(e.target.value)}
-                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:border-indigo-500"
+                                    className="w-full px-4 py-3 bg-black/40 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500"
                                 />
                             </div>
                             <div className="flex gap-3 justify-end mt-6">
-                                <button onClick={() => setIsCreating(false)} className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
+                                <button onClick={() => setIsCreating(false)} className="px-4 py-2 bg-slate-50 rounded-lg hover:bg-white/20 transition-colors">
                                     Cancel
                                 </button>
                                 <button onClick={handleCreate} className="px-4 py-2 bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-colors">
@@ -96,10 +96,10 @@ function SendersPage() {
                 )}
 
                 {senders === undefined ? (
-                    <div className="text-white/50">Loading senders...</div>
+                    <div className="text-slate-500">Loading senders...</div>
                 ) : senders.length === 0 ? (
                     <div className="text-center py-20">
-                        <p className="text-white/50 mb-4">No senders configured yet</p>
+                        <p className="text-slate-500 mb-4">No senders configured yet</p>
                         <button onClick={() => setIsCreating(true)} className="text-indigo-400 hover:text-indigo-300">
                             Add your first sender →
                         </button>
@@ -109,7 +109,7 @@ function SendersPage() {
                         {senders.map((sender) => (
                             <div
                                 key={sender._id}
-                                className="p-5 rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 hover:border-indigo-500/50 transition-all"
+                                className="p-5 rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-slate-200 hover:border-indigo-500/50 transition-all"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
@@ -130,9 +130,9 @@ function SendersPage() {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="text-white/50 text-sm">{sender.email}</p>
+                                            <p className="text-slate-500 text-sm">{sender.email}</p>
                                             {sender.replyTo && (
-                                                <p className="text-white/30 text-sm">Reply-to: {sender.replyTo}</p>
+                                                <p className="text-slate-400 text-sm">Reply-to: {sender.replyTo}</p>
                                             )}
                                         </div>
                                     </div>
@@ -140,14 +140,14 @@ function SendersPage() {
                                         {!sender.isDefault && (
                                             <button
                                                 onClick={() => setDefault(sender._id)}
-                                                className="px-3 py-1.5 text-sm bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                                                className="px-3 py-1.5 text-sm bg-slate-50 rounded-lg hover:bg-white/20 transition-colors"
                                             >
                                                 Set Default
                                             </button>
                                         )}
                                         <button
                                             onClick={() => deleteSender({ id: sender._id })}
-                                            className="p-2 text-white/40 hover:text-red-400 transition-colors"
+                                            className="p-2 text-slate-400 hover:text-red-400 transition-colors"
                                         >
                                             🗑️
                                         </button>

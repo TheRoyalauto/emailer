@@ -47,7 +47,7 @@ export default async function OGImage({
                     : post.category === "Guides"
                         ? "#8b5cf6"
                         : post.category === "Sales Strategy"
-                            ? "#f43f5e"
+                            ? "#0284c7"
                             : "#64748b";
 
     return new ImageResponse(

@@ -17,6 +17,8 @@ const outfit = Outfit({
     display: "swap",
 });
 
+import { SuperAdminFab } from "../components/SuperAdminFab";
+
 export const metadata: Metadata = {
     title: "E-mailer - Email Campaign Platform",
     description: "Professional email campaign management platform",
@@ -34,8 +36,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={`${spaceGrotesk.variable} ${outfit.variable}`}>
-            <body className="antialiased font-sans">
-                <ConvexClientProvider>{children}</ConvexClientProvider>
+            <body className="antialiased font-sans bg-slate-50">
+                <ConvexClientProvider>
+                    <SuperAdminFab />
+                    {children}
+                </ConvexClientProvider>
             </body>
         </html>
     );

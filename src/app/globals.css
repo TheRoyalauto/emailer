@@ -3,28 +3,27 @@
 @tailwind utilities;
 
 /* ============================================
-   E-MAILER DESIGN SYSTEM — LIGHT MODE
-   Modern, Premium, Interactive
+   E-MAILER DESIGN SYSTEM — UNIFIED LIGHT MODE
+   Aligned with marketing pages (slate/cyan)
    ============================================ */
 
 :root {
   /* ---- Backgrounds ---- */
   --bg-primary: #FFFFFF;
-  --bg-secondary: #F8F9FC;
-  --bg-tertiary: #F1F3F8;
+  --bg-secondary: #F8FAFC;
+  --bg-tertiary: #F1F5F9;
   --bg-elevated: #FFFFFF;
 
   /* ---- Text ---- */
-  --text-primary: #1A1D26;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
   --text-inverse: #FFFFFF;
 
   /* ---- Accent Colors ---- */
-  --accent-primary: #FF6B4A;
-  --accent-primary-hover: #FF5533;
-  --accent-secondary: #0EA5E9;
-  --accent-secondary-hover: #0284C7;
+  --accent-primary: #06B6D4;
+  --accent-primary-hover: #0891B2;
+  --accent-primary-light: #ECFEFF;
 
   /* ---- Semantic Colors ---- */
   --success: #10B981;
@@ -37,26 +36,68 @@
   --info-bg: #EFF6FF;
 
   /* ---- Borders & Shadows ---- */
-  --border-default: #E5E7EB;
-  --border-subtle: #F3F4F6;
+  --border-default: #E2E8F0;
+  --border-subtle: #F1F5F9;
   --border-focus: var(--accent-primary);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
-  --shadow-glow: 0 0 20px rgba(255, 107, 74, 0.15);
+  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.15);
 
   /* ---- Spacing & Radius ---- */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
   --radius-full: 9999px;
 
   /* ---- Typography ---- */
   --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-heading), system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+   DARK MODE — Variable Overrides
+   ============================================ */
+
+.dark {
+  --bg-primary: #131825;
+  --bg-secondary: #0B0F19;
+  --bg-tertiary: #1A1F2E;
+  --bg-elevated: #1A1F2E;
+
+  --text-primary: #E8ECF4;
+  --text-secondary: #8D95A8;
+  --text-muted: #5A6378;
+  --text-inverse: #0F172A;
+
+  --accent-primary: #22D3EE;
+  --accent-primary-hover: #06B6D4;
+  --accent-primary-light: rgba(34, 211, 238, 0.1);
+
+  --success: #34D399;
+  --success-bg: rgba(52, 211, 153, 0.12);
+  --warning: #FBBF24;
+  --warning-bg: rgba(251, 191, 36, 0.12);
+  --error: #F87171;
+  --error-bg: rgba(248, 113, 113, 0.12);
+  --info: #60A5FA;
+  --info-bg: rgba(96, 165, 250, 0.12);
+
+  --border-default: #232A3B;
+  --border-subtle: #1A1F2E;
+  --border-focus: var(--accent-primary);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(34, 211, 238, 0.2);
+
+  color-scheme: dark;
 }
 
 /* ============================================
@@ -83,6 +124,263 @@ body {
 }
 
 /* ============================================
+   DARK MODE — Global Overrides
+   Catches Tailwind hardcoded colors globally
+   ============================================ */
+
+/* Background overrides */
+.dark .bg-white {
+  background-color: var(--bg-primary) !important;
+}
+
+.dark .bg-white\/90 {
+  background-color: rgba(19, 24, 37, 0.92) !important;
+}
+
+.dark .bg-white\/98 {
+  background-color: rgba(19, 24, 37, 0.98) !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark .bg-slate-50\/80 {
+  background-color: rgba(26, 31, 46, 0.8) !important;
+}
+
+.dark .bg-slate-100 {
+  background-color: #1E2435 !important;
+}
+
+/* Text overrides */
+.dark .text-slate-900 {
+  color: var(--text-primary) !important;
+}
+
+.dark .text-slate-800 {
+  color: #C8CED8 !important;
+}
+
+.dark .text-slate-700 {
+  color: #A8B0C0 !important;
+}
+
+.dark .text-slate-600 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-slate-500 {
+  color: #7A8494 !important;
+}
+
+.dark .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Border overrides */
+.dark .border-slate-200 {
+  border-color: var(--border-default) !important;
+}
+
+.dark .border-slate-200\/80 {
+  border-color: rgba(35, 42, 59, 0.8) !important;
+}
+
+.dark .border-slate-100 {
+  border-color: var(--border-subtle) !important;
+}
+
+.dark .border-slate-300 {
+  border-color: #2A3348 !important;
+}
+
+/* Hover state overrides */
+.dark .hover\:bg-slate-50:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.dark .hover\:bg-slate-100:hover {
+  background-color: #1E2435 !important;
+}
+
+.dark .hover\:text-slate-900:hover {
+  color: var(--text-primary) !important;
+}
+
+.dark .hover\:text-slate-800:hover {
+  color: #C8CED8 !important;
+}
+
+/* Ring overrides */
+.dark .ring-slate-200 {
+  --tw-ring-color: var(--border-default) !important;
+}
+
+.dark .ring-slate-100 {
+  --tw-ring-color: var(--border-subtle) !important;
+}
+
+/* Active navigation */
+.dark .bg-cyan-50 {
+  background-color: rgba(34, 211, 238, 0.1) !important;
+}
+
+.dark .text-cyan-600 {
+  color: #22D3EE !important;
+}
+
+.dark .hover\:bg-cyan-50:hover {
+  background-color: rgba(34, 211, 238, 0.1) !important;
+}
+
+/* Gradients in dark */
+.dark .from-slate-50 {
+  --tw-gradient-from: var(--bg-tertiary) !important;
+}
+
+.dark .to-white {
+  --tw-gradient-to: var(--bg-primary) !important;
+}
+
+.dark .bg-gradient-to-br.from-slate-50 {
+  background: linear-gradient(to bottom right, var(--bg-tertiary), var(--bg-primary)) !important;
+}
+
+/* Semantic color backgrounds */
+.dark .bg-red-50 {
+  background-color: rgba(248, 113, 113, 0.1) !important;
+}
+
+.dark .bg-emerald-50\/50 {
+  background-color: rgba(52, 211, 153, 0.06) !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: rgba(251, 191, 36, 0.1) !important;
+}
+
+.dark .bg-violet-50 {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+.dark .hover\:bg-red-50:hover {
+  background-color: rgba(248, 113, 113, 0.12) !important;
+}
+
+.dark .hover\:bg-violet-50:hover {
+  background-color: rgba(139, 92, 246, 0.12) !important;
+}
+
+/* Shadow overrides */
+.dark .shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.dark .shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.dark .shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.dark .shadow-2xl {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Backdrop blur in dark */
+.dark .backdrop-blur-xl {
+  backdrop-filter: blur(20px) !important;
+}
+
+/* ── Dashboard-specific dark overrides ───────────── */
+
+/* Semantic light backgrounds */
+.dark .bg-cyan-50\/50 {
+  background-color: rgba(34, 211, 238, 0.06) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgba(52, 211, 153, 0.1) !important;
+}
+
+.dark .bg-blue-50 {
+  background-color: rgba(96, 165, 250, 0.1) !important;
+}
+
+.dark .bg-violet-50 {
+  background-color: rgba(139, 92, 246, 0.1) !important;
+}
+
+.dark .bg-emerald-50\/50 {
+  background-color: rgba(52, 211, 153, 0.06) !important;
+}
+
+/* Semantic borders */
+.dark .border-cyan-100 {
+  border-color: rgba(34, 211, 238, 0.15) !important;
+}
+
+.dark .border-cyan-200\/50 {
+  border-color: rgba(34, 211, 238, 0.1) !important;
+}
+
+/* Hover borders for stat cards */
+.dark .hover\:border-cyan-300:hover {
+  border-color: rgba(34, 211, 238, 0.3) !important;
+}
+
+.dark .hover\:border-emerald-300:hover {
+  border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+.dark .hover\:border-sky-300:hover {
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.dark .hover\:border-violet-300:hover {
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Time range selector active state — lighter shade in dark */
+.dark .bg-slate-900 {
+  background-color: #2A3348 !important;
+}
+
+.dark .bg-slate-900.text-white {
+  color: #E8ECF4 !important;
+}
+
+/* Hover on time range inactive */
+.dark .hover\:bg-slate-100:hover {
+  background-color: #1E2435 !important;
+}
+
+.dark .hover\:text-slate-600:hover {
+  color: var(--text-secondary) !important;
+}
+
+/* Chart dot border */
+.dark .border-white {
+  border-color: var(--bg-primary) !important;
+}
+
+/* Gradient overlay for chart hero */
+.dark .from-cyan-500\/5 {
+  --tw-gradient-from: rgba(34, 211, 238, 0.08) !important;
+}
+
+.dark .to-sky-500\/5 {
+  --tw-gradient-to: rgba(56, 189, 248, 0.08) !important;
+}
+
+/* Divide and separator colors */
+.dark .divide-slate-200> :not([hidden])~ :not([hidden]) {
+  border-color: var(--border-default) !important;
+}
+
+/* ============================================
    TYPOGRAPHY
    ============================================ */
 
@@ -92,7 +390,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.2;
   color: var(--text-primary);
@@ -149,28 +447,47 @@ p {
   outline-offset: 2px;
 }
 
-/* Primary Button - Coral Gradient */
+/* Primary Button — Slate Dark */
 .btn-primary {
-  background: linear-gradient(135deg, #FF6B4A 0%, #F43F5E 100%);
+  background: #0F172A;
   color: white;
-  box-shadow: var(--shadow-md), 0 2px 8px rgba(255, 107, 74, 0.25);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
-  box-shadow: var(--shadow-lg), 0 4px 16px rgba(255, 107, 74, 0.35);
+  background: #1E293B;
+  box-shadow: var(--shadow-lg);
   transform: translateY(-1px);
 }
 
-/* Secondary Button - Teal */
+.dark .btn-primary {
+  background: #E8ECF4;
+  color: #0B0F19;
+}
+
+.dark .btn-primary:hover {
+  background: #FFFFFF;
+}
+
+/* Secondary Button — Cyan Accent */
 .btn-secondary {
-  background: var(--accent-secondary);
+  background: var(--accent-primary);
   color: white;
   box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover {
-  background: var(--accent-secondary-hover);
+  background: var(--accent-primary-hover);
   box-shadow: var(--shadow-lg);
+}
+
+.dark .btn-secondary {
+  background: #22D3EE;
+  color: #0B0F19;
+}
+
+.dark .btn-secondary:hover {
+  background: #06B6D4;
 }
 
 /* Ghost Button */
@@ -194,7 +511,7 @@ p {
 }
 
 .btn-outline:hover {
-  background: rgba(255, 107, 74, 0.08);
+  background: rgba(6, 182, 212, 0.08);
 }
 
 /* Size Variants */
@@ -236,7 +553,7 @@ p {
 .form-input:hover,
 .form-textarea:hover,
 .form-select:hover {
-  border-color: #D1D5DB;
+  border-color: #CBD5E1;
 }
 
 .form-input:focus,
@@ -244,7 +561,7 @@ p {
 .form-select:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.12);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
 }
 
 .form-textarea {
@@ -314,7 +631,7 @@ p {
 }
 
 /* ============================================
-   SCROLLBARS (Light Mode)
+   SCROLLBARS
    ============================================ */
 
 ::-webkit-scrollbar {
@@ -328,12 +645,20 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
+  background: #94A3B8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #2A3348;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3A4558;
 }
 
 /* ============================================
@@ -444,16 +769,20 @@ p {
   -webkit-backdrop-filter: blur(12px);
 }
 
-.gradient-coral {
-  background: linear-gradient(135deg, #FF6B4A 0%, #F43F5E 100%);
+.dark .glass {
+  background: rgba(19, 24, 37, 0.8);
 }
 
-.gradient-teal {
-  background: linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%);
+.gradient-brand {
+  background: linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #FF6B4A 0%, #F43F5E 100%);
+  background: linear-gradient(135deg, #06B6D4 0%, #0EA5E9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -472,25 +801,6 @@ p {
 .focus-ring:focus-visible {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
-}
-
-/* ============================================
-   COMPONENT OVERRIDES FOR LIGHT MODE
-   ============================================ */
-
-/* Override any remaining dark backgrounds */
-.bg-\[\#0a0a0f\],
-.bg-\[\#12121f\],
-.bg-\[\#1a1a2e\],
-.bg-\[\#16162a\] {
-  background: var(--bg-primary) !important;
-}
-
-/* Text color overrides */
-.text-white\/50,
-.text-white\/60,
-.text-white\/70 {
-  color: var(--text-muted) !important;
 }
 
 /* ============================================
@@ -571,14 +881,14 @@ p {
 }
 
 .tiptap a {
-  color: #4f46e5;
+  color: #06B6D4;
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.15s;
 }
 
 .tiptap a:hover {
-  color: #4338ca;
+  color: #0891B2;
 }
 
 .tiptap code {
@@ -586,7 +896,11 @@ p {
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.85em;
-  color: #e11d48;
+  color: #0F172A;
+}
+
+.dark .tiptap code {
+  color: #E8ECF4;
 }
 
 .tiptap hr {
@@ -597,7 +911,11 @@ p {
 
 /* Selection highlight */
 .tiptap ::selection {
-  background: rgba(79, 70, 229, 0.15);
+  background: rgba(6, 182, 212, 0.15);
+}
+
+.dark .tiptap ::selection {
+  background: rgba(34, 211, 238, 0.25);
 }
 
 .tiptap .ProseMirror-selectednode {
@@ -631,7 +949,7 @@ p {
 
 /* Headings */
 .prose-emailer .article-h2 {
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
   font-size: 1.625rem;
   font-weight: 600;
   color: #0f172a;
@@ -643,7 +961,7 @@ p {
 }
 
 .prose-emailer .article-h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
   color: #0f172a;
@@ -798,7 +1116,7 @@ p {
 
 /* Horizontal Rules */
 .prose-emailer hr {
+  margin: 2rem 0;
   border: none;
   border-top: 1px solid #e2e8f0;
-  margin: 2.5rem 0;
 }
