@@ -306,11 +306,11 @@ export default function Home() {
                                     </div>
 
                                     {/* Step 3: Track */}
-                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-green-100/50 hover:border-green-200 transition-all duration-300 hover:-translate-y-1">
+                                    <div className="group relative bg-white rounded-2xl p-5 lg:p-6 border border-slate-200 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-sky-100/50 hover:border-sky-200 transition-all duration-300 hover:-translate-y-1">
                                         <div className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 text-white font-bold text-xs flex items-center justify-center shadow-lg">3</div>
 
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                                            <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg className="w-7 h-7 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                             </svg>
                                         </div>
@@ -368,7 +368,7 @@ export default function Home() {
                                     ),
                                     title: "No complexity",
                                     desc: "No 47-step workflows or confusing dashboards. Just write, send, track.",
-                                    color: "from-red-500 to-orange-500"
+                                    color: "from-sky-500 to-cyan-500"
                                 },
                                 {
                                     icon: (
@@ -378,7 +378,7 @@ export default function Home() {
                                     ),
                                     title: "No hidden fees",
                                     desc: "Transparent pricing you can actually understand. Free tier that works.",
-                                    color: "from-green-500 to-emerald-500"
+                                    color: "from-sky-500 to-cyan-500"
                                 },
                                 {
                                     icon: (
