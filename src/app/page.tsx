@@ -457,7 +457,7 @@ export default function Home() {
                 < section className="py-20 lg:py-28 bg-gradient-to-br from-slate-900 to-slate-800 text-white" >
                     <div className="max-w-7xl mx-auto px-6 lg:px-8">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
                                 Teams love E-mailer
                             </h2>
                         </div>

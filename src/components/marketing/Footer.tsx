@@ -34,7 +34,7 @@ export default function Footer() {
             <div className="border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
                     <div className="text-center">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+                        <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-sky-400 to-cyan-400 bg-clip-text text-transparent">
                             Ready to scale your outreach?
                         </h2>
                         <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
