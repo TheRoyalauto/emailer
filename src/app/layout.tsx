@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Sora, Figtree } from "next/font/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const sora = Sora({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700", "800"],
+    variable: "--font-heading",
+    display: "swap",
+});
+
+const figtree = Figtree({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
-    variable: "--font-jakarta",
+    variable: "--font-body",
     display: "swap",
 });
 
@@ -26,7 +33,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={plusJakarta.variable}>
+        <html lang="en" className={`${sora.variable} ${figtree.variable}`}>
             <body className="antialiased font-sans">
                 <ConvexClientProvider>{children}</ConvexClientProvider>
             </body>

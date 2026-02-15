@@ -55,7 +55,8 @@
   --radius-full: 9999px;
 
   /* ---- Typography ---- */
-  --font-sans: var(--font-jakarta), "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-heading), system-ui, -apple-system, sans-serif;
 }
 
 /* ============================================
@@ -91,6 +92,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-heading);
   font-weight: 600;
   line-height: 1.3;
   color: var(--text-primary);
