@@ -12,7 +12,6 @@ export default function Navbar() {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener("scroll", handleScroll);
 
-        // Check if user has an active session
         try {
             const token = localStorage.getItem("claimory_session_token");
             setIsLoggedIn(!!token);
@@ -41,14 +40,17 @@ export default function Navbar() {
 
                     {/* Desktop Nav */}
                     <div className="hidden lg:flex items-center gap-8">
-                        <Link href="/features" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                        <Link href="/features" className="text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                             Features
                         </Link>
-                        <Link href="/pricing" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                        <Link href="/pricing" className="text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                             Pricing
                         </Link>
-                        <Link href="/faq" className="text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                        <Link href="/faq" className="text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                             FAQ
+                        </Link>
+                        <Link href="/blog" className="text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
+                            Blog
                         </Link>
                     </div>
 
@@ -57,7 +59,7 @@ export default function Navbar() {
                         {isLoggedIn ? (
                             <Link
                                 href="/dashboard"
-                                className="group flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="group flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold tracking-[-0.01em] rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all"
                             >
                                 <span>Go to Dashboard</span>
                                 <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -68,13 +70,13 @@ export default function Navbar() {
                             <>
                                 <Link
                                     href="/login"
-                                    className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
+                                    className="text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors"
                                 >
                                     Sign in
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                    className="px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold tracking-[-0.01em] rounded-lg hover:bg-slate-800 active:scale-[0.98] transition-all"
                                 >
                                     Start Free →
                                 </Link>
@@ -101,21 +103,24 @@ export default function Navbar() {
                 {mobileOpen && (
                     <div className="lg:hidden py-4 border-t border-slate-200/50">
                         <div className="flex flex-col gap-3">
-                            <Link href="/features" className="py-2 text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                            <Link href="/features" className="py-2 text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                                 Features
                             </Link>
-                            <Link href="/pricing" className="py-2 text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                            <Link href="/pricing" className="py-2 text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                                 Pricing
                             </Link>
-                            <Link href="/faq" className="py-2 text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                            <Link href="/faq" className="py-2 text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                                 FAQ
+                            </Link>
+                            <Link href="/blog" className="py-2 text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
+                                Blog
                             </Link>
                             <hr className="my-2 border-slate-200" />
 
                             {isLoggedIn ? (
                                 <Link
                                     href="/dashboard"
-                                    className="py-3 text-center bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg flex items-center justify-center gap-2"
+                                    className="py-3 text-center bg-slate-900 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
                                 >
                                     <span>Go to Dashboard</span>
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -124,12 +129,12 @@ export default function Navbar() {
                                 </Link>
                             ) : (
                                 <>
-                                    <Link href="/login" className="py-2 text-slate-600 hover:text-slate-900 font-medium transition-colors">
+                                    <Link href="/login" className="py-2 text-slate-500 hover:text-slate-900 text-[15px] tracking-[-0.01em] transition-colors">
                                         Sign in
                                     </Link>
                                     <Link
                                         href="/register"
-                                        className="py-3 text-center bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold rounded-xl shadow-lg"
+                                        className="py-3 text-center bg-slate-900 text-white font-semibold rounded-lg"
                                     >
                                         Start Free →
                                     </Link>
@@ -142,3 +147,4 @@ export default function Navbar() {
         </nav>
     );
 }
+

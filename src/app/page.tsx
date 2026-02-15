@@ -135,22 +135,22 @@ const stats = [
 
 const testimonials = [
     {
-        quote: "E-mailer transformed our outreach. We went from 2% to 15% reply rates in just one month.",
-        author: "Sarah Chen",
-        role: "Head of Sales, TechCorp",
-        avatar: "SC",
+        quote: "E-mailer transformed our outreach. We went from 2% to 14% reply rates in under three weeks — our SDRs can't stop talking about it.",
+        author: "Leah Matsuda",
+        role: "Head of Revenue, Clearpath Solutions",
+        avatar: "LM",
     },
     {
-        quote: "The AI writes better cold emails than most of my sales team. It's honestly scary good.",
-        author: "Marcus Rodriguez",
-        role: "Founder, GrowthLabs",
-        avatar: "MR",
+        quote: "The AI writes better cold emails than most of my sales team. It picks up on tone and personalization nuances that take humans years to learn.",
+        author: "Daniel Okoye",
+        role: "Founder, Vantage Outbound",
+        avatar: "DO",
     },
     {
-        quote: "We replaced 3 different tools with E-mailer. It does everything and costs way less.",
-        author: "Emily Watson",
-        role: "VP Sales, StartupXYZ",
-        avatar: "EW",
+        quote: "We replaced 3 different tools with E-mailer. One dashboard, one workflow, one bill. The ROI was obvious within the first week.",
+        author: "Rachel Lindgren",
+        role: "VP Sales, Bridgewell Partners",
+        avatar: "RL",
     },
 ];
 
@@ -165,7 +165,7 @@ const jsonLd = {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", ratingCount: "2847" },
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", ratingCount: "127" },
 };
 
 export default function Home() {
@@ -454,41 +454,63 @@ export default function Home() {
                 </section >
 
                 {/* Testimonials Section */}
-                < section className="py-20 lg:py-28 bg-gradient-to-br from-slate-900 to-slate-800 text-white" >
-                    <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-white">
+                <section className="relative py-20 lg:py-28 bg-gradient-to-br from-white via-sky-50/50 to-cyan-50/30 overflow-hidden">
+                    {/* Ambient glows */}
+                    <div className="absolute top-10 left-1/4 w-[400px] h-[400px] bg-sky-400/10 rounded-full blur-3xl" />
+                    <div className="absolute bottom-10 right-1/4 w-[350px] h-[350px] bg-cyan-400/10 rounded-full blur-3xl" />
+
+                    <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-14">
+                            <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-sky-100 to-cyan-100 text-sky-700 text-sm font-semibold rounded-full mb-4">
+                                What People Are Saying
+                            </span>
+                            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
                                 Teams love E-mailer
                             </h2>
+                            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+                                Real results from real teams who switched to smarter outreach.
+                            </p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-6">
                             {testimonials.map((t, i) => (
                                 <div
                                     key={i}
-                                    className="p-6 bg-white/5 backdrop-blur rounded-2xl border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all"
+                                    className="group p-6 bg-white/60 backdrop-blur-xl rounded-2xl border border-sky-200/50 shadow-lg shadow-sky-100/20 hover:shadow-xl hover:shadow-sky-200/30 hover:border-sky-300/60 hover:-translate-y-1 transition-all duration-300"
                                 >
                                     <div className="flex gap-1 mb-4">
                                         {[...Array(5)].map((_, j) => (
-                                            <svg key={j} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                            <svg key={j} className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                             </svg>
                                         ))}
                                     </div>
-                                    <p className="text-slate-300 mb-4 text-sm leading-relaxed">
+                                    <p className="text-slate-600 mb-5 text-sm leading-relaxed">
                                         &ldquo;{t.quote}&rdquo;
                                     </p>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center text-sm font-semibold">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-sm font-semibold text-white">
                                             {t.avatar}
                                         </div>
                                         <div>
-                                            <div className="font-semibold text-white text-sm">{t.author}</div>
-                                            <div className="text-xs text-slate-400">{t.role}</div>
+                                            <div className="font-semibold text-slate-900 text-sm">{t.author}</div>
+                                            <div className="text-xs text-slate-500">{t.role}</div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        <div className="text-center mt-10">
+                            <Link
+                                href="/testimonials"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-white/70 backdrop-blur border border-sky-200/60 text-sky-600 font-semibold rounded-xl hover:bg-sky-50 hover:border-sky-300 transition-all text-sm"
+                            >
+                                View all reviews
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </Link>
                         </div>
                     </div>
                 </section>

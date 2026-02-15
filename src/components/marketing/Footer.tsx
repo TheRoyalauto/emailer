@@ -14,10 +14,10 @@ const footerLinks = {
         { label: "Contact", href: "/contact" },
     ],
     resources: [
-        { label: "Documentation", href: "/docs" },
-        { label: "Help Center", href: "/help" },
+        { label: "How It Works", href: "/how-it-works" },
+        { label: "Comparisons", href: "/compare" },
         { label: "FAQ", href: "/faq" },
-        { label: "API Reference", href: "/docs/api" },
+        { label: "Testimonials", href: "/testimonials" },
     ],
     legal: [
         { label: "Privacy Policy", href: "/privacy" },
@@ -34,23 +34,23 @@ export default function Footer() {
             <div className="border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
                     <div className="text-center">
-                        <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-sky-400 to-cyan-400 bg-clip-text text-transparent">
+                        <h2 className="text-3xl lg:text-4xl font-semibold tracking-[-0.03em] mb-4 text-cyan-400">
                             Ready to scale your outreach?
                         </h2>
-                        <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+                        <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
                             Join thousands of businesses using E-mailer to send personalized emails at scale.
                             Start free, no credit card required.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link
                                 href="/register"
-                                className="px-8 py-4 bg-gradient-to-r from-sky-400 to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                className="px-8 py-4 bg-white text-slate-900 font-semibold tracking-[-0.01em] rounded-lg hover:bg-slate-100 active:scale-[0.98] transition-all"
                             >
                                 Start Free Trial →
                             </Link>
                             <Link
                                 href="/demo"
-                                className="px-8 py-4 bg-white/10 backdrop-blur text-white font-semibold rounded-xl border border-white/20 hover:bg-white/20 transition-all"
+                                className="px-8 py-4 bg-white/10 backdrop-blur text-white font-semibold tracking-[-0.01em] rounded-lg border border-white/20 hover:bg-white/20 transition-all"
                             >
                                 Book a Demo
                             </Link>
@@ -79,7 +79,7 @@ export default function Footer() {
                     {/* Link Columns */}
                     {Object.entries(footerLinks).map(([category, links]) => (
                         <div key={category}>
-                            <h4 className="font-semibold text-white mb-4 uppercase text-xs tracking-wider">
+                            <h4 className="font-semibold text-white mb-4 uppercase text-xs tracking-widest">
                                 {category}
                             </h4>
                             <ul className="space-y-3">
@@ -107,7 +107,6 @@ export default function Footer() {
                             © {new Date().getFullYear()} E-mailer. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6">
-                            {/* Social Icons */}
                             <a href="#" className="text-slate-400 hover:text-white transition-colors">
                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg>
                             </a>
@@ -124,4 +123,3 @@ export default function Footer() {
         </footer>
     );
 }
-

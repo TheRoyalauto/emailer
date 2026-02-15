@@ -94,18 +94,18 @@ h5,
 h6 {
   font-family: var(--font-heading);
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.2;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 h1 {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 26px;
 }
 
 h3 {
@@ -603,4 +603,202 @@ p {
 .tiptap .ProseMirror-selectednode {
   outline: 2px solid var(--accent-primary);
   border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Blog Article Typography — .prose-emailer
+   Premium reading experience for long-form content
+   ═══════════════════════════════════════════════════════════════════ */
+
+.prose-emailer {
+  color: #334155;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.prose-emailer p {
+  margin-bottom: 1.5rem;
+}
+
+.prose-emailer strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.prose-emailer em {
+  font-style: italic;
+}
+
+/* Headings */
+.prose-emailer .article-h2 {
+  font-family: var(--font-heading);
+  font-size: 1.625rem;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.prose-emailer .article-h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Links */
+.prose-emailer .article-link {
+  color: #0891b2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #0891b240;
+  transition: text-decoration-color 0.2s;
+}
+
+.prose-emailer .article-link:hover {
+  text-decoration-color: #0891b2;
+}
+
+/* Lists */
+.prose-emailer ul,
+.prose-emailer ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.prose-emailer ul {
+  list-style-type: disc;
+}
+
+.prose-emailer ol {
+  list-style-type: decimal;
+}
+
+.prose-emailer li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.prose-emailer li::marker {
+  color: #94a3b8;
+}
+
+/* Checklists */
+.prose-emailer .checklist-item {
+  list-style: none;
+  margin-left: -1.5rem;
+  padding-left: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.prose-emailer .checklist-item .checkbox {
+  color: #94a3b8;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.prose-emailer .checklist-item.checked .checkbox {
+  color: #10b981;
+}
+
+/* Blockquotes */
+.prose-emailer .article-blockquote {
+  border-left: 3px solid #e2e8f0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  background: #f8fafc;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.prose-emailer .article-blockquote p {
+  margin-bottom: 0.5rem;
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.prose-emailer .article-blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code */
+.prose-emailer .inline-code {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-size: 0.875em;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  border: 1px solid #e2e8f0;
+}
+
+.prose-emailer .code-block {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* Tables */
+.prose-emailer .table-wrap {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.prose-emailer table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.prose-emailer thead {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.prose-emailer th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.prose-emailer td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+}
+
+.prose-emailer tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.prose-emailer tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* Horizontal Rules */
+.prose-emailer hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 2.5rem 0;
 }

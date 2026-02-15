@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Sora, Figtree } from "next/font/google";
+import { Space_Grotesk, Outfit } from "next/font/google";
 import { ConvexClientProvider } from "./ConvexClientProvider";
 import "./globals.css";
 
-const sora = Sora({
+const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
-    weight: ["400", "500", "600", "700", "800"],
+    weight: ["400", "500", "600", "700"],
     variable: "--font-heading",
     display: "swap",
 });
 
-const figtree = Figtree({
+const outfit = Outfit({
     subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+    weight: ["300", "400", "500", "600", "700"],
     variable: "--font-body",
     display: "swap",
 });
@@ -33,7 +33,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={`${sora.variable} ${figtree.variable}`}>
+        <html lang="en" className={`${spaceGrotesk.variable} ${outfit.variable}`}>
             <body className="antialiased font-sans">
                 <ConvexClientProvider>{children}</ConvexClientProvider>
             </body>
