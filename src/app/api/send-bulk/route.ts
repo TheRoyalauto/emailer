@@ -161,80 +161,102 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "No emails to send" }, { status: 400 });
         }
 
-        const results: Array<{
-            email: string;
-            success: boolean;
-            error?: string;
-            contactId?: string;
-        }> = [];
+        const encoder = new TextEncoder();
 
-        for (let i = 0; i < emails.length; i++) {
-            const email = emails[i];
-            let result: { success: boolean; error?: string };
+        const stream = new ReadableStream({
+            async start(controller) {
+                const results: Array<{
+                    email: string;
+                    success: boolean;
+                    error?: string;
+                    contactId?: string;
+                }> = [];
 
-            // Choose provider
-            const provider = smtp.provider || "smtp";
+                for (let i = 0; i < emails.length; i++) {
+                    const email = emails[i];
+                    let result: { success: boolean; error?: string };
 
-            switch (provider) {
-                case "resend":
-                    if (!smtp.apiKey) {
-                        result = { success: false, error: "Resend API key required" };
-                    } else {
-                        result = await sendWithResend(smtp.apiKey, from, email);
+                    const provider = smtp.provider || "smtp";
+
+                    switch (provider) {
+                        case "resend":
+                            if (!smtp.apiKey) {
+                                result = { success: false, error: "Resend API key required" };
+                            } else {
+                                result = await sendWithResend(smtp.apiKey, from, email);
+                            }
+                            break;
+
+                        case "sendgrid":
+                            if (!smtp.apiKey) {
+                                result = { success: false, error: "SendGrid API key required" };
+                            } else {
+                                result = await sendWithSendGrid(smtp.apiKey, from, email);
+                            }
+                            break;
+
+                        case "mailgun":
+                            if (!smtp.apiKey) {
+                                result = { success: false, error: "Mailgun API key required" };
+                            } else {
+                                const domain = from.email.split("@")[1];
+                                result = await sendWithMailgun(smtp.apiKey, domain, from, email);
+                            }
+                            break;
+
+                        case "smtp":
+                        default:
+                            if (!smtp.host || !smtp.user || !smtp.pass) {
+                                result = { success: false, error: "SMTP config incomplete" };
+                            } else {
+                                result = await sendWithSmtp(smtp, from, email);
+                            }
+                            break;
                     }
-                    break;
 
-                case "sendgrid":
-                    if (!smtp.apiKey) {
-                        result = { success: false, error: "SendGrid API key required" };
-                    } else {
-                        result = await sendWithSendGrid(smtp.apiKey, from, email);
+                    const entry = {
+                        type: "result" as const,
+                        index: i,
+                        total: emails.length,
+                        email: email.to,
+                        success: result.success,
+                        error: result.error,
+                        contactId: email.contactId,
+                    };
+
+                    results.push(entry);
+
+                    // Stream each result as NDJSON
+                    controller.enqueue(encoder.encode(JSON.stringify(entry) + "\n"));
+
+                    // Delay between emails (except for last one)
+                    if (i < emails.length - 1 && delayBetweenMs > 0) {
+                        await delay(delayBetweenMs);
                     }
-                    break;
+                }
 
-                case "mailgun":
-                    if (!smtp.apiKey) {
-                        result = { success: false, error: "Mailgun API key required" };
-                    } else {
-                        // Extract domain from from email
-                        const domain = from.email.split("@")[1];
-                        result = await sendWithMailgun(smtp.apiKey, domain, from, email);
-                    }
-                    break;
+                // Send final summary
+                const successful = results.filter((r) => r.success).length;
+                const failed = results.filter((r) => !r.success).length;
 
-                case "smtp":
-                default:
-                    if (!smtp.host || !smtp.user || !smtp.pass) {
-                        result = { success: false, error: "SMTP config incomplete" };
-                    } else {
-                        result = await sendWithSmtp(smtp, from, email);
-                    }
-                    break;
-            }
+                const summary = {
+                    type: "complete" as const,
+                    total: emails.length,
+                    sent: successful,
+                    failed,
+                };
 
-            results.push({
-                email: email.to,
-                success: result.success,
-                error: result.error,
-                contactId: email.contactId,
-            });
+                controller.enqueue(encoder.encode(JSON.stringify(summary) + "\n"));
+                controller.close();
+            },
+        });
 
-            // Delay between emails (except for last one)
-            if (i < emails.length - 1 && delayBetweenMs > 0) {
-                await delay(delayBetweenMs);
-            }
-        }
-
-        const successful = results.filter((r) => r.success).length;
-        const failed = results.filter((r) => !r.success).length;
-
-        return NextResponse.json({
-            success: true,
-            results,
-            summary: {
-                total: emails.length,
-                sent: successful,
-                failed,
+        return new Response(stream, {
+            headers: {
+                "Content-Type": "application/x-ndjson",
+                "Transfer-Encoding": "chunked",
+                "Cache-Control": "no-cache",
+                Connection: "keep-alive",
             },
         });
     } catch (error: any) {

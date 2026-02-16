@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
@@ -60,6 +60,10 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
     const [results, setResults] = useState<SendResult[]>([]);
     const [isSending, setIsSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [sendProgress, setSendProgress] = useState({ sent: 0, failed: 0, total: 0, currentEmail: "" });
+
+    // Iframe ref for preview
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const logEmail = useAuthMutation(api.activities.logEmail);
 
@@ -75,6 +79,21 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
     const previewSubject = previewContact ? replaceVariables(template.subject, previewContact) : template.subject;
     const previewBody = previewContact ? replaceVariables(template.body, previewContact) : template.body;
 
+    // Write preview body into sandboxed iframe
+    const iframeLoadHandler = useCallback(() => {
+        if (!iframeRef.current) return;
+        const doc = iframeRef.current.contentDocument;
+        if (!doc) return;
+        doc.open();
+        doc.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.6;color:#374151;background:#fff;}img{max-width:100%;height:auto;}a{color:#0EA5E9;}*{box-sizing:border-box;}</style></head><body>${previewBody}</body></html>`);
+        doc.close();
+    }, [previewBody]);
+
+    useEffect(() => {
+        // Re-write iframe content when preview body changes
+        iframeLoadHandler();
+    }, [iframeLoadHandler]);
+
     const canSend = useManual
         ? smtpHost && smtpUser && smtpPass
         : selectedConfig;
@@ -89,6 +108,7 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
         setIsSending(true);
         setError(null);
         setResults([]);
+        setSendProgress({ sent: 0, failed: 0, total: contacts.length, currentEmail: "" });
 
         try {
             const emailsToSend = contacts.map(contact => ({
@@ -132,23 +152,64 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                 }),
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.error || "Failed to send emails");
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Failed to send emails");
             }
 
-            setResults(data.results);
+            // Stream NDJSON results
+            const reader = response.body?.getReader();
+            const decoder = new TextDecoder();
+            const allResults: SendResult[] = [];
+            let buffer = "";
 
-            for (const result of data.results) {
-                if (result.success && result.contactId) {
+            if (!reader) throw new Error("Failed to read response stream");
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop() || ""; // Keep incomplete line in buffer
+
+                for (const line of lines) {
+                    if (!line.trim()) continue;
                     try {
-                        await logEmail({
-                            contactId: result.contactId as Id<"contacts">,
-                            campaignId: undefined,
-                        });
+                        const data = JSON.parse(line);
+                        if (data.type === "result") {
+                            const result: SendResult = {
+                                email: data.email,
+                                success: data.success,
+                                error: data.error,
+                                contactId: data.contactId,
+                            };
+                            allResults.push(result);
+                            setResults([...allResults]);
+
+                            const sent = allResults.filter(r => r.success).length;
+                            const failed = allResults.filter(r => !r.success).length;
+                            setSendProgress({
+                                sent,
+                                failed,
+                                total: contacts.length,
+                                currentEmail: data.email,
+                            });
+
+                            // Log successful emails in real-time
+                            if (result.success && result.contactId) {
+                                try {
+                                    await logEmail({
+                                        contactId: result.contactId as Id<"contacts">,
+                                        campaignId: undefined,
+                                    });
+                                } catch {
+                                    // Non-critical
+                                }
+                            }
+                        }
                     } catch {
-                        // Non-critical
+                        // Skip malformed lines
                     }
                 }
             }
@@ -379,8 +440,8 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                                             key={preset.value}
                                             onClick={() => setDelayMs(preset.value)}
                                             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${delayMs === preset.value
-                                                    ? "bg-[#0EA5E9]/10 border-[#0EA5E9]/30 text-[#0EA5E9]"
-                                                    : "bg-[#f8fafc] dark:bg-slate-800 border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-400 hover:border-[#9CA3AF]"
+                                                ? "bg-[#0EA5E9]/10 border-[#0EA5E9]/30 text-[#0EA5E9]"
+                                                : "bg-[#f8fafc] dark:bg-slate-800 border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-400 hover:border-[#9CA3AF]"
                                                 }`}
                                         >
                                             {preset.label} <span className="text-[10px] opacity-60">{preset.desc}</span>
@@ -404,10 +465,14 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                                             <span className="text-[#0f172a] dark:text-white font-medium">{previewSubject}</span>
                                         </div>
                                     </div>
-                                    {/* Email body */}
-                                    <div
-                                        className="px-4 py-4 bg-white dark:bg-slate-900 text-sm text-[#4B5563] dark:text-slate-300 max-h-40 overflow-y-auto leading-relaxed"
-                                        dangerouslySetInnerHTML={{ __html: previewBody }}
+                                    {/* Email body — sandboxed iframe */}
+                                    <iframe
+                                        ref={iframeRef}
+                                        sandbox="allow-same-origin"
+                                        title="Email preview"
+                                        className="w-full border-0 bg-white"
+                                        style={{ height: "160px" }}
+                                        onLoad={iframeLoadHandler}
                                     />
                                 </div>
                                 {contacts.length > 1 && (
@@ -438,26 +503,70 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
 
                     {/* ═══ Sending Step ═══ */}
                     {step === "sending" && (
-                        <div className="flex flex-col items-center justify-center py-16 px-6">
-                            <div className="relative mb-8">
-                                <div className="w-16 h-16 border-[3px] border-[#E5E7EB] dark:border-slate-700 rounded-full" />
-                                <div className="absolute inset-0 w-16 h-16 border-[3px] border-transparent border-t-[#0EA5E9] rounded-full animate-spin" />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <svg className="w-6 h-6 text-[#0EA5E9]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
+                        <div className="py-10 px-6">
+                            {/* Header */}
+                            <div className="text-center mb-8">
+                                <div className="relative w-16 h-16 mx-auto mb-5">
+                                    <div className="w-16 h-16 border-[3px] border-[#E5E7EB] dark:border-slate-700 rounded-full" />
+                                    <div className="absolute inset-0 w-16 h-16 border-[3px] border-transparent border-t-[#0EA5E9] rounded-full animate-spin" />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <svg className="w-6 h-6 text-[#0EA5E9]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mb-1">Sending Emails...</h3>
+                                <p className="text-sm text-[#9CA3AF]">Do not close this window</p>
+                            </div>
+
+                            {/* Progress bar */}
+                            <div className="mb-5">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-medium text-[#4B5563] dark:text-slate-400">
+                                        {sendProgress.sent + sendProgress.failed} of {sendProgress.total}
+                                    </span>
+                                    <span className="text-xs font-medium text-[#0EA5E9]">
+                                        {sendProgress.total > 0 ? Math.round(((sendProgress.sent + sendProgress.failed) / sendProgress.total) * 100) : 0}%
+                                    </span>
+                                </div>
+                                <div className="h-2.5 bg-[#E5E7EB] dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full transition-all duration-500 ease-out"
+                                        style={{
+                                            width: sendProgress.total > 0 ? `${((sendProgress.sent + sendProgress.failed) / sendProgress.total) * 100}%` : '0%',
+                                            background: sendProgress.failed > 0
+                                                ? 'linear-gradient(90deg, #10B981, #F59E0B)'
+                                                : 'linear-gradient(90deg, #0EA5E9, #8B5CF6)',
+                                        }}
+                                    />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mb-2">Sending Emails...</h3>
-                            <p className="text-sm text-[#9CA3AF] mb-6">
-                                Do not close this window while sending is in progress
-                            </p>
-                            <div className="flex items-center gap-2 px-4 py-2 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
-                                <div className="w-2 h-2 bg-[#0EA5E9] rounded-full animate-pulse" />
-                                <span className="text-xs text-[#4B5563] dark:text-slate-400">
-                                    Sending to {contacts.length} recipient{contacts.length !== 1 ? "s" : ""}...
-                                </span>
+
+                            {/* Live stats */}
+                            <div className="grid grid-cols-3 gap-3 mb-5">
+                                <div className="text-center p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
+                                    <div className="text-lg font-bold text-[#0f172a] dark:text-white">{sendProgress.sent}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-emerald-500 font-semibold">Sent</div>
+                                </div>
+                                <div className="text-center p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
+                                    <div className="text-lg font-bold text-[#0f172a] dark:text-white">{sendProgress.failed}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-red-500 font-semibold">Failed</div>
+                                </div>
+                                <div className="text-center p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
+                                    <div className="text-lg font-bold text-[#0f172a] dark:text-white">{sendProgress.total - sendProgress.sent - sendProgress.failed}</div>
+                                    <div className="text-[10px] uppercase tracking-wider text-[#9CA3AF] font-semibold">Remaining</div>
+                                </div>
                             </div>
+
+                            {/* Current email */}
+                            {sendProgress.currentEmail && (
+                                <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#f8fafc] dark:bg-slate-800 rounded-xl border border-[#E5E7EB] dark:border-slate-700">
+                                    <div className="w-2 h-2 bg-[#0EA5E9] rounded-full animate-pulse flex-shrink-0" />
+                                    <span className="text-xs text-[#4B5563] dark:text-slate-400 truncate">
+                                        Sending to <span className="font-medium text-[#0f172a] dark:text-white">{sendProgress.currentEmail}</span>
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -467,8 +576,8 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                             {/* Success/Warning header */}
                             <div className="text-center mb-8">
                                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${failed === 0
-                                        ? "bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50"
-                                        : "bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50"
+                                    ? "bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50"
+                                    : "bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50"
                                     }`}>
                                     {failed === 0 ? (
                                         <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -507,8 +616,8 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                                         <div key={i} className="flex items-center justify-between px-4 py-2.5 hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors">
                                             <div className="flex items-center gap-2.5 min-w-0">
                                                 <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${result.success
-                                                        ? "bg-emerald-100 dark:bg-emerald-900/40"
-                                                        : "bg-red-100 dark:bg-red-900/40"
+                                                    ? "bg-emerald-100 dark:bg-emerald-900/40"
+                                                    : "bg-red-100 dark:bg-red-900/40"
                                                     }`}>
                                                     {result.success ? (
                                                         <svg className="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
