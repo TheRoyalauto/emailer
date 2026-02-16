@@ -5,6 +5,7 @@ import { api } from "../../../convex/_generated/api";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { PageTransition, FadeInContainer } from "@/components/PageTransition";
 import { useAuthQuery } from "../../hooks/useAuthConvex";
+import { PageHeader } from "@/components/PageHeader";
 
 type InsightTab = "overview" | "performance" | "reputation" | "calls";
 
@@ -73,13 +74,10 @@ function InsightsPage() {
                 <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {/* Header with Time Range */}
                     <FadeInContainer>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-                            <div>
-                                <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                                    Insights
-                                </h1>
-                                <p className="text-slate-500 mt-1">Performance metrics and analytics</p>
-                            </div>
+                        <PageHeader
+                            title="Insights"
+                            subtitle="Performance metrics and analytics"
+                        >
                             <div className="flex gap-2">
                                 {(["7d", "30d", "90d"] as const).map((range) => (
                                     <button
@@ -94,7 +92,7 @@ function InsightsPage() {
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                        </PageHeader>
                     </FadeInContainer>
 
                     {/* Tab Navigation */}

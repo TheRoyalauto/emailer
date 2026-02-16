@@ -166,22 +166,22 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
             {/* Panel */}
             <div className="fixed top-0 right-0 h-full w-full max-w-[500px] bg-white dark:bg-slate-900 shadow-2xl z-50 flex flex-col animate-in slide-in-from-right duration-300">
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-[#E5E7EB] dark:border-slate-700 bg-[#f8fafc] dark:bg-slate-800/50">
+                <div className="px-6 py-5 border-b border-gray-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                     <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#0EA5E9] to-[#10B981] flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-[#0EA5E9]/25">
+                            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-sky-500/25">
                                 {contact.name?.charAt(0).toUpperCase() || contact.email.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-[#0f172a] dark:text-white">
+                                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                                     {contact.name || contact.email.split("@")[0]}
                                 </h2>
-                                <p className="text-sm text-[#9CA3AF]">{contact.email}</p>
+                                <p className="text-sm text-gray-400">{contact.email}</p>
                             </div>
                         </div>
                         <button
                             onClick={onClose}
-                            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors text-[#9CA3AF] hover:text-[#0f172a] dark:hover:text-white"
+                            className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors text-gray-400 hover:text-slate-900 dark:hover:text-white"
                         >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12" /></svg>
                         </button>
@@ -210,14 +210,14 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-[#E5E7EB] dark:border-slate-700 px-6">
+                <div className="flex border-b border-gray-200 dark:border-slate-700 px-6">
                     {(["details", "activity"] as const).map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-4 py-3 text-sm font-medium border-b-2 transition-all capitalize ${activeTab === tab
-                                ? "border-[#0EA5E9] text-[#0EA5E9]"
-                                : "border-transparent text-[#9CA3AF] hover:text-[#4B5563] dark:hover:text-slate-300"
+                                ? "border-sky-500 text-sky-500"
+                                : "border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-slate-300"
                                 }`}
                         >
                             {tab}
@@ -231,18 +231,18 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                         <div className="space-y-6">
                             {/* Edit toggle */}
                             <div className="flex items-center justify-between">
-                                <h3 className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Contact Info</h3>
+                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact Info</h3>
                                 {!isEditing ? (
                                     <button
                                         onClick={() => setIsEditing(true)}
-                                        className="text-xs font-medium text-[#0EA5E9] hover:text-[#0EA5E9]/80 transition-colors"
+                                        className="text-xs font-medium text-sky-500 hover:text-sky-500/80 transition-colors"
                                     >
                                         Edit
                                     </button>
                                 ) : (
                                     <div className="flex gap-2">
-                                        <button onClick={() => setIsEditing(false)} className="text-xs text-[#9CA3AF] hover:text-[#0f172a] dark:hover:text-white">Cancel</button>
-                                        <button onClick={handleSave} className="text-xs font-medium text-[#10B981]">Save</button>
+                                        <button onClick={() => setIsEditing(false)} className="text-xs text-gray-400 hover:text-slate-900 dark:hover:text-white">Cancel</button>
+                                        <button onClick={handleSave} className="text-xs font-medium text-emerald-500">Save</button>
                                     </div>
                                 )}
                             </div>
@@ -251,18 +251,18 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                             <div className="grid grid-cols-2 gap-3">
                                 {fields.map(field => (
                                     <div key={field.key} className={field.key === "address" ? "col-span-2" : ""}>
-                                        <label className="block text-xs text-[#9CA3AF] mb-1">{field.label}</label>
+                                        <label className="block text-xs text-gray-400 mb-1">{field.label}</label>
                                         {isEditing ? (
                                             <input
                                                 type={field.type}
                                                 value={editForm[field.key] || ""}
                                                 onChange={(e) => setEditForm({ ...editForm, [field.key]: e.target.value })}
-                                                className="w-full px-3 py-2 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm text-[#0f172a] dark:text-white focus:border-[#0EA5E9] focus:ring-1 focus:ring-[#0EA5E9]/20 focus:outline-none transition-all"
+                                                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:border-sky-500 focus:ring-1 focus:ring-sky-500/20 focus:outline-none transition-all"
                                             />
                                         ) : (
-                                            <p className="px-3 py-2 bg-[#f8fafc] dark:bg-slate-800 rounded-lg text-sm text-[#0f172a] dark:text-white min-h-[36px]">
+                                            <p className="px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg text-sm text-slate-900 dark:text-white min-h-[36px]">
                                                 {field.key === "website" && contact.website ? (
-                                                    <a href={contact.website} target="_blank" rel="noopener noreferrer" className="text-[#0EA5E9] hover:underline">
+                                                    <a href={contact.website} target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:underline">
                                                         {contact.website}
                                                     </a>
                                                 ) : (
@@ -276,16 +276,16 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
 
                             {/* Tags */}
                             <div>
-                                <h3 className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2">Tags</h3>
+                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tags</h3>
                                 <div className="flex flex-wrap gap-1.5 mb-2">
                                     {(contact.tags || []).map(tag => (
-                                        <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#0EA5E9]/10 text-[#0EA5E9] text-xs font-medium rounded-lg">
+                                        <span key={tag} className="inline-flex items-center gap-1 px-2.5 py-1 bg-sky-500/10 text-sky-500 text-xs font-medium rounded-lg">
                                             {tag}
-                                            <button onClick={() => handleRemoveTag(tag)} className="hover:text-[#EF4444] transition-colors">×</button>
+                                            <button onClick={() => handleRemoveTag(tag)} className="hover:text-red-500 transition-colors">×</button>
                                         </span>
                                     ))}
                                     {(!contact.tags || contact.tags.length === 0) && (
-                                        <span className="text-xs text-[#9CA3AF]">No tags</span>
+                                        <span className="text-xs text-gray-400">No tags</span>
                                     )}
                                 </div>
                                 <div className="flex gap-2">
@@ -295,12 +295,12 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                                         value={tagInput}
                                         onChange={(e) => setTagInput(e.target.value)}
                                         onKeyDown={(e) => { if (e.key === "Enter") handleAddTag(); }}
-                                        className="flex-1 px-3 py-1.5 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-xs text-[#0f172a] dark:text-white placeholder:text-[#9CA3AF] focus:border-[#0EA5E9] focus:outline-none"
+                                        className="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white placeholder:text-gray-400 focus:border-sky-500 focus:outline-none"
                                     />
                                     <button
                                         onClick={handleAddTag}
                                         disabled={!tagInput.trim()}
-                                        className="px-3 py-1.5 bg-[#0EA5E9] text-white text-xs font-medium rounded-lg disabled:opacity-40 hover:bg-[#0EA5E9]/90 transition-all"
+                                        className="px-3 py-1.5 bg-sky-500 text-white text-xs font-medium rounded-lg disabled:opacity-40 hover:bg-sky-500/90 transition-all"
                                     >
                                         Add
                                     </button>
@@ -309,36 +309,36 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
 
                             {/* Engagement stats */}
                             <div>
-                                <h3 className="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2">Engagement</h3>
+                                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Engagement</h3>
                                 <div className="grid grid-cols-2 gap-2">
-                                    <div className="p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl text-center">
-                                        <div className="text-xl font-bold text-[#0f172a] dark:text-white">{contact.emailCount || 0}</div>
-                                        <div className="text-xs text-[#9CA3AF]">Emails</div>
+                                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
+                                        <div className="text-xl font-bold text-slate-900 dark:text-white">{contact.emailCount || 0}</div>
+                                        <div className="text-xs text-gray-400">Emails</div>
                                     </div>
-                                    <div className="p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl text-center">
-                                        <div className="text-xl font-bold text-[#0f172a] dark:text-white">{contact.callCount || 0}</div>
-                                        <div className="text-xs text-[#9CA3AF]">Calls</div>
+                                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
+                                        <div className="text-xl font-bold text-slate-900 dark:text-white">{contact.callCount || 0}</div>
+                                        <div className="text-xs text-gray-400">Calls</div>
                                     </div>
-                                    <div className="p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl text-center">
-                                        <div className="text-sm font-medium text-[#0f172a] dark:text-white">
+                                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
+                                        <div className="text-sm font-medium text-slate-900 dark:text-white">
                                             {contact.lastEmailAt ? formatRelativeTime(contact.lastEmailAt) : "—"}
                                         </div>
-                                        <div className="text-xs text-[#9CA3AF]">Last Email</div>
+                                        <div className="text-xs text-gray-400">Last Email</div>
                                     </div>
-                                    <div className="p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl text-center">
-                                        <div className="text-sm font-medium text-[#0f172a] dark:text-white">
+                                    <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
+                                        <div className="text-sm font-medium text-slate-900 dark:text-white">
                                             {contact.lastCallAt ? formatRelativeTime(contact.lastCallAt) : "—"}
                                         </div>
-                                        <div className="text-xs text-[#9CA3AF]">Last Call</div>
+                                        <div className="text-xs text-gray-400">Last Call</div>
                                     </div>
                                 </div>
                                 {contact.leadScore !== undefined && contact.leadScore > 0 && (
-                                    <div className="mt-3 p-3 bg-[#f8fafc] dark:bg-slate-800 rounded-xl">
+                                    <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
                                         <div className="flex items-center justify-between mb-1">
-                                            <span className="text-xs text-[#9CA3AF]">Lead Score</span>
-                                            <span className="text-sm font-bold text-[#0f172a] dark:text-white">{contact.leadScore}/100</span>
+                                            <span className="text-xs text-gray-400">Lead Score</span>
+                                            <span className="text-sm font-bold text-slate-900 dark:text-white">{contact.leadScore}/100</span>
                                         </div>
-                                        <div className="h-2 bg-[#E5E7EB] dark:bg-slate-700 rounded-full overflow-hidden">
+                                        <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                             <div
                                                 className="h-full rounded-full transition-all"
                                                 style={{
@@ -356,28 +356,28 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                         <div>
                             {contactActivities === undefined ? (
                                 <div className="flex justify-center py-12">
-                                    <div className="animate-spin w-6 h-6 border-2 border-[#0EA5E9] border-t-transparent rounded-full" />
+                                    <div className="animate-spin w-6 h-6 border-2 border-sky-500 border-t-transparent rounded-full" />
                                 </div>
                             ) : contactActivities.length === 0 ? (
                                 <div className="text-center py-12">
                                     <div className="text-4xl mb-3">📭</div>
-                                    <p className="text-[#9CA3AF]">No activity yet</p>
+                                    <p className="text-gray-400">No activity yet</p>
                                 </div>
                             ) : (
                                 <div className="space-y-1">
                                     {contactActivities.map((activity) => (
-                                        <div key={activity._id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#f8fafc] dark:hover:bg-slate-800 transition-colors">
-                                            <div className="w-8 h-8 rounded-lg bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
+                                        <div key={activity._id} className="flex items-start gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                            <div className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
                                                 {getActivityIcon(activity.type)}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="text-sm font-medium text-[#0f172a] dark:text-white">
+                                                <div className="text-sm font-medium text-slate-900 dark:text-white">
                                                     {activity.type.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
                                                 </div>
                                                 {activity.notes && (
-                                                    <div className="text-xs text-[#9CA3AF] mt-0.5 line-clamp-2">{activity.notes}</div>
+                                                    <div className="text-xs text-gray-400 mt-0.5 line-clamp-2">{activity.notes}</div>
                                                 )}
-                                                <div className="text-xs text-[#9CA3AF] mt-1">
+                                                <div className="text-xs text-gray-400 mt-1">
                                                     {formatRelativeTime(activity.createdAt)}
                                                 </div>
                                             </div>
@@ -390,18 +390,18 @@ export default function ContactSlideOver({ contact, onClose, onUpdated, onDelete
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-[#E5E7EB] dark:border-slate-700 bg-[#f8fafc] dark:bg-slate-800/50 flex items-center justify-between">
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between">
                     <button
                         onClick={handleDelete}
-                        className="px-3 py-2 text-[#EF4444] hover:bg-[#FEF2F2] dark:hover:bg-red-950/30 rounded-lg text-sm font-medium transition-all"
+                        className="px-3 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg text-sm font-medium transition-all"
                     >
                         Delete
                     </button>
                     <div className="flex gap-2">
-                        <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-[#F1F3F8] dark:hover:bg-slate-700 transition-all">
+                        <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
                             📧 Email
                         </button>
-                        <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-[#F1F3F8] dark:hover:bg-slate-700 transition-all">
+                        <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
                             📞 Log Call
                         </button>
                     </div>

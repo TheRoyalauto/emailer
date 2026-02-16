@@ -977,5 +977,121 @@ export default defineSchema({
         .index("by_user", ["userId"])
         .index("by_sender", ["senderId"])
         .index("by_user_status", ["userId", "status"]),
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // CONTENT CALENDAR SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Content Calendar Items (social media posts)
+    contentCalendarItems: defineTable({
+        userId: v.id("users"),
+        date: v.string(), // YYYY-MM-DD
+        platforms: v.array(v.union(
+            v.literal("instagram"),
+            v.literal("x"),
+            v.literal("linkedin"),
+            v.literal("tiktok"),
+            v.literal("youtube")
+        )),
+        type: v.union(
+            v.literal("reel"),
+            v.literal("carousel"),
+            v.literal("short"),
+            v.literal("tweet_thread"),
+            v.literal("story"),
+            v.literal("static_post"),
+            v.literal("video"),
+            v.literal("live"),
+            v.literal("poll")
+        ),
+        concept: v.string(),
+        caption: v.string(),
+        hashtags: v.string(),
+        cta: v.string(),
+        assetNotes: v.optional(v.string()),
+        status: v.union(
+            v.literal("draft"),
+            v.literal("ready"),
+            v.literal("scheduled"),
+            v.literal("posted")
+        ),
+        lockedFields: v.optional(v.array(v.string())), // ["concept", "caption", "hashtags", "cta"]
+        postResults: v.optional(v.array(v.object({
+            platform: v.string(),
+            postId: v.optional(v.string()),
+            postUrl: v.optional(v.string()),
+            postedAt: v.number(),
+        }))),
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_date", ["userId", "date"])
+        .index("by_user_status", ["userId", "status"]),
+
+    // Social Platform Connections (OAuth tokens)
+    socialConnections: defineTable({
+        userId: v.id("users"),
+        platform: v.union(v.literal("x"), v.literal("linkedin")),
+        accessToken: v.string(),
+        refreshToken: v.optional(v.string()),
+        expiresAt: v.optional(v.number()),
+        platformUserId: v.optional(v.string()),
+        platformUsername: v.optional(v.string()),
+        connectedAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_platform", ["userId", "platform"]),
+
+    // Content Brand Voice Settings (per-user)
+    contentBrandVoice: defineTable({
+        userId: v.id("users"),
+        tone: v.union(
+            v.literal("direct"),
+            v.literal("playful"),
+            v.literal("professional"),
+            v.literal("casual"),
+            v.literal("bold")
+        ),
+        bannedWords: v.optional(v.array(v.string())),
+        defaultCta: v.optional(v.string()),
+        defaultHashtags: v.optional(v.array(v.string())),
+        brandDescription: v.optional(v.string()),
+        createdAt: v.number(),
+        updatedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"]),
+
+    // Brand Asset Library (uploaded images for AI reference)
+    brandAssets: defineTable({
+        userId: v.id("users"),
+        storageId: v.id("_storage"),
+        name: v.string(),
+        category: v.union(
+            v.literal("screenshot"),
+            v.literal("logo"),
+            v.literal("product"),
+            v.literal("marketing"),
+            v.literal("icon"),
+            v.literal("other")
+        ),
+        mimeType: v.string(),
+        sizeBytes: v.number(),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_category", ["userId", "category"]),
+
+    // Brand Asset Usage Logs (tracks AI generation references)
+    assetUsageLogs: defineTable({
+        userId: v.id("users"),
+        assetIds: v.array(v.id("brandAssets")),
+        platform: v.string(),
+        contentConcept: v.string(),
+        generationSuccess: v.boolean(),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_date", ["userId", "createdAt"]),
 });
 

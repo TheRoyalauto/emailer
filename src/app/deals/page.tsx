@@ -3,7 +3,9 @@
 import { useState, useCallback } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { AuthGuard } from "@/components/AuthGuard";
+import { PageWrapper } from "@/components/PageWrapper";
+import { FormModal } from "@/components/FormModal";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 
 const DEAL_STAGES = [
@@ -114,292 +116,268 @@ function DealsPage() {
     const selectedDealData = deals?.find(d => d._id === selectedDeal);
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <AppHeader />
-
-            <main className="max-w-[1800px] mx-auto px-4 py-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">Deals Pipeline</h1>
-                        <p className="text-slate-500 text-sm">Manage your sales opportunities</p>
-                    </div>
-                    <button
-                        onClick={() => setShowCreate(true)}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all"
-                    >
-                        + New Deal
-                    </button>
+        <PageWrapper maxWidth="7xl">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Deals Pipeline</h1>
+                    <p className="text-slate-500 text-sm">Manage your sales opportunities</p>
                 </div>
+                <button
+                    onClick={() => setShowCreate(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg text-sm font-medium transition-all"
+                >
+                    + New Deal
+                </button>
+            </div>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
-                        <div className="text-xs text-slate-500">Total Deals</div>
-                    </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-blue-400">{formatCurrency(stats?.totalValue || 0)}</div>
-                        <div className="text-xs text-slate-500">Pipeline Value</div>
-                    </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-purple-400">{formatCurrency(stats?.weightedValue || 0)}</div>
-                        <div className="text-xs text-slate-500">Weighted Value</div>
-                    </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-green-400">{formatCurrency(stats?.wonValueThisMonth || 0)}</div>
-                        <div className="text-xs text-slate-500">Won This Month</div>
-                    </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-amber-400">{formatCurrency(avgDealSize)}</div>
-                        <div className="text-xs text-slate-500">Avg Deal Size</div>
-                    </div>
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white">{stats?.total || 0}</div>
+                    <div className="text-xs text-slate-500">Total Deals</div>
                 </div>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{formatCurrency(stats?.totalValue || 0)}</div>
+                    <div className="text-xs text-slate-500">Pipeline Value</div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{formatCurrency(stats?.weightedValue || 0)}</div>
+                    <div className="text-xs text-slate-500">Weighted Value</div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">{formatCurrency(stats?.wonValueThisMonth || 0)}</div>
+                    <div className="text-xs text-slate-500">Won This Month</div>
+                </div>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                    <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(avgDealSize)}</div>
+                    <div className="text-xs text-slate-500">Avg Deal Size</div>
+                </div>
+            </div>
 
-                {/* Pipeline Board */}
-                <div className="flex gap-3 overflow-x-auto pb-4">
-                    {DEAL_STAGES.map((stage) => {
-                        const stageDeals = getDealsForStage(stage.id);
-                        const stageValue = getStageTotalValue(stage.id);
-                        const isDragOver = dragOverStage === stage.id;
+            {/* Pipeline Board */}
+            <div className="flex gap-3 overflow-x-auto pb-4">
+                {DEAL_STAGES.map((stage) => {
+                    const stageDeals = getDealsForStage(stage.id);
+                    const stageValue = getStageTotalValue(stage.id);
+                    const isDragOver = dragOverStage === stage.id;
 
-                        return (
+                    return (
+                        <div
+                            key={stage.id}
+                            onDragOver={(e) => handleDragOver(e, stage.id)}
+                            onDragLeave={handleDragLeave}
+                            onDrop={() => handleDrop(stage.id)}
+                            className={`flex-shrink-0 w-72 bg-white dark:bg-slate-900 rounded-xl border transition-all ${isDragOver
+                                ? "border-blue-500/50 bg-blue-500/5"
+                                : "border-slate-200 dark:border-slate-700"
+                                }`}
+                        >
+                            {/* Stage Header */}
                             <div
-                                key={stage.id}
-                                onDragOver={(e) => handleDragOver(e, stage.id)}
-                                onDragLeave={handleDragLeave}
-                                onDrop={() => handleDrop(stage.id)}
-                                className={`flex-shrink-0 w-72 bg-[#0f0f15] rounded-xl border transition-all ${isDragOver
-                                    ? "border-blue-500/50 bg-blue-500/5"
-                                    : "border-slate-200"
-                                    }`}
+                                className="p-3 border-b border-slate-200 dark:border-slate-700"
+                                style={{ borderLeftColor: stage.color, borderLeftWidth: "3px" }}
                             >
-                                {/* Stage Header */}
-                                <div
-                                    className="p-3 border-b border-slate-200"
-                                    style={{ borderLeftColor: stage.color, borderLeftWidth: "3px" }}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-lg">{stage.icon}</span>
-                                            <span className="font-medium text-white text-sm">{stage.label}</span>
-                                            <span className="px-1.5 py-0.5 bg-slate-50 rounded text-xs text-slate-500">
-                                                {stageDeals.length}
-                                            </span>
-                                        </div>
-                                        <span className="text-xs" style={{ color: stage.color }}>
-                                            {stage.probability}%
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-lg">{stage.icon}</span>
+                                        <span className="font-medium text-slate-900 dark:text-white text-sm">{stage.label}</span>
+                                        <span className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-xs text-slate-500">
+                                            {stageDeals.length}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-slate-400 mt-1">
-                                        {formatCurrency(stageValue)}
-                                    </div>
+                                    <span className="text-xs" style={{ color: stage.color }}>
+                                        {stage.probability}%
+                                    </span>
                                 </div>
-
-                                {/* Deals List */}
-                                <div className="p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-400px)] overflow-y-auto">
-                                    {stageDeals.length === 0 && (
-                                        <div className="text-center py-8 text-slate-400 text-sm">
-                                            No deals
-                                        </div>
-                                    )}
-
-                                    {stageDeals.map((deal) => (
-                                        <div
-                                            key={deal._id}
-                                            draggable
-                                            onDragStart={() => handleDragStart(deal._id)}
-                                            onClick={() => setSelectedDeal(deal._id)}
-                                            className={`bg-[#12121a] border rounded-lg p-3 cursor-pointer transition-all hover:border-white/30 ${draggedDeal === deal._id
-                                                ? "opacity-50 border-blue-500/50"
-                                                : "border-slate-200"
-                                                } ${selectedDeal === deal._id ? "ring-1 ring-blue-500/50" : ""}`}
-                                        >
-                                            <div className="text-white font-medium text-sm mb-1 truncate">
-                                                {deal.name}
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-slate-500 text-xs truncate">
-                                                    {deal.contact?.company || deal.contact?.name || deal.contact?.email}
-                                                </span>
-                                                <span className="text-green-400 font-medium text-sm">
-                                                    {formatCurrency(deal.value)}
-                                                </span>
-                                            </div>
-                                            {deal.expectedCloseDate && (
-                                                <div className="text-xs text-slate-400 mt-2">
-                                                    Close: {formatDate(deal.expectedCloseDate)}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                                <div className="text-sm text-slate-400 mt-1">
+                                    {formatCurrency(stageValue)}
                                 </div>
                             </div>
-                        );
-                    })}
+
+                            {/* Deals List */}
+                            <div className="p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-400px)] overflow-y-auto">
+                                {stageDeals.length === 0 && (
+                                    <div className="text-center py-8 text-slate-400 text-sm">
+                                        No deals
+                                    </div>
+                                )}
+
+                                {stageDeals.map((deal) => (
+                                    <div
+                                        key={deal._id}
+                                        draggable
+                                        onDragStart={() => handleDragStart(deal._id)}
+                                        onClick={() => setSelectedDeal(deal._id)}
+                                        className={`bg-slate-50 dark:bg-slate-800 border rounded-lg p-3 cursor-pointer transition-all hover:border-slate-400 dark:hover:border-slate-500 ${draggedDeal === deal._id
+                                            ? "opacity-50 border-blue-500/50"
+                                            : "border-slate-200 dark:border-slate-700"
+                                            } ${selectedDeal === deal._id ? "ring-1 ring-blue-500/50" : ""}`}
+                                    >
+                                        <div className="text-slate-900 dark:text-white font-medium text-sm mb-1 truncate">
+                                            {deal.name}
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-slate-500 text-xs truncate">
+                                                {deal.contact?.company || deal.contact?.name || deal.contact?.email}
+                                            </span>
+                                            <span className="text-green-600 dark:text-green-400 font-medium text-sm">
+                                                {formatCurrency(deal.value)}
+                                            </span>
+                                        </div>
+                                        {deal.expectedCloseDate && (
+                                            <div className="text-xs text-slate-400 mt-2">
+                                                Close: {formatDate(deal.expectedCloseDate)}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <FormModal
+                open={showCreate}
+                onClose={() => setShowCreate(false)}
+                title="Create Deal"
+                onSubmit={handleCreate}
+                submitLabel="Create Deal"
+                submitDisabled={!createForm.contactId || !createForm.name}
+            >
+                <div>
+                    <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">Contact</label>
+                    <select
+                        value={createForm.contactId}
+                        onChange={(e) => setCreateForm({ ...createForm, contactId: e.target.value as Id<"contacts"> })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none"
+                    >
+                        <option value="">Select contact...</option>
+                        {contacts?.map((contact) => (
+                            <option key={contact._id} value={contact._id}>
+                                {contact.name || contact.email} {contact.company ? `@ ${contact.company}` : ""}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-                {/* Create Modal */}
-                {showCreate && (
-                    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                        <div className="bg-[#12121a] border border-slate-200 rounded-2xl w-full max-w-md">
-                            <div className="p-6 border-b border-slate-200">
-                                <h2 className="text-xl font-bold text-white">Create Deal</h2>
-                            </div>
+                <div>
+                    <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">Deal Name</label>
+                    <input
+                        type="text"
+                        value={createForm.name}
+                        onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                        placeholder="e.g., Enterprise License - Acme Corp"
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
+                    />
+                </div>
 
-                            <div className="p-6 space-y-4">
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Contact</label>
-                                    <select
-                                        value={createForm.contactId}
-                                        onChange={(e) => setCreateForm({ ...createForm, contactId: e.target.value as Id<"contacts"> })}
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
-                                    >
-                                        <option value="">Select contact...</option>
-                                        {contacts?.map((contact) => (
-                                            <option key={contact._id} value={contact._id}>
-                                                {contact.name || contact.email} {contact.company ? `@ ${contact.company}` : ""}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                <div>
+                    <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">Value ($)</label>
+                    <input
+                        type="number"
+                        value={createForm.value}
+                        onChange={(e) => setCreateForm({ ...createForm, value: parseInt(e.target.value) || 0 })}
+                        placeholder="1000"
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
+                    />
+                </div>
 
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Deal Name</label>
-                                    <input
-                                        type="text"
-                                        value={createForm.name}
-                                        onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
-                                        placeholder="e.g., Enterprise License - Acme Corp"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                    />
-                                </div>
+                <div>
+                    <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">Stage</label>
+                    <select
+                        value={createForm.stage}
+                        onChange={(e) => setCreateForm({ ...createForm, stage: e.target.value as DealStage })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none"
+                    >
+                        {DEAL_STAGES.map((s) => (
+                            <option key={s.id} value={s.id}>
+                                {s.icon} {s.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Value ($)</label>
-                                    <input
-                                        type="number"
-                                        value={createForm.value}
-                                        onChange={(e) => setCreateForm({ ...createForm, value: parseInt(e.target.value) || 0 })}
-                                        placeholder="1000"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                    />
-                                </div>
+                <div>
+                    <label className="block text-sm text-slate-600 dark:text-slate-400 mb-2">Expected Close Date</label>
+                    <input
+                        type="date"
+                        value={createForm.expectedCloseDate}
+                        onChange={(e) => setCreateForm({ ...createForm, expectedCloseDate: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none"
+                    />
+                </div>
+            </FormModal>
 
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Stage</label>
-                                    <select
-                                        value={createForm.stage}
-                                        onChange={(e) => setCreateForm({ ...createForm, stage: e.target.value as DealStage })}
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
-                                    >
-                                        {DEAL_STAGES.map((s) => (
-                                            <option key={s.id} value={s.id}>
-                                                {s.icon} {s.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+            {/* Deal Detail Drawer */}
+            {selectedDealData && (
+                <div className="fixed right-0 top-0 h-full w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700 z-50 overflow-y-auto">
+                    <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                        <h3 className="font-semibold text-slate-900 dark:text-white">Deal Details</h3>
+                        <button onClick={() => setSelectedDeal(null)} className="text-slate-500 hover:text-slate-900">
+                            ✕
+                        </button>
+                    </div>
 
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Expected Close Date</label>
-                                    <input
-                                        type="date"
-                                        value={createForm.expectedCloseDate}
-                                        onChange={(e) => setCreateForm({ ...createForm, expectedCloseDate: e.target.value })}
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
-                                <button
-                                    onClick={() => setShowCreate(false)}
-                                    className="px-4 py-2 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm font-medium transition-all"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleCreate}
-                                    disabled={!createForm.contactId || !createForm.name}
-                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-all"
-                                >
-                                    Create Deal
-                                </button>
+                    <div className="p-6 space-y-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{selectedDealData.name}</h2>
+                            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mt-1">
+                                {formatCurrency(selectedDealData.value)}
                             </div>
                         </div>
-                    </div>
-                )}
 
-                {/* Deal Detail Drawer */}
-                {selectedDealData && (
-                    <div className="fixed right-0 top-0 h-full w-96 bg-[#12121a] border-l border-slate-200 z-50 overflow-y-auto">
-                        <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-                            <h3 className="font-semibold text-white">Deal Details</h3>
-                            <button onClick={() => setSelectedDeal(null)} className="text-slate-500 hover:text-slate-900">
-                                ✕
+                        <div>
+                            <div className="text-sm text-slate-500 mb-2">Stage</div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-lg">{getStageInfo(selectedDealData.stage)?.icon}</span>
+                                <span className="text-white">{getStageInfo(selectedDealData.stage)?.label}</span>
+                                <span className="text-slate-400">({selectedDealData.probability}%)</span>
+                            </div>
+                        </div>
+
+                        {selectedDealData.contact && (
+                            <div>
+                                <div className="text-sm text-slate-500 mb-2">Contact</div>
+                                <div className="text-slate-900 dark:text-white">{selectedDealData.contact.name || selectedDealData.contact.email}</div>
+                                {selectedDealData.contact.company && (
+                                    <div className="text-slate-500">{selectedDealData.contact.company}</div>
+                                )}
+                            </div>
+                        )}
+
+                        {selectedDealData.expectedCloseDate && (
+                            <div>
+                                <div className="text-sm text-slate-500 mb-2">Expected Close</div>
+                                <div className="text-slate-900 dark:text-white">{formatDate(selectedDealData.expectedCloseDate)}</div>
+                            </div>
+                        )}
+
+                        {selectedDealData.notes && (
+                            <div>
+                                <div className="text-sm text-slate-500 mb-2">Notes</div>
+                                <div className="text-slate-800 dark:text-slate-300 text-sm bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
+                                    {selectedDealData.notes}
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                            <button
+                                onClick={async () => {
+                                    await deleteDeal({ id: selectedDealData._id });
+                                    setSelectedDeal(null);
+                                }}
+                                className="w-full px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm font-medium transition-all"
+                            >
+                                Delete Deal
                             </button>
                         </div>
-
-                        <div className="p-6 space-y-6">
-                            <div>
-                                <h2 className="text-xl font-bold text-white">{selectedDealData.name}</h2>
-                                <div className="text-2xl font-bold text-green-400 mt-1">
-                                    {formatCurrency(selectedDealData.value)}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="text-sm text-slate-500 mb-2">Stage</div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-lg">{getStageInfo(selectedDealData.stage)?.icon}</span>
-                                    <span className="text-white">{getStageInfo(selectedDealData.stage)?.label}</span>
-                                    <span className="text-slate-400">({selectedDealData.probability}%)</span>
-                                </div>
-                            </div>
-
-                            {selectedDealData.contact && (
-                                <div>
-                                    <div className="text-sm text-slate-500 mb-2">Contact</div>
-                                    <div className="text-white">{selectedDealData.contact.name || selectedDealData.contact.email}</div>
-                                    {selectedDealData.contact.company && (
-                                        <div className="text-slate-500">{selectedDealData.contact.company}</div>
-                                    )}
-                                </div>
-                            )}
-
-                            {selectedDealData.expectedCloseDate && (
-                                <div>
-                                    <div className="text-sm text-slate-500 mb-2">Expected Close</div>
-                                    <div className="text-white">{formatDate(selectedDealData.expectedCloseDate)}</div>
-                                </div>
-                            )}
-
-                            {selectedDealData.notes && (
-                                <div>
-                                    <div className="text-sm text-slate-500 mb-2">Notes</div>
-                                    <div className="text-slate-800 text-sm bg-white rounded-lg p-3">
-                                        {selectedDealData.notes}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="pt-4 border-t border-slate-200">
-                                <button
-                                    onClick={async () => {
-                                        await deleteDeal({ id: selectedDealData._id });
-                                        setSelectedDeal(null);
-                                    }}
-                                    className="w-full px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm font-medium transition-all"
-                                >
-                                    Delete Deal
-                                </button>
-                            </div>
-                        </div>
                     </div>
-                )}
-            </main>
-        </div>
+                </div>
+            )}
+        </PageWrapper>
     );
 }
 

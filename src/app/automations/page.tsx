@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { AuthGuard } from "@/components/AuthGuard";
+import { PageWrapper } from "@/components/PageWrapper";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
+import { PageLoadingSpinner } from "@/components/PageLoadingSpinner";
+import { PageEmptyState } from "@/components/PageEmptyState";
+import { PageHeader } from "@/components/PageHeader";
+import { StatsBar } from "@/components/StatsBar";
 
 const TRIGGER_TYPES = [
     { id: "reply_positive", label: "Positive Reply", icon: "😊", description: "When lead responds positively" },
@@ -116,348 +121,326 @@ function AutomationsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-            <AppHeader />
-
-            <main className="max-w-6xl mx-auto px-4 py-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Automations</h1>
-                        <p className="text-slate-500 text-sm">Configure trigger-action rules for automatic pipeline updates</p>
-                    </div>
-                    <div className="flex gap-3">
-                        <button
-                            onClick={() => setShowLogs(!showLogs)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${showLogs
-                                ? "bg-blue-600 text-white"
-                                : "bg-slate-50 text-slate-700 hover:bg-white/20"
-                                }`}
-                        >
-                            📋 Logs
-                        </button>
-                        <button
-                            onClick={() => setShowCreate(true)}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all"
-                        >
-                            + New Rule
-                        </button>
-                    </div>
+        <PageWrapper>
+            <PageHeader
+                title="Automations"
+                subtitle="Configure trigger-action rules for automatic pipeline updates"
+            >
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => setShowLogs(!showLogs)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${showLogs
+                            ? "bg-blue-600 text-white"
+                            : "bg-slate-50 text-slate-700 hover:bg-white/20"
+                            }`}
+                    >
+                        📋 Logs
+                    </button>
+                    <button
+                        onClick={() => setShowCreate(true)}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all"
+                    >
+                        + New Rule
+                    </button>
                 </div>
+            </PageHeader>
 
-                {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{stats?.total || 0}</div>
-                        <div className="text-xs text-slate-500">Total Rules</div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-green-400">{stats?.active || 0}</div>
-                        <div className="text-xs text-slate-500">Active</div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-blue-400">{stats?.executionsLast24h || 0}</div>
-                        <div className="text-xs text-slate-500">Executions (24h)</div>
-                    </div>
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-emerald-400">{stats?.successRate || 100}%</div>
-                        <div className="text-xs text-slate-500">Success Rate</div>
-                    </div>
-                </div>
+            <StatsBar items={[
+                { value: stats?.total || 0, label: "Total Rules" },
+                { value: stats?.active || 0, label: "Active", color: "text-green-400" },
+                { value: stats?.executionsLast24h || 0, label: "Executions (24h)", color: "text-blue-400" },
+                { value: `${stats?.successRate || 100}%`, label: "Success Rate", color: "text-emerald-400" },
+            ]} />
 
-                {showLogs ? (
-                    /* Logs View */
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl overflow-hidden">
-                        <div className="p-4 border-b border-slate-200">
-                            <h2 className="font-semibold text-slate-900 dark:text-white">Execution Log</h2>
-                        </div>
-                        <div className="divide-y divide-slate-200">
-                            {logs?.length === 0 && (
-                                <div className="text-center py-12 text-slate-500">
-                                    No automation executions yet
-                                </div>
-                            )}
-                            {logs?.map((log) => (
-                                <div key={log._id} className="p-4 hover:bg-white transition-all">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-2 h-2 rounded-full ${log.success ? "bg-green-500" : "bg-red-500"}`} />
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-slate-900 dark:text-white font-medium">{log.rule?.name || "Unknown Rule"}</span>
-                                                <span className="text-slate-400 text-sm">→</span>
-                                                <span className="text-slate-500 text-sm">{log.actionTaken}</span>
-                                            </div>
-                                            <div className="text-sm text-slate-400 mt-1">
-                                                Trigger: {log.triggerType} • Contact: {log.contact?.email || "Unknown"}
-                                            </div>
-                                        </div>
-                                        <div className="text-sm text-slate-400">{formatDate(log.triggeredAt)}</div>
-                                    </div>
-                                    {log.error && (
-                                        <div className="mt-2 text-sm text-red-400 bg-red-500/10 rounded p-2">
-                                            {log.error}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+            {showLogs ? (
+                /* Logs View */
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="p-4 border-b border-slate-200">
+                        <h2 className="font-semibold text-slate-900 dark:text-white">Execution Log</h2>
                     </div>
-                ) : (
-                    /* Rules List */
-                    <div className="space-y-3">
-                        {!rules && (
-                            <div className="text-center py-12 text-slate-500">Loading rules...</div>
-                        )}
-
-                        {rules?.length === 0 && (
-                            <div className="text-center py-12 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
-                                <div className="text-4xl mb-3">⚡</div>
-                                <div className="text-slate-500 mb-4">No automation rules yet</div>
-                                <button
-                                    onClick={() => setShowCreate(true)}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all"
-                                >
-                                    Create Your First Rule
-                                </button>
+                    <div className="divide-y divide-slate-200">
+                        {logs?.length === 0 && (
+                            <div className="text-center py-12 text-slate-500">
+                                No automation executions yet
                             </div>
                         )}
+                        {logs?.map((log) => (
+                            <div key={log._id} className="p-4 hover:bg-white transition-all">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-2 h-2 rounded-full ${log.success ? "bg-green-500" : "bg-red-500"}`} />
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-slate-900 dark:text-white font-medium">{log.rule?.name || "Unknown Rule"}</span>
+                                            <span className="text-slate-400 text-sm">→</span>
+                                            <span className="text-slate-500 text-sm">{log.actionTaken}</span>
+                                        </div>
+                                        <div className="text-sm text-slate-400 mt-1">
+                                            Trigger: {log.triggerType} • Contact: {log.contact?.email || "Unknown"}
+                                        </div>
+                                    </div>
+                                    <div className="text-sm text-slate-400">{formatDate(log.triggeredAt)}</div>
+                                </div>
+                                {log.error && (
+                                    <div className="mt-2 text-sm text-red-400 bg-red-500/10 rounded p-2">
+                                        {log.error}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                /* Rules List */
+                <div className="space-y-3">
+                    {!rules && (
+                        <PageLoadingSpinner />
+                    )}
 
-                        {rules?.map((rule) => {
-                            const trigger = getTriggerInfo(rule.triggerType);
-                            const action = getActionInfo(rule.actionType);
+                    {rules?.length === 0 && (
+                        <PageEmptyState
+                            icon="⚡"
+                            description="No automation rules yet"
+                            actionLabel="Create Your First Rule"
+                            onAction={() => setShowCreate(true)}
+                            buttonClassName="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all"
+                        />
+                    )}
 
-                            return (
-                                <div
-                                    key={rule._id}
-                                    className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all"
-                                >
-                                    <div className="flex items-center gap-4">
-                                        {/* Toggle */}
+                    {rules?.map((rule) => {
+                        const trigger = getTriggerInfo(rule.triggerType);
+                        const action = getActionInfo(rule.actionType);
+
+                        return (
+                            <div
+                                key={rule._id}
+                                className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all"
+                            >
+                                <div className="flex items-center gap-4">
+                                    {/* Toggle */}
+                                    <button
+                                        onClick={() => toggleRule({ id: rule._id })}
+                                        className={`w-12 h-7 rounded-full transition-all relative ${rule.isActive ? "bg-green-600" : "bg-slate-50"
+                                            }`}
+                                    >
+                                        <div className={`absolute w-5 h-5 rounded-full bg-white top-1 transition-all ${rule.isActive ? "left-6" : "left-1"
+                                            }`} />
+                                    </button>
+
+                                    {/* Flow Display */}
+                                    <div className="flex items-center gap-3 flex-1">
+                                        <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg">
+                                            <span className="text-lg">{trigger?.icon}</span>
+                                            <span className="text-slate-900 dark:text-white text-sm">{trigger?.label}</span>
+                                        </div>
+
+                                        <div className="text-slate-400">→</div>
+
+                                        <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-3 py-2 rounded-lg">
+                                            <span className="text-lg">{action?.icon}</span>
+                                            <span className="text-blue-400 text-sm">{action?.label}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Name & Actions */}
+                                    <div className="text-right">
+                                        <div className="text-slate-900 dark:text-white font-medium">{rule.name}</div>
+                                        {rule.description && (
+                                            <div className="text-slate-400 text-sm">{rule.description}</div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-2">
                                         <button
-                                            onClick={() => toggleRule({ id: rule._id })}
-                                            className={`w-12 h-7 rounded-full transition-all relative ${rule.isActive ? "bg-green-600" : "bg-slate-50"
+                                            onClick={() => handleEdit(rule)}
+                                            className="px-3 py-1.5 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm transition-all"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => deleteRule({ id: rule._id })}
+                                            className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm transition-all"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* Create/Edit Modal */}
+            {showCreate && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <div className="p-6 border-b border-slate-200">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                                {editingRule ? "Edit Rule" : "Create Automation Rule"}
+                            </h2>
+                        </div>
+
+                        <div className="p-6 space-y-6">
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-2">Rule Name</label>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder="e.g., Positive Reply → Create Deal"
+                                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                />
+                            </div>
+
+                            {/* Description */}
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-2">Description (optional)</label>
+                                <input
+                                    type="text"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="What does this rule do?"
+                                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                />
+                            </div>
+
+                            {/* Trigger Type */}
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-2">When This Happens (Trigger)</label>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {TRIGGER_TYPES.map((t) => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => setTriggerType(t.id)}
+                                            className={`p-3 rounded-lg text-left transition-all border ${triggerType === t.id
+                                                ? "bg-blue-500/20 border-blue-500/50"
+                                                : "bg-white border-slate-200 hover:border-slate-200"
                                                 }`}
                                         >
-                                            <div className={`absolute w-5 h-5 rounded-full bg-white top-1 transition-all ${rule.isActive ? "left-6" : "left-1"
-                                                }`} />
+                                            <div className="text-lg mb-1">{t.icon}</div>
+                                            <div className="text-sm text-slate-900 dark:text-white font-medium">{t.label}</div>
+                                            <div className="text-xs text-slate-400 line-clamp-2">{t.description}</div>
                                         </button>
-
-                                        {/* Flow Display */}
-                                        <div className="flex items-center gap-3 flex-1">
-                                            <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg">
-                                                <span className="text-lg">{trigger?.icon}</span>
-                                                <span className="text-slate-900 dark:text-white text-sm">{trigger?.label}</span>
-                                            </div>
-
-                                            <div className="text-slate-400">→</div>
-
-                                            <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 px-3 py-2 rounded-lg">
-                                                <span className="text-lg">{action?.icon}</span>
-                                                <span className="text-blue-400 text-sm">{action?.label}</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Name & Actions */}
-                                        <div className="text-right">
-                                            <div className="text-slate-900 dark:text-white font-medium">{rule.name}</div>
-                                            {rule.description && (
-                                                <div className="text-slate-400 text-sm">{rule.description}</div>
-                                            )}
-                                        </div>
-
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleEdit(rule)}
-                                                className="px-3 py-1.5 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm transition-all"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => deleteRule({ id: rule._id })}
-                                                className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm transition-all"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* Create/Edit Modal */}
-                {showCreate && (
-                    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <div className="p-6 border-b border-slate-200">
-                                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                                    {editingRule ? "Edit Rule" : "Create Automation Rule"}
-                                </h2>
                             </div>
 
-                            <div className="p-6 space-y-6">
-                                {/* Name */}
+                            {/* Trigger Config (for specific triggers) */}
+                            {triggerType === "no_reply_after" && (
                                 <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Rule Name</label>
+                                    <label className="block text-sm text-slate-700 mb-2">Days Without Reply</label>
                                     <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        placeholder="e.g., Positive Reply → Create Deal"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                        type="number"
+                                        value={triggerConfig.days || ""}
+                                        onChange={(e) => setTriggerConfig({ ...triggerConfig, days: parseInt(e.target.value) })}
+                                        placeholder="3"
+                                        className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
+                            )}
 
-                                {/* Description */}
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Description (optional)</label>
-                                    <input
-                                        type="text"
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                        placeholder="What does this rule do?"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                    />
+                            {/* Action Type */}
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-2">Do This (Action)</label>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {ACTION_TYPES.map((a) => (
+                                        <button
+                                            key={a.id}
+                                            onClick={() => setActionType(a.id)}
+                                            className={`p-3 rounded-lg text-left transition-all border ${actionType === a.id
+                                                ? "bg-green-500/20 border-green-500/50"
+                                                : "bg-white border-slate-200 hover:border-slate-200"
+                                                }`}
+                                        >
+                                            <div className="text-lg mb-1">{a.icon}</div>
+                                            <div className="text-sm text-slate-900 dark:text-white font-medium">{a.label}</div>
+                                            <div className="text-xs text-slate-400 line-clamp-2">{a.description}</div>
+                                        </button>
+                                    ))}
                                 </div>
+                            </div>
 
-                                {/* Trigger Type */}
+                            {/* Action Config (for specific actions) */}
+                            {actionType === "update_stage" && (
                                 <div>
-                                    <label className="block text-sm text-slate-700 mb-2">When This Happens (Trigger)</label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {TRIGGER_TYPES.map((t) => (
-                                            <button
-                                                key={t.id}
-                                                onClick={() => setTriggerType(t.id)}
-                                                className={`p-3 rounded-lg text-left transition-all border ${triggerType === t.id
-                                                    ? "bg-blue-500/20 border-blue-500/50"
-                                                    : "bg-white border-slate-200 hover:border-slate-200"
-                                                    }`}
-                                            >
-                                                <div className="text-lg mb-1">{t.icon}</div>
-                                                <div className="text-sm text-slate-900 dark:text-white font-medium">{t.label}</div>
-                                                <div className="text-xs text-slate-400 line-clamp-2">{t.description}</div>
-                                            </button>
-                                        ))}
-                                    </div>
+                                    <label className="block text-sm text-slate-700 mb-2">Target Stage</label>
+                                    <select
+                                        value={actionConfig.targetStage || ""}
+                                        onChange={(e) => setActionConfig({ ...actionConfig, targetStage: e.target.value })}
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white focus:border-blue-500/50 focus:outline-none"
+                                    >
+                                        <option value="">Select stage...</option>
+                                        <option value="contacted">Contacted</option>
+                                        <option value="replied">Replied</option>
+                                        <option value="qualified">Qualified</option>
+                                        <option value="demo_booked">Demo Booked</option>
+                                        <option value="proposal_sent">Proposal Sent</option>
+                                        <option value="negotiation">Negotiation</option>
+                                        <option value="closed_won">Closed Won</option>
+                                        <option value="closed_lost">Closed Lost</option>
+                                    </select>
                                 </div>
+                            )}
 
-                                {/* Trigger Config (for specific triggers) */}
-                                {triggerType === "no_reply_after" && (
+                            {actionType === "add_task" && (
+                                <div className="space-y-3">
                                     <div>
-                                        <label className="block text-sm text-slate-700 mb-2">Days Without Reply</label>
+                                        <label className="block text-sm text-slate-700 mb-2">Task Title</label>
+                                        <input
+                                            type="text"
+                                            value={actionConfig.taskTitle || ""}
+                                            onChange={(e) => setActionConfig({ ...actionConfig, taskTitle: e.target.value })}
+                                            placeholder="Follow up with contact"
+                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm text-slate-700 mb-2">Due in (days)</label>
                                         <input
                                             type="number"
-                                            value={triggerConfig.days || ""}
-                                            onChange={(e) => setTriggerConfig({ ...triggerConfig, days: parseInt(e.target.value) })}
-                                            placeholder="3"
+                                            value={actionConfig.dueDays || ""}
+                                            onChange={(e) => setActionConfig({ ...actionConfig, dueDays: parseInt(e.target.value) })}
+                                            placeholder="1"
                                             className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                         />
                                     </div>
-                                )}
-
-                                {/* Action Type */}
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-2">Do This (Action)</label>
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                        {ACTION_TYPES.map((a) => (
-                                            <button
-                                                key={a.id}
-                                                onClick={() => setActionType(a.id)}
-                                                className={`p-3 rounded-lg text-left transition-all border ${actionType === a.id
-                                                    ? "bg-green-500/20 border-green-500/50"
-                                                    : "bg-white border-slate-200 hover:border-slate-200"
-                                                    }`}
-                                            >
-                                                <div className="text-lg mb-1">{a.icon}</div>
-                                                <div className="text-sm text-slate-900 dark:text-white font-medium">{a.label}</div>
-                                                <div className="text-xs text-slate-400 line-clamp-2">{a.description}</div>
-                                            </button>
-                                        ))}
-                                    </div>
                                 </div>
+                            )}
 
-                                {/* Action Config (for specific actions) */}
-                                {actionType === "update_stage" && (
-                                    <div>
-                                        <label className="block text-sm text-slate-700 mb-2">Target Stage</label>
-                                        <select
-                                            value={actionConfig.targetStage || ""}
-                                            onChange={(e) => setActionConfig({ ...actionConfig, targetStage: e.target.value })}
-                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white focus:border-blue-500/50 focus:outline-none"
-                                        >
-                                            <option value="">Select stage...</option>
-                                            <option value="contacted">Contacted</option>
-                                            <option value="replied">Replied</option>
-                                            <option value="qualified">Qualified</option>
-                                            <option value="demo_booked">Demo Booked</option>
-                                            <option value="proposal_sent">Proposal Sent</option>
-                                            <option value="negotiation">Negotiation</option>
-                                            <option value="closed_won">Closed Won</option>
-                                            <option value="closed_lost">Closed Lost</option>
-                                        </select>
-                                    </div>
-                                )}
+                            {actionType === "create_deal" && (
+                                <div>
+                                    <label className="block text-sm text-slate-700 mb-2">Default Deal Value ($)</label>
+                                    <input
+                                        type="number"
+                                        value={actionConfig.dealValue || ""}
+                                        onChange={(e) => setActionConfig({ ...actionConfig, dealValue: parseInt(e.target.value) })}
+                                        placeholder="1000"
+                                        className="w-48 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                    />
+                                </div>
+                            )}
+                        </div>
 
-                                {actionType === "add_task" && (
-                                    <div className="space-y-3">
-                                        <div>
-                                            <label className="block text-sm text-slate-700 mb-2">Task Title</label>
-                                            <input
-                                                type="text"
-                                                value={actionConfig.taskTitle || ""}
-                                                onChange={(e) => setActionConfig({ ...actionConfig, taskTitle: e.target.value })}
-                                                placeholder="Follow up with contact"
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm text-slate-700 mb-2">Due in (days)</label>
-                                            <input
-                                                type="number"
-                                                value={actionConfig.dueDays || ""}
-                                                onChange={(e) => setActionConfig({ ...actionConfig, dueDays: parseInt(e.target.value) })}
-                                                placeholder="1"
-                                                className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                            />
-                                        </div>
-                                    </div>
-                                )}
-
-                                {actionType === "create_deal" && (
-                                    <div>
-                                        <label className="block text-sm text-slate-700 mb-2">Default Deal Value ($)</label>
-                                        <input
-                                            type="number"
-                                            value={actionConfig.dealValue || ""}
-                                            onChange={(e) => setActionConfig({ ...actionConfig, dealValue: parseInt(e.target.value) })}
-                                            placeholder="1000"
-                                            className="w-48 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
-                                <button
-                                    onClick={resetForm}
-                                    className="px-4 py-2 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm font-medium transition-all"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSave}
-                                    disabled={!name || !triggerType || !actionType}
-                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-all"
-                                >
-                                    {editingRule ? "Save Changes" : "Create Rule"}
-                                </button>
-                            </div>
+                        <div className="p-6 border-t border-slate-200 flex justify-end gap-3">
+                            <button
+                                onClick={resetForm}
+                                className="px-4 py-2 bg-slate-50 hover:bg-white/20 text-slate-700 rounded-lg text-sm font-medium transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                disabled={!name || !triggerType || !actionType}
+                                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-all"
+                            >
+                                {editingRule ? "Save Changes" : "Create Rule"}
+                            </button>
                         </div>
                     </div>
-                )}
-            </main>
-        </div>
+                </div>
+            )}
+        </PageWrapper>
     );
 }
 

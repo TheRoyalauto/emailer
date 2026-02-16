@@ -67,6 +67,7 @@ const NAV_ITEMS = [
 // ─── Tools dropdown items ───────────────────────────────────────────────────────
 
 const TOOLS_ITEMS = [
+    { href: "/content-calendar", label: "Content Calendar", desc: "30-day social content planner", icon: "📅" },
     { href: "/templates", label: "Templates", desc: "Email template library", icon: "✉️" },
     { href: "/sequences", label: "Sequences", desc: "Multi-step email flows", icon: "🔄" },
     { href: "/ab-tests", label: "A/B Tests", desc: "Subject & content testing", icon: "🧪" },
@@ -328,15 +329,15 @@ export function AppHeader() {
                                                     href={tool.href}
                                                     onClick={() => setShowToolsMenu(false)}
                                                     className={`flex items-start gap-3 px-3 py-3 rounded-xl transition-all group ${pathname.startsWith(tool.href)
-                                                            ? "bg-cyan-50 dark:bg-cyan-500/10"
-                                                            : "hover:bg-slate-50 dark:hover:bg-slate-800"
+                                                        ? "bg-cyan-50 dark:bg-cyan-500/10"
+                                                        : "hover:bg-slate-50 dark:hover:bg-slate-800"
                                                         }`}
                                                 >
                                                     <span className="text-lg mt-0.5">{tool.icon}</span>
                                                     <div>
                                                         <div className={`text-sm font-medium ${pathname.startsWith(tool.href)
-                                                                ? "text-cyan-600 dark:text-cyan-400"
-                                                                : "text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white"
+                                                            ? "text-cyan-600 dark:text-cyan-400"
+                                                            : "text-slate-700 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-white"
                                                             }`}>{tool.label}</div>
                                                         <div className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">{tool.desc}</div>
                                                     </div>
@@ -429,8 +430,8 @@ export function AppHeader() {
                                             href={tool.href}
                                             onClick={() => setShowToolsMenu(false)}
                                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all ${pathname.startsWith(tool.href)
-                                                    ? "bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
-                                                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                                                ? "bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400"
+                                                : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                                                 }`}
                                         >
                                             <span className="text-base">{tool.icon}</span>

@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
-import { AuthGuard, AppHeader } from "@/components/AuthGuard";
+import { AuthGuard } from "@/components/AuthGuard";
+import { PageWrapper } from "@/components/PageWrapper";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
+import { PageLoadingSpinner } from "@/components/PageLoadingSpinner";
+import { PageEmptyState } from "@/components/PageEmptyState";
+import { PageHeader } from "@/components/PageHeader";
+import { StatsBar } from "@/components/StatsBar";
 
 export default function LinksPage() {
     return (
@@ -81,254 +86,239 @@ function LinksContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-            <AppHeader />
+        <PageWrapper>
+            <PageHeader
+                title="Tracked Links"
+                subtitle="Create and manage click-tracked URLs with UTM parameters"
+            >
+                {!isCreating && (
+                    <button
+                        onClick={() => setIsCreating(true)}
+                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-medium transition-all"
+                    >
+                        + Create Link
+                    </button>
+                )}
+            </PageHeader>
 
-            <main className="max-w-6xl mx-auto px-4 py-6">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Tracked Links</h1>
-                        <p className="text-slate-500 text-sm">Create and manage click-tracked URLs with UTM parameters</p>
-                    </div>
-                    {!isCreating && (
-                        <button
-                            onClick={() => setIsCreating(true)}
-                            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-medium transition-all"
-                        >
-                            + Create Link
-                        </button>
-                    )}
-                </div>
+            <StatsBar columns={3} items={[
+                { value: stats?.total || 0, label: "Total Links", color: "text-blue-400" },
+                { value: stats?.totalClicks || 0, label: "Total Clicks", color: "text-emerald-400" },
+                { value: stats?.activeLinks || 0, label: "Active Links", color: "text-purple-400" },
+            ]} />
 
-                {/* Stats Bar */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
-                        <div className="text-2xl font-bold text-blue-400">{stats?.total || 0}</div>
-                        <div className="text-sm text-slate-500">Total Links</div>
+            {/* Create Form */}
+            {isCreating && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 mb-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Create Tracked Link</h2>
+                        <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                     </div>
-                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
-                        <div className="text-2xl font-bold text-emerald-400">{stats?.totalClicks || 0}</div>
-                        <div className="text-sm text-slate-500">Total Clicks</div>
-                    </div>
-                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
-                        <div className="text-2xl font-bold text-purple-400">{stats?.activeLinks || 0}</div>
-                        <div className="text-sm text-slate-500">Active Links</div>
-                    </div>
-                </div>
 
-                {/* Create Form */}
-                {isCreating && (
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 mb-6">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Create Tracked Link</h2>
-                            <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {/* Left Column - Core */}
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-1">Destination URL *</label>
+                                <input
+                                    type="url"
+                                    value={formData.destinationUrl}
+                                    onChange={(e) => setFormData({ ...formData, destinationUrl: e.target.value })}
+                                    placeholder="https://example.com/landing-page"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm text-slate-700 mb-1">Label (optional)</label>
+                                <input
+                                    type="text"
+                                    value={formData.label}
+                                    onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                                    placeholder="e.g., CTA Button, Email Footer"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-6">
-                            {/* Left Column - Core */}
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm text-slate-700 mb-1">Destination URL *</label>
-                                    <input
-                                        type="url"
-                                        value={formData.destinationUrl}
-                                        onChange={(e) => setFormData({ ...formData, destinationUrl: e.target.value })}
-                                        placeholder="https://example.com/landing-page"
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
-                                    />
-                                </div>
+                        {/* Right Column - UTM */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-sm font-medium text-slate-700">UTM Parameters</span>
+                                <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">Optional</span>
+                            </div>
 
+                            <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-sm text-slate-700 mb-1">Label (optional)</label>
+                                    <label className="block text-xs text-slate-500 mb-1">Source</label>
                                     <input
                                         type="text"
-                                        value={formData.label}
-                                        onChange={(e) => setFormData({ ...formData, label: e.target.value })}
-                                        placeholder="e.g., CTA Button, Email Footer"
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
+                                        value={formData.utmSource}
+                                        onChange={(e) => setFormData({ ...formData, utmSource: e.target.value })}
+                                        placeholder="newsletter"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-slate-500 mb-1">Medium</label>
+                                    <input
+                                        type="text"
+                                        value={formData.utmMedium}
+                                        onChange={(e) => setFormData({ ...formData, utmMedium: e.target.value })}
+                                        placeholder="email"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-slate-500 mb-1">Campaign</label>
+                                    <input
+                                        type="text"
+                                        value={formData.utmCampaign}
+                                        onChange={(e) => setFormData({ ...formData, utmCampaign: e.target.value })}
+                                        placeholder="spring_sale"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-slate-500 mb-1">Content</label>
+                                    <input
+                                        type="text"
+                                        value={formData.utmContent}
+                                        onChange={(e) => setFormData({ ...formData, utmContent: e.target.value })}
+                                        placeholder="cta_button"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
                                     />
                                 </div>
                             </div>
-
-                            {/* Right Column - UTM */}
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className="text-sm font-medium text-slate-700">UTM Parameters</span>
-                                    <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">Optional</span>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label className="block text-xs text-slate-500 mb-1">Source</label>
-                                        <input
-                                            type="text"
-                                            value={formData.utmSource}
-                                            onChange={(e) => setFormData({ ...formData, utmSource: e.target.value })}
-                                            placeholder="newsletter"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs text-slate-500 mb-1">Medium</label>
-                                        <input
-                                            type="text"
-                                            value={formData.utmMedium}
-                                            onChange={(e) => setFormData({ ...formData, utmMedium: e.target.value })}
-                                            placeholder="email"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs text-slate-500 mb-1">Campaign</label>
-                                        <input
-                                            type="text"
-                                            value={formData.utmCampaign}
-                                            onChange={(e) => setFormData({ ...formData, utmCampaign: e.target.value })}
-                                            placeholder="spring_sale"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs text-slate-500 mb-1">Content</label>
-                                        <input
-                                            type="text"
-                                            value={formData.utmContent}
-                                            onChange={(e) => setFormData({ ...formData, utmContent: e.target.value })}
-                                            placeholder="cta_button"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Preview */}
-                        {formData.destinationUrl && (
-                            <div className="mt-4 p-3 bg-black/30 rounded-lg">
-                                <span className="text-xs text-slate-500">Preview: </span>
-                                <span className="text-xs text-cyan-400 font-mono">{baseUrl}/api/r/[code]</span>
-                                <span className="text-xs text-slate-400"> → </span>
-                                <span className="text-xs text-slate-700 truncate">{formData.destinationUrl}</span>
-                            </div>
-                        )}
-
-                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
-                            <button onClick={resetForm} className="px-4 py-2 text-slate-500 hover:text-slate-900">Cancel</button>
-                            <button
-                                onClick={handleCreate}
-                                disabled={!formData.destinationUrl}
-                                className="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-medium transition-all disabled:opacity-50"
-                            >
-                                Create Link
-                            </button>
                         </div>
                     </div>
-                )}
 
-                {/* Links List */}
-                <div className="space-y-3">
-                    {links?.length === 0 && !isCreating && (
-                        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-12 text-center">
-                            <div className="text-4xl mb-4">🔗</div>
-                            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No Tracked Links Yet</h3>
-                            <p className="text-slate-500 text-sm mb-4">Create tracked links to monitor clicks and add UTM parameters</p>
-                            <button
-                                onClick={() => setIsCreating(true)}
-                                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-medium"
-                            >
-                                + Create First Link
-                            </button>
+                    {/* Preview */}
+                    {formData.destinationUrl && (
+                        <div className="mt-4 p-3 bg-black/30 rounded-lg">
+                            <span className="text-xs text-slate-500">Preview: </span>
+                            <span className="text-xs text-cyan-400 font-mono">{baseUrl}/api/r/[code]</span>
+                            <span className="text-xs text-slate-400"> → </span>
+                            <span className="text-xs text-slate-700 truncate">{formData.destinationUrl}</span>
                         </div>
                     )}
 
-                    {links?.map((link) => (
-                        <div key={link._id} className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={() => toggleActive(link._id, link.isActive)}
-                                        className={`w-10 h-6 rounded-full transition-all ${link.isActive ? "bg-emerald-500" : "bg-white/20"}`}
-                                    >
-                                        <div className={`w-4 h-4 bg-white rounded-full transition-all ${link.isActive ? "translate-x-5" : "translate-x-1"}`} />
-                                    </button>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-medium text-slate-900 dark:text-white">{link.label || "Untitled"}</span>
-                                            <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded font-mono">
-                                                {link.code}
-                                            </span>
-                                        </div>
-                                        <div className="text-sm text-slate-500 truncate max-w-md">
-                                            {link.destinationUrl}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-4">
-                                    {/* Click Stats */}
-                                    <div className="text-right">
-                                        <div className="text-lg font-bold text-emerald-400">{link.clickCount}</div>
-                                        <div className="text-xs text-slate-400">clicks</div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => copyToClipboard(link.code, link._id)}
-                                            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${copiedId === link._id
-                                                ? "bg-emerald-500/20 text-emerald-400"
-                                                : "bg-white text-slate-500 hover:bg-slate-50"
-                                                }`}
-                                        >
-                                            {copiedId === link._id ? "✓ Copied" : "📋 Copy"}
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(link._id)}
-                                            className="px-3 py-1.5 bg-white text-red-400/70 hover:text-red-400 rounded-lg text-sm"
-                                        >
-                                            🗑
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* UTM Tags */}
-                            {(link.utmSource || link.utmCampaign) && (
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {link.utmSource && (
-                                        <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded">
-                                            source: {link.utmSource}
-                                        </span>
-                                    )}
-                                    {link.utmMedium && (
-                                        <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">
-                                            medium: {link.utmMedium}
-                                        </span>
-                                    )}
-                                    {link.utmCampaign && (
-                                        <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded">
-                                            campaign: {link.utmCampaign}
-                                        </span>
-                                    )}
-                                    {link.utmContent && (
-                                        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded">
-                                            content: {link.utmContent}
-                                        </span>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Last Click */}
-                            {link.lastClickedAt && (
-                                <div className="text-xs text-slate-400 mt-2">
-                                    Last click: {new Date(link.lastClickedAt).toLocaleString()}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                        <button onClick={resetForm} className="px-4 py-2 text-slate-500 hover:text-slate-900">Cancel</button>
+                        <button
+                            onClick={handleCreate}
+                            disabled={!formData.destinationUrl}
+                            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-medium transition-all disabled:opacity-50"
+                        >
+                            Create Link
+                        </button>
+                    </div>
                 </div>
-            </main>
-        </div>
+            )}
+
+            {/* Links List */}
+            <div className="space-y-3">
+                {links === undefined && !isCreating ? (
+                    <PageLoadingSpinner />
+                ) : links?.length === 0 && !isCreating ? (
+                    <PageEmptyState
+                        icon="🔗"
+                        title="No Tracked Links Yet"
+                        description="Create tracked links to monitor clicks and add UTM parameters"
+                        actionLabel="+ Create First Link"
+                        onAction={() => setIsCreating(true)}
+                        buttonClassName="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-medium"
+                    />
+                ) : (
+                    <>
+                        {links?.map((link) => (
+                            <div key={link._id} className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => toggleActive(link._id, link.isActive)}
+                                            className={`w-10 h-6 rounded-full transition-all ${link.isActive ? "bg-emerald-500" : "bg-white/20"}`}
+                                        >
+                                            <div className={`w-4 h-4 bg-white rounded-full transition-all ${link.isActive ? "translate-x-5" : "translate-x-1"}`} />
+                                        </button>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium text-slate-900 dark:text-white">{link.label || "Untitled"}</span>
+                                                <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded font-mono">
+                                                    {link.code}
+                                                </span>
+                                            </div>
+                                            <div className="text-sm text-slate-500 truncate max-w-md">
+                                                {link.destinationUrl}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-4">
+                                        {/* Click Stats */}
+                                        <div className="text-right">
+                                            <div className="text-lg font-bold text-emerald-400">{link.clickCount}</div>
+                                            <div className="text-xs text-slate-400">clicks</div>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => copyToClipboard(link.code, link._id)}
+                                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${copiedId === link._id
+                                                    ? "bg-emerald-500/20 text-emerald-400"
+                                                    : "bg-white text-slate-500 hover:bg-slate-50"
+                                                    }`}
+                                            >
+                                                {copiedId === link._id ? "✓ Copied" : "📋 Copy"}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(link._id)}
+                                                className="px-3 py-1.5 bg-white text-red-400/70 hover:text-red-400 rounded-lg text-sm"
+                                            >
+                                                🗑
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* UTM Tags */}
+                                {(link.utmSource || link.utmCampaign) && (
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {link.utmSource && (
+                                            <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-xs rounded">
+                                                source: {link.utmSource}
+                                            </span>
+                                        )}
+                                        {link.utmMedium && (
+                                            <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">
+                                                medium: {link.utmMedium}
+                                            </span>
+                                        )}
+                                        {link.utmCampaign && (
+                                            <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs rounded">
+                                                campaign: {link.utmCampaign}
+                                            </span>
+                                        )}
+                                        {link.utmContent && (
+                                            <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded">
+                                                content: {link.utmContent}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Last Click */}
+                                {link.lastClickedAt && (
+                                    <div className="text-xs text-slate-400 mt-2">
+                                        Last click: {new Date(link.lastClickedAt).toLocaleString()}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </>
+                )}
+            </div>
+        </PageWrapper>
     );
 }
