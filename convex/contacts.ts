@@ -262,8 +262,10 @@ export const create = mutation({
             throw new Error("Contact with this email already exists");
         }
 
+        const { sessionToken: _st, ...data } = args;
+
         return await ctx.db.insert("contacts", {
-            ...args,
+            ...data,
             userId,
             status: "active",
         });
@@ -324,8 +326,9 @@ export const bulkCreate = mutation({
                 continue;
             }
 
+            const { sessionToken: _st2, ...contactData } = contact as any;
             const contactId = await ctx.db.insert("contacts", {
-                ...contact,
+                ...contactData,
                 userId,
                 status: "active",
                 batchId: args.batchId,
