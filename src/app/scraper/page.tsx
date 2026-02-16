@@ -290,18 +290,10 @@ function ScraperPage() {
 
                     {/* Search Button */}
                     <button
-                        onClick={handleSearch}
-                        disabled={!prompt.trim() || isSearching}
-                        className="mt-4 w-full py-3.5 bg-gradient-to-r from-[#0891b2] to-[#0284c7] rounded-xl font-semibold text-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg hover:shadow-[#0891b2]/25 active:scale-[0.99]"
+                        disabled
+                        className="mt-4 w-full py-3.5 bg-gradient-to-r from-[#9CA3AF] to-[#6B7280] rounded-xl font-semibold text-lg text-white opacity-75 cursor-not-allowed transition-all"
                     >
-                        {isSearching ? (
-                            <span className="flex items-center justify-center gap-2">
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                Searching with AI...
-                            </span>
-                        ) : (
-                            "🔍 Find Leads"
-                        )}
+                        🚀 Coming Soon
                     </button>
                 </div>
 

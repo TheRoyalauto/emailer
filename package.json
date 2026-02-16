@@ -20,6 +20,10 @@
         "@radix-ui/react-slot": "^1.1.0",
         "@radix-ui/react-tabs": "^1.1.0",
         "@radix-ui/react-toast": "^1.2.1",
+        "@remotion/bundler": "^4.0.423",
+        "@remotion/cli": "^4.0.423",
+        "@remotion/player": "^4.0.423",
+        "@remotion/renderer": "^4.0.423",
         "@tiptap/extension-bubble-menu": "^3.19.0",
         "@tiptap/extension-color": "^3.19.0",
         "@tiptap/extension-link": "^3.19.0",
@@ -42,6 +46,7 @@
         "openai": "^6.17.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "remotion": "^4.0.423",
         "resend": "^6.9.1",
         "tailwind-merge": "^2.5.4"
     },

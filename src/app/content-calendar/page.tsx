@@ -525,7 +525,7 @@ function ContentCalendarPage() {
                                 <div className="flex items-start gap-3">
                                     {/* Checkbox */}
                                     <button
-                                        onClick={() => toggleSelect(item._id)}
+                                        onClick={(e) => { e.stopPropagation(); toggleSelect(item._id); }}
                                         className={`mt-1 w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all ${selectedIds.has(item._id)
                                             ? "bg-indigo-600 border-indigo-600 text-white"
                                             : "border-slate-300 dark:border-slate-600 hover:border-slate-400 dark:hover:border-slate-500"
@@ -536,13 +536,21 @@ function ContentCalendarPage() {
                                         )}
                                     </button>
 
-                                    {/* Content */}
-                                    <div className="flex-1 min-w-0">
+                                    {/* Content — clickable to edit */}
+                                    <div
+                                        className="flex-1 min-w-0 cursor-pointer group"
+                                        onClick={() => setEditingItem(item)}
+                                    >
                                         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                                             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{formatDate(item.date)}</span>
                                             <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider ${STATUS_BADGES[item.status]}`}>
                                                 {item.status}
                                             </span>
+                                            {item.videoStorageId && (
+                                                <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400">
+                                                    🎬 Video
+                                                </span>
+                                            )}
                                             <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                                                 {POST_TYPES[item.type]?.emoji} {POST_TYPES[item.type]?.label}
                                             </span>
@@ -553,7 +561,7 @@ function ContentCalendarPage() {
                                             ))}
                                         </div>
 
-                                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
+                                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                             {item.concept}
                                         </h3>
                                         <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-2">
@@ -571,7 +579,7 @@ function ContentCalendarPage() {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                    <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             onClick={() => setEditingItem(item)}
                                             className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-all"
@@ -725,6 +733,7 @@ function ContentCalendarPage() {
                 onClose={() => setVideoItem(null)}
                 concept={videoItem?.concept}
                 caption={videoItem?.caption}
+                contentItemId={videoItem?._id}
             />
 
             {/* Brand Asset Library */}

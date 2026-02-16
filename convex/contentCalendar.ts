@@ -313,3 +313,41 @@ export const recordPostResult = mutation({
         });
     },
 });
+
+// ─── Video Storage ──────────────────────────────────────────────────────────────
+
+export const generateUploadUrl = mutation({
+    args: { sessionToken: v.string() },
+    handler: async (ctx, args) => {
+        await requireAuth(ctx, args.sessionToken);
+        return await ctx.storage.generateUploadUrl();
+    },
+});
+
+export const saveVideo = mutation({
+    args: {
+        sessionToken: v.string(),
+        id: v.id("contentCalendarItems"),
+        videoStorageId: v.id("_storage"),
+    },
+    handler: async (ctx, args) => {
+        const userId = await requireAuth(ctx, args.sessionToken);
+        const item = await ctx.db.get(args.id);
+        if (!item || item.userId !== userId) throw new Error("Not found");
+
+        await ctx.db.patch(args.id, {
+            videoStorageId: args.videoStorageId,
+            updatedAt: Date.now(),
+        } as any);
+    },
+});
+
+export const getVideoUrl = query({
+    args: {
+        sessionToken: v.optional(v.string()),
+        storageId: v.id("_storage"),
+    },
+    handler: async (ctx, args) => {
+        return await ctx.storage.getUrl(args.storageId);
+    },
+});
