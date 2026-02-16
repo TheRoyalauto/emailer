@@ -472,7 +472,7 @@ function SettingsPage() {
                                                     <p className="text-sm text-slate-400 mt-0.5">Connect your email providers</p>
                                                 </div>
                                                 <Link
-                                                    href="/smtp-settings"
+                                                    href="/accounts"
                                                     className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                                                 >
                                                     + Add Config
@@ -489,7 +489,7 @@ function SettingsPage() {
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                                     </svg>
                                                     <p className="text-slate-500 font-medium">No email configurations yet</p>
-                                                    <Link href="/smtp-settings" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
+                                                    <Link href="/accounts" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
                                                         Add your first config →
                                                     </Link>
                                                 </div>
@@ -994,10 +994,10 @@ function SettingsPage() {
                                                         <div
                                                             key={plan.id}
                                                             className={`relative rounded-xl p-5 border transition-all ${isCurrent
-                                                                    ? "border-cyan-300 dark:border-cyan-700 bg-cyan-50/30 dark:bg-cyan-950/20 ring-1 ring-cyan-200/50 dark:ring-cyan-800/30"
-                                                                    : plan.featured
-                                                                        ? "border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-sm"
-                                                                        : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
+                                                                ? "border-cyan-300 dark:border-cyan-700 bg-cyan-50/30 dark:bg-cyan-950/20 ring-1 ring-cyan-200/50 dark:ring-cyan-800/30"
+                                                                : plan.featured
+                                                                    ? "border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-sm"
+                                                                    : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
                                                                 }`}
                                                         >
                                                             {isCurrent && (
