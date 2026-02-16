@@ -1,8 +1,8 @@
 "use client";
 
 import { api } from "../../../convex/_generated/api";
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import EmailEditor from "@/components/EmailEditor";
 import { AuthGuard } from "@/components/AuthGuard";
 import { PageWrapper } from "@/components/PageWrapper";
@@ -163,16 +163,24 @@ function TemplatesPage() {
 
     // Handle URL-based modal opening
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const urlActionHandled = useRef(false);
     useEffect(() => {
+        if (urlActionHandled.current) return;
         if (searchParams.get('action') === 'add') {
+            urlActionHandled.current = true;
             handleStartNew();
+            // Clear the URL param so it doesn't re-trigger
+            router.replace('/templates', { scroll: false });
         }
         // Handle edit from campaign page
         const editId = searchParams.get('edit');
         if (editId && templates) {
             const templateToEdit = templates.find(t => t._id === editId);
             if (templateToEdit) {
+                urlActionHandled.current = true;
                 handleEdit(templateToEdit);
+                router.replace('/templates', { scroll: false });
             }
         }
     }, [searchParams, templates]);
@@ -233,12 +241,14 @@ function TemplatesPage() {
 
         setIsEditing(false);
         setEditingId(null);
+        urlActionHandled.current = false;
         setSuccessToast(isNew ? `"${templateName}" created successfully` : `"${templateName}" updated successfully`);
     };
 
     const handleCancel = () => {
         setIsEditing(false);
         setEditingId(null);
+        urlActionHandled.current = false;
     };
 
     const handleDuplicate = async (id: Id<"templates">) => {
