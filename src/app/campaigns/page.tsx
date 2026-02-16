@@ -9,13 +9,13 @@ import { useAuthQuery } from "../../hooks/useAuthConvex";
 
 export default function CampaignsPage() {
     const templates = useAuthQuery(api.templates.list, {});
-    const senders = useAuthQuery(api.senders.list);
+    const accounts = useAuthQuery(api.smtpConfigs.list);
     const batches = useAuthQuery(api.batches.list);
     const contacts = useAuthQuery(api.contacts.list, {});
 
     // Campaign creation state
     const [selectedTemplate, setSelectedTemplate] = useState<string>("");
-    const [selectedSender, setSelectedSender] = useState<string>("");
+    const [selectedAccount, setSelectedAccount] = useState<string>("");
     const [selectedBatch, setSelectedBatch] = useState<string>("");
     const [isSending, setIsSending] = useState(false);
     const [sendProgress, setSendProgress] = useState<{ sent: number; total: number; failed: number } | null>(null);
@@ -25,14 +25,14 @@ export default function CampaignsPage() {
     const previewTemplateData = templates?.find(t => t._id === previewTemplate);
 
     const selectedTemplateData = templates?.find(t => t._id === selectedTemplate);
-    const selectedSenderData = senders?.find(s => s._id === selectedSender);
+    const selectedAccountData = accounts?.find(s => s._id === selectedAccount);
     const selectedBatchData = batches?.find(b => b._id === selectedBatch);
 
     const batchContacts = selectedBatch
         ? contacts?.filter(c => c.batchId === selectedBatch)
         : [];
 
-    const canStartCampaign = selectedTemplate && selectedSender && selectedBatch && batchContacts && batchContacts.length > 0;
+    const canStartCampaign = selectedTemplate && selectedAccount && selectedBatch && batchContacts && batchContacts.length > 0;
 
     const handleStartCampaign = () => {
         if (!canStartCampaign) return;
@@ -136,37 +136,55 @@ export default function CampaignsPage() {
                             )}
                         </div>
 
-                        {/* Step 2: Select Sender */}
+                        {/* Step 2: Select Email Account */}
                         <div className="p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-sm">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-8 h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 font-bold text-sm">2</div>
-                                <h2 className="text-lg font-semibold font-heading text-slate-900 dark:text-white tracking-[-0.02em]">Select Sender Account</h2>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900 font-bold text-sm">2</div>
+                                    <h2 className="text-lg font-semibold font-heading text-slate-900 dark:text-white tracking-[-0.02em]">Select Email Account</h2>
+                                </div>
+                                {accounts && accounts.length > 0 && (
+                                    <Link
+                                        href="/accounts"
+                                        className="text-sm text-slate-400 hover:text-cyan-600 transition-colors flex items-center gap-1"
+                                    >
+                                        Manage Accounts
+                                    </Link>
+                                )}
                             </div>
 
-                            {senders === undefined ? (
+                            {accounts === undefined ? (
                                 <div className="py-4 flex items-center justify-center">
                                     <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                 </div>
-                            ) : senders.length === 0 ? (
+                            ) : accounts.length === 0 ? (
                                 <div className="py-4 text-center">
-                                    <p className="text-slate-400 mb-3">No sender accounts configured</p>
-                                    <Link href="/senders" className="text-cyan-600 hover:text-cyan-700 font-medium transition-colors">
-                                        Add a sender account →
+                                    <p className="text-slate-400 mb-3">No email accounts configured</p>
+                                    <Link href="/accounts" className="text-cyan-600 hover:text-cyan-700 font-medium transition-colors">
+                                        Add an email account →
                                     </Link>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-3">
-                                    {senders.map((sender) => (
+                                    {accounts.map((account) => (
                                         <button
-                                            key={sender._id}
-                                            onClick={() => setSelectedSender(sender._id)}
-                                            className={`p-4 rounded-xl border text-left transition-all duration-200 ${selectedSender === sender._id
+                                            key={account._id}
+                                            onClick={() => setSelectedAccount(account._id)}
+                                            className={`p-4 rounded-xl border text-left transition-all duration-200 ${selectedAccount === account._id
                                                 ? "bg-cyan-50 dark:bg-cyan-500/10 border-cyan-300 dark:border-cyan-500/50 ring-2 ring-cyan-200 dark:ring-cyan-500/20"
                                                 : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-500/50 hover:shadow-md"
                                                 }`}
                                         >
-                                            <div className="font-semibold truncate text-slate-900 dark:text-white">{sender.name}</div>
-                                            <div className="text-sm text-slate-400 truncate mt-1">{sender.email}</div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="font-semibold truncate text-slate-900 dark:text-white">{account.name}</div>
+                                                {account.isDefault && (
+                                                    <span className="text-[10px] uppercase tracking-wider font-bold bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400 px-1.5 py-0.5 rounded-md">Default</span>
+                                                )}
+                                            </div>
+                                            <div className="text-sm text-slate-400 truncate">{account.fromEmail}</div>
+                                            {account.host && (
+                                                <div className="text-xs text-slate-300 dark:text-slate-600 mt-1 truncate">{account.host}</div>
+                                            )}
                                         </button>
                                     ))}
                                 </div>
@@ -228,8 +246,8 @@ export default function CampaignsPage() {
                                     <span className="font-semibold text-slate-900 dark:text-white">{selectedTemplateData?.name || "Not selected"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-slate-400">Sender:</span>
-                                    <span className="font-semibold text-slate-900 dark:text-white">{selectedSenderData?.email || "Not selected"}</span>
+                                    <span className="text-slate-400">Email Account:</span>
+                                    <span className="font-semibold text-slate-900 dark:text-white">{selectedAccountData?.fromEmail || "Not selected"}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-slate-400">Batch:</span>
@@ -279,7 +297,7 @@ export default function CampaignsPage() {
                 </main>
 
                 {/* Send Modal */}
-                {showSendModal && selectedTemplateData && selectedSenderData && batchContacts && (
+                {showSendModal && selectedTemplateData && selectedAccountData && batchContacts && (
                     <CampaignSendModal
                         onClose={() => setShowSendModal(false)}
                         template={{
@@ -288,10 +306,17 @@ export default function CampaignsPage() {
                             subject: selectedTemplateData.subject,
                             body: selectedTemplateData.htmlBody,
                         }}
-                        sender={{
-                            _id: selectedSenderData._id,
-                            name: selectedSenderData.name,
-                            email: selectedSenderData.email,
+                        account={{
+                            _id: selectedAccountData._id,
+                            name: selectedAccountData.name,
+                            fromEmail: selectedAccountData.fromEmail,
+                            fromName: selectedAccountData.fromName,
+                            host: selectedAccountData.host,
+                            port: selectedAccountData.port,
+                            secure: selectedAccountData.secure,
+                            username: selectedAccountData.username,
+                            password: selectedAccountData.password,
+                            provider: selectedAccountData.provider,
                         }}
                         contacts={batchContacts}
                     />

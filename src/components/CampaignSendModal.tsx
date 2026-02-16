@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
-import { useAuthQuery, useAuthMutation } from "../hooks/useAuthConvex";
+import { useAuthMutation } from "../hooks/useAuthConvex";
 
 interface CampaignSendModalProps {
     onClose: () => void;
@@ -14,10 +14,17 @@ interface CampaignSendModalProps {
         subject: string;
         body: string;
     };
-    sender: {
-        _id: Id<"senders">;
+    account: {
+        _id: Id<"smtpConfigs">;
         name: string;
-        email: string;
+        fromEmail: string;
+        fromName?: string;
+        host?: string;
+        port?: number;
+        secure?: boolean;
+        username?: string;
+        password?: string;
+        provider?: string;
     };
     contacts: Array<{
         _id: Id<"contacts">;
@@ -42,18 +49,8 @@ function replaceVariables(text: string, contact: { name?: string; company?: stri
         .replace(/\{\{email\}\}/gi, contact.email);
 }
 
-export default function CampaignSendModal({ onClose, template, sender, contacts }: CampaignSendModalProps) {
-    const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
-    const defaultSmtp = useAuthQuery(api.smtpConfigs.getDefault);
+export default function CampaignSendModal({ onClose, template, account, contacts }: CampaignSendModalProps) {
     const markUsed = useAuthMutation(api.smtpConfigs.markUsed);
-
-    const [selectedSmtpId, setSelectedSmtpId] = useState<string>("");
-    const [useManual, setUseManual] = useState(false);
-
-    const [smtpHost, setSmtpHost] = useState("smtp.gmail.com");
-    const [smtpPort, setSmtpPort] = useState(587);
-    const [smtpUser, setSmtpUser] = useState(sender.email);
-    const [smtpPass, setSmtpPass] = useState("");
 
     const [step, setStep] = useState<"configure" | "sending" | "complete">("configure");
     const [delayMs, setDelayMs] = useState(1000);
@@ -66,14 +63,6 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const logEmail = useAuthMutation(api.activities.logEmail);
-
-    useEffect(() => {
-        if (defaultSmtp && !selectedSmtpId) {
-            setSelectedSmtpId(defaultSmtp._id);
-        }
-    }, [defaultSmtp, selectedSmtpId]);
-
-    const selectedConfig = smtpConfigs?.find((c) => c._id === selectedSmtpId);
 
     const previewContact = contacts[0];
     const previewSubject = previewContact ? replaceVariables(template.subject, previewContact) : template.subject;
@@ -94,9 +83,7 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
         iframeLoadHandler();
     }, [iframeLoadHandler]);
 
-    const canSend = useManual
-        ? smtpHost && smtpUser && smtpPass
-        : selectedConfig;
+    const canSend = account.host && account.username && account.password;
 
     const handleSend = async () => {
         if (!canSend) {
@@ -118,25 +105,14 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                 contactId: contact._id,
             }));
 
-            let smtp;
-            if (useManual) {
-                smtp = {
-                    host: smtpHost,
-                    port: smtpPort,
-                    secure: smtpPort === 465,
-                    user: smtpUser,
-                    pass: smtpPass,
-                };
-            } else if (selectedConfig) {
-                smtp = {
-                    host: selectedConfig.host,
-                    port: selectedConfig.port,
-                    secure: selectedConfig.secure,
-                    user: selectedConfig.username,
-                    pass: selectedConfig.password,
-                };
-                await markUsed({ id: selectedConfig._id });
-            }
+            const smtp = {
+                host: account.host,
+                port: account.port,
+                secure: account.secure,
+                user: account.username,
+                pass: account.password,
+            };
+            await markUsed({ id: account._id });
 
             const response = await fetch("/api/send-bulk", {
                 method: "POST",
@@ -144,8 +120,8 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                 body: JSON.stringify({
                     emails: emailsToSend,
                     from: {
-                        name: selectedConfig?.fromName || sender.name,
-                        email: selectedConfig?.fromEmail || sender.email,
+                        name: account.fromName || account.name,
+                        email: account.fromEmail,
                     },
                     smtp,
                     delayBetweenMs: delayMs,
@@ -270,135 +246,34 @@ export default function CampaignSendModal({ onClose, template, sender, contacts 
                     {step === "configure" && (
                         <div className="divide-y divide-[#F1F3F8] dark:divide-slate-800">
 
-                            {/* ── SMTP Configuration Section ── */}
+                            {/* ── Sending Account ── */}
                             <div className="px-6 py-5">
-                                <div className={sectionTitleCls}>Email Configuration</div>
-
-                                {smtpConfigs === undefined ? (
-                                    <div className="flex items-center gap-2.5 text-sm text-[#9CA3AF] py-4">
-                                        <div className="animate-spin w-4 h-4 border-2 border-[#E5E7EB] dark:border-slate-700 border-t-[#0EA5E9] rounded-full" />
-                                        Loading saved configs...
+                                <div className={sectionTitleCls}>Sending Account</div>
+                                <div className="flex items-center gap-3 p-3.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
                                     </div>
-                                ) : smtpConfigs.length > 0 && !useManual ? (
-                                    <div className="space-y-3">
-                                        {/* Config selector */}
-                                        <div className="relative">
-                                            <select
-                                                value={selectedSmtpId}
-                                                onChange={(e) => setSelectedSmtpId(e.target.value)}
-                                                className={inputCls + " appearance-none cursor-pointer pr-10"}
-                                            >
-                                                {smtpConfigs.map((config) => (
-                                                    <option key={config._id} value={config._id}>
-                                                        {config.name} ({config.fromEmail}){config.isDefault ? " ★" : ""}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                                            </svg>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 truncate">{account.name}</span>
+                                            {account.provider && account.provider !== "smtp" && (
+                                                <span className="text-[10px] uppercase tracking-wider font-bold bg-emerald-200 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded-md">{account.provider}</span>
+                                            )}
                                         </div>
-
-                                        {/* Ready badge */}
-                                        {selectedConfig && (
-                                            <div className="flex items-center gap-3 p-3.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
-                                                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center flex-shrink-0">
-                                                    <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Ready to send</div>
-                                                    <div className="text-xs text-emerald-600/70 dark:text-emerald-400/60">
-                                                        From: {selectedConfig.fromName ? `${selectedConfig.fromName} <${selectedConfig.fromEmail}>` : selectedConfig.fromEmail}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <button
-                                            onClick={() => setUseManual(true)}
-                                            className="text-xs text-[#9CA3AF] hover:text-[#0EA5E9] transition-colors"
-                                        >
-                                            Use different credentials instead →
-                                        </button>
+                                        <div className="text-xs text-emerald-600/70 dark:text-emerald-400/60 truncate">
+                                            From: {account.fromName ? `${account.fromName} <${account.fromEmail}>` : account.fromEmail}
+                                        </div>
                                     </div>
-                                ) : (
-                                    <div className="space-y-4">
-                                        {smtpConfigs.length === 0 && (
-                                            <div className="flex items-center gap-3 p-3.5 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 rounded-xl">
-                                                <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
-                                                    <svg className="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-medium text-amber-700 dark:text-amber-300">No saved SMTP configs</div>
-                                                    <Link
-                                                        href="/smtp-settings"
-                                                        onClick={onClose}
-                                                        className="text-xs text-[#0EA5E9] hover:underline"
-                                                    >
-                                                        Set up SMTP for one-click sending →
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className={labelCls}>SMTP Host</label>
-                                                <input
-                                                    type="text"
-                                                    value={smtpHost}
-                                                    onChange={(e) => setSmtpHost(e.target.value)}
-                                                    className={inputCls}
-                                                    placeholder="smtp.gmail.com"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className={labelCls}>Port</label>
-                                                <input
-                                                    type="number"
-                                                    value={smtpPort}
-                                                    onChange={(e) => setSmtpPort(parseInt(e.target.value))}
-                                                    className={inputCls}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className={labelCls}>Username</label>
-                                                <input
-                                                    type="text"
-                                                    value={smtpUser}
-                                                    onChange={(e) => setSmtpUser(e.target.value)}
-                                                    className={inputCls}
-                                                    placeholder="your@email.com"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className={labelCls}>Password</label>
-                                                <input
-                                                    type="password"
-                                                    value={smtpPass}
-                                                    onChange={(e) => setSmtpPass(e.target.value)}
-                                                    className={inputCls}
-                                                    placeholder="••••••••"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {smtpConfigs.length > 0 && (
-                                            <button
-                                                onClick={() => setUseManual(false)}
-                                                className="text-xs text-[#0EA5E9] hover:underline"
-                                            >
-                                                ← Use saved configuration
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
+                                    <Link
+                                        href="/accounts"
+                                        onClick={onClose}
+                                        className="text-xs text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex-shrink-0"
+                                    >
+                                        Change
+                                    </Link>
+                                </div>
                             </div>
 
                             {/* ── Sending Options Section ── */}
