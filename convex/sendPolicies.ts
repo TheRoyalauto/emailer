@@ -35,7 +35,7 @@ export const list = query({
 export const getActive = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {
@@ -69,7 +69,8 @@ export const getActive = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("sendPolicies") },
+        id: v.id("sendPolicies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -85,7 +86,7 @@ export const get = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         senderId: v.optional(v.id("senders")),
         name: v.string(),
         isActive: v.optional(v.boolean()),
@@ -123,9 +124,10 @@ export const create = mutation({
             }
         }
 
+        const { sessionToken: _st, ...insertArgs } = args;
         return await ctx.db.insert("sendPolicies", {
             userId,
-            ...args,
+            ...insertArgs,
             isActive: args.isActive ?? true,
             createdAt: Date.now(),
         });
@@ -136,7 +138,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("sendPolicies"),
         senderId: v.optional(v.id("senders")),
         name: v.optional(v.string()),
@@ -163,7 +165,7 @@ export const update = mutation({
         const policy = await ctx.db.get(args.id);
         if (!policy || policy.userId !== userId) throw new Error("Policy not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -181,7 +183,8 @@ export const update = mutation({
 export const toggle = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("sendPolicies") },
+        id: v.id("sendPolicies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -202,7 +205,8 @@ export const toggle = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("sendPolicies") },
+        id: v.id("sendPolicies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -219,7 +223,7 @@ export const remove = mutation({
 export const getTodayUsage = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         senderId: v.optional(v.id("senders")),
     },
     handler: async (ctx, args) => {

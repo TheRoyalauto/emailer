@@ -47,7 +47,8 @@ export const getDefault = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("emailBrandRules") },
+        id: v.id("emailBrandRules")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -63,7 +64,7 @@ export const get = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         name: v.string(),
         isDefault: v.optional(v.boolean()),
         voiceDescription: v.optional(v.string()),
@@ -99,9 +100,10 @@ export const create = mutation({
             }
         }
 
+        const { sessionToken: _st, ...insertArgs } = args;
         return await ctx.db.insert("emailBrandRules", {
             userId,
-            ...args,
+            ...insertArgs,
             createdAt: Date.now(),
         });
     },
@@ -111,7 +113,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("emailBrandRules"),
         name: v.optional(v.string()),
         isDefault: v.optional(v.boolean()),
@@ -151,7 +153,7 @@ export const update = mutation({
             }
         }
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -169,7 +171,8 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("emailBrandRules") },
+        id: v.id("emailBrandRules")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");

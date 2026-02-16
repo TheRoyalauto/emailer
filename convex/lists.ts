@@ -3,7 +3,7 @@ import { query, mutation } from "./_generated/server";
 
 // List all mailing lists
 export const list = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), },
     handler: async (ctx) => {
         return await ctx.db.query("lists").order("desc").collect();
     },
@@ -40,8 +40,9 @@ export const create = mutation({
         description: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const { sessionToken: _st, ...insertArgs } = args;
         return await ctx.db.insert("lists", {
-            ...args,
+            ...insertArgs,
             contactCount: 0,
         });
     },
@@ -56,7 +57,7 @@ export const update = mutation({
         description: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const filtered = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
         );

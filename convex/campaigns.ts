@@ -45,8 +45,9 @@ export const create = mutation({
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
+        const { sessionToken: _st, ...insertArgs } = args;
         return await ctx.db.insert("campaigns", {
-            ...args,
+            ...insertArgs,
             userId,
             status: "draft",
             stats: {

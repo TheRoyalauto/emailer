@@ -20,7 +20,7 @@ function generateCode(length = 8): string {
 export const list = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         campaignId: v.optional(v.id("campaigns")),
         limit: v.optional(v.number()),
     },
@@ -50,7 +50,8 @@ export const list = query({
 export const getByCode = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        code: v.string() },
+        code: v.string()
+    },
     handler: async (ctx, args) => {
         const link = await ctx.db
             .query("trackedLinks")
@@ -90,7 +91,7 @@ export const getStats = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         destinationUrl: v.string(),
         campaignId: v.optional(v.id("campaigns")),
         sequenceId: v.optional(v.id("sequences")),
@@ -147,7 +148,7 @@ export const create = mutation({
 export const recordClick = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         code: v.string(),
         contactId: v.optional(v.id("contacts")),
     },
@@ -175,7 +176,8 @@ export const recordClick = mutation({
 export const buildUrl = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("trackedLinks") },
+        id: v.id("trackedLinks")
+    },
     handler: async (ctx, args) => {
         const link = await ctx.db.get(args.id);
         if (!link) return null;
@@ -192,7 +194,7 @@ export const buildUrl = query({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("trackedLinks"),
         destinationUrl: v.optional(v.string()),
         label: v.optional(v.string()),
@@ -206,7 +208,7 @@ export const update = mutation({
         const link = await ctx.db.get(args.id);
         if (!link || link.userId !== userId) throw new Error("Link not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -220,7 +222,8 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("trackedLinks") },
+        id: v.id("trackedLinks")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");

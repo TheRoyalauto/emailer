@@ -24,7 +24,7 @@ export type DealStage = typeof DEAL_STAGES[number]["id"];
 export const list = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         stage: v.optional(v.string()),
         limit: v.optional(v.number()),
     },
@@ -59,7 +59,8 @@ export const list = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("deals") },
+        id: v.id("deals")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -76,7 +77,8 @@ export const get = query({
 export const getByContact = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        contactId: v.id("contacts") },
+        contactId: v.id("contacts")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return [];
@@ -93,7 +95,7 @@ export const getByContact = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         contactId: v.id("contacts"),
         name: v.string(),
         value: v.number(),
@@ -141,7 +143,7 @@ export const create = mutation({
 export const updateStage = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("deals"),
         stage: v.string(),
         lostReason: v.optional(v.string()),
@@ -191,7 +193,7 @@ export const updateStage = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("deals"),
         name: v.optional(v.string()),
         value: v.optional(v.number()),
@@ -206,7 +208,7 @@ export const update = mutation({
         const deal = await ctx.db.get(args.id);
         if (!deal || deal.userId !== userId) throw new Error("Deal not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -224,7 +226,8 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("deals") },
+        id: v.id("deals")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -289,7 +292,7 @@ export const getStats = query({
 export const createFromContact = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         contactId: v.id("contacts"),
         value: v.optional(v.number()),
     },

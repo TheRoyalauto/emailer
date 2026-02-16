@@ -36,7 +36,7 @@ export const ACTION_TYPES = [
 export const list = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         isActive: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
@@ -60,7 +60,8 @@ export const list = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("automationRules") },
+        id: v.id("automationRules")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -76,7 +77,7 @@ export const get = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         name: v.string(),
         description: v.optional(v.string()),
         triggerType: v.string(),
@@ -110,7 +111,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("automationRules"),
         name: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -128,7 +129,7 @@ export const update = mutation({
         const rule = await ctx.db.get(args.id);
         if (!rule || rule.userId !== userId) throw new Error("Rule not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -146,7 +147,8 @@ export const update = mutation({
 export const toggle = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("automationRules") },
+        id: v.id("automationRules")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -167,7 +169,8 @@ export const toggle = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("automationRules") },
+        id: v.id("automationRules")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -184,7 +187,7 @@ export const remove = mutation({
 export const getLogs = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         ruleId: v.optional(v.id("automationRules")),
         contactId: v.optional(v.id("contacts")),
         limit: v.optional(v.number()),
@@ -225,7 +228,7 @@ export const getLogs = query({
 export const executeForTrigger = internalMutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         userId: v.id("users"),
         triggerType: v.string(),
         contactId: v.id("contacts"),

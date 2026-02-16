@@ -15,7 +15,7 @@ const TASK_TYPES = ["follow_up", "call", "email", "meeting", "proposal", "other"
 export const list = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         status: v.optional(v.string()),
         priority: v.optional(v.string()),
         contactId: v.optional(v.id("contacts")),
@@ -150,7 +150,7 @@ export const getStats = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         title: v.string(),
         description: v.optional(v.string()),
         priority: v.optional(v.string()),
@@ -188,7 +188,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("tasks"),
         title: v.optional(v.string()),
         description: v.optional(v.string()),
@@ -205,7 +205,7 @@ export const update = mutation({
         const task = await ctx.db.get(args.id);
         if (!task || task.userId !== userId) throw new Error("Task not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const cleanUpdates = Object.fromEntries(
             Object.entries(updates).filter(([, v]) => v !== undefined)
         );
@@ -220,7 +220,7 @@ export const update = mutation({
 export const complete = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("tasks"),
     },
     handler: async (ctx, args) => {
@@ -243,7 +243,8 @@ export const complete = mutation({
 export const quickComplete = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("tasks") },
+        id: v.id("tasks")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -264,7 +265,7 @@ export const quickComplete = mutation({
 export const setStatus = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("tasks"),
         status: v.string(),
     },
@@ -292,7 +293,8 @@ export const setStatus = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("tasks") },
+        id: v.id("tasks")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
