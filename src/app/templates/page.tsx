@@ -131,6 +131,15 @@ function TemplatesPage() {
     const [showLibrary, setShowLibrary] = useState(false);
     const [libraryCategory, setLibraryCategory] = useState<string>("all");
     const [previewLibraryTemplate, setPreviewLibraryTemplate] = useState<number | null>(null);
+    const [successToast, setSuccessToast] = useState<string | null>(null);
+
+    // Auto-dismiss toast
+    useEffect(() => {
+        if (successToast) {
+            const timer = setTimeout(() => setSuccessToast(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [successToast]);
 
     // Queries & Mutations
     const templates = useAuthQuery(api.templates.list,
@@ -204,6 +213,7 @@ function TemplatesPage() {
     const handleSave = async () => {
         if (!templateName.trim() || !subject.trim()) return;
 
+        const isNew = !editingId;
         if (editingId) {
             await updateTemplate({
                 id: editingId,
@@ -223,6 +233,7 @@ function TemplatesPage() {
 
         setIsEditing(false);
         setEditingId(null);
+        setSuccessToast(isNew ? `"${templateName}" created successfully` : `"${templateName}" updated successfully`);
     };
 
     const handleCancel = () => {
@@ -660,6 +671,7 @@ function TemplatesPage() {
                                                                 category: template.category,
                                                             });
                                                             setShowLibrary(false);
+                                                            setSuccessToast(`"${template.name}" added to your templates`);
                                                         }}
                                                         className="flex-1 px-3 py-2 text-xs bg-slate-900 hover:bg-slate-800 rounded-lg font-semibold text-white transition-all duration-200 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-[0.98]"
                                                     >
@@ -725,6 +737,7 @@ function TemplatesPage() {
                                             });
                                             setPreviewLibraryTemplate(null);
                                             setShowLibrary(false);
+                                            setSuccessToast(`"${template.name}" added to your templates`);
                                         }}
                                         className="px-5 py-2 bg-slate-900 rounded-lg font-semibold text-sm text-white hover:bg-slate-800 transition-all"
                                     >
@@ -736,6 +749,24 @@ function TemplatesPage() {
                     );
                 })()
             }
+            {/* ─── Success Toast ─── */}
+            {successToast && (
+                <div className="fixed bottom-6 right-6 z-[100] animate-[slideUp_0.3s_ease-out]">
+                    <div className="flex items-center gap-3 px-5 py-3.5 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-600/25 border border-emerald-500">
+                        <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span className="text-sm font-semibold">{successToast}</span>
+                        <button onClick={() => setSuccessToast(null)} className="ml-2 p-1 hover:bg-white/20 rounded-lg transition-colors">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </PageWrapper >
     );
 }
