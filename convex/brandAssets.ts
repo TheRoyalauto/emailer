@@ -168,73 +168,81 @@ export const getAnalytics = query({
         sessionToken: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.sessionToken) return { assets: [], summary: { totalGenerations: 0, successRate: 0, topPlatform: "" } };
-        const userId = await requireAuth(ctx, args.sessionToken);
+        const empty = { assets: [], summary: { totalGenerations: 0, successRate: 0, topPlatform: "" } };
+        if (!args.sessionToken) return empty;
 
-        // Get all assets
-        const assets = await ctx.db
-            .query("brandAssets")
-            .withIndex("by_user", (q: any) => q.eq("userId", userId))
-            .collect();
+        try {
+            const userId = await requireAuth(ctx, args.sessionToken);
 
-        // Get all usage logs
-        const logs = await ctx.db
-            .query("assetUsageLogs")
-            .withIndex("by_user", (q: any) => q.eq("userId", userId))
-            .collect();
+            // Get all assets
+            const assets = await ctx.db
+                .query("brandAssets")
+                .withIndex("by_user", (q: any) => q.eq("userId", userId))
+                .collect();
 
-        // Aggregate per-asset metrics
-        const assetMetrics = await Promise.all(
-            assets.map(async (asset: any) => {
-                const usages = logs.filter((l: any) => l.assetIds.includes(asset._id));
-                const successCount = usages.filter((l: any) => l.generationSuccess).length;
-                const totalCount = usages.length;
-                const lastUsed = usages.length > 0
-                    ? Math.max(...usages.map((l: any) => l.createdAt))
-                    : null;
+            // Get all usage logs (may fail if table not deployed yet)
+            let logs: any[] = [];
+            try {
+                logs = await ctx.db
+                    .query("assetUsageLogs")
+                    .withIndex("by_user", (q: any) => q.eq("userId", userId))
+                    .collect();
+            } catch {
+                // Table may not exist yet — return assets with zero metrics
+            }
 
-                // Platform breakdown
-                const platformCounts: Record<string, number> = {};
-                for (const u of usages) {
-                    platformCounts[u.platform] = (platformCounts[u.platform] || 0) + 1;
-                }
+            // Aggregate per-asset metrics
+            const assetMetrics = await Promise.all(
+                assets.map(async (asset: any) => {
+                    const usages = logs.filter((l: any) => l.assetIds?.includes(asset._id));
+                    const successCount = usages.filter((l: any) => l.generationSuccess).length;
+                    const totalCount = usages.length;
+                    const lastUsed = usages.length > 0
+                        ? Math.max(...usages.map((l: any) => l.createdAt))
+                        : null;
 
-                // Effectiveness score: weighted by usage + success rate
-                const successRate = totalCount > 0 ? successCount / totalCount : 0;
-                const effectiveness = Math.round((totalCount * 0.6 + successRate * 40) * 10) / 10;
+                    const platformCounts: Record<string, number> = {};
+                    for (const u of usages) {
+                        platformCounts[u.platform] = (platformCounts[u.platform] || 0) + 1;
+                    }
 
-                return {
-                    _id: asset._id,
-                    name: asset.name,
-                    category: asset.category,
-                    url: await ctx.storage.getUrl(asset.storageId),
-                    totalUsages: totalCount,
-                    successCount,
-                    successRate: totalCount > 0 ? Math.round(successRate * 100) : 0,
-                    lastUsed,
-                    topPlatform: Object.entries(platformCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null,
-                    platformBreakdown: platformCounts,
-                    effectiveness,
-                };
-            })
-        );
+                    const successRate = totalCount > 0 ? successCount / totalCount : 0;
+                    const effectiveness = Math.round((totalCount * 0.6 + successRate * 40) * 10) / 10;
 
-        // Summary stats
-        const totalGenerations = logs.length;
-        const totalSuccess = logs.filter((l: any) => l.generationSuccess).length;
-        const platformTotals: Record<string, number> = {};
-        for (const l of logs) {
-            platformTotals[l.platform] = (platformTotals[l.platform] || 0) + 1;
+                    return {
+                        _id: asset._id,
+                        name: asset.name,
+                        category: asset.category,
+                        url: await ctx.storage.getUrl(asset.storageId),
+                        totalUsages: totalCount,
+                        successCount,
+                        successRate: totalCount > 0 ? Math.round(successRate * 100) : 0,
+                        lastUsed,
+                        topPlatform: Object.entries(platformCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null,
+                        platformBreakdown: platformCounts,
+                        effectiveness,
+                    };
+                })
+            );
+
+            const totalGenerations = logs.length;
+            const totalSuccess = logs.filter((l: any) => l.generationSuccess).length;
+            const platformTotals: Record<string, number> = {};
+            for (const l of logs) {
+                platformTotals[l.platform] = (platformTotals[l.platform] || 0) + 1;
+            }
+            const topPlatform = Object.entries(platformTotals).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
+
+            return {
+                assets: assetMetrics.sort((a, b) => b.effectiveness - a.effectiveness),
+                summary: {
+                    totalGenerations,
+                    successRate: totalGenerations > 0 ? Math.round((totalSuccess / totalGenerations) * 100) : 0,
+                    topPlatform,
+                },
+            };
+        } catch {
+            return empty;
         }
-        const topPlatform = Object.entries(platformTotals).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
-
-        return {
-            assets: assetMetrics.sort((a, b) => b.effectiveness - a.effectiveness),
-            summary: {
-                totalGenerations,
-                successRate: totalGenerations > 0 ? Math.round((totalSuccess / totalGenerations) * 100) : 0,
-                topPlatform,
-            },
-        };
     },
 });
