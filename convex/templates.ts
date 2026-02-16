@@ -51,9 +51,10 @@ export const create = mutation({
         const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
+        const { sessionToken, ...data } = args;
         const now = Date.now();
         return await ctx.db.insert("templates", {
-            ...args,
+            ...data,
             userId,
             createdAt: now,
             updatedAt: now,
@@ -79,7 +80,7 @@ export const update = mutation({
         const template = await ctx.db.get(args.id);
         if (!template || template.userId !== userId) throw new Error("Template not found");
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const filtered = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
         );
