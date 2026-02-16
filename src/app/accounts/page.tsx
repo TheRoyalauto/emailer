@@ -573,7 +573,7 @@ function SMTPSettingsPage() {
                                         </div>
 
                                         <div>
-                                            <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Display Name</label>
+                                            <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5 font-medium">Display Name <span className="relative group"><svg className="w-3.5 h-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg><span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 px-3 py-2 bg-slate-900 dark:bg-slate-700 text-white text-[11px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50">This is the name your recipients will see in their inbox</span></span></label>
                                             <input
                                                 type="text"
                                                 value={displayName}
@@ -673,7 +673,7 @@ function SMTPSettingsPage() {
 
                         <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
                             <div>
-                                <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Account Name</label>
+                                <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Nickname</label>
                                 <input
                                     type="text"
                                     value={editName}
@@ -695,7 +695,7 @@ function SMTPSettingsPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Display Name</label>
+                                    <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5 font-medium">Display Name <span className="relative group"><svg className="w-3.5 h-3.5 text-slate-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg><span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 px-3 py-2 bg-slate-900 dark:bg-slate-700 text-white text-[11px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50">This is the name your recipients will see in their inbox</span></span></label>
                                     <input
                                         type="text"
                                         value={editFromName}
