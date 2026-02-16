@@ -266,12 +266,16 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                         <textarea
                                             value={pasteText}
                                             onChange={(e) => setPasteText(e.target.value)}
+                                            maxLength={15000}
                                             className="w-full h-48 px-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all resize-none font-mono"
                                             placeholder={"Paste emails here — any format works:\n\njohn@example.com\nJane Doe <jane@company.com>\njohn@acme.com, sarah@startup.io\nName: Bob, Email: bob@business.org\n\nOr paste a whole spreadsheet, email list, or any text..."}
                                         />
                                         <div className="flex items-center justify-between mt-2">
                                             <p className="text-xs text-slate-400">
                                                 {pasteText ? `${(pasteText.match(EMAIL_REGEX) || []).length} emails detected` : "Supports any format — comma-separated, line-separated, or mixed text"}
+                                            </p>
+                                            <p className="text-xs text-slate-400">
+                                                {pasteText.length.toLocaleString()} / 15,000
                                             </p>
                                         </div>
                                     </div>
