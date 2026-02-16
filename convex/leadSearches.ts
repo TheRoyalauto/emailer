@@ -4,9 +4,9 @@ import { auth } from "./auth";
 
 // List recent searches for the current user
 export const list = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
 
         return await ctx.db
@@ -25,7 +25,7 @@ export const create = mutation({
         resultsCount: v.number(),
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         return await ctx.db.insert("leadSearches", {
@@ -39,9 +39,9 @@ export const create = mutation({
 
 // Delete a search
 export const remove = mutation({
-    args: { id: v.id("leadSearches") },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), id: v.id("leadSearches") },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const search = await ctx.db.get(args.id);
@@ -55,9 +55,9 @@ export const remove = mutation({
 
 // Clear all searches for user
 export const clearAll = mutation({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
-    handler: async (ctx) => {
-        const userId = await auth.getUserId(ctx);
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const searches = await ctx.db

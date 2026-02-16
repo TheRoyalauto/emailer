@@ -141,6 +141,17 @@ function TemplatesPage() {
     const deleteTemplate = useAuthMutation(api.templates.remove);
     const duplicateTemplate = useAuthMutation(api.templates.duplicate);
 
+    // Fetch SMTP configs for test email
+    const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
+    const defaultSmtp = smtpConfigs?.find((c: any) => c.isDefault) ?? smtpConfigs?.[0];
+    const smtpConfig = defaultSmtp ? {
+        host: defaultSmtp.host,
+        port: defaultSmtp.port,
+        secure: defaultSmtp.secure,
+        user: defaultSmtp.user,
+        pass: defaultSmtp.pass,
+    } : undefined;
+
     // Handle URL-based modal opening
     const searchParams = useSearchParams();
     useEffect(() => {
@@ -382,6 +393,9 @@ function TemplatesPage() {
                             htmlBody={htmlContent}
                             onHtmlChange={setHtmlContent}
                             subject={subject}
+                            smtpConfig={smtpConfig}
+                            fromName={defaultSmtp?.name}
+                            fromEmail={defaultSmtp?.user}
                         />
                     </div>
                 </div>

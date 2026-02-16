@@ -9,7 +9,7 @@ export const list = query({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return [];
 
         const allTemplates = await ctx.db
@@ -27,9 +27,9 @@ export const list = query({
 
 // Get a single template
 export const get = query({
-    args: { id: v.id("templates") },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), id: v.id("templates") },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) return null;
         const template = await ctx.db.get(args.id);
         if (!template || template.userId !== userId) return null;
@@ -48,7 +48,7 @@ export const create = mutation({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const now = Date.now();
@@ -73,7 +73,7 @@ export const update = mutation({
         category: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const template = await ctx.db.get(args.id);
@@ -90,9 +90,9 @@ export const update = mutation({
 
 // Delete a template
 export const remove = mutation({
-    args: { id: v.id("templates") },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), id: v.id("templates") },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const template = await ctx.db.get(args.id);
@@ -104,9 +104,9 @@ export const remove = mutation({
 
 // Duplicate a template
 export const duplicate = mutation({
-    args: { id: v.id("templates") },
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), id: v.id("templates") },
     handler: async (ctx, args) => {
-        const userId = await auth.getUserId(ctx);
+        const userId = await auth.getUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
         const template = await ctx.db.get(args.id);
