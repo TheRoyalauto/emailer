@@ -252,16 +252,33 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                             {importMode === "paste" && extractedEmails.length === 0 && (
                                 <div>
                                     <div className="mb-4">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                                                <svg className="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                                    <svg className="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Paste any text containing emails</h3>
+                                                    <p className="text-xs text-slate-400">We&apos;ll auto-detect all valid email addresses</p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={async () => {
+                                                    try {
+                                                        const text = await navigator.clipboard.readText();
+                                                        if (text) setPasteText(prev => prev ? prev + "\n" + text : text);
+                                                    } catch { /* clipboard denied */ }
+                                                }}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 hover:bg-cyan-500/20 rounded-lg transition-all active:scale-95 shrink-0"
+                                            >
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                                 </svg>
-                                            </div>
-                                            <div>
-                                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Paste any text containing emails</h3>
-                                                <p className="text-xs text-slate-400">We&apos;ll auto-detect all valid email addresses</p>
-                                            </div>
+                                                Paste from Clipboard
+                                            </button>
                                         </div>
                                         <textarea
                                             value={pasteText}
