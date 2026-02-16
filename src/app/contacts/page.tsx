@@ -252,8 +252,8 @@ function ContactsContent() {
                                         }`}
                                     style={{
                                         backgroundColor: selectedStage === stage.id ? `${stage.color}12` : undefined,
-                                        borderColor: selectedStage === stage.id ? `${stage.color}40` : "#E5E7EB",
-                                        ...(selectedStage === stage.id ? { boxShadow: `0 0 0 2px white, 0 0 0 3.5px ${stage.color}` } : {}),
+                                        borderColor: selectedStage === stage.id ? `${stage.color}40` : undefined,
+                                        ...(selectedStage === stage.id ? { boxShadow: `0 0 0 2px var(--tw-ring-offset-color, white), 0 0 0 3.5px ${stage.color}` } : {}),
                                     }}
                                 >
                                     <div className="text-lg font-bold text-[#0f172a] dark:text-white">{count}</div>
@@ -341,12 +341,12 @@ function ContactsContent() {
                         </p>
                         <div className="flex gap-3 justify-center">
                             {activeFilterCount > 0 ? (
-                                <button onClick={clearAllFilters} className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold">
+                                <button onClick={clearAllFilters} className="px-5 py-2.5 bg-[#0f172a] dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-semibold hover:bg-[#0f172a]/90 dark:hover:bg-slate-100 transition-all">
                                     Clear Filters
                                 </button>
                             ) : (
                                 <>
-                                    <button onClick={() => setShowAddContact(true)} className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold">
+                                    <button onClick={() => setShowAddContact(true)} className="px-5 py-2.5 bg-[#0f172a] dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-semibold hover:bg-[#0f172a]/90 dark:hover:bg-slate-100 transition-all">
                                         + Add Contact
                                     </button>
                                     <button onClick={() => setShowImportModal(true)} className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-300 rounded-xl text-sm font-medium">
@@ -427,7 +427,7 @@ function ContactsContent() {
                                             </span>
                                         ))}
                                         {(contact.tags || []).length > 2 && (
-                                            <span className="px-1.5 py-0.5 bg-[#f8fafc] text-[#9CA3AF] text-xs rounded">
+                                            <span className="px-1.5 py-0.5 bg-[#f8fafc] dark:bg-slate-800 text-[#9CA3AF] text-xs rounded">
                                                 +{(contact.tags || []).length - 2}
                                             </span>
                                         )}

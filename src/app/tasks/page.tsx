@@ -140,14 +140,14 @@ function TasksContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <AppHeader />
 
             <main className="max-w-7xl mx-auto px-4 py-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Tasks</h1>
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Tasks</h1>
                         <p className="text-slate-500 text-sm">Manage follow-ups, reminders, and to-dos</p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -155,13 +155,13 @@ function TasksContent() {
                         <div className="flex bg-white rounded-lg p-1">
                             <button
                                 onClick={() => setView("list")}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "list" ? "bg-slate-50 text-white" : "text-slate-500"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "list" ? "bg-slate-50 text-slate-900 dark:text-white" : "text-slate-500"}`}
                             >
                                 List
                             </button>
                             <button
                                 onClick={() => setView("kanban")}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "kanban" ? "bg-slate-50 text-white" : "text-slate-500"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${view === "kanban" ? "bg-slate-50 text-slate-900 dark:text-white" : "text-slate-500"}`}
                             >
                                 Kanban
                             </button>
@@ -177,23 +177,23 @@ function TasksContent() {
 
                 {/* Stats Bar */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
-                        <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{stats?.total || 0}</div>
                         <div className="text-sm text-slate-500">Active</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-amber-400">{stats?.pending || 0}</div>
                         <div className="text-sm text-slate-500">Pending</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-blue-400">{stats?.inProgress || 0}</div>
                         <div className="text-sm text-slate-500">In Progress</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-red-400">{stats?.overdue || 0}</div>
                         <div className="text-sm text-slate-500">Overdue</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-emerald-400">{stats?.completedToday || 0}</div>
                         <div className="text-sm text-slate-500">Done Today</div>
                     </div>
@@ -206,7 +206,7 @@ function TasksContent() {
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
-                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${filter === f ? "bg-slate-50 text-white" : "text-slate-500"}`}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-all ${filter === f ? "bg-slate-50 text-slate-900 dark:text-white" : "text-slate-500"}`}
                             >
                                 {f === "all" ? "All" : f === "in_progress" ? "In Progress" : f.charAt(0).toUpperCase() + f.slice(1)}
                             </button>
@@ -227,9 +227,9 @@ function TasksContent() {
                 {view === "list" && (
                     <div className="space-y-2">
                         {filteredTasks.length === 0 && (
-                            <div className="bg-[#12121a] border border-slate-200 rounded-xl p-12 text-center">
+                            <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-12 text-center">
                                 <div className="text-4xl mb-4">✅</div>
-                                <h3 className="text-lg font-medium text-white mb-2">No Tasks</h3>
+                                <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No Tasks</h3>
                                 <p className="text-slate-500 text-sm mb-4">Create your first task to get started</p>
                                 <button
                                     onClick={() => setShowCreateModal(true)}
@@ -247,7 +247,7 @@ function TasksContent() {
                             return (
                                 <div
                                     key={task._id}
-                                    className={`bg-[#12121a] border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all ${task.status === "completed" ? "opacity-60" : ""
+                                    className={`bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all ${task.status === "completed" ? "opacity-60" : ""
                                         }`}
                                 >
                                     <div className="flex items-center gap-4">
@@ -255,8 +255,8 @@ function TasksContent() {
                                         <button
                                             onClick={() => handleComplete(task._id)}
                                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${task.status === "completed"
-                                                    ? "bg-emerald-500 border-emerald-500 text-white"
-                                                    : "border-white/30 hover:border-emerald-400"
+                                                ? "bg-emerald-500 border-emerald-500 text-white"
+                                                : "border-white/30 hover:border-emerald-400"
                                                 }`}
                                         >
                                             {task.status === "completed" && <span className="text-xs">✓</span>}
@@ -266,7 +266,7 @@ function TasksContent() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <span className="text-lg">{typeInfo.icon}</span>
-                                                <span className={`font-medium ${task.status === "completed" ? "line-through text-slate-500" : "text-white"}`}>
+                                                <span className={`font-medium ${task.status === "completed" ? "line-through text-slate-500" : "text-slate-900 dark:text-white"}`}>
                                                     {task.title}
                                                 </span>
                                                 <span className={`px-2 py-0.5 rounded text-xs font-medium ${getPriorityStyle(task.priority)}`}>
@@ -322,10 +322,10 @@ function TasksContent() {
                 {view === "kanban" && (
                     <div className="grid grid-cols-3 gap-4">
                         {STATUSES.map((status) => (
-                            <div key={status.id} className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
+                            <div key={status.id} className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
                                 <div className="flex items-center gap-2 mb-4">
                                     <div className={`w-3 h-3 rounded-full ${status.color}`} />
-                                    <span className="font-medium text-white">{status.label}</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">{status.label}</span>
                                     <span className="text-slate-400 text-sm">
                                         ({tasksByStatus[status.id as keyof typeof tasksByStatus]?.length || 0})
                                     </span>
@@ -343,7 +343,7 @@ function TasksContent() {
                                             >
                                                 <div className="flex items-start gap-2 mb-2">
                                                     <span className="text-sm">{typeInfo.icon}</span>
-                                                    <span className="text-sm font-medium text-white">{task.title}</span>
+                                                    <span className="text-sm font-medium text-slate-900 dark:text-white">{task.title}</span>
                                                 </div>
                                                 <div className="flex items-center justify-between">
                                                     <span className={`px-1.5 py-0.5 rounded text-xs ${getPriorityStyle(task.priority)}`}>
@@ -366,9 +366,9 @@ function TasksContent() {
             {/* Create Modal */}
             {showCreateModal && (
                 <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-                    <div className="bg-[#12121a] border border-slate-200 rounded-2xl w-full max-w-lg p-6">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl w-full max-w-lg p-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-semibold text-white">Create Task</h2>
+                            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Create Task</h2>
                             <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                         </div>
 
@@ -380,7 +380,7 @@ function TasksContent() {
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="What needs to be done?"
-                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
                                 />
                             </div>
 
@@ -391,7 +391,7 @@ function TasksContent() {
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Add more details..."
                                     rows={2}
-                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
+                                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
                                 />
                             </div>
 
@@ -401,7 +401,7 @@ function TasksContent() {
                                     <select
                                         value={formData.priority}
                                         onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white"
                                     >
                                         {PRIORITIES.map((p) => (
                                             <option key={p.id} value={p.id}>{p.label}</option>
@@ -414,7 +414,7 @@ function TasksContent() {
                                     <select
                                         value={formData.taskType}
                                         onChange={(e) => setFormData({ ...formData, taskType: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white"
                                     >
                                         <option value="">Select...</option>
                                         {TASK_TYPES.map((t) => (
@@ -431,7 +431,7 @@ function TasksContent() {
                                         type="date"
                                         value={formData.dueDate}
                                         onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white"
                                     />
                                 </div>
                                 <div>
@@ -440,7 +440,7 @@ function TasksContent() {
                                         type="time"
                                         value={formData.dueTime}
                                         onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white"
                                     />
                                 </div>
                             </div>

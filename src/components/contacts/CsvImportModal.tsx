@@ -131,20 +131,20 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl border border-[#E5E7EB] max-w-2xl w-full shadow-2xl overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-[#E5E7EB] dark:border-slate-700 max-w-2xl w-full shadow-2xl overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] bg-[#f8fafc]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] dark:border-slate-700 bg-[#f8fafc] dark:bg-slate-800/50">
                     <div>
-                        <h2 className="text-lg font-bold text-[#0f172a]">Import Contacts</h2>
+                        <h2 className="text-lg font-bold text-[#0f172a] dark:text-white">Import Contacts</h2>
                         <p className="text-sm text-[#9CA3AF]">
                             Step {step} of 3 — {step === 1 ? "Upload CSV" : step === 2 ? "Map Columns" : "Preview & Confirm"}
                         </p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white rounded-lg transition-colors text-[#9CA3AF] hover:text-[#0f172a]">✕</button>
+                    <button onClick={onClose} className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors text-[#9CA3AF] hover:text-[#0f172a] dark:hover:text-white">✕</button>
                 </div>
 
                 {/* Progress bar */}
-                <div className="h-1 bg-[#E5E7EB]">
+                <div className="h-1 bg-[#E5E7EB] dark:bg-slate-700">
                     <div
                         className="h-full bg-gradient-to-r from-[#0EA5E9] to-[#10B981] transition-all duration-500"
                         style={{ width: `${(step / 3) * 100}%` }}
@@ -158,17 +158,17 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                             onDragLeave={() => setDragOver(false)}
                             onDrop={handleDrop}
-                            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${dragOver ? "border-[#0EA5E9] bg-[#0EA5E9]/5" : "border-[#E5E7EB] hover:border-[#9CA3AF]"
+                            className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${dragOver ? "border-[#0EA5E9] bg-[#0EA5E9]/5" : "border-[#E5E7EB] dark:border-slate-700 hover:border-[#9CA3AF] dark:hover:border-slate-500"
                                 }`}
                         >
-                            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#f8fafc] border border-[#E5E7EB] flex items-center justify-center text-3xl">
+                            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 flex items-center justify-center text-3xl">
                                 📄
                             </div>
-                            <h3 className="text-lg font-semibold text-[#0f172a] mb-2">
+                            <h3 className="text-lg font-semibold text-[#0f172a] dark:text-white mb-2">
                                 Drop your CSV file here
                             </h3>
                             <p className="text-sm text-[#9CA3AF] mb-4">or click to browse</p>
-                            <label className="inline-block px-6 py-3 bg-[#0f172a] text-white rounded-xl font-medium cursor-pointer hover:bg-[#0f172a]/90 transition-all">
+                            <label className="inline-block px-6 py-3 bg-[#0f172a] dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium cursor-pointer hover:bg-[#0f172a]/90 dark:hover:bg-slate-100 transition-all">
                                 Choose File
                                 <input
                                     type="file"
@@ -195,15 +195,15 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                             <div className="space-y-3">
                                 {FIELDS.map(field => (
                                     <div key={field.key} className="flex items-center gap-4">
-                                        <label className="w-28 text-sm font-medium text-[#4B5563]">
+                                        <label className="w-28 text-sm font-medium text-[#4B5563] dark:text-slate-300">
                                             {field.label} {field.required && <span className="text-[#EF4444]">*</span>}
                                         </label>
                                         <select
                                             value={mapping[field.key]}
                                             onChange={(e) => setMapping({ ...mapping, [field.key]: parseInt(e.target.value) })}
                                             className={`flex-1 px-3 py-2.5 border rounded-xl text-sm focus:outline-none focus:border-[#0EA5E9] transition-all ${mapping[field.key] >= 0
-                                                ? "bg-[#0EA5E9]/5 border-[#0EA5E9]/30 text-[#0f172a]"
-                                                : "bg-[#f8fafc] border-[#E5E7EB] text-[#9CA3AF]"
+                                                ? "bg-[#0EA5E9]/5 dark:bg-[#0EA5E9]/10 border-[#0EA5E9]/30 text-[#0f172a] dark:text-white"
+                                                : "bg-[#f8fafc] dark:bg-slate-800 border-[#E5E7EB] dark:border-slate-700 text-[#9CA3AF]"
                                                 }`}
                                         >
                                             <option value={-1}>— Skip —</option>
@@ -213,20 +213,20 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                         </select>
                                         {mapping[field.key] >= 0 && (
                                             <span className="text-xs text-[#9CA3AF] w-32 truncate">
-                                                e.g. "{rawData[0]?.[mapping[field.key]] || ""}"
+                                                e.g. &quot;{rawData[0]?.[mapping[field.key]] || ""}&quot;
                                             </span>
                                         )}
                                     </div>
                                 ))}
                             </div>
                             <div className="flex justify-between mt-6">
-                                <button onClick={() => setStep(1)} className="px-4 py-2.5 text-sm text-[#4B5563] hover:text-[#0f172a] transition-colors">
+                                <button onClick={() => setStep(1)} className="px-4 py-2.5 text-sm text-[#4B5563] dark:text-slate-400 hover:text-[#0f172a] dark:hover:text-white transition-colors">
                                     ← Back
                                 </button>
                                 <button
                                     onClick={() => setStep(3)}
                                     disabled={mapping.email < 0}
-                                    className="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-medium disabled:opacity-40 hover:bg-[#0f172a]/90 transition-all"
+                                    className="px-5 py-2.5 bg-[#0f172a] dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-medium disabled:opacity-40 hover:bg-[#0f172a]/90 dark:hover:bg-slate-100 transition-all"
                                 >
                                     Preview →
                                 </button>
@@ -240,12 +240,12 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                             <p className="text-sm text-[#9CA3AF] mb-4">
                                 Preview of {Math.min(rawData.length, 8)} of {rawData.length} contacts to import:
                             </p>
-                            <div className="overflow-x-auto border border-[#E5E7EB] rounded-xl">
+                            <div className="overflow-x-auto border border-[#E5E7EB] dark:border-slate-700 rounded-xl">
                                 <table className="w-full text-sm">
                                     <thead>
-                                        <tr className="bg-[#f8fafc]">
+                                        <tr className="bg-[#f8fafc] dark:bg-slate-800/50">
                                             {FIELDS.filter(f => mapping[f.key] >= 0).map(f => (
-                                                <th key={f.key} className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] border-b border-[#E5E7EB]">
+                                                <th key={f.key} className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[#9CA3AF] border-b border-[#E5E7EB] dark:border-slate-700">
                                                     {f.label}
                                                 </th>
                                             ))}
@@ -253,9 +253,9 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                     </thead>
                                     <tbody>
                                         {rawData.slice(0, 8).map((row, i) => (
-                                            <tr key={i} className="border-b border-[#F1F3F8] last:border-0">
+                                            <tr key={i} className="border-b border-[#F1F3F8] dark:border-slate-800 last:border-0">
                                                 {FIELDS.filter(f => mapping[f.key] >= 0).map(f => (
-                                                    <td key={f.key} className="px-3 py-2.5 text-[#0f172a] truncate max-w-[160px]">
+                                                    <td key={f.key} className="px-3 py-2.5 text-[#0f172a] dark:text-white truncate max-w-[160px]">
                                                         {row[mapping[f.key]] || "—"}
                                                     </td>
                                                 ))}
@@ -270,7 +270,7 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                 </p>
                             )}
                             <div className="flex justify-between mt-6">
-                                <button onClick={() => setStep(2)} className="px-4 py-2.5 text-sm text-[#4B5563] hover:text-[#0f172a] transition-colors">
+                                <button onClick={() => setStep(2)} className="px-4 py-2.5 text-sm text-[#4B5563] dark:text-slate-400 hover:text-[#0f172a] dark:hover:text-white transition-colors">
                                     ← Back
                                 </button>
                                 <button

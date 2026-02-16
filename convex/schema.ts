@@ -947,5 +947,35 @@ export default defineSchema({
         .index("by_target", ["targetProfileId"])
         .index("by_action", ["action"])
         .index("by_timestamp", ["timestamp"]),
+
+    // Email Warmup Schedules (per-sender warmup tracking)
+    warmupSchedules: defineTable({
+        userId: v.id("users"),
+        senderId: v.id("senders"),
+        senderEmail: v.string(),
+        senderName: v.string(),
+        status: v.union(
+            v.literal("warming"),
+            v.literal("ready"),
+            v.literal("paused"),
+            v.literal("not_started")
+        ),
+        currentDay: v.number(),           // 0-14, current warmup day
+        totalDays: v.number(),            // typically 14
+        currentDailyVolume: v.number(),   // emails/day right now
+        targetDailyVolume: v.number(),    // target at end of warmup (e.g., 50)
+        emailsSentToday: v.number(),      // sent so far today
+        totalEmailsSent: v.number(),      // total across warmup
+        repliesReceived: v.number(),      // auto-reply count
+        healthScore: v.number(),          // 0-100 inbox placement score
+        lastActivityAt: v.optional(v.number()),
+        startedAt: v.optional(v.number()),
+        completedAt: v.optional(v.number()),
+        pausedAt: v.optional(v.number()),
+        createdAt: v.number(),
+    })
+        .index("by_user", ["userId"])
+        .index("by_sender", ["senderId"])
+        .index("by_user_status", ["userId", "status"]),
 });
 

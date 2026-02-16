@@ -81,14 +81,14 @@ function LinksContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 py-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Tracked Links</h1>
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Tracked Links</h1>
                         <p className="text-slate-500 text-sm">Create and manage click-tracked URLs with UTM parameters</p>
                     </div>
                     {!isCreating && (
@@ -103,15 +103,15 @@ function LinksContent() {
 
                 {/* Stats Bar */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-blue-400">{stats?.total || 0}</div>
                         <div className="text-sm text-slate-500">Total Links</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-emerald-400">{stats?.totalClicks || 0}</div>
                         <div className="text-sm text-slate-500">Total Clicks</div>
                     </div>
-                    <div className="p-4 bg-[#12121a] border border-slate-200 rounded-xl">
+                    <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                         <div className="text-2xl font-bold text-purple-400">{stats?.activeLinks || 0}</div>
                         <div className="text-sm text-slate-500">Active Links</div>
                     </div>
@@ -119,9 +119,9 @@ function LinksContent() {
 
                 {/* Create Form */}
                 {isCreating && (
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-6 mb-6">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-6 mb-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-semibold text-white">Create Tracked Link</h2>
+                            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Create Tracked Link</h2>
                             <button onClick={resetForm} className="text-slate-500 hover:text-slate-900">✕</button>
                         </div>
 
@@ -135,7 +135,7 @@ function LinksContent() {
                                         value={formData.destinationUrl}
                                         onChange={(e) => setFormData({ ...formData, destinationUrl: e.target.value })}
                                         placeholder="https://example.com/landing-page"
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
                                     />
                                 </div>
 
@@ -146,7 +146,7 @@ function LinksContent() {
                                         value={formData.label}
                                         onChange={(e) => setFormData({ ...formData, label: e.target.value })}
                                         placeholder="e.g., CTA Button, Email Footer"
-                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400"
+                                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400"
                                     />
                                 </div>
                             </div>
@@ -166,7 +166,7 @@ function LinksContent() {
                                             value={formData.utmSource}
                                             onChange={(e) => setFormData({ ...formData, utmSource: e.target.value })}
                                             placeholder="newsletter"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
@@ -176,7 +176,7 @@ function LinksContent() {
                                             value={formData.utmMedium}
                                             onChange={(e) => setFormData({ ...formData, utmMedium: e.target.value })}
                                             placeholder="email"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
@@ -186,7 +186,7 @@ function LinksContent() {
                                             value={formData.utmCampaign}
                                             onChange={(e) => setFormData({ ...formData, utmCampaign: e.target.value })}
                                             placeholder="spring_sale"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                     <div>
@@ -196,7 +196,7 @@ function LinksContent() {
                                             value={formData.utmContent}
                                             onChange={(e) => setFormData({ ...formData, utmContent: e.target.value })}
                                             placeholder="cta_button"
-                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 text-sm"
+                                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 text-sm"
                                         />
                                     </div>
                                 </div>
@@ -229,9 +229,9 @@ function LinksContent() {
                 {/* Links List */}
                 <div className="space-y-3">
                     {links?.length === 0 && !isCreating && (
-                        <div className="bg-[#12121a] border border-slate-200 rounded-xl p-12 text-center">
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-12 text-center">
                             <div className="text-4xl mb-4">🔗</div>
-                            <h3 className="text-lg font-medium text-white mb-2">No Tracked Links Yet</h3>
+                            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">No Tracked Links Yet</h3>
                             <p className="text-slate-500 text-sm mb-4">Create tracked links to monitor clicks and add UTM parameters</p>
                             <button
                                 onClick={() => setIsCreating(true)}
@@ -243,7 +243,7 @@ function LinksContent() {
                     )}
 
                     {links?.map((link) => (
-                        <div key={link._id} className="bg-[#12121a] border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all">
+                        <div key={link._id} className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-3">
                                     <button
@@ -254,7 +254,7 @@ function LinksContent() {
                                     </button>
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium text-white">{link.label || "Untitled"}</span>
+                                            <span className="font-medium text-slate-900 dark:text-white">{link.label || "Untitled"}</span>
                                             <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded font-mono">
                                                 {link.code}
                                             </span>
@@ -277,8 +277,8 @@ function LinksContent() {
                                         <button
                                             onClick={() => copyToClipboard(link.code, link._id)}
                                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${copiedId === link._id
-                                                    ? "bg-emerald-500/20 text-emerald-400"
-                                                    : "bg-white text-slate-500 hover:bg-slate-50"
+                                                ? "bg-emerald-500/20 text-emerald-400"
+                                                : "bg-white text-slate-500 hover:bg-slate-50"
                                                 }`}
                                         >
                                             {copiedId === link._id ? "✓ Copied" : "📋 Copy"}

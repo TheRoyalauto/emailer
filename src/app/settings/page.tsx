@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
+import { useFeatureGate, getTierDisplayName, type Tier } from "@/hooks/useFeatureGate";
 
 type SettingsSection = "profile" | "email-config" | "sending" | "brand" | "billing";
 
@@ -231,9 +232,10 @@ function SettingsPage() {
         autoPauseOnBounce: true,
     });
 
-    // Billing state
+    // Billing state — wired to real user profile
     const [isYearly, setIsYearly] = useState(false);
-    const currentPlan = "starter"; // Would come from user subscription data
+    const featureGate = useFeatureGate();
+    const currentPlan = featureGate.tier;
 
     // Sync URL param
     useEffect(() => {
@@ -890,26 +892,79 @@ function SettingsPage() {
                                             <div className="flex items-center justify-between mb-4">
                                                 <div>
                                                     <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Current Plan</h2>
-                                                    <p className="text-sm text-slate-400 mt-0.5">You&apos;re on the <span className="font-semibold text-cyan-600">Starter</span> plan</p>
+                                                    <p className="text-sm text-slate-400 mt-0.5">You&apos;re on the <span className="font-semibold text-cyan-600">{getTierDisplayName(currentPlan)}</span> plan</p>
                                                 </div>
-                                                <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-lg">
+                                                <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg">
                                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                                    <span className="text-xs font-semibold text-emerald-600">Active</span>
+                                                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Active</span>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                                                 <div>
-                                                    <div className="text-xs text-slate-400 font-medium">Monthly cost</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">$29</div>
+                                                    <div className="text-xs text-slate-400 font-medium">Daily Limit</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">
+                                                        {featureGate.dailyLimit === Infinity ? "∞" : featureGate.dailyLimit}
+                                                    </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs text-slate-400 font-medium">Emails/month</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">500</div>
+                                                    <div className="text-xs text-slate-400 font-medium">Monthly Limit</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">
+                                                        {featureGate.monthlyLimit === Infinity ? "∞" : featureGate.monthlyLimit.toLocaleString()}
+                                                    </div>
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs text-slate-400 font-medium">Next billing</div>
-                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">Mar 1</div>
+                                                    <div className="text-xs text-slate-400 font-medium">Email Accounts</div>
+                                                    <div className="text-xl font-bold font-heading text-slate-900 dark:text-white tracking-[-0.03em]">
+                                                        {featureGate.emailAccountCount}/{featureGate.emailAccountLimit === Infinity ? "∞" : featureGate.emailAccountLimit}
+                                                    </div>
                                                 </div>
+                                                <div>
+                                                    <div className="text-xs text-slate-400 font-medium">Tier</div>
+                                                    <div className="text-xl font-bold font-heading text-cyan-600 dark:text-cyan-400 tracking-[-0.03em] capitalize">
+                                                        {currentPlan}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Usage Meters */}
+                                        <div className="grid sm:grid-cols-2 gap-4">
+                                            {/* Daily Usage */}
+                                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">📤 Daily Emails</h3>
+                                                    <span className="text-xs text-slate-400 font-medium">
+                                                        {featureGate.emailsSentToday} / {featureGate.dailyLimit === Infinity ? "∞" : featureGate.dailyLimit}
+                                                    </span>
+                                                </div>
+                                                <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-700 ${featureGate.dailyUsagePercent > 90 ? "bg-red-500" : featureGate.dailyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500"}`}
+                                                        style={{ width: `${Math.min(100, featureGate.dailyUsagePercent)}%` }}
+                                                    />
+                                                </div>
+                                                <p className="text-xs text-slate-400">
+                                                    {featureGate.dailyLimit === Infinity ? "Unlimited sending" : `${Math.max(0, featureGate.dailyLimit - featureGate.emailsSentToday)} emails remaining today`}
+                                                </p>
+                                            </div>
+
+                                            {/* Monthly Usage */}
+                                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">📊 Monthly Emails</h3>
+                                                    <span className="text-xs text-slate-400 font-medium">
+                                                        {featureGate.emailsSentThisMonth.toLocaleString()} / {featureGate.monthlyLimit === Infinity ? "∞" : featureGate.monthlyLimit.toLocaleString()}
+                                                    </span>
+                                                </div>
+                                                <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-700 ${featureGate.monthlyUsagePercent > 90 ? "bg-red-500" : featureGate.monthlyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500"}`}
+                                                        style={{ width: `${Math.min(100, featureGate.monthlyUsagePercent)}%` }}
+                                                    />
+                                                </div>
+                                                <p className="text-xs text-slate-400">
+                                                    {featureGate.monthlyLimit === Infinity ? "Unlimited sending" : `${Math.max(0, featureGate.monthlyLimit - featureGate.emailsSentThisMonth).toLocaleString()} emails remaining this month`}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -921,7 +976,7 @@ function SettingsPage() {
                                                     <span className={`text-sm font-medium ${!isYearly ? "text-slate-900 dark:text-white" : "text-slate-400"}`}>Monthly</span>
                                                     <button
                                                         onClick={() => setIsYearly(!isYearly)}
-                                                        className={`relative w-11 h-6 rounded-full transition-colors ${isYearly ? "bg-cyan-500" : "bg-slate-300"}`}
+                                                        className={`relative w-11 h-6 rounded-full transition-colors ${isYearly ? "bg-cyan-500" : "bg-slate-300 dark:bg-slate-600"}`}
                                                     >
                                                         <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${isYearly ? "translate-x-6" : "translate-x-1"}`} />
                                                     </button>
@@ -938,16 +993,16 @@ function SettingsPage() {
                                                     return (
                                                         <div
                                                             key={plan.id}
-                                                            className={`relative rounded-xl p-5 border transition-all ${plan.featured
-                                                                ? "border-cyan-300 bg-cyan-50/30 shadow-md ring-1 ring-cyan-200/50"
-                                                                : isCurrent
-                                                                    ? "border-slate-300 bg-slate-50"
-                                                                    : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                                                            className={`relative rounded-xl p-5 border transition-all ${isCurrent
+                                                                    ? "border-cyan-300 dark:border-cyan-700 bg-cyan-50/30 dark:bg-cyan-950/20 ring-1 ring-cyan-200/50 dark:ring-cyan-800/30"
+                                                                    : plan.featured
+                                                                        ? "border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-700 hover:shadow-sm"
+                                                                        : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
                                                                 }`}
                                                         >
-                                                            {plan.featured && (
+                                                            {isCurrent && (
                                                                 <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-cyan-500 text-white text-[10px] font-bold tracking-wider rounded-full uppercase">
-                                                                    Popular
+                                                                    Current
                                                                 </div>
                                                             )}
                                                             <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white tracking-[-0.02em]">{plan.name}</h3>
@@ -962,10 +1017,8 @@ function SettingsPage() {
 
                                                             <button
                                                                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.98] ${isCurrent
-                                                                    ? "bg-slate-200 text-slate-500 cursor-default"
-                                                                    : plan.featured
-                                                                        ? "bg-cyan-500 text-white hover:bg-cyan-600 shadow-sm"
-                                                                        : "bg-slate-900 text-white hover:bg-slate-800"
+                                                                    ? "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-default"
+                                                                    : "bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:shadow-md hover:shadow-cyan-500/20"
                                                                     }`}
                                                                 disabled={isCurrent}
                                                             >
@@ -978,7 +1031,7 @@ function SettingsPage() {
                                                                         <svg className="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                                                         </svg>
-                                                                        <span className="text-xs text-slate-600">{feature}</span>
+                                                                        <span className="text-xs text-slate-600 dark:text-slate-400">{feature}</span>
                                                                     </li>
                                                                 ))}
                                                             </ul>
@@ -988,32 +1041,18 @@ function SettingsPage() {
                                             </div>
                                         </div>
 
-                                        {/* Payment Method */}
+                                        {/* Payment — Coming Soon */}
                                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-4">
-                                                <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Payment Method</h2>
-                                                <button className="text-cyan-500 hover:text-cyan-600 text-sm font-medium">Update</button>
+                                                <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Payment & Billing</h2>
+                                                <span className="px-2.5 py-1 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 text-[10px] font-bold rounded-full uppercase tracking-wider">Coming Soon</span>
                                             </div>
-                                            <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
-                                                <div className="w-12 h-8 bg-gradient-to-br from-slate-800 to-slate-900 rounded flex items-center justify-center">
-                                                    <span className="text-white text-[10px] font-bold">VISA</span>
-                                                </div>
-                                                <div>
-                                                    <div className="text-sm font-semibold text-slate-900 dark:text-white">•••• •••• •••• 4242</div>
-                                                    <div className="text-xs text-slate-400">Expires 12/2027</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Billing History */}
-                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
-                                            <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white mb-4">Billing History</h2>
-                                            <div className="text-center py-8">
-                                                <svg className="w-10 h-10 mx-auto text-slate-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                            <div className="text-center py-8 bg-slate-50 dark:bg-slate-800/30 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
+                                                <svg className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
                                                 </svg>
-                                                <p className="text-sm text-slate-500 font-medium">No invoices yet</p>
-                                                <p className="text-xs text-slate-400 mt-1">Your billing history will appear here</p>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Stripe integration coming soon</p>
+                                                <p className="text-xs text-slate-400 mt-1">Self-serve billing, invoices, and payment management will appear here</p>
                                             </div>
                                         </div>
                                     </div>

@@ -37,7 +37,7 @@ export default function BulkActionBar({
     if (selectedCount === 0) return null;
 
     return (
-        <div className="sticky top-0 z-30 bg-[#0f172a] text-white rounded-xl px-5 py-3 mb-4 flex items-center justify-between shadow-xl animate-in slide-in-from-top-2">
+        <div className="sticky top-0 z-30 bg-[#0f172a] dark:bg-slate-800 text-white rounded-xl px-5 py-3 mb-4 flex items-center justify-between shadow-xl animate-in slide-in-from-top-2">
             <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-[#0EA5E9] flex items-center justify-center text-xs font-bold">
@@ -57,15 +57,15 @@ export default function BulkActionBar({
                         Change Stage ▾
                     </button>
                     {showStageMenu && (
-                        <div className="absolute top-full left-0 mt-1 bg-white border border-[#E5E7EB] rounded-xl shadow-xl z-40 min-w-[160px] p-1">
+                        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-900 border border-[#E5E7EB] dark:border-slate-700 rounded-xl shadow-xl z-40 min-w-[160px] p-1">
                             {SALES_STAGES.map(s => (
                                 <button
                                     key={s.id}
                                     onClick={() => { onChangeStage(s.id); setShowStageMenu(false); }}
-                                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-[#f8fafc] transition-colors flex items-center gap-2"
+                                    className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-[#f8fafc] dark:hover:bg-slate-800 transition-colors flex items-center gap-2"
                                 >
                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: s.color }} />
-                                    <span className="text-[#0f172a]">{s.label}</span>
+                                    <span className="text-[#0f172a] dark:text-white">{s.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -81,7 +81,7 @@ export default function BulkActionBar({
                         Add Tags ▾
                     </button>
                     {showTagInput && (
-                        <div className="absolute top-full left-0 mt-1 bg-white border border-[#E5E7EB] rounded-xl shadow-xl z-40 min-w-[220px] p-3">
+                        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-900 border border-[#E5E7EB] dark:border-slate-700 rounded-xl shadow-xl z-40 min-w-[220px] p-3">
                             <div className="flex gap-2">
                                 <input
                                     type="text"
@@ -95,7 +95,7 @@ export default function BulkActionBar({
                                             setShowTagInput(false);
                                         }
                                     }}
-                                    className="flex-1 px-3 py-2 bg-[#f8fafc] border border-[#E5E7EB] rounded-lg text-sm text-[#0f172a] focus:border-[#0EA5E9] focus:outline-none"
+                                    className="flex-1 px-3 py-2 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm text-[#0f172a] dark:text-white focus:border-[#0EA5E9] focus:outline-none"
                                     autoFocus
                                 />
                                 <button
@@ -117,7 +117,7 @@ export default function BulkActionBar({
                                         <button
                                             key={t}
                                             onClick={() => { onAddTags([t]); setShowTagInput(false); }}
-                                            className="px-2 py-1 bg-[#f8fafc] text-[#4B5563] text-xs rounded-md hover:bg-[#E5E7EB] transition-colors"
+                                            className="px-2 py-1 bg-[#f8fafc] dark:bg-slate-800 text-[#4B5563] dark:text-slate-400 text-xs rounded-md hover:bg-[#E5E7EB] dark:hover:bg-slate-700 transition-colors"
                                         >
                                             {t}
                                         </button>
@@ -137,14 +137,14 @@ export default function BulkActionBar({
                         Assign List ▾
                     </button>
                     {showBatchMenu && (
-                        <div className="absolute top-full left-0 mt-1 bg-white border border-[#E5E7EB] rounded-xl shadow-xl z-40 min-w-[160px] p-1">
+                        <div className="absolute top-full left-0 mt-1 bg-white dark:bg-slate-900 border border-[#E5E7EB] dark:border-slate-700 rounded-xl shadow-xl z-40 min-w-[160px] p-1">
                             {batches.length === 0 ? (
                                 <div className="px-3 py-2 text-sm text-[#9CA3AF]">No lists</div>
                             ) : batches.map(b => (
                                 <button
                                     key={b._id}
                                     onClick={() => { onAssignBatch(b._id); setShowBatchMenu(false); }}
-                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#0f172a] hover:bg-[#f8fafc] transition-colors"
+                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-[#0f172a] dark:text-white hover:bg-[#f8fafc] dark:hover:bg-slate-800 transition-colors"
                                 >
                                     {b.name}
                                 </button>

@@ -5,8 +5,11 @@ import { useState } from "react";
 import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { Id } from "@/../convex/_generated/dataModel";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
+import { useFeatureGate } from "@/hooks/useFeatureGate";
+import { UpgradeGate } from "@/components/UpgradeModal";
 
 function ABTestsPage() {
+    const { canUseABTesting, tier, isLoading } = useFeatureGate();
     const tests = useAuthQuery(api.abTests.list);
     const templates = useAuthQuery(api.templates.list, {});
     const createTest = useAuthMutation(api.abTests.create);
@@ -19,6 +22,16 @@ function ABTestsPage() {
     const [templateAId, setTemplateAId] = useState("");
     const [templateBId, setTemplateBId] = useState("");
     const [splitPercentage, setSplitPercentage] = useState(50);
+
+    // Feature gate: A/B testing requires Starter+
+    if (!isLoading && !canUseABTesting) {
+        return (
+            <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)] pb-20 md:pb-0">
+                <AppHeader />
+                <UpgradeGate feature="ab_testing" currentTier={tier} />
+            </div>
+        );
+    }
 
     const handleCreate = async () => {
         if (!name || !templateAId || !templateBId) return;
@@ -41,7 +54,7 @@ function ABTestsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 dark:bg-[var(--bg-primary)] pb-20 md:pb-0">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -55,7 +68,7 @@ function ABTestsPage() {
                     </div>
                     <button
                         onClick={() => setShowCreate(true)}
-                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium"
+                        className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium text-white"
                     >
                         + New Test
                     </button>
@@ -67,9 +80,9 @@ function ABTestsPage() {
                         <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full" />
                     </div>
                 ) : tests.length === 0 ? (
-                    <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
+                    <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
                         <div className="text-5xl mb-4">🧪</div>
-                        <h2 className="text-xl font-semibold mb-2">No A/B Tests Yet</h2>
+                        <h2 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">No A/B Tests Yet</h2>
                         <p className="text-slate-500 mb-4">Create your first A/B test to compare template performance</p>
                         <button
                             onClick={() => setShowCreate(true)}
@@ -81,13 +94,13 @@ function ABTestsPage() {
                 ) : (
                     <div className="space-y-4">
                         {tests.map((test) => (
-                            <div key={test._id} className="bg-white rounded-xl border border-slate-200 p-6">
+                            <div key={test._id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
-                                        <h3 className="text-lg font-semibold">{test.name}</h3>
+                                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{test.name}</h3>
                                         <span className={`inline-block px-2 py-0.5 rounded text-xs mt-1 ${test.status === "running" ? "bg-green-500/20 text-green-400" :
-                                                test.status === "completed" ? "bg-blue-500/20 text-blue-400" :
-                                                    "bg-slate-50 text-slate-500"
+                                            test.status === "completed" ? "bg-blue-500/20 text-blue-400" :
+                                                "bg-slate-50 dark:bg-slate-800 text-slate-500"
                                             }`}>
                                             {test.status}
                                         </span>
@@ -130,7 +143,7 @@ function ABTestsPage() {
 
                                 {/* Variant Comparison */}
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className={`p-4 rounded-lg ${test.winningVariant === "A" ? "bg-green-500/10 border border-green-500/30" : "bg-white"}`}>
+                                    <div className={`p-4 rounded-lg ${test.winningVariant === "A" ? "bg-green-500/10 border border-green-500/30" : "bg-white dark:bg-slate-800/50"}`}>
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="font-medium text-indigo-400">Variant A ({test.splitPercentage}%)</span>
                                             {test.winningVariant === "A" && <span className="text-green-400 text-sm">🏆 Winner</span>}
@@ -140,11 +153,11 @@ function ABTestsPage() {
                                         </div>
                                         <div className="grid grid-cols-3 gap-2 text-center">
                                             <div>
-                                                <div className="text-lg font-bold">{test.variantAStats?.sent || 0}</div>
+                                                <div className="text-lg font-bold text-slate-900 dark:text-white">{test.variantAStats?.sent || 0}</div>
                                                 <div className="text-xs text-slate-400">Sent</div>
                                             </div>
                                             <div>
-                                                <div className="text-lg font-bold">{test.variantAStats?.opened || 0}</div>
+                                                <div className="text-lg font-bold text-slate-900 dark:text-white">{test.variantAStats?.opened || 0}</div>
                                                 <div className="text-xs text-slate-400">Opened</div>
                                             </div>
                                             <div>
@@ -155,7 +168,7 @@ function ABTestsPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className={`p-4 rounded-lg ${test.winningVariant === "B" ? "bg-green-500/10 border border-green-500/30" : "bg-white"}`}>
+                                    <div className={`p-4 rounded-lg ${test.winningVariant === "B" ? "bg-green-500/10 border border-green-500/30" : "bg-white dark:bg-slate-800/50"}`}>
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="font-medium text-purple-400">Variant B ({100 - test.splitPercentage}%)</span>
                                             {test.winningVariant === "B" && <span className="text-green-400 text-sm">🏆 Winner</span>}
@@ -165,11 +178,11 @@ function ABTestsPage() {
                                         </div>
                                         <div className="grid grid-cols-3 gap-2 text-center">
                                             <div>
-                                                <div className="text-lg font-bold">{test.variantBStats?.sent || 0}</div>
+                                                <div className="text-lg font-bold text-slate-900 dark:text-white">{test.variantBStats?.sent || 0}</div>
                                                 <div className="text-xs text-slate-400">Sent</div>
                                             </div>
                                             <div>
-                                                <div className="text-lg font-bold">{test.variantBStats?.opened || 0}</div>
+                                                <div className="text-lg font-bold text-slate-900 dark:text-white">{test.variantBStats?.opened || 0}</div>
                                                 <div className="text-xs text-slate-400">Opened</div>
                                             </div>
                                             <div>
@@ -190,8 +203,8 @@ function ABTestsPage() {
             {/* Create Modal */}
             {showCreate && (
                 <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl border border-slate-200 w-full max-w-lg p-6">
-                        <h2 className="text-xl font-bold mb-4">Create A/B Test</h2>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 w-full max-w-lg p-6">
+                        <h2 className="text-xl font-bold mb-4 text-slate-900 dark:text-white">Create A/B Test</h2>
 
                         <div className="space-y-4">
                             <div>
@@ -200,7 +213,7 @@ function ABTestsPage() {
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
+                                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                                     placeholder="e.g., Subject Line Test"
                                 />
                             </div>
@@ -211,7 +224,7 @@ function ABTestsPage() {
                                     <select
                                         value={templateAId}
                                         onChange={(e) => setTemplateAId(e.target.value)}
-                                        className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
+                                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                                     >
                                         <option value="">Select template</option>
                                         {templates?.map((t) => (
@@ -224,7 +237,7 @@ function ABTestsPage() {
                                     <select
                                         value={templateBId}
                                         onChange={(e) => setTemplateBId(e.target.value)}
-                                        className="w-full px-3 py-2 bg-black/40 border border-slate-200 rounded-lg"
+                                        className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                                     >
                                         <option value="">Select template</option>
                                         {templates?.map((t) => (
@@ -252,14 +265,14 @@ function ABTestsPage() {
                         <div className="flex justify-end gap-3 mt-6">
                             <button
                                 onClick={() => setShowCreate(false)}
-                                className="px-4 py-2 bg-slate-50 rounded-lg"
+                                className="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleCreate}
                                 disabled={!name || !templateAId || !templateBId}
-                                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium disabled:opacity-50"
+                                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg font-medium text-white disabled:opacity-50"
                             >
                                 Create Test
                             </button>

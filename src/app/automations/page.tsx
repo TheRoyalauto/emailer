@@ -116,14 +116,14 @@ function AutomationsPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <AppHeader />
 
             <main className="max-w-6xl mx-auto px-4 py-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Automations</h1>
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Automations</h1>
                         <p className="text-slate-500 text-sm">Configure trigger-action rules for automatic pipeline updates</p>
                     </div>
                     <div className="flex gap-3">
@@ -147,19 +147,19 @@ function AutomationsPage() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
-                        <div className="text-2xl font-bold text-white">{stats?.total || 0}</div>
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">{stats?.total || 0}</div>
                         <div className="text-xs text-slate-500">Total Rules</div>
                     </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-green-400">{stats?.active || 0}</div>
                         <div className="text-xs text-slate-500">Active</div>
                     </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-blue-400">{stats?.executionsLast24h || 0}</div>
                         <div className="text-xs text-slate-500">Executions (24h)</div>
                     </div>
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl p-4">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4">
                         <div className="text-2xl font-bold text-emerald-400">{stats?.successRate || 100}%</div>
                         <div className="text-xs text-slate-500">Success Rate</div>
                     </div>
@@ -167,9 +167,9 @@ function AutomationsPage() {
 
                 {showLogs ? (
                     /* Logs View */
-                    <div className="bg-[#12121a] border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl overflow-hidden">
                         <div className="p-4 border-b border-slate-200">
-                            <h2 className="font-semibold text-white">Execution Log</h2>
+                            <h2 className="font-semibold text-slate-900 dark:text-white">Execution Log</h2>
                         </div>
                         <div className="divide-y divide-slate-200">
                             {logs?.length === 0 && (
@@ -183,7 +183,7 @@ function AutomationsPage() {
                                         <div className={`w-2 h-2 rounded-full ${log.success ? "bg-green-500" : "bg-red-500"}`} />
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-white font-medium">{log.rule?.name || "Unknown Rule"}</span>
+                                                <span className="text-slate-900 dark:text-white font-medium">{log.rule?.name || "Unknown Rule"}</span>
                                                 <span className="text-slate-400 text-sm">→</span>
                                                 <span className="text-slate-500 text-sm">{log.actionTaken}</span>
                                             </div>
@@ -210,7 +210,7 @@ function AutomationsPage() {
                         )}
 
                         {rules?.length === 0 && (
-                            <div className="text-center py-12 bg-[#12121a] border border-slate-200 rounded-xl">
+                            <div className="text-center py-12 bg-white dark:bg-slate-900 border border-slate-200 rounded-xl">
                                 <div className="text-4xl mb-3">⚡</div>
                                 <div className="text-slate-500 mb-4">No automation rules yet</div>
                                 <button
@@ -229,7 +229,7 @@ function AutomationsPage() {
                             return (
                                 <div
                                     key={rule._id}
-                                    className="bg-[#12121a] border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all"
+                                    className="bg-white dark:bg-slate-900 border border-slate-200 rounded-xl p-4 hover:border-slate-200 transition-all"
                                 >
                                     <div className="flex items-center gap-4">
                                         {/* Toggle */}
@@ -246,7 +246,7 @@ function AutomationsPage() {
                                         <div className="flex items-center gap-3 flex-1">
                                             <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg">
                                                 <span className="text-lg">{trigger?.icon}</span>
-                                                <span className="text-white text-sm">{trigger?.label}</span>
+                                                <span className="text-slate-900 dark:text-white text-sm">{trigger?.label}</span>
                                             </div>
 
                                             <div className="text-slate-400">→</div>
@@ -259,7 +259,7 @@ function AutomationsPage() {
 
                                         {/* Name & Actions */}
                                         <div className="text-right">
-                                            <div className="text-white font-medium">{rule.name}</div>
+                                            <div className="text-slate-900 dark:text-white font-medium">{rule.name}</div>
                                             {rule.description && (
                                                 <div className="text-slate-400 text-sm">{rule.description}</div>
                                             )}
@@ -289,9 +289,9 @@ function AutomationsPage() {
                 {/* Create/Edit Modal */}
                 {showCreate && (
                     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                        <div className="bg-[#12121a] border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <div className="p-6 border-b border-slate-200">
-                                <h2 className="text-xl font-bold text-white">
+                                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                                     {editingRule ? "Edit Rule" : "Create Automation Rule"}
                                 </h2>
                             </div>
@@ -305,7 +305,7 @@ function AutomationsPage() {
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="e.g., Positive Reply → Create Deal"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
 
@@ -317,7 +317,7 @@ function AutomationsPage() {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="What does this rule do?"
-                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                     />
                                 </div>
 
@@ -335,7 +335,7 @@ function AutomationsPage() {
                                                     }`}
                                             >
                                                 <div className="text-lg mb-1">{t.icon}</div>
-                                                <div className="text-sm text-white font-medium">{t.label}</div>
+                                                <div className="text-sm text-slate-900 dark:text-white font-medium">{t.label}</div>
                                                 <div className="text-xs text-slate-400 line-clamp-2">{t.description}</div>
                                             </button>
                                         ))}
@@ -351,7 +351,7 @@ function AutomationsPage() {
                                             value={triggerConfig.days || ""}
                                             onChange={(e) => setTriggerConfig({ ...triggerConfig, days: parseInt(e.target.value) })}
                                             placeholder="3"
-                                            className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                            className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                         />
                                     </div>
                                 )}
@@ -370,7 +370,7 @@ function AutomationsPage() {
                                                     }`}
                                             >
                                                 <div className="text-lg mb-1">{a.icon}</div>
-                                                <div className="text-sm text-white font-medium">{a.label}</div>
+                                                <div className="text-sm text-slate-900 dark:text-white font-medium">{a.label}</div>
                                                 <div className="text-xs text-slate-400 line-clamp-2">{a.description}</div>
                                             </button>
                                         ))}
@@ -384,7 +384,7 @@ function AutomationsPage() {
                                         <select
                                             value={actionConfig.targetStage || ""}
                                             onChange={(e) => setActionConfig({ ...actionConfig, targetStage: e.target.value })}
-                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white focus:border-blue-500/50 focus:outline-none"
+                                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white focus:border-blue-500/50 focus:outline-none"
                                         >
                                             <option value="">Select stage...</option>
                                             <option value="contacted">Contacted</option>
@@ -408,7 +408,7 @@ function AutomationsPage() {
                                                 value={actionConfig.taskTitle || ""}
                                                 onChange={(e) => setActionConfig({ ...actionConfig, taskTitle: e.target.value })}
                                                 placeholder="Follow up with contact"
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                             />
                                         </div>
                                         <div>
@@ -418,7 +418,7 @@ function AutomationsPage() {
                                                 value={actionConfig.dueDays || ""}
                                                 onChange={(e) => setActionConfig({ ...actionConfig, dueDays: parseInt(e.target.value) })}
                                                 placeholder="1"
-                                                className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                                className="w-32 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                             />
                                         </div>
                                     </div>
@@ -432,7 +432,7 @@ function AutomationsPage() {
                                             value={actionConfig.dealValue || ""}
                                             onChange={(e) => setActionConfig({ ...actionConfig, dealValue: parseInt(e.target.value) })}
                                             placeholder="1000"
-                                            className="w-48 px-4 py-3 bg-white border border-slate-200 rounded-lg text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
+                                            className="w-48 px-4 py-3 bg-white border border-slate-200 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:outline-none"
                                         />
                                     </div>
                                 )}

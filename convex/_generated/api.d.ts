@@ -37,6 +37,7 @@ import type * as templates from "../templates.js";
 import type * as trackedLinks from "../trackedLinks.js";
 import type * as unsubscribes from "../unsubscribes.js";
 import type * as userProfiles from "../userProfiles.js";
+import type * as warmup from "../warmup.js";
 
 import type {
   ApiFromModules,
@@ -74,6 +75,7 @@ declare const fullApi: ApiFromModules<{
   trackedLinks: typeof trackedLinks;
   unsubscribes: typeof unsubscribes;
   userProfiles: typeof userProfiles;
+  warmup: typeof warmup;
 }>;
 
 /**

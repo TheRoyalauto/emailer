@@ -66,7 +66,7 @@ function InsightsPage() {
     const deliveryRate = stats?.rates?.deliveryRate ? Number(stats.rates.deliveryRate) : 100;
 
     return (
-        <div className="min-h-screen bg-slate-50 text-white pb-20 md:pb-0">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-20 md:pb-0">
             <AppHeader />
 
             <PageTransition>
