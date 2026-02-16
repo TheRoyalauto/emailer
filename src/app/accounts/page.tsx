@@ -22,6 +22,7 @@ const SMTP_PRESETS = [
 function SMTPSettingsPage() {
     const configs = useAuthQuery(api.smtpConfigs.list);
     const createConfig = useAuthMutation(api.smtpConfigs.create);
+    const updateConfig = useAuthMutation(api.smtpConfigs.update);
     const setDefault = useAuthMutation(api.smtpConfigs.setDefault);
     const removeConfig = useAuthMutation(api.smtpConfigs.remove);
 
@@ -29,6 +30,17 @@ function SMTPSettingsPage() {
     const [wizardStep, setWizardStep] = useState(1);
     const [testing, setTesting] = useState<string | null>(null);
     const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+
+    // Edit state
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editFromEmail, setEditFromEmail] = useState("");
+    const [editFromName, setEditFromName] = useState("");
+    const [editHost, setEditHost] = useState("");
+    const [editPort, setEditPort] = useState(587);
+    const [editSecure, setEditSecure] = useState(false);
+    const [editUsername, setEditUsername] = useState("");
+    const [editPassword, setEditPassword] = useState("");
 
     // Form state
     const [preset, setPreset] = useState("");
@@ -38,6 +50,7 @@ function SMTPSettingsPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [fromEmail, setFromEmail] = useState("");
+    const [fromEmailManual, setFromEmailManual] = useState(false);
     const [displayName, setDisplayName] = useState("");
     const [makeDefault, setMakeDefault] = useState(true);
 
@@ -75,9 +88,38 @@ function SMTPSettingsPage() {
         setUsername("");
         setPassword("");
         setFromEmail("");
+        setFromEmailManual(false);
         setDisplayName("");
         setMakeDefault(true);
         setWizardStep(1);
+    };
+
+    const startEdit = (config: NonNullable<typeof configs>[number]) => {
+        setEditingId(config._id);
+        setEditName(config.name || "");
+        setEditFromEmail(config.fromEmail || "");
+        setEditFromName(config.fromName || "");
+        setEditHost(config.host || "");
+        setEditPort(config.port || 587);
+        setEditSecure(config.secure || false);
+        setEditUsername(config.username || "");
+        setEditPassword(config.password || "");
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editingId) return;
+        await updateConfig({
+            id: editingId as Id<"smtpConfigs">,
+            name: editName,
+            fromEmail: editFromEmail,
+            fromName: editFromName,
+            host: editHost,
+            port: editPort,
+            secure: editSecure,
+            username: editUsername,
+            password: editPassword || undefined,
+        });
+        setEditingId(null);
     };
 
     const handleTest = async (configId: Id<"smtpConfigs">) => {
@@ -190,7 +232,8 @@ function SMTPSettingsPage() {
                         {configs.map((config) => (
                             <div
                                 key={config._id}
-                                className={`group bg-white dark:bg-slate-900 rounded-xl border overflow-hidden transition-all hover:shadow-lg ${config.isDefault
+                                onClick={() => startEdit(config)}
+                                className={`group bg-white dark:bg-slate-900 rounded-xl border overflow-hidden transition-all hover:shadow-lg cursor-pointer ${config.isDefault
                                     ? "border-cyan-300 dark:border-cyan-800 shadow-sm"
                                     : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                                     }`}
@@ -217,9 +260,14 @@ function SMTPSettingsPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 dark:bg-emerald-950/50 rounded-full">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Ready</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 dark:bg-emerald-950/50 rounded-full">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Ready</span>
+                                            </div>
+                                            <svg className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-cyan-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
                                         </div>
                                     </div>
 
@@ -229,7 +277,7 @@ function SMTPSettingsPage() {
 
                                     <div className="flex items-center gap-2">
                                         <button
-                                            onClick={() => handleTest(config._id)}
+                                            onClick={(e) => { e.stopPropagation(); handleTest(config._id); }}
                                             disabled={testing === config._id}
                                             className="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-600 dark:text-slate-300 font-medium transition-all disabled:opacity-50"
                                         >
@@ -242,14 +290,14 @@ function SMTPSettingsPage() {
                                         </button>
                                         {!config.isDefault && (
                                             <button
-                                                onClick={() => setDefault({ id: config._id })}
+                                                onClick={(e) => { e.stopPropagation(); setDefault({ id: config._id }); }}
                                                 className="px-3 py-2 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800 rounded-lg text-xs font-semibold hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition-colors"
                                             >
                                                 ⭐ Default
                                             </button>
                                         )}
                                         <button
-                                            onClick={() => removeConfig({ id: config._id })}
+                                            onClick={(e) => { e.stopPropagation(); removeConfig({ id: config._id }); }}
                                             className="px-3 py-2 bg-red-50 dark:bg-red-950/30 text-red-500 border border-red-200 dark:border-red-900/50 rounded-lg text-xs hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                                         >
                                             🗑️
@@ -443,7 +491,7 @@ function SMTPSettingsPage() {
                                                 value={username}
                                                 onChange={(e) => {
                                                     setUsername(e.target.value);
-                                                    if (!fromEmail) setFromEmail(e.target.value);
+                                                    if (!fromEmailManual) setFromEmail(e.target.value);
                                                 }}
                                                 className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
                                                 placeholder="your@email.com"
@@ -509,6 +557,21 @@ function SMTPSettingsPage() {
                                     <p className="text-slate-400 text-sm mb-6">How should your name appear in emails?</p>
 
                                     <div className="space-y-4">
+                                        <div>
+                                            <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">From Email</label>
+                                            <input
+                                                type="email"
+                                                value={fromEmail}
+                                                onChange={(e) => {
+                                                    setFromEmail(e.target.value);
+                                                    setFromEmailManual(true);
+                                                }}
+                                                className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                                placeholder={username || "your@email.com"}
+                                            />
+                                            <p className="text-[11px] text-slate-400 mt-1">Leave same as login email, or set a different From address</p>
+                                        </div>
+
                                         <div>
                                             <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Display Name</label>
                                             <input
@@ -586,6 +649,139 @@ function SMTPSettingsPage() {
                                     ✓ Add Account
                                 </button>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Edit Account Modal */}
+            {editingId && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setEditingId(null)}>
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 w-full max-w-lg overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Edit Email Account</h2>
+                                    <p className="text-sm text-slate-400 mt-0.5">Update your account settings</p>
+                                </div>
+                                <button onClick={() => setEditingId(null)} className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                            <div>
+                                <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Account Name</label>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                    placeholder="e.g. Gmail Business"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">From Email</label>
+                                    <input
+                                        type="email"
+                                        value={editFromEmail}
+                                        onChange={(e) => setEditFromEmail(e.target.value)}
+                                        className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                        placeholder="your@email.com"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Display Name</label>
+                                    <input
+                                        type="text"
+                                        value={editFromName}
+                                        onChange={(e) => setEditFromName(e.target.value)}
+                                        className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                        placeholder="Your Name"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Server Settings</div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">SMTP Host</label>
+                                        <input
+                                            type="text"
+                                            value={editHost}
+                                            onChange={(e) => setEditHost(e.target.value)}
+                                            className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                            placeholder="smtp.example.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Port</label>
+                                        <input
+                                            type="number"
+                                            value={editPort}
+                                            onChange={(e) => setEditPort(parseInt(e.target.value))}
+                                            className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <label className="flex items-center gap-2.5 cursor-pointer mt-3">
+                                    <input
+                                        type="checkbox"
+                                        checked={editSecure}
+                                        onChange={(e) => setEditSecure(e.target.checked)}
+                                        className="w-4 h-4 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500/30"
+                                    />
+                                    <span className="text-sm text-slate-600 dark:text-slate-300">Use SSL (port 465)</span>
+                                </label>
+                            </div>
+
+                            <div className="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Credentials</div>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Username</label>
+                                        <input
+                                            type="text"
+                                            value={editUsername}
+                                            onChange={(e) => setEditUsername(e.target.value)}
+                                            className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                            placeholder="your@email.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Password</label>
+                                        <input
+                                            type="password"
+                                            value={editPassword}
+                                            onChange={(e) => setEditPassword(e.target.value)}
+                                            className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                            placeholder="Leave blank to keep current"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30">
+                            <button
+                                onClick={() => setEditingId(null)}
+                                className="px-4 py-2 text-slate-400 hover:text-slate-700 dark:hover:text-white text-sm font-medium transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveEdit}
+                                disabled={!editName || !editFromEmail || !editHost}
+                                className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Save Changes
+                            </button>
                         </div>
                     </div>
                 </div>
