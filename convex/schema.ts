@@ -1093,5 +1093,36 @@ export default defineSchema({
     })
         .index("by_user", ["userId"])
         .index("by_user_date", ["userId", "createdAt"]),
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // EMAIL WARMUP SYSTEM
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    warmupSchedules: defineTable({
+        userId: v.id("users"),
+        smtpConfigId: v.id("smtpConfigs"), // Links to saved email account
+        senderEmail: v.string(),
+        senderName: v.optional(v.string()),
+        status: v.union(
+            v.literal("warming"),
+            v.literal("ready"),
+            v.literal("paused")
+        ),
+        currentDay: v.number(),
+        totalDays: v.number(),
+        currentDailyVolume: v.number(),
+        targetDailyVolume: v.number(),
+        emailsSentToday: v.number(),
+        totalEmailsSent: v.number(),
+        repliesReceived: v.number(),
+        healthScore: v.number(),
+        startedAt: v.number(),
+        createdAt: v.number(),
+        lastActivityAt: v.number(),
+        pausedAt: v.optional(v.number()),
+        completedAt: v.optional(v.number()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_smtp_config", ["smtpConfigId"]),
 });
 

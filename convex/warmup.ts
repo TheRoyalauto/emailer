@@ -22,11 +22,11 @@ export const list = query({
     },
 });
 
-/** Get warmup schedule for a specific sender */
-export const getBySender = query({
+/** Get warmup schedule for a specific SMTP config (email account) */
+export const getBySmtpConfig = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        senderId: v.id("senders"),
+        smtpConfigId: v.id("smtpConfigs"),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -34,7 +34,7 @@ export const getBySender = query({
 
         return await ctx.db
             .query("warmupSchedules")
-            .withIndex("by_sender", (q) => q.eq("senderId", args.senderId))
+            .withIndex("by_smtp_config", (q) => q.eq("smtpConfigId", args.smtpConfigId))
             .first();
     },
 });
@@ -62,31 +62,31 @@ export const getStats = query({
 
 // ─── Mutations ───────────────────────────────────────────────────────────────────
 
-/** Start warmup for a sender */
+/** Start warmup for an email account (SMTP config) */
 export const startWarmup = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        senderId: v.id("senders"),
+        smtpConfigId: v.id("smtpConfigs"),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
-        // Verify sender belongs to user
-        const sender = await ctx.db.get(args.senderId);
-        if (!sender || sender.userId !== userId) {
-            throw new Error("Sender not found");
+        // Verify SMTP config belongs to user
+        const smtpConfig = await ctx.db.get(args.smtpConfigId);
+        if (!smtpConfig || smtpConfig.userId !== userId) {
+            throw new Error("Email account not found");
         }
 
-        // Check if warmup already exists for this sender
+        // Check if warmup already exists for this account
         const existing = await ctx.db
             .query("warmupSchedules")
-            .withIndex("by_sender", (q) => q.eq("senderId", args.senderId))
+            .withIndex("by_smtp_config", (q) => q.eq("smtpConfigId", args.smtpConfigId))
             .first();
 
         if (existing) {
             if (existing.status === "warming") {
-                throw new Error("Warmup already in progress for this sender");
+                throw new Error("Warmup already in progress for this account");
             }
             // Resume or restart
             await ctx.db.patch(existing._id, {
@@ -105,9 +105,9 @@ export const startWarmup = mutation({
         // Create new warmup schedule
         return await ctx.db.insert("warmupSchedules", {
             userId,
-            senderId: args.senderId,
-            senderEmail: sender.email,
-            senderName: sender.name,
+            smtpConfigId: args.smtpConfigId,
+            senderEmail: smtpConfig.fromEmail,
+            senderName: smtpConfig.fromName || smtpConfig.name,
             status: "warming",
             currentDay: 0,
             totalDays: 14,
@@ -124,7 +124,7 @@ export const startWarmup = mutation({
     },
 });
 
-/** Pause warmup for a sender */
+/** Pause warmup for an account */
 export const pauseWarmup = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
@@ -151,7 +151,7 @@ export const pauseWarmup = mutation({
     },
 });
 
-/** Resume warmup for a sender */
+/** Resume warmup for an account */
 export const resumeWarmup = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),

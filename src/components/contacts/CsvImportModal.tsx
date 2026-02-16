@@ -291,9 +291,20 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                             <p className="text-xs text-slate-400">
                                                 {pasteText ? `${(pasteText.match(EMAIL_REGEX) || []).length} emails detected` : "Supports any format — comma-separated, line-separated, or mixed text"}
                                             </p>
-                                            <p className="text-xs text-slate-400">
-                                                {pasteText.length.toLocaleString()} / 15,000
-                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                {pasteText && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPasteText("")}
+                                                        className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+                                                    >
+                                                        Clear
+                                                    </button>
+                                                )}
+                                                <p className="text-xs text-slate-400">
+                                                    {pasteText.length.toLocaleString()} / 15,000
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex justify-end">

@@ -10,7 +10,7 @@ import { Id } from "@/../convex/_generated/dataModel";
 
 function WarmupPage() {
     const { tier } = useFeatureGate();
-    const senders = useAuthQuery(api.senders.list);
+    const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
     const warmupSchedules = useAuthQuery(api.warmup.list);
     const warmupStats = useAuthQuery(api.warmup.getStats);
 
@@ -21,13 +21,15 @@ function WarmupPage() {
 
     const [expandedAccount, setExpandedAccount] = useState<string | null>(null);
 
-    // Merge senders with their warmup schedules
-    const accounts = (senders || []).map((sender) => {
-        const schedule = (warmupSchedules || []).find((s) => s.senderId === sender._id);
+    // Merge SMTP configs (saved email accounts) with their warmup schedules
+    const accounts = (smtpConfigs || []).map((config) => {
+        const schedule = (warmupSchedules || []).find((s) => s.smtpConfigId === config._id);
         return {
-            id: sender._id,
-            email: sender.email,
-            name: sender.name,
+            id: config._id,
+            email: config.fromEmail,
+            name: config.name,
+            displayName: config.fromName || config.name,
+            provider: config.provider || "smtp",
             scheduleId: schedule?._id || null,
             status: schedule?.status || ("not_started" as const),
             day: schedule?.currentDay || 0,
@@ -41,8 +43,8 @@ function WarmupPage() {
         };
     });
 
-    const handleStart = async (senderId: Id<"senders">) => {
-        await startWarmup({ senderId });
+    const handleStart = async (smtpConfigId: Id<"smtpConfigs">) => {
+        await startWarmup({ smtpConfigId });
     };
 
     const handleToggle = async (account: typeof accounts[0]) => {
@@ -71,6 +73,15 @@ function WarmupPage() {
         }
     };
 
+    const getProviderIcon = (provider: string) => {
+        switch (provider) {
+            case "resend": return "✉️";
+            case "sendgrid": return "📧";
+            case "mailgun": return "📬";
+            default: return "📤";
+        }
+    };
+
     const getHealthColor = (score: number) => {
         if (score >= 80) return "text-emerald-500";
         if (score >= 50) return "text-amber-500";
@@ -96,7 +107,7 @@ function WarmupPage() {
                                     Email Warmup
                                 </h1>
                                 <p className="text-sm text-slate-500 mt-1">
-                                    Gradually build sender reputation to improve deliverability
+                                    Gradually build sender reputation for your saved email accounts
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -147,7 +158,7 @@ function WarmupPage() {
                         </div>
 
                         {/* Account List */}
-                        {senders === undefined ? (
+                        {smtpConfigs === undefined ? (
                             <div className="flex justify-center py-16">
                                 <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
                             </div>
@@ -160,7 +171,7 @@ function WarmupPage() {
                                     No Email Accounts Connected
                                 </h2>
                                 <p className="text-sm text-slate-500 max-w-sm mx-auto mb-6">
-                                    Add email accounts in Settings → Email Configuration to start warming them up.
+                                    Add email accounts in your Account Center to start warming them up.
                                 </p>
                                 <a
                                     href="/settings?tab=email-config"
@@ -188,13 +199,13 @@ function WarmupPage() {
                                             >
                                                 {/* Email avatar */}
                                                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center text-lg font-bold text-slate-500 dark:text-slate-400 flex-shrink-0">
-                                                    {account.email.charAt(0).toUpperCase()}
+                                                    {getProviderIcon(account.provider)}
                                                 </div>
 
                                                 {/* Account info */}
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">{account.name}</span>
+                                                        <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">{account.displayName || account.name}</span>
                                                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${statusConfig.bg} ${statusConfig.color}`}>
                                                             <span>{statusConfig.icon}</span>
                                                             {statusConfig.label}
@@ -235,7 +246,7 @@ function WarmupPage() {
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                handleStart(account.id as Id<"senders">);
+                                                                handleStart(account.id as Id<"smtpConfigs">);
                                                             }}
                                                             className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-semibold rounded-lg hover:shadow-md hover:shadow-cyan-500/20 active:scale-[0.97] transition-all"
                                                         >
@@ -345,7 +356,7 @@ function WarmupPage() {
                                                                         </button>
                                                                     )}
                                                                     <button
-                                                                        onClick={() => handleStart(account.id as Id<"senders">)}
+                                                                        onClick={() => handleStart(account.id as Id<"smtpConfigs">)}
                                                                         className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                                                     >
                                                                         Restart Warmup
