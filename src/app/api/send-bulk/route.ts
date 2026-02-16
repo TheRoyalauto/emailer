@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
+import { appendToSentFolder } from "@/lib/imapSent";
 
 interface EmailPayload {
     to: string;
@@ -136,12 +137,37 @@ async function sendWithSmtp(
             },
         });
 
-        await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: `"${from.name}" <${from.email}>`,
             to: email.to,
             subject: email.subject,
             html: email.html,
         });
+
+        // Save to Sent folder via IMAP (non-blocking)
+        try {
+            const rawMessage = [
+                `From: "${from.name}" <${from.email}>`,
+                `To: ${email.to}`,
+                `Subject: ${email.subject}`,
+                `Date: ${new Date().toUTCString()}`,
+                `Message-ID: ${info.messageId}`,
+                `MIME-Version: 1.0`,
+                `Content-Type: text/html; charset=utf-8`,
+                ``,
+                email.html,
+            ].join("\r\n");
+
+            await appendToSentFolder({
+                host: config.host || "",
+                port: config.port || 587,
+                secure: config.secure || false,
+                user: config.user || "",
+                pass: config.pass || "",
+            }, rawMessage);
+        } catch (imapErr) {
+            console.warn("[IMAP Sent] Bulk: Could not save to Sent folder:", imapErr);
+        }
 
         return { success: true };
     } catch (err: any) {

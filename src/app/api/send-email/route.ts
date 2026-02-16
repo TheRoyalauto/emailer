@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { appendToSentFolder } from "@/lib/imapSent";
 
 interface EmailRequest {
     to: string;
@@ -55,15 +56,44 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Send email
-        const info = await transporter.sendMail({
+        const mailOptions = {
             from: `"${body.from.name}" <${body.from.email}>`,
             to: body.to,
             replyTo: body.replyTo || body.from.email,
             subject: body.subject,
             text: body.text || body.html.replace(/<[^>]*>/g, ""), // Strip HTML for plain text
             html: body.html,
-        });
+        };
+
+        // Send email
+        const info = await transporter.sendMail(mailOptions);
+
+        // Save to Sent folder via IMAP (non-blocking — don't fail the send)
+        try {
+            // Build the raw RFC822 message for IMAP append
+            const rawMessage = [
+                `From: "${body.from.name}" <${body.from.email}>`,
+                `To: ${body.to}`,
+                `Subject: ${body.subject}`,
+                `Date: ${new Date().toUTCString()}`,
+                `Message-ID: ${info.messageId}`,
+                `MIME-Version: 1.0`,
+                `Content-Type: text/html; charset=utf-8`,
+                ``,
+                body.html,
+            ].join("\r\n");
+
+            await appendToSentFolder({
+                host: body.smtp.host,
+                port: body.smtp.port,
+                secure: body.smtp.secure,
+                user: body.smtp.user,
+                pass: body.smtp.pass,
+            }, rawMessage);
+        } catch (imapErr) {
+            // Log but don't fail — the email was already sent
+            console.warn("[IMAP Sent] Could not save to Sent folder:", imapErr);
+        }
 
         return NextResponse.json({
             success: true,
