@@ -35,7 +35,8 @@ export const getDefault = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("smtpConfigs") },
+        id: v.id("smtpConfigs")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
@@ -48,7 +49,7 @@ export const get = query({
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         name: v.string(),
         provider: v.optional(v.union(
             v.literal("smtp"),
@@ -106,7 +107,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("smtpConfigs"),
         name: v.optional(v.string()),
         host: v.optional(v.string()),
@@ -124,7 +125,7 @@ export const update = mutation({
             throw new Error("Config not found");
         }
 
-        const { id, ...updates } = args;
+        const { id, sessionToken: _st, ...updates } = args;
         const filteredUpdates = Object.fromEntries(
             Object.entries(updates).filter(([_, v]) => v !== undefined)
         );
@@ -138,7 +139,8 @@ export const update = mutation({
 export const setDefault = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("smtpConfigs") },
+        id: v.id("smtpConfigs")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
@@ -167,7 +169,8 @@ export const setDefault = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("smtpConfigs") },
+        id: v.id("smtpConfigs")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
@@ -184,7 +187,8 @@ export const remove = mutation({
 export const markUsed = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("smtpConfigs") },
+        id: v.id("smtpConfigs")
+    },
     handler: async (ctx, args) => {
         const config = await ctx.db.get(args.id);
         if (!config) return;
@@ -196,7 +200,8 @@ export const markUsed = mutation({
 export const getForTest = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("smtpConfigs") },
+        id: v.id("smtpConfigs")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         const config = await ctx.db.get(args.id);
