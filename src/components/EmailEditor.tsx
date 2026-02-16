@@ -114,15 +114,15 @@ function wrapInEmailHtml(content: string): string {
 function highlightHtml(code: string): string {
     return code
         // HTML comments
-        .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="text-slate-600">$1</span>')
+        .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="text-slate-400 dark:text-slate-600">$1</span>')
         // Tags
-        .replace(/(&lt;\/?)([\w-]+)/g, '$1<span class="text-rose-400">$2</span>')
+        .replace(/(&lt;\/?)([\w-]+)/g, '$1<span class="text-rose-600 dark:text-rose-400">$2</span>')
         // Attributes
-        .replace(/([\w-]+)(=)/g, '<span class="text-amber-300">$1</span><span class="text-slate-500">$2</span>')
+        .replace(/([\w-]+)(=)/g, '<span class="text-amber-700 dark:text-amber-300">$1</span><span class="text-slate-400 dark:text-slate-500">$2</span>')
         // Strings
-        .replace(/("([^"]*)")/g, '<span class="text-emerald-400">$1</span>')
+        .replace(/("([^"]*)")/g, '<span class="text-emerald-600 dark:text-emerald-400">$1</span>')
         // Angle brackets
-        .replace(/(&lt;|&gt;|\/>)/g, '<span class="text-slate-500">$1</span>');
+        .replace(/(&lt;|&gt;|\/>)/g, '<span class="text-slate-400 dark:text-slate-500">$1</span>');
 }
 
 function escapeHtml(str: string): string {
@@ -819,11 +819,11 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject, smtpConfi
 
                     {/* HTML MODE — Syntax highlighted */}
                     {mode === "html" && (
-                        <div className="h-full flex overflow-hidden bg-slate-950 relative">
+                        <div className="h-full flex overflow-hidden bg-slate-50 dark:bg-slate-950 relative">
                             {/* Line numbers */}
                             <div className="py-4 pl-4 pr-2 text-right select-none pointer-events-none shrink-0 overflow-hidden">
                                 {Array.from({ length: lineCount }, (_, i) => (
-                                    <div key={i} className="text-[11px] leading-[20px] text-slate-700 font-mono">{i + 1}</div>
+                                    <div key={i} className="text-[11px] leading-[20px] text-slate-300 dark:text-slate-700 font-mono">{i + 1}</div>
                                 ))}
                             </div>
 
@@ -842,7 +842,7 @@ export default function EmailEditor({ htmlBody, onHtmlChange, subject, smtpConfi
                                 value={htmlBody}
                                 onChange={(e) => onHtmlChange(e.target.value)}
                                 onScroll={handleCodeScroll}
-                                className="flex-1 w-full py-4 pr-4 bg-transparent text-transparent font-mono text-[12px] leading-[20px] resize-none focus:outline-none caret-cyan-400 selection:bg-cyan-800/40 relative z-10"
+                                className="flex-1 w-full py-4 pr-4 bg-transparent text-transparent font-mono text-[12px] leading-[20px] resize-none focus:outline-none caret-cyan-600 dark:caret-cyan-400 selection:bg-cyan-200/50 dark:selection:bg-cyan-800/40 relative z-10"
                                 placeholder="Type or paste your HTML here..."
                                 spellCheck={false}
                                 autoComplete="off"
