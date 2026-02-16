@@ -1124,5 +1124,31 @@ export default defineSchema({
     })
         .index("by_user", ["userId"])
         .index("by_smtp_config", ["smtpConfigId"]),
+
+    // Warmup activity log — records each individual warmup email
+    warmupLogs: defineTable({
+        userId: v.id("users"),
+        scheduleId: v.id("warmupSchedules"),
+        smtpConfigId: v.id("smtpConfigs"),
+        recipientEmail: v.string(),
+        subject: v.string(),
+        type: v.union(
+            v.literal("sent"),
+            v.literal("reply_received"),
+            v.literal("bounced"),
+            v.literal("opened"),
+            v.literal("health_check")
+        ),
+        status: v.union(
+            v.literal("success"),
+            v.literal("failed")
+        ),
+        error: v.optional(v.string()),
+        day: v.number(), // Warmup day this log belongs to
+        createdAt: v.number(),
+    })
+        .index("by_schedule", ["scheduleId"])
+        .index("by_user_date", ["userId", "createdAt"])
+        .index("by_smtp_config", ["smtpConfigId"]),
 });
 
