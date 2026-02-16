@@ -145,11 +145,11 @@ function TemplatesPage() {
     const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
     const defaultSmtp = smtpConfigs?.find((c: any) => c.isDefault) ?? smtpConfigs?.[0];
     const smtpConfig = defaultSmtp ? {
-        host: defaultSmtp.host,
-        port: defaultSmtp.port,
-        secure: defaultSmtp.secure,
-        user: defaultSmtp.user,
-        pass: defaultSmtp.pass,
+        host: defaultSmtp.host ?? "",
+        port: defaultSmtp.port ?? 587,
+        secure: defaultSmtp.secure ?? false,
+        user: defaultSmtp.username ?? "",
+        pass: defaultSmtp.password ?? "",
     } : undefined;
 
     // Handle URL-based modal opening
@@ -394,8 +394,8 @@ function TemplatesPage() {
                             onHtmlChange={setHtmlContent}
                             subject={subject}
                             smtpConfig={smtpConfig}
-                            fromName={defaultSmtp?.name}
-                            fromEmail={defaultSmtp?.user}
+                            fromName={defaultSmtp?.fromName}
+                            fromEmail={defaultSmtp?.fromEmail}
                         />
                     </div>
                 </div>
