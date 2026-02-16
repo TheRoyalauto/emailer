@@ -10,6 +10,7 @@ import BulkActionBar from "@/components/contacts/BulkActionBar";
 import CsvImportModal from "@/components/contacts/CsvImportModal";
 import ContactSlideOver from "@/components/contacts/ContactSlideOver";
 import MergeContactsModal from "@/components/contacts/MergeContactsModal";
+import BatchManager from "@/components/contacts/BatchManager";
 
 const SALES_STAGES = [
     { id: "new", label: "New", color: "#9CA3AF", icon: "🆕" },
@@ -51,6 +52,9 @@ function ContactsContent() {
     const bulkAddTags = useAuthMutation(api.contacts.bulkAddTags);
     const bulkAssignBatch = useAuthMutation(api.contacts.bulkAssignBatch);
     const mergeContacts = useAuthMutation(api.contacts.merge);
+    const createBatch = useAuthMutation(api.batches.create);
+    const updateBatchMut = useAuthMutation(api.batches.update);
+    const deleteBatch = useAuthMutation(api.batches.remove);
 
     // ── State ───────────────────────────────────────────
     const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -292,6 +296,22 @@ function ContactsContent() {
                     allTags={allTags || []}
                     activeFilterCount={activeFilterCount}
                     onClearAll={clearAllFilters}
+                />
+
+                {/* ── Batch Manager ─────────────────────────────── */}
+                <BatchManager
+                    batches={(batches || []) as any}
+                    selectedBatch={selectedBatch}
+                    onSelectBatch={setSelectedBatch}
+                    onCreateBatch={async (data) => {
+                        await createBatch(data);
+                    }}
+                    onUpdateBatch={async (data) => {
+                        await updateBatchMut(data);
+                    }}
+                    onDeleteBatch={async (id) => {
+                        await deleteBatch({ id });
+                    }}
                 />
 
                 {/* ── Bulk Action Bar ─────────────────────────── */}
