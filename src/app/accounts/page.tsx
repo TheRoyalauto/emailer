@@ -52,6 +52,7 @@ function SMTPSettingsPage() {
     const [fromEmail, setFromEmail] = useState("");
     const [fromEmailManual, setFromEmailManual] = useState(false);
     const [displayName, setDisplayName] = useState("");
+    const [nickname, setNickname] = useState("");
     const [makeDefault, setMakeDefault] = useState(true);
 
     const handlePresetChange = (presetName: string) => {
@@ -66,7 +67,7 @@ function SMTPSettingsPage() {
 
     const handleCreate = async () => {
         await createConfig({
-            name: displayName || preset || "SMTP Config",
+            name: nickname || displayName || preset || "SMTP Config",
             host,
             port,
             secure,
@@ -90,6 +91,7 @@ function SMTPSettingsPage() {
         setFromEmail("");
         setFromEmailManual(false);
         setDisplayName("");
+        setNickname("");
         setMakeDefault(true);
         setWizardStep(1);
     };
@@ -557,6 +559,19 @@ function SMTPSettingsPage() {
                                     <p className="text-slate-400 text-sm mb-6">How should your name appear in emails?</p>
 
                                     <div className="space-y-4">
+                                        <div>
+                                            <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">Nickname</label>
+                                            <input
+                                                type="text"
+                                                value={nickname}
+                                                onChange={(e) => setNickname(e.target.value)}
+                                                className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all"
+                                                placeholder={`e.g. ${preset || "Work"} Email`}
+                                                autoFocus
+                                            />
+                                            <p className="text-[11px] text-slate-400 mt-1">A label for this account (only visible to you)</p>
+                                        </div>
+
                                         <div>
                                             <label className="text-sm text-slate-700 dark:text-slate-300 mb-1.5 block font-medium">From Email</label>
                                             <input
