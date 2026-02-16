@@ -229,7 +229,7 @@ function ContactsContent() {
                             onClick={() => setShowImportModal(true)}
                             className="px-4 py-2.5 bg-white dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-300 rounded-xl text-sm font-medium hover:bg-[#f8fafc] dark:hover:bg-slate-700 transition-all"
                         >
-                            Import CSV
+                            Import
                         </button>
                         <button
                             onClick={() => setShowAddContact(true)}
@@ -370,7 +370,7 @@ function ContactsContent() {
                                         + Add Contact
                                     </button>
                                     <button onClick={() => setShowImportModal(true)} className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 text-[#4B5563] dark:text-slate-300 rounded-xl text-sm font-medium">
-                                        Import CSV
+                                        Import
                                     </button>
                                 </>
                             )}
