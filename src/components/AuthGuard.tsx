@@ -146,7 +146,7 @@ export function AppHeader() {
         },
         {
             icon: <Icon d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 6.51 6.51 0 003 12a9 9 0 0018 0c0-1.905-.694-3.649-1.844-4.993" />,
-            label: "Email Warmup",
+            label: "Sending Limits",
             onClick: () => { router.push("/warmup"); setShowUserMenu(false); },
         },
         {

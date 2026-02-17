@@ -2,28 +2,31 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "./auth";
 
-// ─── Warmup ramp schedule: day → emails/day ─────────────────────────────────────
-// Gradual 14-day ramp from 5 → 50 emails/day
-const WARMUP_RAMP = [5, 8, 12, 16, 20, 25, 28, 32, 36, 40, 43, 46, 48, 50];
+// ─── Reputation Guard: Smart Send Throttle ───────────────────────────────────
+// Fresh accounts ramp from 5 → unlimited over 14 days.
+// The user's actual campaign emails ARE the warmup.
+// ──────────────────────────────────────────────────────────────────────────────
 
-// ─── Queries ─────────────────────────────────────────────────────────────────────
+// Day → max emails/day. After day 14, unlimited.
+const WARMUP_RAMP = [5, 8, 12, 16, 20, 25, 30, 35, 40, 50, 65, 80, 100, 150];
+const RAMP_DAYS = WARMUP_RAMP.length; // 14 days
+const UNLIMITED = 999999;
 
-/** List all warmup schedules for the current user */
-export const list = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) return [];
+/** Get today's date as YYYY-MM-DD */
+function getToday(): string {
+    return new Date().toISOString().slice(0, 10);
+}
 
-        return await ctx.db
-            .query("warmupSchedules")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .collect();
-    },
-});
+/** Calculate the warmup day for an account based on createdAt */
+function getWarmupDay(createdAt: number): number {
+    const ageMs = Date.now() - createdAt;
+    return Math.floor(ageMs / 86400000); // ms → days
+}
 
-/** Get warmup schedule for a specific SMTP config (email account) */
-export const getBySmtpConfig = query({
+// ─── Queries ─────────────────────────────────────────────────────────────────
+
+/** Get send limit info for a specific SMTP account */
+export const getSendLimit = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
         smtpConfigId: v.id("smtpConfigs"),
@@ -32,38 +35,139 @@ export const getBySmtpConfig = query({
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
-        return await ctx.db
-            .query("warmupSchedules")
-            .withIndex("by_smtp_config", (q) => q.eq("smtpConfigId", args.smtpConfigId))
-            .first();
-    },
-});
+        const config = await ctx.db.get(args.smtpConfigId);
+        if (!config || config.userId !== userId) return null;
 
-/** Get warmup stats summary for the user */
-export const getStats = query({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) return { total: 0, warming: 0, ready: 0, paused: 0 };
+        const today = getToday();
+        const day = getWarmupDay(config.createdAt);
+        const isRamping = day < RAMP_DAYS;
+        const dailyLimit = isRamping ? WARMUP_RAMP[day] : UNLIMITED;
 
-        const schedules = await ctx.db
-            .query("warmupSchedules")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .collect();
+        // If the lastSendDate is today, use the current count. Otherwise, count is 0.
+        const sentToday = config.lastSendDate === today ? (config.dailySendCount || 0) : 0;
+        const remaining = Math.max(0, dailyLimit - sentToday);
 
         return {
-            total: schedules.length,
-            warming: schedules.filter((s) => s.status === "warming").length,
-            ready: schedules.filter((s) => s.status === "ready").length,
-            paused: schedules.filter((s) => s.status === "paused").length,
+            day,
+            rampDays: RAMP_DAYS,
+            isRamping,
+            dailyLimit: isRamping ? dailyLimit : null, // null = unlimited
+            sentToday,
+            remaining: isRamping ? remaining : UNLIMITED,
+            accountAge: day,
+            accountEmail: config.fromEmail,
+            accountName: config.fromName || config.name,
         };
     },
 });
 
-// ─── Mutations ───────────────────────────────────────────────────────────────────
+/** Get send limits for ALL accounts for the current user (dashboard) */
+export const getAllSendLimits = query({
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) return [];
 
-/** Start warmup for an email account (SMTP config) */
-export const startWarmup = mutation({
+        const configs = await ctx.db
+            .query("smtpConfigs")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+
+        const today = getToday();
+
+        return configs.map((config) => {
+            const day = getWarmupDay(config.createdAt);
+            const isRamping = day < RAMP_DAYS;
+            const dailyLimit = isRamping ? WARMUP_RAMP[day] : UNLIMITED;
+            const sentToday = config.lastSendDate === today ? (config.dailySendCount || 0) : 0;
+            const remaining = Math.max(0, dailyLimit - sentToday);
+            const progressPercent = isRamping ? Math.round((day / RAMP_DAYS) * 100) : 100;
+
+            return {
+                id: config._id,
+                email: config.fromEmail,
+                name: config.fromName || config.name,
+                provider: config.provider || "smtp",
+                day,
+                rampDays: RAMP_DAYS,
+                isRamping,
+                dailyLimit: isRamping ? dailyLimit : null,
+                sentToday,
+                remaining: isRamping ? remaining : UNLIMITED,
+                progressPercent,
+                createdAt: config.createdAt,
+            };
+        });
+    },
+});
+
+/** Get aggregate stats across all accounts */
+export const getThrottleStats = query({
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())) },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) return { total: 0, ramping: 0, unlimited: 0, totalSentToday: 0 };
+
+        const configs = await ctx.db
+            .query("smtpConfigs")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+
+        const today = getToday();
+
+        let ramping = 0;
+        let unlimited = 0;
+        let totalSentToday = 0;
+
+        for (const config of configs) {
+            const day = getWarmupDay(config.createdAt);
+            if (day < RAMP_DAYS) {
+                ramping++;
+            } else {
+                unlimited++;
+            }
+            if (config.lastSendDate === today) {
+                totalSentToday += config.dailySendCount || 0;
+            }
+        }
+
+        return { total: configs.length, ramping, unlimited, totalSentToday };
+    },
+});
+
+// ─── Mutations ───────────────────────────────────────────────────────────────
+
+/** Record sends for an account (called after successful bulk/single send) */
+export const recordSends = mutation({
+    args: {
+        sessionToken: v.optional(v.union(v.string(), v.null())),
+        smtpConfigId: v.id("smtpConfigs"),
+        count: v.number(),
+    },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
+        if (!userId) throw new Error("Not authenticated");
+
+        const config = await ctx.db.get(args.smtpConfigId);
+        if (!config || config.userId !== userId) {
+            throw new Error("Account not found");
+        }
+
+        const today = getToday();
+
+        // If the date changed, reset the counter
+        const currentCount = config.lastSendDate === today ? (config.dailySendCount || 0) : 0;
+
+        await ctx.db.patch(args.smtpConfigId, {
+            dailySendCount: currentCount + args.count,
+            lastSendDate: today,
+            lastUsedAt: Date.now(),
+        });
+    },
+});
+
+/** Reset daily send count (for manual override by user) */
+export const resetDailyCount = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
         smtpConfigId: v.id("smtpConfigs"),
@@ -72,259 +176,14 @@ export const startWarmup = mutation({
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
 
-        // Verify SMTP config belongs to user
-        const smtpConfig = await ctx.db.get(args.smtpConfigId);
-        if (!smtpConfig || smtpConfig.userId !== userId) {
-            throw new Error("Email account not found");
+        const config = await ctx.db.get(args.smtpConfigId);
+        if (!config || config.userId !== userId) {
+            throw new Error("Account not found");
         }
 
-        // Check if warmup already exists for this account
-        const existing = await ctx.db
-            .query("warmupSchedules")
-            .withIndex("by_smtp_config", (q) => q.eq("smtpConfigId", args.smtpConfigId))
-            .first();
-
-        if (existing) {
-            if (existing.status === "warming") {
-                throw new Error("Warmup already in progress for this account");
-            }
-            // Resume or restart
-            await ctx.db.patch(existing._id, {
-                status: "warming",
-                currentDay: existing.status === "paused" ? existing.currentDay : 0,
-                currentDailyVolume: WARMUP_RAMP[existing.status === "paused" ? existing.currentDay : 0],
-                emailsSentToday: 0,
-                startedAt: Date.now(),
-                pausedAt: undefined,
-                completedAt: undefined,
-                lastActivityAt: Date.now(),
-            });
-            return existing._id;
-        }
-
-        // Create new warmup schedule
-        return await ctx.db.insert("warmupSchedules", {
-            userId,
-            smtpConfigId: args.smtpConfigId,
-            senderEmail: smtpConfig.fromEmail,
-            senderName: smtpConfig.fromName || smtpConfig.name,
-            status: "warming",
-            currentDay: 0,
-            totalDays: 14,
-            currentDailyVolume: WARMUP_RAMP[0],
-            targetDailyVolume: 50,
-            emailsSentToday: 0,
-            totalEmailsSent: 0,
-            repliesReceived: 0,
-            healthScore: 50, // Start at 50, improves with successful sends
-            startedAt: Date.now(),
-            createdAt: Date.now(),
-            lastActivityAt: Date.now(),
+        await ctx.db.patch(args.smtpConfigId, {
+            dailySendCount: 0,
+            lastSendDate: getToday(),
         });
-    },
-});
-
-/** Pause warmup for an account */
-export const pauseWarmup = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        if (schedule.status !== "warming") {
-            throw new Error("Can only pause an active warmup");
-        }
-
-        await ctx.db.patch(args.scheduleId, {
-            status: "paused",
-            pausedAt: Date.now(),
-            lastActivityAt: Date.now(),
-        });
-    },
-});
-
-/** Resume warmup for an account */
-export const resumeWarmup = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        if (schedule.status !== "paused") {
-            throw new Error("Can only resume a paused warmup");
-        }
-
-        await ctx.db.patch(args.scheduleId, {
-            status: "warming",
-            pausedAt: undefined,
-            lastActivityAt: Date.now(),
-            currentDailyVolume: WARMUP_RAMP[Math.min(schedule.currentDay, WARMUP_RAMP.length - 1)],
-        });
-    },
-});
-
-/** Advance warmup to next day (called by scheduler or cron) */
-export const advanceDay = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        if (schedule.status !== "warming") {
-            throw new Error("Warmup is not active");
-        }
-
-        const nextDay = schedule.currentDay + 1;
-
-        // Check if warmup is complete
-        if (nextDay >= schedule.totalDays) {
-            await ctx.db.patch(args.scheduleId, {
-                status: "ready",
-                currentDay: schedule.totalDays,
-                currentDailyVolume: schedule.targetDailyVolume,
-                emailsSentToday: 0,
-                healthScore: Math.min(100, schedule.healthScore + 5),
-                completedAt: Date.now(),
-                lastActivityAt: Date.now(),
-            });
-            return;
-        }
-
-        // Advance to next day
-        const newVolume = WARMUP_RAMP[Math.min(nextDay, WARMUP_RAMP.length - 1)];
-        await ctx.db.patch(args.scheduleId, {
-            currentDay: nextDay,
-            currentDailyVolume: newVolume,
-            emailsSentToday: 0,
-            lastActivityAt: Date.now(),
-        });
-    },
-});
-
-/** Record a sent warmup email */
-export const recordSend = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        await ctx.db.patch(args.scheduleId, {
-            emailsSentToday: schedule.emailsSentToday + 1,
-            totalEmailsSent: schedule.totalEmailsSent + 1,
-            lastActivityAt: Date.now(),
-        });
-    },
-});
-
-/** Record a reply received during warmup */
-export const recordReply = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        // Replies improve health score
-        const newHealth = Math.min(100, schedule.healthScore + 2);
-
-        await ctx.db.patch(args.scheduleId, {
-            repliesReceived: schedule.repliesReceived + 1,
-            healthScore: newHealth,
-            lastActivityAt: Date.now(),
-        });
-    },
-});
-
-/** Update health score (e.g., from deliverability check) */
-export const updateHealthScore = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-        healthScore: v.number(),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        const clamped = Math.max(0, Math.min(100, args.healthScore));
-
-        // Auto-pause if health drops below 30
-        if (clamped < 30 && schedule.status === "warming") {
-            await ctx.db.patch(args.scheduleId, {
-                healthScore: clamped,
-                status: "paused",
-                pausedAt: Date.now(),
-                lastActivityAt: Date.now(),
-            });
-            return;
-        }
-
-        await ctx.db.patch(args.scheduleId, {
-            healthScore: clamped,
-            lastActivityAt: Date.now(),
-        });
-    },
-});
-
-/** Delete a warmup schedule */
-export const remove = mutation({
-    args: {
-        sessionToken: v.optional(v.union(v.string(), v.null())),
-        scheduleId: v.id("warmupSchedules"),
-    },
-    handler: async (ctx, args) => {
-        const userId = await getAuthUserId(ctx, args);
-        if (!userId) throw new Error("Not authenticated");
-
-        const schedule = await ctx.db.get(args.scheduleId);
-        if (!schedule || schedule.userId !== userId) {
-            throw new Error("Schedule not found");
-        }
-
-        await ctx.db.delete(args.scheduleId);
     },
 });

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import Link from "next/link";
-import { useAuthMutation } from "../hooks/useAuthConvex";
+import { useAuthMutation, useAuthQuery } from "../hooks/useAuthConvex";
 
 interface CampaignSendModalProps {
     onClose: () => void;
@@ -51,6 +51,14 @@ function replaceVariables(text: string, contact: { name?: string; company?: stri
 
 export default function CampaignSendModal({ onClose, template, account, contacts }: CampaignSendModalProps) {
     const markUsed = useAuthMutation(api.smtpConfigs.markUsed);
+    const recordSends = useAuthMutation(api.warmup.recordSends);
+
+    // ── Send Throttle (Reputation Guard) ──
+    const sendLimit = useAuthQuery(api.warmup.getSendLimit, { smtpConfigId: account._id });
+    const isThrottled = sendLimit?.isRamping && contacts.length > (sendLimit?.remaining || 0);
+    const effectiveContactCount = sendLimit?.isRamping
+        ? Math.min(contacts.length, sendLimit?.remaining || 0)
+        : contacts.length;
 
     const [step, setStep] = useState<"configure" | "sending" | "complete">("configure");
     const [delayMs, setDelayMs] = useState(1000);
@@ -91,14 +99,25 @@ export default function CampaignSendModal({ onClose, template, account, contacts
             return;
         }
 
+        // ── Enforce send throttle ──
+        if (sendLimit?.isRamping && (sendLimit?.remaining || 0) <= 0) {
+            setError(`Daily send limit reached for this account (Day ${sendLimit.day + 1} of ${sendLimit.rampDays}). Try again tomorrow.`);
+            return;
+        }
+
+        // Cap contacts to remaining daily limit
+        const cappedContacts = sendLimit?.isRamping
+            ? contacts.slice(0, sendLimit.remaining)
+            : contacts;
+
         setStep("sending");
         setIsSending(true);
         setError(null);
         setResults([]);
-        setSendProgress({ sent: 0, failed: 0, total: contacts.length, currentEmail: "" });
+        setSendProgress({ sent: 0, failed: 0, total: cappedContacts.length, currentEmail: "" });
 
         try {
-            const emailsToSend = contacts.map(contact => ({
+            const emailsToSend = cappedContacts.map(contact => ({
                 to: contact.email,
                 subject: replaceVariables(template.subject, contact),
                 html: replaceVariables(template.body, contact),
@@ -168,7 +187,7 @@ export default function CampaignSendModal({ onClose, template, account, contacts
                             setSendProgress({
                                 sent,
                                 failed,
-                                total: contacts.length,
+                                total: cappedContacts.length,
                                 currentEmail: data.email,
                             });
 
@@ -187,6 +206,16 @@ export default function CampaignSendModal({ onClose, template, account, contacts
                     } catch {
                         // Skip malformed lines
                     }
+                }
+            }
+
+            // ── Record sends in throttle tracker ──
+            const successCount = allResults.filter(r => r.success).length;
+            if (successCount > 0) {
+                try {
+                    await recordSends({ smtpConfigId: account._id, count: successCount });
+                } catch {
+                    // Non-critical — don't block the flow
                 }
             }
 
@@ -274,6 +303,40 @@ export default function CampaignSendModal({ onClose, template, account, contacts
                                         Change
                                     </Link>
                                 </div>
+
+                                {/* ── Reputation Guard: Throttle Warning ── */}
+                                {sendLimit?.isRamping && (
+                                    <div className={`mt-3 flex items-start gap-3 p-3.5 rounded-xl border ${isThrottled
+                                            ? "bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40"
+                                            : "bg-cyan-50 dark:bg-cyan-950/20 border-cyan-200 dark:border-cyan-800/40"
+                                        }`}>
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isThrottled ? "bg-amber-100 dark:bg-amber-900/40" : "bg-cyan-100 dark:bg-cyan-900/40"
+                                            }`}>
+                                            <span className="text-sm">{isThrottled ? "⚠️" : "🛡️"}</span>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className={`text-xs font-semibold mb-0.5 ${isThrottled ? "text-amber-700 dark:text-amber-300" : "text-cyan-700 dark:text-cyan-300"
+                                                }`}>
+                                                Reputation Guard · Day {sendLimit.day + 1} of {sendLimit.rampDays}
+                                            </div>
+                                            <div className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                                                {isThrottled ? (
+                                                    <>This account can send <strong className="text-amber-600 dark:text-amber-300">{sendLimit.remaining}</strong> more email{sendLimit.remaining !== 1 ? "s" : ""} today. Only the first {sendLimit.remaining} of {contacts.length} recipients will be sent now.</>
+                                                ) : (
+                                                    <>Daily limit: <strong className="text-cyan-600 dark:text-cyan-300">{sendLimit.dailyLimit}</strong> emails · <strong>{sendLimit.remaining}</strong> remaining today · {sendLimit.sentToday} sent</>
+                                                )}
+                                            </div>
+                                            {/* Mini progress bar */}
+                                            <div className="mt-2 w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                                <div
+                                                    className={`h-full rounded-full transition-all ${isThrottled ? "bg-amber-500" : "bg-cyan-500"
+                                                        }`}
+                                                    style={{ width: `${sendLimit.dailyLimit ? Math.min(100, ((sendLimit.sentToday || 0) / sendLimit.dailyLimit) * 100) : 0}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* ── Sending Options Section ── */}
@@ -533,13 +596,13 @@ export default function CampaignSendModal({ onClose, template, account, contacts
                             </button>
                             <button
                                 onClick={handleSend}
-                                disabled={!canSend}
+                                disabled={!canSend || (sendLimit?.isRamping && (sendLimit?.remaining || 0) <= 0)}
                                 className="flex items-center gap-2 px-6 py-2.5 bg-[#0f172a] dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#0f172a]/90 dark:hover:bg-slate-100 transition-all shadow-sm"
                             >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                 </svg>
-                                Send {contacts.length} Email{contacts.length !== 1 ? "s" : ""}
+                                Send {effectiveContactCount} Email{effectiveContactCount !== 1 ? "s" : ""}
                             </button>
                         </>
                     )}

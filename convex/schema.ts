@@ -414,6 +414,9 @@ export default defineSchema({
         isVerified: v.optional(v.boolean()),
         lastUsedAt: v.optional(v.number()),
         createdAt: v.number(),
+        // ── Send throttle (reputation guard) ──
+        dailySendCount: v.optional(v.number()),  // Emails sent today
+        lastSendDate: v.optional(v.string()),    // YYYY-MM-DD of last send
     })
         .index("by_user", ["userId"])
         .index("by_user_default", ["userId", "isDefault"]),
