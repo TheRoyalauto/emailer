@@ -6,7 +6,7 @@ import { auth } from "./auth";
 // Templates are now only available via the Template Library (one-click clone)
 // New users start with an empty template list
 export const seedTemplates = mutation({
-    args: { sessionToken: v.optional(v.union(v.string(), v.null())),},
+    args: { sessionToken: v.optional(v.union(v.string(), v.null())), },
     handler: async (ctx) => {
         const userId = await auth.getUserId(ctx);
         if (!userId) throw new Error("Not authenticated");
@@ -17,7 +17,7 @@ export const seedTemplates = mutation({
     },
 });
 
-// Seed 3 senders for the user
+// Seed 3 SMTP configs for the user
 export const seedSenders = mutation({
     args: { userEmail: v.string() },
     handler: async (ctx, args) => {
@@ -32,35 +32,36 @@ export const seedSenders = mutation({
 
         const userId = user._id;
 
-        const senders = [
+        const configs = [
             {
                 name: "Claimory Team",
-                email: "team@claimory.io",
-                replyTo: "team@claimory.io",
+                fromEmail: "team@claimory.io",
+                fromName: "Claimory Team",
                 isDefault: true,
             },
             {
                 name: "Claimory Sales",
-                email: "sales@claimory.io",
-                replyTo: "sales@claimory.io",
+                fromEmail: "sales@claimory.io",
+                fromName: "Claimory Sales",
                 isDefault: false,
             },
             {
                 name: "Claimory Support",
-                email: "support@claimory.io",
-                replyTo: "support@claimory.io",
+                fromEmail: "support@claimory.io",
+                fromName: "Claimory Support",
                 isDefault: false,
             },
         ];
 
-        for (const sender of senders) {
-            await ctx.db.insert("senders", {
+        for (const config of configs) {
+            await ctx.db.insert("smtpConfigs", {
                 userId,
-                name: sender.name,
-                email: sender.email,
-                replyTo: sender.replyTo,
-                isDefault: sender.isDefault,
-                verified: true,
+                name: config.name,
+                fromEmail: config.fromEmail,
+                fromName: config.fromName,
+                isDefault: config.isDefault,
+                provider: "smtp",
+                createdAt: Date.now(),
             });
         }
 

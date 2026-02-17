@@ -84,7 +84,7 @@ export default defineSchema({
         htmlContent: v.string(),
         textContent: v.optional(v.string()),
         listId: v.optional(v.id("lists")),
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
         status: v.union(
             v.literal("draft"),
             v.literal("scheduled"),
@@ -188,17 +188,6 @@ export default defineSchema({
         .index("by_contact", ["contactId"])
         .index("by_list_and_contact", ["listId", "contactId"]),
 
-    // Sender identities (user-scoped)
-    senders: defineTable({
-        userId: v.optional(v.id("users")), // Optional for migration
-        name: v.string(),
-        email: v.string(),
-        replyTo: v.optional(v.string()),
-        isDefault: v.boolean(),
-        verified: v.boolean(),
-    })
-        .index("by_email", ["email"])
-        .index("by_user", ["userId"]),
 
     // Email templates (user-scoped)
     templates: defineTable({
@@ -811,7 +800,7 @@ export default defineSchema({
     // Send Policies - Sending limits, business hours, warmup
     sendPolicies: defineTable({
         userId: v.id("users"),
-        senderId: v.optional(v.id("senders")), // If null, applies globally
+        smtpConfigId: v.optional(v.id("smtpConfigs")), // If null, applies globally
         name: v.string(),
         isActive: v.boolean(),
 
@@ -841,7 +830,7 @@ export default defineSchema({
         updatedAt: v.optional(v.number()),
     })
         .index("by_user", ["userId"])
-        .index("by_sender", ["senderId"])
+        .index("by_smtpConfig", ["smtpConfigId"])
         .index("by_user_active", ["userId", "isActive"]),
 
     // Tracked Links - Click tracking for emails
@@ -951,35 +940,6 @@ export default defineSchema({
         .index("by_action", ["action"])
         .index("by_timestamp", ["timestamp"]),
 
-    // Email Warmup Schedules (per-sender warmup tracking)
-    warmupSchedules: defineTable({
-        userId: v.id("users"),
-        senderId: v.id("senders"),
-        senderEmail: v.string(),
-        senderName: v.string(),
-        status: v.union(
-            v.literal("warming"),
-            v.literal("ready"),
-            v.literal("paused"),
-            v.literal("not_started")
-        ),
-        currentDay: v.number(),           // 0-14, current warmup day
-        totalDays: v.number(),            // typically 14
-        currentDailyVolume: v.number(),   // emails/day right now
-        targetDailyVolume: v.number(),    // target at end of warmup (e.g., 50)
-        emailsSentToday: v.number(),      // sent so far today
-        totalEmailsSent: v.number(),      // total across warmup
-        repliesReceived: v.number(),      // auto-reply count
-        healthScore: v.number(),          // 0-100 inbox placement score
-        lastActivityAt: v.optional(v.number()),
-        startedAt: v.optional(v.number()),
-        completedAt: v.optional(v.number()),
-        pausedAt: v.optional(v.number()),
-        createdAt: v.number(),
-    })
-        .index("by_user", ["userId"])
-        .index("by_sender", ["senderId"])
-        .index("by_user_status", ["userId", "status"]),
 
     // ═══════════════════════════════════════════════════════════════════════════
     // CONTENT CALENDAR SYSTEM

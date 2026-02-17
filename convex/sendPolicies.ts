@@ -22,8 +22,8 @@ export const list = query({
         // Enrich with sender info
         const enriched = await Promise.all(
             policies.map(async (policy) => {
-                const sender = policy.senderId ? await ctx.db.get(policy.senderId) : null;
-                return { ...policy, sender };
+                const smtpConfig = policy.smtpConfigId ? await ctx.db.get(policy.smtpConfigId) : null;
+                return { ...policy, sender: smtpConfig };
             })
         );
 
@@ -36,17 +36,17 @@ export const getActive = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
 
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
 
         // First check for sender-specific policy
-        if (args.senderId) {
+        if (args.smtpConfigId) {
             const senderPolicy = await ctx.db
                 .query("sendPolicies")
-                .withIndex("by_sender", (q) => q.eq("senderId", args.senderId))
+                .withIndex("by_smtpConfig", (q) => q.eq("smtpConfigId", args.smtpConfigId))
                 .filter((q) => q.and(
                     q.eq(q.field("userId"), userId),
                     q.eq(q.field("isActive"), true)
@@ -60,7 +60,7 @@ export const getActive = query({
         return await ctx.db
             .query("sendPolicies")
             .withIndex("by_user_active", (q) => q.eq("userId", userId).eq("isActive", true))
-            .filter((q) => q.eq(q.field("senderId"), undefined))
+            .filter((q) => q.eq(q.field("smtpConfigId"), undefined))
             .first();
     },
 });
@@ -87,7 +87,7 @@ export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
 
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
         name: v.string(),
         isActive: v.optional(v.boolean()),
         dailySendLimit: v.number(),
@@ -110,11 +110,11 @@ export const create = mutation({
         if (!userId) throw new Error("Not authenticated");
 
         // If making this active and it's global, deactivate other global policies
-        if (args.isActive && !args.senderId) {
+        if (args.isActive && !args.smtpConfigId) {
             const existing = await ctx.db
                 .query("sendPolicies")
                 .withIndex("by_user", (q) => q.eq("userId", userId))
-                .filter((q) => q.eq(q.field("senderId"), undefined))
+                .filter((q) => q.eq(q.field("smtpConfigId"), undefined))
                 .collect();
 
             for (const policy of existing) {
@@ -140,7 +140,7 @@ export const update = mutation({
         sessionToken: v.optional(v.union(v.string(), v.null())),
 
         id: v.id("sendPolicies"),
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
         name: v.optional(v.string()),
         isActive: v.optional(v.boolean()),
         dailySendLimit: v.optional(v.number()),
@@ -224,7 +224,7 @@ export const getTodayUsage = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
 
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

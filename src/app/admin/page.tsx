@@ -460,7 +460,7 @@ export default function SuperAdminPage() {
                                         {[
                                             { label: "Campaigns", value: userDetails.stats.campaignsCount },
                                             { label: "Contacts", value: userDetails.stats.contactsCount },
-                                            { label: "Senders", value: userDetails.stats.sendersCount },
+                                            { label: "Accounts", value: userDetails.stats.smtpConfigsCount },
                                             { label: "Total Sent", value: userDetails.stats.totalEmailsSent },
                                         ].map((s) => (
                                             <div key={s.label} className="bg-slate-50 dark:bg-[var(--bg-tertiary)] rounded-lg p-3 text-center">

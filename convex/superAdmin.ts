@@ -134,7 +134,6 @@ export const getUserDetails = query({
 
         const campaigns = await ctx.db.query("campaigns").withIndex("by_user", (q) => q.eq("userId", profile.userId)).collect();
         const contacts = await ctx.db.query("contacts").withIndex("by_user", (q) => q.eq("userId", profile.userId)).collect();
-        const senders = await ctx.db.query("senders").withIndex("by_user", (q) => q.eq("userId", profile.userId)).collect();
         const smtpConfigs = await ctx.db.query("smtpConfigs").withIndex("by_user", (q) => q.eq("userId", profile.userId)).collect();
 
         const limits = TIER_LIMITS[profile.tier];
@@ -145,12 +144,10 @@ export const getUserDetails = query({
             stats: {
                 campaignsCount: campaigns.length,
                 contactsCount: contacts.length,
-                sendersCount: senders.length,
                 smtpConfigsCount: smtpConfigs.length,
                 totalEmailsSent: campaigns.reduce((acc, c) => acc + (c.stats?.sent || 0), 0),
             },
             recentCampaigns: campaigns.slice(0, 5),
-            senders,
             smtpConfigs,
         };
     },
@@ -458,9 +455,6 @@ export const deleteUserData = mutation({
         const contacts = await ctx.db.query("contacts").withIndex("by_user", (q) => q.eq("userId", uid)).collect();
         for (const c of contacts) await ctx.db.delete(c._id);
 
-        const senders = await ctx.db.query("senders").withIndex("by_user", (q) => q.eq("userId", uid)).collect();
-        for (const s of senders) await ctx.db.delete(s._id);
-
         const smtpConfigs = await ctx.db.query("smtpConfigs").withIndex("by_user", (q) => q.eq("userId", uid)).collect();
         for (const s of smtpConfigs) await ctx.db.delete(s._id);
 
@@ -468,10 +462,10 @@ export const deleteUserData = mutation({
             await ctx.db.patch(args.profileId, { status: "deleted" });
         }
 
-        const deleted = { campaigns: campaigns.length, contacts: contacts.length, senders: senders.length, smtpConfigs: smtpConfigs.length };
+        const deleted = { campaigns: campaigns.length, contacts: contacts.length, smtpConfigs: smtpConfigs.length };
 
         await logAudit(ctx, userId, adminProfile.email, "data_deletion",
-            `Deleted all data: ${campaigns.length} campaigns, ${contacts.length} contacts, ${senders.length} senders, ${smtpConfigs.length} SMTP configs`,
+            `Deleted all data: ${campaigns.length} campaigns, ${contacts.length} contacts, ${smtpConfigs.length} SMTP configs`,
             args.profileId, profile.email,
             { deleted, profileDeleted: args.deleteProfile || false }
         );

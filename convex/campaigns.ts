@@ -40,7 +40,7 @@ export const create = mutation({
         htmlContent: v.string(),
         textContent: v.optional(v.string()),
         listId: v.optional(v.id("lists")),
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
@@ -72,7 +72,7 @@ export const update = mutation({
         htmlContent: v.optional(v.string()),
         textContent: v.optional(v.string()),
         listId: v.optional(v.id("lists")),
-        senderId: v.optional(v.id("senders")),
+        smtpConfigId: v.optional(v.id("smtpConfigs")),
     },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);

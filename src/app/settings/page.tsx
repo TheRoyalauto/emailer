@@ -129,7 +129,6 @@ function SettingsPage() {
 
     // Queries
     const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
-    const senders = useAuthQuery(api.senders.list);
     const sendPolicies = useAuthQuery(api.sendPolicies.list, {});
     const todayUsage = useAuthQuery(api.sendPolicies.getTodayUsage, {});
     const brandRules = useAuthQuery(api.brandRules.list);
@@ -521,7 +520,7 @@ function SettingsPage() {
                                             )}
                                         </div>
 
-                                        {/* Sender Identities */}
+                                        {/* Sender Identities (from SMTP Configs) */}
                                         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                             <div className="flex items-center justify-between mb-5">
                                                 <div>
@@ -529,33 +528,33 @@ function SettingsPage() {
                                                     <p className="text-sm text-slate-400 mt-0.5">Your &quot;From&quot; addresses</p>
                                                 </div>
                                                 <Link
-                                                    href="/senders"
+                                                    href="/accounts"
                                                     className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                                                 >
-                                                    + Add Sender
+                                                    + Add Account
                                                 </Link>
                                             </div>
 
-                                            {senders === undefined ? (
+                                            {smtpConfigs === undefined ? (
                                                 <div className="flex justify-center py-8">
                                                     <div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" />
                                                 </div>
-                                            ) : senders.length === 0 ? (
+                                            ) : smtpConfigs.length === 0 ? (
                                                 <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
-                                                    <p className="text-slate-500 font-medium">No senders configured</p>
-                                                    <Link href="/senders" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
-                                                        Add your first sender →
+                                                    <p className="text-slate-500 font-medium">No sender identities configured</p>
+                                                    <Link href="/accounts" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
+                                                        Add your first email account →
                                                     </Link>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-2">
-                                                    {senders.map((sender) => (
-                                                        <div key={sender._id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
+                                                    {smtpConfigs.map((config) => (
+                                                        <div key={config._id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
                                                             <div>
-                                                                <div className="font-semibold text-sm text-slate-900 dark:text-white">{sender.name}</div>
-                                                                <div className="text-xs text-slate-400">{sender.email}</div>
+                                                                <div className="font-semibold text-sm text-slate-900 dark:text-white">{config.fromName || config.name}</div>
+                                                                <div className="text-xs text-slate-400">{config.fromEmail}</div>
                                                             </div>
-                                                            {sender.isDefault && (
+                                                            {config.isDefault && (
                                                                 <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-md text-xs font-semibold">
                                                                     Default
                                                                 </span>
