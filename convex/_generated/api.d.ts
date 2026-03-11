@@ -29,7 +29,6 @@ import type * as lists from "../lists.js";
 import type * as replies from "../replies.js";
 import type * as seed from "../seed.js";
 import type * as sendPolicies from "../sendPolicies.js";
-import type * as senders from "../senders.js";
 import type * as sequenceScheduler from "../sequenceScheduler.js";
 import type * as sequences from "../sequences.js";
 import type * as setup from "../setup.js";
@@ -72,7 +71,6 @@ declare const fullApi: ApiFromModules<{
   replies: typeof replies;
   seed: typeof seed;
   sendPolicies: typeof sendPolicies;
-  senders: typeof senders;
   sequenceScheduler: typeof sequenceScheduler;
   sequences: typeof sequences;
   setup: typeof setup;

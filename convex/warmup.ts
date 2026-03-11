@@ -18,7 +18,8 @@ function getToday(): string {
 }
 
 /** Calculate the warmup day for an account based on createdAt */
-function getWarmupDay(createdAt: number): number {
+function getWarmupDay(createdAt: number | undefined): number {
+    if (!createdAt) return RAMP_DAYS; // Treat missing createdAt as fully warmed up
     const ageMs = Date.now() - createdAt;
     return Math.floor(ageMs / 86400000); // ms → days
 }
@@ -39,7 +40,7 @@ export const getSendLimit = query({
         if (!config || config.userId !== userId) return null;
 
         const today = getToday();
-        const day = getWarmupDay(config.createdAt);
+        const day = getWarmupDay(config.createdAt as number | undefined);
         const isRamping = day < RAMP_DAYS;
         const dailyLimit = isRamping ? WARMUP_RAMP[day] : UNLIMITED;
 
@@ -76,7 +77,7 @@ export const getAllSendLimits = query({
         const today = getToday();
 
         return configs.map((config) => {
-            const day = getWarmupDay(config.createdAt);
+            const day = getWarmupDay(config.createdAt as number | undefined);
             const isRamping = day < RAMP_DAYS;
             const dailyLimit = isRamping ? WARMUP_RAMP[day] : UNLIMITED;
             const sentToday = config.lastSendDate === today ? (config.dailySendCount || 0) : 0;
@@ -120,7 +121,7 @@ export const getThrottleStats = query({
         let totalSentToday = 0;
 
         for (const config of configs) {
-            const day = getWarmupDay(config.createdAt);
+            const day = getWarmupDay(config.createdAt as number | undefined);
             if (day < RAMP_DAYS) {
                 ramping++;
             } else {
