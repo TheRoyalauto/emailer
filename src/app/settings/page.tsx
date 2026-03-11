@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useFeatureGate, getTierDisplayName, type Tier } from "@/hooks/useFeatureGate";
 
-type SettingsSection = "profile" | "email-config" | "sending" | "billing";
+type SettingsSection = "profile" | "email-config" | "sending" | "billing" | "unsubscribes";
 
 /* â”€â”€â”€ Plan Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const plans = [
@@ -108,6 +108,16 @@ const sidebarSections: { id: SettingsSection; label: string; icon: React.ReactNo
             </svg>
         ),
     },
+    {
+        id: "unsubscribes",
+        label: "Unsubscribes",
+        description: "Manage opt-outs",
+        icon: (
+            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+        ),
+    },
 ];
 
 function SettingsPage() {
@@ -122,6 +132,10 @@ function SettingsPage() {
     const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
     const sendPolicies = useAuthQuery(api.sendPolicies.list, {});
     const todayUsage = useAuthQuery(api.sendPolicies.getTodayUsage, {});
+    const unsubscribes = useAuthQuery(api.unsubscribes.list);
+
+    // Mutations
+    const resubscribe = useAuthMutation(api.unsubscribes.resubscribe);
 
     // Send Policy mutations
     const createPolicy = useAuthMutation(api.sendPolicies.create);
@@ -182,6 +196,16 @@ function SettingsPage() {
             ? policyForm.businessDays.filter(d => d !== day)
             : [...policyForm.businessDays, day].sort();
         setPolicyForm({ ...policyForm, businessDays: days });
+    };
+
+    const formatDate = (ts: number) => {
+        return new Date(ts).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+        });
     };
 
     const handleSavePolicy = async () => {
@@ -852,6 +876,85 @@ function SettingsPage() {
                                                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Stripe integration coming soon</p>
                                                 <p className="text-xs text-slate-400 mt-1">Self-serve billing, invoices, and payment management will appear here</p>
                                             </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* === UNSUBSCRIBES === */}
+                                {activeSection === "unsubscribes" && (
+                                    <div className="space-y-6">
+                                        {/* Stats */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                                <div className="text-3xl font-bold font-heading text-red-500 dark:text-red-400 tracking-[-0.03em]">
+                                                    {unsubscribes?.length || 0}
+                                                </div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium uppercase tracking-wider">Total Unsubscribes</div>
+                                            </div>
+                                            <div className="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                                                <div className="text-3xl font-bold font-heading text-emerald-500 dark:text-emerald-400 tracking-[-0.03em]">
+                                                    {unsubscribes?.filter(u => {
+                                                        const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                                                        return u.unsubscribedAt >= weekAgo;
+                                                    }).length || 0}
+                                                </div>
+                                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-medium uppercase tracking-wider">This Week</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Info Box */}
+                                        <div className="p-5 bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-100 dark:border-cyan-900/50 rounded-xl">
+                                            <h3 className="font-bold font-heading text-cyan-700 dark:text-cyan-400 mb-2 flex items-center gap-2">
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                                                Unsubscribe Link
+                                            </h3>
+                                            <p className="text-sm text-cyan-600/80 dark:text-cyan-400/80 mb-3">
+                                                Add this link to your email templates for compliance:
+                                            </p>
+                                            <div className="bg-white dark:bg-slate-900 rounded-lg p-3 text-xs font-mono text-slate-700 dark:text-slate-300 border border-cyan-100 dark:border-cyan-800/50 overflow-x-auto selection:bg-cyan-100 dark:selection:bg-cyan-900">
+                                                {`<a href="${typeof window !== 'undefined' ? window.location.origin : ''}/unsubscribe?email={{email}}">Unsubscribe</a>`}
+                                            </div>
+                                        </div>
+
+                                        {/* Unsubscribes List */}
+                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+                                            {unsubscribes === undefined ? (
+                                                <div className="flex justify-center py-12">
+                                                    <div className="animate-spin w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full" />
+                                                </div>
+                                            ) : unsubscribes.length === 0 ? (
+                                                <div className="text-center py-12 bg-slate-50 dark:bg-slate-800/30 rounded-lg">
+                                                    <div className="text-4xl mb-3">✅</div>
+                                                    <p className="text-slate-600 dark:text-slate-300 font-medium font-heading">No unsubscribes yet</p>
+                                                    <p className="text-sm text-slate-500 mt-1">All your contacts are subscribed!</p>
+                                                </div>
+                                            ) : (
+                                                <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                                                    {unsubscribes.map((unsub) => (
+                                                        <div key={unsub._id} className="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                                            <div>
+                                                                <div className="font-bold font-heading text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                                                                    {unsub.email}
+                                                                </div>
+                                                                <div className="text-xs text-slate-400 mt-1 font-medium">
+                                                                    Unsubscribed {formatDate(unsub.unsubscribedAt)}
+                                                                </div>
+                                                                {unsub.reason && (
+                                                                    <div className="mt-2 text-[11px] text-amber-700 dark:text-amber-400 font-medium flex items-center gap-1.5 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-1 rounded-md inline-block border border-amber-100 dark:border-amber-900/50">
+                                                                        <span className="font-bold">Reason:</span> {unsub.reason}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            <button
+                                                                onClick={() => resubscribe({ email: unsub.email })}
+                                                                className="opacity-0 group-hover:opacity-100 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-all border border-emerald-200/50 dark:border-emerald-500/20 active:scale-[0.98]"
+                                                            >
+                                                                Resubscribe
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}

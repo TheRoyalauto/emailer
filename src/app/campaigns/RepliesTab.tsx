@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
-import { AuthGuard } from "@/components/AuthGuard";
-import { PageWrapper } from "@/components/PageWrapper";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 import { PageLoadingSpinner } from "@/components/PageLoadingSpinner";
 import { PageEmptyState } from "@/components/PageEmptyState";
@@ -22,7 +20,7 @@ const CLASSIFICATIONS = [
     { id: "unknown", label: "Unknown", color: "#9ca3af", icon: "🤷", bg: "rgba(156, 163, 175, 0.15)" },
 ] as const;
 
-function RepliesPage() {
+export default function RepliesTab() {
     const [filter, setFilter] = useState<"all" | "unprocessed" | string>("unprocessed");
     const [selectedReply, setSelectedReply] = useState<Id<"inboundReplies"> | null>(null);
     const [isClassifying, setIsClassifying] = useState(false);
@@ -103,7 +101,7 @@ function RepliesPage() {
     const selectedReplyData = replies?.find(r => r._id === selectedReply);
 
     return (
-        <PageWrapper maxWidth="7xl">
+        <div className="w-full">
             <StatsBar items={[
                 { value: stats?.total || 0, label: "Total Replies" },
                 { value: stats?.unprocessed || 0, label: "Unprocessed", color: "text-amber-400" },
@@ -402,14 +400,6 @@ function RepliesPage() {
                     )}
                 </div>
             </div>
-        </PageWrapper>
-    );
-}
-
-export default function RepliesPageWrapper() {
-    return (
-        <AuthGuard>
-            <RepliesPage />
-        </AuthGuard>
+        </div>
     );
 }
