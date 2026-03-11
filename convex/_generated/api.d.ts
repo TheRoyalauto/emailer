@@ -8,20 +8,13 @@
  * @module
  */
 
-import type * as abTests from "../abTests.js";
 import type * as activities from "../activities.js";
 import type * as analytics from "../analytics.js";
 import type * as auth from "../auth.js";
-import type * as automations from "../automations.js";
 import type * as batches from "../batches.js";
-import type * as brandAssets from "../brandAssets.js";
-import type * as brandRules from "../brandRules.js";
 import type * as campaigns from "../campaigns.js";
 import type * as contacts from "../contacts.js";
-import type * as contentBrandVoice from "../contentBrandVoice.js";
-import type * as contentCalendar from "../contentCalendar.js";
 import type * as customAuth from "../customAuth.js";
-import type * as deals from "../deals.js";
 import type * as emailVerification from "../emailVerification.js";
 import type * as http from "../http.js";
 import type * as leadSearches from "../leadSearches.js";
@@ -33,9 +26,7 @@ import type * as sequenceScheduler from "../sequenceScheduler.js";
 import type * as sequences from "../sequences.js";
 import type * as setup from "../setup.js";
 import type * as smtpConfigs from "../smtpConfigs.js";
-import type * as socialConnections from "../socialConnections.js";
 import type * as superAdmin from "../superAdmin.js";
-import type * as tasks from "../tasks.js";
 import type * as templates from "../templates.js";
 import type * as trackedLinks from "../trackedLinks.js";
 import type * as unsubscribes from "../unsubscribes.js";
@@ -50,20 +41,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  abTests: typeof abTests;
   activities: typeof activities;
   analytics: typeof analytics;
   auth: typeof auth;
-  automations: typeof automations;
   batches: typeof batches;
-  brandAssets: typeof brandAssets;
-  brandRules: typeof brandRules;
   campaigns: typeof campaigns;
   contacts: typeof contacts;
-  contentBrandVoice: typeof contentBrandVoice;
-  contentCalendar: typeof contentCalendar;
   customAuth: typeof customAuth;
-  deals: typeof deals;
   emailVerification: typeof emailVerification;
   http: typeof http;
   leadSearches: typeof leadSearches;
@@ -75,9 +59,7 @@ declare const fullApi: ApiFromModules<{
   sequences: typeof sequences;
   setup: typeof setup;
   smtpConfigs: typeof smtpConfigs;
-  socialConnections: typeof socialConnections;
   superAdmin: typeof superAdmin;
-  tasks: typeof tasks;
   templates: typeof templates;
   trackedLinks: typeof trackedLinks;
   unsubscribes: typeof unsubscribes;

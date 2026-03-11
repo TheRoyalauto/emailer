@@ -23,7 +23,7 @@ export const CLASSIFICATIONS = [
 export const list = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         isProcessed: v.optional(v.boolean()),
         classification: v.optional(v.string()),
         limit: v.optional(v.number()),
@@ -65,7 +65,8 @@ export const list = query({
 export const get = query({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("inboundReplies") },
+        id: v.id("inboundReplies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) return null;
@@ -84,7 +85,7 @@ export const get = query({
 export const add = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         contactId: v.id("contacts"),
         dealId: v.optional(v.id("deals")),
         campaignId: v.optional(v.id("campaigns")),
@@ -119,7 +120,7 @@ export const add = mutation({
 export const updateClassification = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("inboundReplies"),
         classification: v.string(),
     },
@@ -136,25 +137,7 @@ export const updateClassification = mutation({
             processedAt: Date.now(),
         });
 
-        // Trigger automation based on classification
-        const triggerMap: Record<string, string> = {
-            positive: "reply_positive",
-            not_now: "reply_not_now",
-            price_objection: "reply_price",
-            competitor: "reply_competitor",
-            angry: "reply_angry",
-        };
-
-        const triggerType = triggerMap[args.classification];
-        if (triggerType) {
-            await ctx.scheduler.runAfter(0, internal.automations.executeForTrigger, {
-                userId,
-                triggerType,
-                contactId: reply.contactId,
-                dealId: reply.dealId,
-                replyId: args.id,
-            });
-        }
+        // Automations removed
 
         return { success: true };
     },
@@ -164,7 +147,8 @@ export const updateClassification = mutation({
 export const markResponded = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("inboundReplies") },
+        id: v.id("inboundReplies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -185,7 +169,8 @@ export const markResponded = mutation({
 export const markIgnored = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("inboundReplies") },
+        id: v.id("inboundReplies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");
@@ -205,7 +190,7 @@ export const markIgnored = mutation({
 export const saveResponses = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-       
+
         id: v.id("inboundReplies"),
         classification: v.string(),
         sentiment: v.optional(v.number()),
@@ -238,25 +223,7 @@ export const saveResponses = mutation({
             processedAt: Date.now(),
         });
 
-        // Trigger automation
-        const triggerMap: Record<string, string> = {
-            positive: "reply_positive",
-            not_now: "reply_not_now",
-            price_objection: "reply_price",
-            competitor: "reply_competitor",
-            angry: "reply_angry",
-        };
-
-        const triggerType = triggerMap[args.classification];
-        if (triggerType) {
-            await ctx.scheduler.runAfter(0, internal.automations.executeForTrigger, {
-                userId,
-                triggerType,
-                contactId: reply.contactId,
-                dealId: reply.dealId,
-                replyId: args.id,
-            });
-        }
+        // Automations removed
 
         return { success: true };
     },
@@ -266,7 +233,8 @@ export const saveResponses = mutation({
 export const remove = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
-        id: v.id("inboundReplies") },
+        id: v.id("inboundReplies")
+    },
     handler: async (ctx, args) => {
         const userId = await getAuthUserId(ctx, args);
         if (!userId) throw new Error("Not authenticated");

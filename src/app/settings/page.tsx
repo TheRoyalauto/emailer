@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { api } from "../../../convex/_generated/api";
@@ -11,9 +11,9 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { useFeatureGate, getTierDisplayName, type Tier } from "@/hooks/useFeatureGate";
 
-type SettingsSection = "profile" | "email-config" | "sending" | "brand" | "billing";
+type SettingsSection = "profile" | "email-config" | "sending" | "billing";
 
-/* ─── Plan Data ──────────────────────────────── */
+/* â”€â”€â”€ Plan Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const plans = [
     {
         id: "starter",
@@ -65,7 +65,7 @@ const plans = [
     },
 ];
 
-/* ─── Sidebar Navigation ─────────────────────── */
+/* â”€â”€â”€ Sidebar Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const sidebarSections: { id: SettingsSection; label: string; icon: React.ReactNode; description: string }[] = [
     {
         id: "profile",
@@ -97,16 +97,7 @@ const sidebarSections: { id: SettingsSection; label: string; icon: React.ReactNo
             </svg>
         ),
     },
-    {
-        id: "brand",
-        label: "Brand Rules",
-        description: "AI voice & tone",
-        icon: (
-            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
-            </svg>
-        ),
-    },
+
     {
         id: "billing",
         label: "Billing & Plans",
@@ -131,20 +122,13 @@ function SettingsPage() {
     const smtpConfigs = useAuthQuery(api.smtpConfigs.list);
     const sendPolicies = useAuthQuery(api.sendPolicies.list, {});
     const todayUsage = useAuthQuery(api.sendPolicies.getTodayUsage, {});
-    const brandRules = useAuthQuery(api.brandRules.list);
 
     // Send Policy mutations
     const createPolicy = useAuthMutation(api.sendPolicies.create);
     const updatePolicy = useAuthMutation(api.sendPolicies.update);
     const togglePolicy = useAuthMutation(api.sendPolicies.toggle);
     const deletePolicy = useAuthMutation(api.sendPolicies.remove);
-
-    // Brand Rules mutations
-    const createBrandRule = useAuthMutation(api.brandRules.create);
-    const updateBrandRule = useAuthMutation(api.brandRules.update);
-    const deleteBrandRule = useAuthMutation(api.brandRules.remove);
-
-    // Profile state — wired to real user data
+    // Profile state â€” wired to real user data
     const [profileName, setProfileName] = useState("");
     const [profileCompany, setProfileCompany] = useState("");
     const [profileSaved, setProfileSaved] = useState(false);
@@ -158,59 +142,7 @@ function SettingsPage() {
         if (userName) setProfileName(userName);
     }, [userName]);
 
-    // Brand Rules state
-    const [showBrandForm, setShowBrandForm] = useState(false);
-    const [editingBrandRule, setEditingBrandRule] = useState<Id<"emailBrandRules"> | null>(null);
-    const [brandForm, setBrandForm] = useState({
-        name: "Default",
-        voiceDescription: "",
-        forbiddenPhrases: "",
-        requiredPhrases: "",
-        companyName: "",
-        senderPersona: "",
-        productFacts: "",
-        maxParagraphs: 4,
-        maxSubjectLength: 60,
-        signatureTemplate: "",
-        isDefault: true,
-    });
 
-    const resetBrandForm = useCallback(() => {
-        setBrandForm({ name: "Default", voiceDescription: "", forbiddenPhrases: "", requiredPhrases: "", companyName: "", senderPersona: "", productFacts: "", maxParagraphs: 4, maxSubjectLength: 60, signatureTemplate: "", isDefault: true });
-        setEditingBrandRule(null);
-    }, []);
-
-    const handleSaveBrandRule = async () => {
-        const forbiddenArr = brandForm.forbiddenPhrases.split("\n").map(s => s.trim()).filter(Boolean);
-        const requiredArr = brandForm.requiredPhrases.split("\n").map(s => s.trim()).filter(Boolean);
-        const factsArr = brandForm.productFacts.split("\n").map(s => s.trim()).filter(Boolean).map(f => ({ fact: f }));
-
-        if (editingBrandRule) {
-            await updateBrandRule({ id: editingBrandRule, name: brandForm.name, voiceDescription: brandForm.voiceDescription, forbiddenPhrases: forbiddenArr, requiredPhrases: requiredArr, productFacts: factsArr, companyName: brandForm.companyName, senderPersona: brandForm.senderPersona, maxParagraphs: brandForm.maxParagraphs, maxSubjectLength: brandForm.maxSubjectLength, signatureTemplate: brandForm.signatureTemplate, isDefault: brandForm.isDefault });
-        } else {
-            await createBrandRule({ name: brandForm.name, voiceDescription: brandForm.voiceDescription, forbiddenPhrases: forbiddenArr, requiredPhrases: requiredArr, productFacts: factsArr, companyName: brandForm.companyName, senderPersona: brandForm.senderPersona, maxParagraphs: brandForm.maxParagraphs, maxSubjectLength: brandForm.maxSubjectLength, signatureTemplate: brandForm.signatureTemplate, isDefault: brandForm.isDefault });
-        }
-        setShowBrandForm(false);
-        resetBrandForm();
-    };
-
-    const handleEditBrandRule = (rule: NonNullable<typeof brandRules>[0]) => {
-        setBrandForm({
-            name: rule.name,
-            voiceDescription: rule.voiceDescription || "",
-            forbiddenPhrases: (rule.forbiddenPhrases || []).join("\n"),
-            requiredPhrases: (rule.requiredPhrases || []).join("\n"),
-            companyName: rule.companyName || "",
-            senderPersona: rule.senderPersona || "",
-            productFacts: (rule.productFacts || []).map((f: { fact: string }) => f.fact).join("\n"),
-            maxParagraphs: rule.maxParagraphs || 4,
-            maxSubjectLength: rule.maxSubjectLength || 60,
-            signatureTemplate: rule.signatureTemplate || "",
-            isDefault: rule.isDefault || false,
-        });
-        setEditingBrandRule(rule._id);
-        setShowBrandForm(true);
-    };
 
     // Policy form state
     const [showPolicyForm, setShowPolicyForm] = useState(false);
@@ -231,7 +163,7 @@ function SettingsPage() {
         autoPauseOnBounce: true,
     });
 
-    // Billing state — wired to real user profile
+    // Billing state â€” wired to real user profile
     const [isYearly, setIsYearly] = useState(false);
     const featureGate = useFeatureGate();
     const currentPlan = featureGate.tier;
@@ -297,9 +229,9 @@ function SettingsPage() {
                             <p className="text-slate-500 text-sm mt-1">Manage your account, email infrastructure, and billing.</p>
                         </div>
 
-                        {/* Two-column layout — sidebar + content */}
+                        {/* Two-column layout â€” sidebar + content */}
                         <div className="flex flex-col lg:flex-row gap-6">
-                            {/* ─── Left Sidebar ─── */}
+                            {/* â”€â”€â”€ Left Sidebar â”€â”€â”€ */}
                             <aside className="lg:w-56 flex-shrink-0">
                                 <nav className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                                     {sidebarSections.map((section, i) => (
@@ -326,7 +258,7 @@ function SettingsPage() {
                                 </nav>
                             </aside>
 
-                            {/* ─── Main Content ─── */}
+                            {/* â”€â”€â”€ Main Content â”€â”€â”€ */}
                             <div className="flex-1 min-w-0">
                                 {/* === PROFILE === */}
                                 {activeSection === "profile" && (
@@ -412,7 +344,7 @@ function SettingsPage() {
                                                                 <svg className="w-7 h-7 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                                                             </div>
                                                             <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Request Submitted</h3>
-                                                            <p className="text-sm text-slate-500 mt-2">Our support team will verify your identity and process the email change within 24–48 hours.</p>
+                                                            <p className="text-sm text-slate-500 mt-2">Our support team will verify your identity and process the email change within 24â€“48 hours.</p>
                                                             <button onClick={() => { setShowEmailTicketModal(false); setEmailTicketSent(false); setEmailTicketReason(""); setEmailTicketNewEmail(""); }} className="mt-5 px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors">
                                                                 Done
                                                             </button>
@@ -426,7 +358,7 @@ function SettingsPage() {
                                                                 </button>
                                                             </div>
                                                             <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-lg mb-5">
-                                                                <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">⚠️ For security, email changes are processed by our support team with identity verification.</p>
+                                                                <p className="text-xs text-amber-700 dark:text-amber-400 font-medium">âš ï¸ For security, email changes are processed by our support team with identity verification.</p>
                                                             </div>
                                                             <div className="space-y-4">
                                                                 <div>
@@ -489,7 +421,7 @@ function SettingsPage() {
                                                     </svg>
                                                     <p className="text-slate-500 font-medium">No email configurations yet</p>
                                                     <Link href="/accounts" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
-                                                        Add your first config →
+                                                        Add your first config â†’
                                                     </Link>
                                                 </div>
                                             ) : (
@@ -499,9 +431,9 @@ function SettingsPage() {
                                                             <div className="flex items-center gap-3">
                                                                 <div className="w-9 h-9 rounded-lg bg-cyan-50 flex items-center justify-center">
                                                                     <span className="text-lg">
-                                                                        {config.provider === "resend" ? "📮" :
-                                                                            config.provider === "sendgrid" ? "📬" :
-                                                                                config.provider === "mailgun" ? "📨" : "📧"}
+                                                                        {config.provider === "resend" ? "ðŸ“®" :
+                                                                            config.provider === "sendgrid" ? "ðŸ“¬" :
+                                                                                config.provider === "mailgun" ? "ðŸ“¨" : "ðŸ“§"}
                                                                     </span>
                                                                 </div>
                                                                 <div>
@@ -543,7 +475,7 @@ function SettingsPage() {
                                                 <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
                                                     <p className="text-slate-500 font-medium">No sender identities configured</p>
                                                     <Link href="/accounts" className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2 inline-block">
-                                                        Add your first email account →
+                                                        Add your first email account â†’
                                                     </Link>
                                                 </div>
                                             ) : (
@@ -670,7 +602,7 @@ function SettingsPage() {
                                                         <div className="pt-2 border-t border-slate-200">
                                                             <label className="flex items-center gap-2.5 cursor-pointer mb-3">
                                                                 <input type="checkbox" checked={policyForm.isWarmupMode} onChange={(e) => setPolicyForm({ ...policyForm, isWarmupMode: e.target.checked })} className="w-4 h-4 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500/30" />
-                                                                <span className="text-sm text-slate-700 font-medium">🔥 Warmup Mode</span>
+                                                                <span className="text-sm text-slate-700 font-medium">ðŸ”¥ Warmup Mode</span>
                                                             </label>
                                                             {policyForm.isWarmupMode && (
                                                                 <div className="grid grid-cols-2 gap-4">
@@ -719,7 +651,7 @@ function SettingsPage() {
                                                 <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
                                                     <p className="text-slate-500 font-medium">No send policies configured</p>
                                                     <button onClick={() => setShowPolicyForm(true)} className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-2">
-                                                        Create your first policy →
+                                                        Create your first policy â†’
                                                     </button>
                                                 </div>
                                             ) : (
@@ -736,7 +668,7 @@ function SettingsPage() {
                                                                     </button>
                                                                     <span className="font-semibold text-sm text-slate-900 dark:text-white">{policy.name}</span>
                                                                     {policy.isWarmupMode && (
-                                                                        <span className="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs font-semibold">🔥 Warmup</span>
+                                                                        <span className="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs font-semibold">ðŸ”¥ Warmup</span>
                                                                     )}
                                                                 </div>
                                                                 <div className="flex items-center gap-3">
@@ -745,135 +677,9 @@ function SettingsPage() {
                                                                 </div>
                                                             </div>
                                                             <div className="flex flex-wrap gap-4 text-xs text-slate-400 font-medium">
-                                                                <span>📤 {policy.dailySendLimit}/day</span>
-                                                                <span>⏰ {policy.businessHoursStart || 9}–{policy.businessHoursEnd || 17}h</span>
-                                                                <span>🌍 {policy.timezone}</span>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* === BRAND RULES === */}
-                                {activeSection === "brand" && (
-                                    <div className="space-y-6">
-                                        {/* Brand Form */}
-                                        {showBrandForm && (
-                                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
-                                                <div className="flex items-center justify-between mb-5">
-                                                    <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">{editingBrandRule ? "Edit" : "Create"} Brand Rule</h3>
-                                                    <button onClick={() => { setShowBrandForm(false); resetBrandForm(); }} className="text-slate-400 hover:text-slate-600 transition-colors">
-                                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                    </button>
-                                                </div>
-                                                <div className="space-y-5">
-                                                    <div className="grid sm:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Rule Name</label>
-                                                            <input type="text" value={brandForm.name} onChange={(e) => setBrandForm({ ...brandForm, name: e.target.value })} placeholder="e.g. Professional Outreach" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Company Name</label>
-                                                            <input type="text" value={brandForm.companyName} onChange={(e) => setBrandForm({ ...brandForm, companyName: e.target.value })} placeholder="Your company" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">🎨 Voice & Tone</label>
-                                                        <textarea value={brandForm.voiceDescription} onChange={(e) => setBrandForm({ ...brandForm, voiceDescription: e.target.value })} placeholder="Describe your brand voice. E.g. 'Professional but approachable, confident without being pushy. Use data-driven language.'" rows={3} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none" />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">👤 Sender Persona</label>
-                                                        <input type="text" value={brandForm.senderPersona} onChange={(e) => setBrandForm({ ...brandForm, senderPersona: e.target.value })} placeholder="e.g. Sales Director, Growth Consultant" className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
-                                                    </div>
-                                                    <div className="grid sm:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">🚫 Forbidden Phrases <span className="text-slate-400 font-normal">(one per line)</span></label>
-                                                            <textarea value={brandForm.forbiddenPhrases} onChange={(e) => setBrandForm({ ...brandForm, forbiddenPhrases: e.target.value })} placeholder={"synergy\ntouch base\nlow-hanging fruit"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">✅ Required Phrases <span className="text-slate-400 font-normal">(one per line)</span></label>
-                                                            <textarea value={brandForm.requiredPhrases} onChange={(e) => setBrandForm({ ...brandForm, requiredPhrases: e.target.value })} placeholder={"Your brand name\nKey product term"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">📋 Product Facts <span className="text-slate-400 font-normal">(one per line)</span></label>
-                                                        <textarea value={brandForm.productFacts} onChange={(e) => setBrandForm({ ...brandForm, productFacts: e.target.value })} placeholder={"We help customers save 30% on average\nAI-powered automation included\nTrusted by 500+ businesses"} rows={4} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
-                                                    </div>
-                                                    <div className="grid sm:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Max Paragraphs</label>
-                                                            <input type="number" min={1} max={10} value={brandForm.maxParagraphs} onChange={(e) => setBrandForm({ ...brandForm, maxParagraphs: parseInt(e.target.value) || 4 })} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Max Subject Length</label>
-                                                            <input type="number" min={10} max={200} value={brandForm.maxSubjectLength} onChange={(e) => setBrandForm({ ...brandForm, maxSubjectLength: parseInt(e.target.value) || 60 })} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm" />
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">✍️ Signature Template</label>
-                                                        <textarea value={brandForm.signatureTemplate} onChange={(e) => setBrandForm({ ...brandForm, signatureTemplate: e.target.value })} placeholder={"Best regards,\n{{name}}\n{{company}}"} rows={3} className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 transition-all text-sm resize-none font-mono" />
-                                                    </div>
-                                                    <div className="flex items-center gap-3">
-                                                        <button onClick={() => setBrandForm({ ...brandForm, isDefault: !brandForm.isDefault })} className={`relative w-11 h-6 rounded-full transition-colors ${brandForm.isDefault ? "bg-cyan-500" : "bg-slate-300 dark:bg-slate-600"}`}>
-                                                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${brandForm.isDefault ? "translate-x-6" : "translate-x-1"}`} />
-                                                        </button>
-                                                        <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">Set as default rule</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-                                                    <button onClick={() => { setShowBrandForm(false); resetBrandForm(); }} className="px-4 py-2 text-slate-500 hover:text-slate-700 text-sm font-medium">Cancel</button>
-                                                    <button onClick={handleSaveBrandRule} disabled={!brandForm.name.trim()} className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                                                        {editingBrandRule ? "Save Changes" : "Create Rule"}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Brand Rules List */}
-                                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
-                                            <div className="flex items-center justify-between mb-5">
-                                                <div>
-                                                    <h2 className="text-lg font-bold font-heading text-slate-900 dark:text-white">Brand Rules</h2>
-                                                    <p className="text-sm text-slate-400 mt-0.5">Configure AI voice, tone, and content rules</p>
-                                                </div>
-                                                {!showBrandForm && (
-                                                    <button onClick={() => setShowBrandForm(true)} className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors">
-                                                        + Add Rule
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {!brandRules ? (
-                                                <div className="flex justify-center py-8"><div className="animate-spin w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full" /></div>
-                                            ) : brandRules.length === 0 ? (
-                                                <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-200 dark:border-slate-700">
-                                                    <span className="text-3xl">🎨</span>
-                                                    <p className="text-slate-500 font-medium mt-3">No brand rules configured</p>
-                                                    <p className="text-xs text-slate-400 mt-1">Brand rules tell AI how to write emails in your voice</p>
-                                                    <button onClick={() => setShowBrandForm(true)} className="text-cyan-500 hover:text-cyan-600 text-sm font-medium mt-3">Create your first rule →</button>
-                                                </div>
-                                            ) : (
-                                                <div className="space-y-3">
-                                                    {brandRules.map((rule) => (
-                                                        <div key={rule._id} className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 hover:border-slate-200 transition-colors">
-                                                            <div className="flex items-center justify-between mb-2">
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="font-semibold text-sm text-slate-900 dark:text-white">{rule.name}</span>
-                                                                    {rule.isDefault && <span className="px-2 py-0.5 bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 rounded text-xs font-semibold">Default</span>}
-                                                                </div>
-                                                                <div className="flex items-center gap-3">
-                                                                    <button onClick={() => handleEditBrandRule(rule)} className="text-slate-400 hover:text-slate-600 text-sm font-medium">Edit</button>
-                                                                    <button onClick={() => deleteBrandRule({ id: rule._id })} className="text-red-400 hover:text-red-500 text-sm font-medium">Delete</button>
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex flex-wrap gap-3 text-xs text-slate-400 font-medium">
-                                                                {rule.voiceDescription && <span className="truncate max-w-[200px]">🎨 {rule.voiceDescription}</span>}
-                                                                {rule.forbiddenPhrases && rule.forbiddenPhrases.length > 0 && <span>🚫 {rule.forbiddenPhrases.length} forbidden</span>}
-                                                                {rule.productFacts && rule.productFacts.length > 0 && <span>📋 {rule.productFacts.length} facts</span>}
-                                                                {rule.companyName && <span>🏢 {rule.companyName}</span>}
+                                                                <span>ðŸ“¤ {policy.dailySendLimit}/day</span>
+                                                                <span>â° {policy.businessHoursStart || 9}â€“{policy.businessHoursEnd || 17}h</span>
+                                                                <span>ðŸŒ {policy.timezone}</span>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -928,7 +734,6 @@ function SettingsPage() {
 
                                         {/* Usage Meters */}
                                         <div className="grid sm:grid-cols-2 gap-4">
-                                            {/* Daily Usage */}
                                             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                                 <div className="flex items-center justify-between mb-4">
                                                     <h3 className="text-sm font-bold text-slate-900 dark:text-white">📤 Daily Emails</h3>
@@ -938,7 +743,7 @@ function SettingsPage() {
                                                 </div>
                                                 <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
                                                     <div
-                                                        className={`h-full rounded-full transition-all duration-700 ${featureGate.dailyUsagePercent > 90 ? "bg-red-500" : featureGate.dailyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500"}`}
+                                                        className={"h-full rounded-full transition-all duration-700 " + (featureGate.dailyUsagePercent > 90 ? "bg-red-500" : featureGate.dailyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500")}
                                                         style={{ width: `${Math.min(100, featureGate.dailyUsagePercent)}%` }}
                                                     />
                                                 </div>
@@ -946,8 +751,6 @@ function SettingsPage() {
                                                     {featureGate.dailyLimit === Infinity ? "Unlimited sending" : `${Math.max(0, featureGate.dailyLimit - featureGate.emailsSentToday)} emails remaining today`}
                                                 </p>
                                             </div>
-
-                                            {/* Monthly Usage */}
                                             <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6">
                                                 <div className="flex items-center justify-between mb-4">
                                                     <h3 className="text-sm font-bold text-slate-900 dark:text-white">📊 Monthly Emails</h3>
@@ -957,7 +760,7 @@ function SettingsPage() {
                                                 </div>
                                                 <div className="w-full h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
                                                     <div
-                                                        className={`h-full rounded-full transition-all duration-700 ${featureGate.monthlyUsagePercent > 90 ? "bg-red-500" : featureGate.monthlyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500"}`}
+                                                        className={"h-full rounded-full transition-all duration-700 " + (featureGate.monthlyUsagePercent > 90 ? "bg-red-500" : featureGate.monthlyUsagePercent > 70 ? "bg-amber-500" : "bg-gradient-to-r from-cyan-500 to-blue-500")}
                                                         style={{ width: `${Math.min(100, featureGate.monthlyUsagePercent)}%` }}
                                                     />
                                                 </div>
@@ -985,7 +788,6 @@ function SettingsPage() {
                                                     </span>
                                                 </div>
                                             </div>
-
                                             <div className="grid md:grid-cols-3 gap-4">
                                                 {plans.map((plan) => {
                                                     const isCurrent = plan.id === currentPlan;
@@ -1006,14 +808,12 @@ function SettingsPage() {
                                                             )}
                                                             <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white tracking-[-0.02em]">{plan.name}</h3>
                                                             <p className="text-xs text-slate-400 mt-1 mb-4">{plan.description}</p>
-
                                                             <div className="mb-4">
                                                                 <span className="font-heading text-3xl font-bold text-slate-900 dark:text-white tracking-[-0.04em]">
-                                                                    ${isYearly ? plan.yearlyPrice : plan.monthlyPrice}
+                                                                    $${isYearly ? plan.yearlyPrice : plan.monthlyPrice}
                                                                 </span>
                                                                 <span className="text-xs text-slate-400 ml-1">/mo</span>
                                                             </div>
-
                                                             <button
                                                                 className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all active:scale-[0.98] ${isCurrent
                                                                     ? "bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-default"
@@ -1023,7 +823,6 @@ function SettingsPage() {
                                                             >
                                                                 {isCurrent ? "Current Plan" : plan.id === "enterprise" ? "Contact Sales" : "Upgrade"}
                                                             </button>
-
                                                             <ul className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2.5">
                                                                 {plan.features.map((feature, j) => (
                                                                     <li key={j} className="flex items-center gap-2">
@@ -1072,3 +871,4 @@ export default function SettingsPageWrapper() {
         </AuthGuard>
     );
 }
+
