@@ -682,3 +682,49 @@ export const merge = mutation({
         return await ctx.db.get(args.primaryId);
     },
 });
+
+// Bulk enrich contacts by email — fills in only missing fields, does not overwrite existing data
+export const bulkEnrich = mutation({
+    args: {
+        sessionToken: v.optional(v.union(v.string(), v.null())),
+        enrichments: v.array(
+            v.object({
+                email: v.string(),
+                company: v.optional(v.string()),
+                phone: v.optional(v.string()),
+                website: v.optional(v.string()),
+                address: v.optional(v.string()),
+                location: v.optional(v.string()),
+            })
+        ),
+    },
+    handler: async (ctx, args) => {
+        const userId = await getAuthUserId(ctx, args);
+        let updated = 0;
+
+        for (const enrichment of args.enrichments) {
+            const contact = await ctx.db
+                .query("contacts")
+                .withIndex("by_user_email", (q) =>
+                    q.eq("userId", userId).eq("email", enrichment.email)
+                )
+                .first();
+
+            if (!contact) continue;
+
+            const patch: Record<string, string> = {};
+            if (enrichment.company && !contact.company) patch.company = enrichment.company;
+            if (enrichment.phone && !contact.phone) patch.phone = enrichment.phone;
+            if (enrichment.website && !contact.website) patch.website = enrichment.website;
+            if (enrichment.address && !contact.address) patch.address = enrichment.address;
+            if (enrichment.location && !contact.location) patch.location = enrichment.location;
+
+            if (Object.keys(patch).length > 0) {
+                await ctx.db.patch(contact._id, patch);
+                updated++;
+            }
+        }
+
+        return { updated };
+    },
+});

@@ -2,8 +2,42 @@
 
 import { useState, useCallback } from "react";
 
+const ENRICH_FIELDS = [
+    { key: "company", label: "Company" },
+    { key: "phone", label: "Phone" },
+    { key: "website", label: "Website" },
+    { key: "address", label: "Address" },
+    { key: "location", label: "Location" },
+] as const;
+
+type EnrichFieldKey = typeof ENRICH_FIELDS[number]["key"];
+
+export interface ImportOptions {
+    batchId?: string;
+    newBatchName?: string;
+    enrichFields: EnrichFieldKey[];
+}
+
+export type ContactRow = {
+    email: string;
+    name?: string;
+    company?: string;
+    location?: string;
+    phone?: string;
+    website?: string;
+    address?: string;
+    tags?: string[];
+};
+
+interface BatchOption {
+    _id: string;
+    name: string;
+    color?: string;
+}
+
 interface CsvImportModalProps {
-    onImport: (contacts: { email: string; name?: string; company?: string; location?: string; phone?: string; website?: string; address?: string; tags?: string[] }[]) => void;
+    batches: BatchOption[];
+    onImport: (contacts: ContactRow[], options: ImportOptions) => void;
     onClose: () => void;
 }
 
@@ -29,7 +63,7 @@ const FIELDS: { key: keyof FieldMapping; label: string; required?: boolean }[] =
 
 const EMAIL_REGEX = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
 
-export default function CsvImportModal({ onImport, onClose }: CsvImportModalProps) {
+export default function CsvImportModal({ batches, onImport, onClose }: CsvImportModalProps) {
     const [step, setStep] = useState<1 | 2 | 3>(1);
     const [importMode, setImportMode] = useState<"csv" | "paste">("csv");
     const [rawData, setRawData] = useState<string[][]>([]);
@@ -42,6 +76,13 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
     // Paste mode state
     const [pasteText, setPasteText] = useState("");
     const [extractedEmails, setExtractedEmails] = useState<string[]>([]);
+
+    // Options state (step 3)
+    const [enrichEnabled, setEnrichEnabled] = useState(false);
+    const [enrichFields, setEnrichFields] = useState<Set<EnrichFieldKey>>(new Set(["company", "phone"]));
+    const [selectedBatchId, setSelectedBatchId] = useState<string>("");
+    const [createNewBatch, setCreateNewBatch] = useState(false);
+    const [newBatchName, setNewBatchName] = useState("");
 
     const parseCsv = useCallback((text: string) => {
         const lines = text.split(/\r?\n/).filter(l => l.trim());
@@ -118,45 +159,65 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
         if (file) handleFile(file);
     }, [handleFile]);
 
-    // Extract emails from pasted text
+    // Extract emails from pasted text and advance to step 2
     const handlePasteExtract = useCallback(() => {
         const matches = pasteText.match(EMAIL_REGEX) || [];
         const unique = [...new Set(matches.map(e => e.toLowerCase().trim()))];
         setExtractedEmails(unique);
+        setStep(2);
     }, [pasteText]);
-
-    const handlePasteImport = () => {
-        const contacts = extractedEmails.map(email => ({ email }));
-        onImport(contacts);
-    };
 
     const removeExtractedEmail = (emailToRemove: string) => {
         setExtractedEmails(prev => prev.filter(e => e !== emailToRemove));
     };
 
-    const handleConfirmImport = () => {
-        if (mapping.email < 0) return;
-
-        const contacts = rawData
-            .map(row => ({
-                email: row[mapping.email]?.trim() || "",
-                name: mapping.name >= 0 ? row[mapping.name]?.trim() : undefined,
-                company: mapping.company >= 0 ? row[mapping.company]?.trim() : undefined,
-                location: mapping.location >= 0 ? row[mapping.location]?.trim() : undefined,
-                phone: mapping.phone >= 0 ? row[mapping.phone]?.trim() : undefined,
-                website: mapping.website >= 0 ? row[mapping.website]?.trim() : undefined,
-                address: mapping.address >= 0 ? row[mapping.address]?.trim() : undefined,
-            }))
-            .filter(c => c.email && c.email.includes("@"));
-
-        onImport(contacts);
+    const toggleEnrichField = (key: EnrichFieldKey) => {
+        setEnrichFields(prev => {
+            const next = new Set(prev);
+            if (next.has(key)) next.delete(key); else next.add(key);
+            return next;
+        });
     };
 
-    const totalSteps = importMode === "csv" ? 3 : (extractedEmails.length > 0 ? 2 : 1);
-    const currentStep = importMode === "paste" ? (extractedEmails.length > 0 ? 2 : 1) : step;
-    const stepLabel = importMode === "csv"
-        ? (step === 1 ? "Upload CSV" : step === 2 ? "Map Columns" : "Preview & Confirm")
-        : (extractedEmails.length > 0 ? "Review Emails" : "Paste Emails");
+    const handleFinalImport = () => {
+        let contacts: ContactRow[];
+        if (importMode === "csv") {
+            contacts = rawData
+                .map(row => ({
+                    email: row[mapping.email]?.trim() || "",
+                    name: mapping.name >= 0 ? row[mapping.name]?.trim() : undefined,
+                    company: mapping.company >= 0 ? row[mapping.company]?.trim() : undefined,
+                    location: mapping.location >= 0 ? row[mapping.location]?.trim() : undefined,
+                    phone: mapping.phone >= 0 ? row[mapping.phone]?.trim() : undefined,
+                    website: mapping.website >= 0 ? row[mapping.website]?.trim() : undefined,
+                    address: mapping.address >= 0 ? row[mapping.address]?.trim() : undefined,
+                }))
+                .filter(c => c.email && c.email.includes("@"));
+        } else {
+            contacts = extractedEmails.map(email => ({ email }));
+        }
+        const options: ImportOptions = {
+            batchId: !createNewBatch && selectedBatchId ? selectedBatchId : undefined,
+            newBatchName: createNewBatch && newBatchName.trim() ? newBatchName.trim() : undefined,
+            enrichFields: enrichEnabled ? (Array.from(enrichFields) as EnrichFieldKey[]) : [],
+        };
+        onImport(contacts, options);
+    };
+
+    const contactCount = importMode === "csv"
+        ? rawData.filter(r => r[mapping.email]?.includes("@")).length
+        : extractedEmails.length;
+
+    const stepLabel = step === 1
+        ? (importMode === "csv" ? "Upload CSV" : "Paste Emails")
+        : step === 2
+            ? (importMode === "csv" ? "Map Columns" : "Review Emails")
+            : "Options & Confirm";
+
+    const importDisabled =
+        contactCount === 0 ||
+        (enrichEnabled && enrichFields.size === 0) ||
+        (createNewBatch && !newBatchName.trim());
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -166,7 +227,7 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                     <div>
                         <h2 className="text-lg font-bold text-slate-900 dark:text-white">Import Contacts</h2>
                         <p className="text-sm text-gray-400">
-                            Step {currentStep} of {totalSteps} — {stepLabel}
+                            Step {step} of 3 — {stepLabel}
                         </p>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition-colors text-gray-400 hover:text-slate-900 dark:hover:text-white">✕</button>
@@ -176,18 +237,18 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                 <div className="h-1 bg-gray-200 dark:bg-slate-700">
                     <div
                         className="h-full bg-gradient-to-r from-sky-500 to-emerald-500 transition-all duration-500"
-                        style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                        style={{ width: `${(step / 3) * 100}%` }}
                     />
                 </div>
 
-                <div className="p-6">
+                <div className="p-6 max-h-[70vh] overflow-y-auto">
                     {/* Step 1: Upload / Paste */}
                     {step === 1 && (
                         <div>
                             {/* Mode Tabs */}
                             <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-6">
                                 <button
-                                    onClick={() => { setImportMode("csv"); setExtractedEmails([]); }}
+                                    onClick={() => { setImportMode("csv"); }}
                                     className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${importMode === "csv"
                                         ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm"
                                         : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
@@ -249,7 +310,7 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                 </div>
                             )}
 
-                            {importMode === "paste" && extractedEmails.length === 0 && (
+                            {importMode === "paste" && (
                                 <div>
                                     <div className="mb-4">
                                         <div className="flex items-center justify-between mb-2">
@@ -319,69 +380,12 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                 </div>
                             )}
 
-                            {importMode === "paste" && extractedEmails.length > 0 && (
-                                <div>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                                                <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                            </div>
-                                            <div>
-                                                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{extractedEmails.length} unique emails found</h3>
-                                                <p className="text-xs text-slate-400">Remove any you don&apos;t want, then import</p>
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={() => setExtractedEmails([])}
-                                            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                                        >
-                                            ← Re-paste
-                                        </button>
-                                    </div>
-
-                                    <div className="max-h-72 overflow-y-auto border border-gray-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-800">
-                                        {extractedEmails.map((email, i) => (
-                                            <div key={i} className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-sky-500 flex items-center justify-center text-white text-[10px] font-bold uppercase shrink-0">
-                                                        {email[0]}
-                                                    </div>
-                                                    <span className="text-sm text-slate-900 dark:text-white font-mono">{email}</span>
-                                                </div>
-                                                <button
-                                                    onClick={() => removeExtractedEmail(email)}
-                                                    className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 transition-all"
-                                                    title="Remove"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="flex justify-between mt-6">
-                                        <button onClick={() => setExtractedEmails([])} className="px-4 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                                            ← Back
-                                        </button>
-                                        <button
-                                            onClick={handlePasteImport}
-                                            disabled={extractedEmails.length === 0}
-                                            className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-emerald-500 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-sky-500/25 transition-all active:scale-[0.98] disabled:opacity-40"
-                                        >
-                                            Import {extractedEmails.length} Contact{extractedEmails.length !== 1 ? "s" : ""}
-                                        </button>
-                                    </div>
-                                </div>
                             )}
                         </div>
                     )}
 
-                    {/* Step 2: Column mapping (CSV only) */}
-                    {step === 2 && (
+                    {/* Step 2a: Map columns (CSV) */}
+                    {step === 2 && importMode === "csv" && (
                         <div>
                             <p className="text-sm text-gray-400 mb-4">
                                 We detected {rawData.length} rows. Map your CSV columns to contact fields:
@@ -422,56 +426,170 @@ export default function CsvImportModal({ onImport, onClose }: CsvImportModalProp
                                     disabled={mapping.email < 0}
                                     className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-medium disabled:opacity-40 hover:bg-slate-900/90 dark:hover:bg-slate-100 transition-all"
                                 >
-                                    Preview →
+                                    Options →
                                 </button>
                             </div>
                         </div>
                     )}
 
-                    {/* Step 3: Preview (CSV only) */}
-                    {step === 3 && (
+                    {/* Step 2b: Review extracted emails (paste) */}
+                    {step === 2 && importMode === "paste" && (
                         <div>
-                            <p className="text-sm text-gray-400 mb-4">
-                                Preview of {Math.min(rawData.length, 8)} of {rawData.length} contacts to import:
-                            </p>
-                            <div className="overflow-x-auto border border-gray-200 dark:border-slate-700 rounded-xl">
-                                <table className="w-full text-sm">
-                                    <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-800/50">
-                                            {FIELDS.filter(f => mapping[f.key] >= 0).map(f => (
-                                                <th key={f.key} className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-200 dark:border-slate-700">
-                                                    {f.label}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {rawData.slice(0, 8).map((row, i) => (
-                                            <tr key={i} className="border-b border-slate-100 dark:border-slate-800 last:border-0">
-                                                {FIELDS.filter(f => mapping[f.key] >= 0).map(f => (
-                                                    <td key={f.key} className="px-3 py-2.5 text-slate-900 dark:text-white truncate max-w-[160px]">
-                                                        {row[mapping[f.key]] || "—"}
-                                                    </td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                        <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{extractedEmails.length} unique emails found</h3>
+                                        <p className="text-xs text-slate-400">Remove any you don&apos;t want, then continue</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => { setExtractedEmails([]); setStep(1); }}
+                                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                                >
+                                    ← Re-paste
+                                </button>
                             </div>
-                            {rawData.length > 8 && (
-                                <p className="text-xs text-gray-400 mt-2 text-center">
-                                    + {rawData.length - 8} more contacts
-                                </p>
-                            )}
+                            <div className="max-h-60 overflow-y-auto border border-gray-200 dark:border-slate-700 rounded-xl divide-y divide-slate-100 dark:divide-slate-800">
+                                {extractedEmails.map((email, i) => (
+                                    <div key={i} className="flex items-center justify-between px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-sky-500 flex items-center justify-center text-white text-[10px] font-bold uppercase shrink-0">
+                                                {email[0]}
+                                            </div>
+                                            <span className="text-sm text-slate-900 dark:text-white font-mono">{email}</span>
+                                        </div>
+                                        <button
+                                            onClick={() => removeExtractedEmail(email)}
+                                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 transition-all"
+                                            title="Remove"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                             <div className="flex justify-between mt-6">
-                                <button onClick={() => setStep(2)} className="px-4 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                                <button
+                                    onClick={() => { setExtractedEmails([]); setStep(1); }}
+                                    className="px-4 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                                >
                                     ← Back
                                 </button>
                                 <button
-                                    onClick={handleConfirmImport}
-                                    className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-emerald-500 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-sky-500/25 transition-all"
+                                    onClick={() => setStep(3)}
+                                    disabled={extractedEmails.length === 0}
+                                    className="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-medium disabled:opacity-40 hover:bg-slate-900/90 dark:hover:bg-slate-100 transition-all"
                                 >
-                                    Import {rawData.filter(r => r[mapping.email]?.includes("@")).length} Contacts
+                                    Options →
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 3: Options & Confirm */}
+                    {step === 3 && (
+                        <div>
+                            <p className="text-sm text-gray-400 mb-5">
+                                Configure enrichment and batch assignment for {contactCount} contact{contactCount !== 1 ? "s" : ""}:
+                            </p>
+
+                            {/* Enrichment Section */}
+                            <div className="rounded-xl border border-gray-200 dark:border-slate-700 p-4 mb-4">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div>
+                                        <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Auto-enrich contacts</h4>
+                                        <p className="text-xs text-slate-400 mt-0.5">Crawl email domains to fill in missing fields (runs in background)</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setEnrichEnabled(v => !v)}
+                                        className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${enrichEnabled ? "bg-sky-500" : "bg-slate-200 dark:bg-slate-700"}`}
+                                    >
+                                        <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${enrichEnabled ? "translate-x-4" : ""}`} />
+                                    </button>
+                                </div>
+                                {enrichEnabled && (
+                                    <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-700">
+                                        {ENRICH_FIELDS.map(f => (
+                                            <label key={f.key} className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={enrichFields.has(f.key)}
+                                                    onChange={() => toggleEnrichField(f.key)}
+                                                    className="rounded border-gray-300 dark:border-slate-600 text-sky-500 focus:ring-sky-500/20"
+                                                />
+                                                <span className="text-sm text-slate-700 dark:text-slate-300">{f.label}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Batch Section */}
+                            <div className="rounded-xl border border-gray-200 dark:border-slate-700 p-4 mb-5">
+                                <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                                    Add to a batch <span className="font-normal text-slate-400">(optional)</span>
+                                </h4>
+                                {!createNewBatch ? (
+                                    <div className="flex items-center gap-2">
+                                        <select
+                                            value={selectedBatchId}
+                                            onChange={e => setSelectedBatchId(e.target.value)}
+                                            className="flex-1 px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:border-sky-500"
+                                        >
+                                            <option value="">— No batch —</option>
+                                            {batches.map(b => (
+                                                <option key={String(b._id)} value={String(b._id)}>{b.name}</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => setCreateNewBatch(true)}
+                                            className="px-3 py-2 text-sm text-sky-600 dark:text-sky-400 bg-sky-500/10 hover:bg-sky-500/20 rounded-lg transition-all whitespace-nowrap"
+                                        >
+                                            + New Batch
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Batch name…"
+                                            value={newBatchName}
+                                            onChange={e => setNewBatchName(e.target.value)}
+                                            className="flex-1 px-3 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:border-sky-500"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => { setCreateNewBatch(false); setNewBatchName(""); }}
+                                            className="px-3 py-2 text-sm text-slate-400 hover:text-red-500 transition-colors"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => setStep(2)}
+                                    className="px-4 py-2.5 text-sm text-gray-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                                >
+                                    ← Back
+                                </button>
+                                <button
+                                    onClick={handleFinalImport}
+                                    disabled={importDisabled}
+                                    className="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-emerald-500 text-white rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-sky-500/25 transition-all active:scale-[0.98] disabled:opacity-40"
+                                >
+                                    Import {contactCount} Contact{contactCount !== 1 ? "s" : ""}
                                 </button>
                             </div>
                         </div>

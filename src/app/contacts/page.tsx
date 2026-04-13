@@ -7,7 +7,15 @@ import { AuthGuard, AppHeader } from "@/components/AuthGuard";
 import { useAuthQuery, useAuthMutation } from "../../hooks/useAuthConvex";
 import ContactFilters from "@/components/contacts/ContactFilters";
 import BulkActionBar from "@/components/contacts/BulkActionBar";
-import CsvImportModal from "@/components/contacts/CsvImportModal";
+import CsvImportModal, { ImportOptions, ContactRow } from "@/components/contacts/CsvImportModal";
+
+const ADD_ENRICH_FIELDS = [
+    { key: "company", label: "Company" },
+    { key: "phone", label: "Phone" },
+    { key: "website", label: "Website" },
+    { key: "address", label: "Address" },
+    { key: "location", label: "Location" },
+] as const;
 import ContactSlideOver from "@/components/contacts/ContactSlideOver";
 import MergeContactsModal from "@/components/contacts/MergeContactsModal";
 import BatchManager from "@/components/contacts/BatchManager";
@@ -47,6 +55,7 @@ function ContactsContent() {
     const createContact = useAuthMutation(api.contacts.create);
     const updateContact = useAuthMutation(api.contacts.update);
     const bulkCreate = useAuthMutation(api.contacts.bulkCreate);
+    const bulkEnrich = useAuthMutation(api.contacts.bulkEnrich);
     const bulkDelete = useAuthMutation(api.contacts.bulkDelete);
     const bulkUpdateStage = useAuthMutation(api.contacts.bulkUpdateStage);
     const bulkAddTags = useAuthMutation(api.contacts.bulkAddTags);
@@ -64,6 +73,11 @@ function ContactsContent() {
     const [showMergeModal, setShowMergeModal] = useState(false);
     const [showAddContact, setShowAddContact] = useState(false);
     const [newContact, setNewContact] = useState({ email: "", name: "", company: "", phone: "" });
+    const [addBatchId, setAddBatchId] = useState("");
+    const [addCreateNewBatch, setAddCreateNewBatch] = useState(false);
+    const [addNewBatchName, setAddNewBatchName] = useState("");
+    const [addEnrichEnabled, setAddEnrichEnabled] = useState(false);
+    const [addEnrichFields, setAddEnrichFields] = useState<Set<string>>(new Set(["company", "phone"]));
 
     // ── Computed ─────────────────────────────────────────
     const activeFilterCount = useMemo(() => {
@@ -153,9 +167,25 @@ function ContactsContent() {
         URL.revokeObjectURL(url);
     }, [contacts, selectedIds]);
 
-    const handleImport = async (importedContacts: any[]) => {
-        await bulkCreate({ contacts: importedContacts });
+    const handleImport = async (importedContacts: ContactRow[], options: ImportOptions) => {
+        let batchId = options.batchId as Id<"batches"> | undefined;
+        if (options.newBatchName) {
+            batchId = await createBatch({ name: options.newBatchName }) as Id<"batches">;
+        }
+        await bulkCreate({ contacts: importedContacts, batchId });
         setShowImportModal(false);
+        if (options.enrichFields.length > 0 && importedContacts.length > 0) {
+            const emails = importedContacts.map(c => c.email);
+            fetch("/api/enrich-contacts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emails, fields: options.enrichFields }),
+            }).then(res => res.json()).then(({ results }) => {
+                if (!results) return;
+                const valid = results.filter((r: any) => Object.keys(r.data).length > 0);
+                if (valid.length > 0) bulkEnrich({ enrichments: valid.map((r: any) => ({ email: r.email, ...r.data })) });
+            }).catch(() => {});
+        }
     };
 
     const handleMerge = async (primaryId: Id<"contacts">, mergeIds: Id<"contacts">[]) => {
@@ -166,14 +196,37 @@ function ContactsContent() {
 
     const handleAddContact = async () => {
         if (!newContact.email.trim()) return;
+        let batchId = addBatchId ? addBatchId as Id<"batches"> : undefined;
+        if (addCreateNewBatch && addNewBatchName.trim()) {
+            batchId = await createBatch({ name: addNewBatchName.trim() }) as Id<"batches">;
+        }
+        const email = newContact.email.trim();
         await createContact({
-            email: newContact.email.trim(),
+            email,
             name: newContact.name.trim() || undefined,
             company: newContact.company.trim() || undefined,
             phone: newContact.phone.trim() || undefined,
+            batchId,
         });
         setNewContact({ email: "", name: "", company: "", phone: "" });
+        setAddBatchId("");
+        setAddCreateNewBatch(false);
+        setAddNewBatchName("");
+        setAddEnrichEnabled(false);
+        setAddEnrichFields(new Set(["company", "phone"]));
         setShowAddContact(false);
+        if (addEnrichEnabled && addEnrichFields.size > 0) {
+            const fields = Array.from(addEnrichFields);
+            fetch("/api/enrich-contacts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emails: [email], fields }),
+            }).then(res => res.json()).then(({ results }) => {
+                if (!results) return;
+                const valid = results.filter((r: any) => Object.keys(r.data).length > 0);
+                if (valid.length > 0) bulkEnrich({ enrichments: valid.map((r: any) => ({ email: r.email, ...r.data })) });
+            }).catch(() => {});
+        }
     };
 
     const clearAllFilters = () => {
@@ -562,6 +615,68 @@ function ContactsContent() {
                                 onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
                                 className="w-full px-4 py-2.5 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-xl text-sm text-[#0f172a] dark:text-white focus:border-[#0EA5E9] focus:outline-none"
                             />
+                            {/* Batch assignment */}
+                            <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-700 p-3">
+                                <p className="text-xs font-medium text-[#4B5563] dark:text-slate-400 mb-2">Batch <span className="font-normal">(optional)</span></p>
+                                {!addCreateNewBatch ? (
+                                    <div className="flex items-center gap-2">
+                                        <select
+                                            value={addBatchId}
+                                            onChange={e => setAddBatchId(e.target.value)}
+                                            className="flex-1 px-3 py-2 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm text-[#0f172a] dark:text-white focus:outline-none focus:border-[#0EA5E9]"
+                                        >
+                                            <option value="">— None —</option>
+                                            {(batches || []).map(b => (
+                                                <option key={String(b._id)} value={String(b._id)}>{b.name}</option>
+                                            ))}
+                                        </select>
+                                        <button type="button" onClick={() => setAddCreateNewBatch(true)} className="px-2.5 py-2 text-xs text-sky-600 dark:text-sky-400 bg-sky-500/10 hover:bg-sky-500/20 rounded-lg transition-all whitespace-nowrap">+ New</button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Batch name…"
+                                            value={addNewBatchName}
+                                            onChange={e => setAddNewBatchName(e.target.value)}
+                                            className="flex-1 px-3 py-2 bg-[#f8fafc] dark:bg-slate-800 border border-[#E5E7EB] dark:border-slate-700 rounded-lg text-sm text-[#0f172a] dark:text-white focus:outline-none focus:border-[#0EA5E9]"
+                                        />
+                                        <button type="button" onClick={() => { setAddCreateNewBatch(false); setAddNewBatchName(""); }} className="px-2.5 py-2 text-xs text-slate-400 hover:text-red-500 transition-colors">Cancel</button>
+                                    </div>
+                                )}
+                            </div>
+                            {/* Enrichment */}
+                            <div className="rounded-xl border border-[#E5E7EB] dark:border-slate-700 p-3">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-xs font-medium text-[#4B5563] dark:text-slate-400">Auto-enrich from domain</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => setAddEnrichEnabled(v => !v)}
+                                        className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ${addEnrichEnabled ? "bg-sky-500" : "bg-slate-200 dark:bg-slate-700"}`}
+                                    >
+                                        <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${addEnrichEnabled ? "translate-x-4" : ""}`} />
+                                    </button>
+                                </div>
+                                {addEnrichEnabled && (
+                                    <div className="grid grid-cols-3 gap-1.5 mt-2 pt-2 border-t border-[#E5E7EB] dark:border-slate-700">
+                                        {ADD_ENRICH_FIELDS.map(f => (
+                                            <label key={f.key} className="flex items-center gap-1.5 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={addEnrichFields.has(f.key)}
+                                                    onChange={() => setAddEnrichFields(prev => {
+                                                        const next = new Set(prev);
+                                                        if (next.has(f.key)) next.delete(f.key); else next.add(f.key);
+                                                        return next;
+                                                    })}
+                                                    className="rounded border-gray-300 text-sky-500 focus:ring-sky-500/20"
+                                                />
+                                                <span className="text-xs text-slate-600 dark:text-slate-400">{f.label}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <div className="flex gap-3 justify-end mt-6">
                             <button
@@ -585,6 +700,7 @@ function ContactsContent() {
             {/* ── Modals & Panels ─────────────────────────── */}
             {showImportModal && (
                 <CsvImportModal
+                    batches={(batches || []).map(b => ({ _id: String(b._id), name: b.name, color: b.color }))}
                     onImport={handleImport}
                     onClose={() => setShowImportModal(false)}
                 />
