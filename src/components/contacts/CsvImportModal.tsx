@@ -379,8 +379,6 @@ export default function CsvImportModal({ batches, onImport, onClose }: CsvImport
                                     </div>
                                 </div>
                             )}
-
-                            )}
                         </div>
                     )}
 
