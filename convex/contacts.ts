@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { auth } from "./auth";
 
 // Helper to get authenticated user
@@ -726,5 +726,63 @@ export const bulkEnrich = mutation({
         }
 
         return { updated };
+    },
+});
+
+// Internal mutation — called from HTTP webhook, no session required.
+// Accepts leads from n8n / Scrapling and upserts them as contacts.
+export const ingestLeads = internalMutation({
+    args: {
+        userId: v.id("users"),
+        leads: v.array(v.object({
+            email: v.optional(v.string()),
+            name: v.optional(v.string()),
+            company: v.optional(v.string()),
+            phone: v.optional(v.string()),
+            address: v.optional(v.string()),
+            location: v.optional(v.string()),
+            website: v.optional(v.string()),
+            tags: v.optional(v.array(v.string())),
+        })),
+    },
+    handler: async (ctx, { userId, leads }) => {
+        let created = 0;
+        let skipped = 0;
+
+        for (const lead of leads) {
+            const email = lead.email?.toLowerCase().trim();
+            if (!email || !email.includes("@")) {
+                skipped++;
+                continue;
+            }
+
+            const existing = await ctx.db
+                .query("contacts")
+                .withIndex("by_user_email", (q) => q.eq("userId", userId).eq("email", email))
+                .first();
+
+            if (existing) {
+                skipped++;
+                continue;
+            }
+
+            await ctx.db.insert("contacts", {
+                userId,
+                email,
+                name: lead.name,
+                company: lead.company,
+                phone: lead.phone,
+                address: lead.address,
+                location: lead.location,
+                website: lead.website,
+                tags: lead.tags ?? ["collision-shop", "outbound-lead"],
+                status: "active",
+                salesStage: "new",
+            });
+
+            created++;
+        }
+
+        return { created, skipped };
     },
 });

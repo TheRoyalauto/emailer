@@ -295,3 +295,14 @@ export const adminDeleteUser = mutation({
         return { success: true };
     },
 });
+
+// Look up a user by email — used by HTTP webhook to resolve userId from ADMIN_EMAIL env var
+export const getUserByEmail = query({
+    args: { email: v.string() },
+    handler: async (ctx, { email }) => {
+        return await ctx.db
+            .query("users")
+            .withIndex("by_email", (q) => q.eq("email", email.toLowerCase()))
+            .first();
+    },
+});

@@ -1,6 +1,6 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 const http = httpRouter();
 
@@ -74,6 +74,70 @@ http.route({
         });
 
         return new Response(JSON.stringify(stats), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    }),
+});
+
+// Ingest leads from n8n / Scrapling
+// POST /ingest-leads
+// Headers: x-webhook-secret: <WEBHOOK_SECRET env var>
+// Body: { leads: [{ email, name, company, phone, address, location, website }] }
+http.route({
+    path: "/ingest-leads",
+    method: "POST",
+    handler: httpAction(async (ctx, request) => {
+        const secret = request.headers.get("x-webhook-secret");
+        const expectedSecret = process.env.WEBHOOK_SECRET;
+
+        if (!expectedSecret || secret !== expectedSecret) {
+            return new Response(JSON.stringify({ error: "Unauthorized" }), {
+                status: 401,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        let body: { leads?: unknown[] };
+        try {
+            body = await request.json();
+        } catch {
+            return new Response(JSON.stringify({ error: "Invalid JSON" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        if (!Array.isArray(body.leads) || body.leads.length === 0) {
+            return new Response(JSON.stringify({ error: "leads array required" }), {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        // Look up the admin user by email
+        const adminEmail = process.env.ADMIN_EMAIL;
+        if (!adminEmail) {
+            return new Response(JSON.stringify({ error: "ADMIN_EMAIL env var not set" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const user = await ctx.runQuery(api.customAuth.getUserByEmail, { email: adminEmail });
+        if (!user) {
+            return new Response(JSON.stringify({ error: "Admin user not found" }), {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+
+        const result = await ctx.runMutation(internal.contacts.ingestLeads, {
+            userId: user._id,
+            leads: body.leads as any[],
+        });
+
+        return new Response(JSON.stringify({ success: true, ...result }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
