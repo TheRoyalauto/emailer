@@ -17,12 +17,16 @@ export const list = query({
     },
 });
 
-// Save a new search
+// Save a new search. Stores telemetry on zero-result searches so we can see
+// which queries need synonym suggestions.
 export const create = mutation({
     args: {
         sessionToken: v.optional(v.union(v.string(), v.null())),
         prompt: v.string(),
         resultsCount: v.number(),
+        failureReason: v.optional(v.string()),
+        industry: v.optional(v.string()),
+        locations: v.optional(v.array(v.string())),
     },
     handler: async (ctx, args) => {
         const userId = await auth.getUserId(ctx, args);
@@ -33,6 +37,9 @@ export const create = mutation({
             prompt: args.prompt,
             resultsCount: args.resultsCount,
             createdAt: Date.now(),
+            ...(args.failureReason ? { failureReason: args.failureReason } : {}),
+            ...(args.industry ? { industry: args.industry } : {}),
+            ...(args.locations ? { locations: args.locations } : {}),
         });
     },
 });

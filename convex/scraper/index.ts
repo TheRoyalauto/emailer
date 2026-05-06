@@ -7,9 +7,9 @@
  */
 
 import { crawlPage, CrawlResult } from './crawler';
-import { extractContactInfo, extractEmailsFromHtml, extractPhonesFromHtml, extractBusinessName, ExtractedContact, getContactPageUrls } from './email-extractor';
-import { validateEmail, calculateLeadScore, ValidationResult } from './email-validator';
-import { scraplingSearch, ScraplingResult, extractLocations } from './scrapling-search';
+import { extractContactInfo, extractEmailsFromHtml, extractPhonesFromHtml, extractBusinessName, ExtractedContact, getContactPageUrls } from './email_extractor';
+import { validateEmail, calculateLeadScore, ValidationResult } from './email_validator';
+import { scraplingSearch, ScraplingResult, extractLocations } from './scrapling_search';
 
 export interface ScrapedLead {
     email: string;
@@ -59,6 +59,12 @@ export interface ScrapeOptions {
      * to the UI's live console feed.
      */
     onEvent?: (event: ScrapeEvent) => void;
+    /**
+     * Polled between per-shop iterations. If it returns true, the scrape
+     * bails cleanly and returns the leads gathered so far. Used by the
+     * durable Convex action to honor user cancel requests.
+     */
+    shouldCancel?: () => boolean;
 }
 
 /**
@@ -255,6 +261,10 @@ export async function scrapeLeads(
     let validationPhaseEntered = false;
     for (const result of searchResults) {
         if (leads.length >= maxResults) break;
+        if (opts.shouldCancel?.()) {
+            log("warn", "Scrape cancelled by user");
+            break;
+        }
 
         try {
             if (isDirectoryUrl(result.url)) {

@@ -108,9 +108,16 @@ http.route({
             });
         }
 
-        if (!Array.isArray(body.leads) || body.leads.length === 0) {
+        if (!Array.isArray(body.leads)) {
             return new Response(JSON.stringify({ error: "leads array required" }), {
                 status: 400,
+                headers: { "Content-Type": "application/json" },
+            });
+        }
+        if (body.leads.length === 0) {
+            // Empty arrays are valid: a cron run that found nothing should not error.
+            return new Response(JSON.stringify({ success: true, created: 0, skipped: 0 }), {
+                status: 200,
                 headers: { "Content-Type": "application/json" },
             });
         }

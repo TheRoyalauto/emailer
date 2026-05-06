@@ -177,7 +177,106 @@ export default defineSchema({
         prompt: v.string(),
         resultsCount: v.number(),
         createdAt: v.number(),
+        // Telemetry — populated on failed/zero-result searches so we can see
+        // which queries need synonym suggestions or city auto-resolution.
+        failureReason: v.optional(v.string()),
+        industry: v.optional(v.string()),
+        locations: v.optional(v.array(v.string())),
     }).index("by_user", ["userId"]),
+
+    // Durable scrape jobs — each invocation of /scraper creates a row, an
+    // action runs the scrape, and incremental progress (logs, leads, phase)
+    // is written here so the frontend's reactive query renders live updates.
+    // Surviving page refresh / navigation falls out of this design naturally.
+    scrapeJobs: defineTable({
+        userId: v.id("users"),
+        status: v.union(
+            v.literal("queued"),
+            v.literal("running"),
+            v.literal("complete"),
+            v.literal("failed"),
+            v.literal("cancelled"),
+        ),
+        // Search params (replayable + display)
+        industry: v.optional(v.string()),
+        locations: v.optional(v.array(v.string())),
+        prompt: v.optional(v.string()),
+        count: v.number(),
+        fields: v.optional(v.array(v.string())),
+        verifyEmails: v.optional(v.boolean()),
+        excludeDomains: v.optional(v.array(v.string())),
+        excludeEmails: v.optional(v.array(v.string())),
+        // Live progress
+        phaseIdx: v.optional(v.number()),
+        phaseLabel: v.optional(v.string()),
+        logs: v.optional(
+            v.array(
+                v.object({
+                    elapsedMs: v.number(),
+                    level: v.string(),
+                    text: v.string(),
+                }),
+            ),
+        ),
+        leadsCount: v.number(),
+        leads: v.optional(
+            v.array(
+                v.object({
+                    email: v.string(),
+                    name: v.optional(v.string()),
+                    company: v.optional(v.string()),
+                    phone: v.optional(v.string()),
+                    location: v.optional(v.string()),
+                    website: v.optional(v.string()),
+                    address: v.optional(v.string()),
+                    leadScore: v.optional(v.number()),
+                    verified: v.optional(v.boolean()),
+                }),
+            ),
+        ),
+        // Outcome
+        source: v.optional(v.string()),
+        totalScraped: v.optional(v.number()),
+        errorMessage: v.optional(v.string()),
+        // Lifecycle
+        createdAt: v.number(),
+        startedAt: v.optional(v.number()),
+        completedAt: v.optional(v.number()),
+        // Cancel signaling — action checks this between phases.
+        cancelRequested: v.optional(v.boolean()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_status", ["userId", "status"]),
+
+    // Persistent history of every lead the user has ever scraped. Powers:
+    //   1. Server-side dedup — new searches mark leads as alreadySeen
+    //   2. The /scraper/history page — sortable table of all past results
+    //   3. The "hide seen" toggle on the main scraper results
+    // Identity key = (userId, lowercased email). On re-scrape we update
+    // lastSeenAt + the latest source/score, but keep firstSeenAt + imported
+    // flag intact.
+    scrapedLeads: defineTable({
+        userId: v.id("users"),
+        email: v.string(),               // lowercased for stable lookup
+        name: v.optional(v.string()),
+        company: v.optional(v.string()),
+        phone: v.optional(v.string()),
+        address: v.optional(v.string()),
+        state: v.optional(v.string()),
+        website: v.optional(v.string()),
+        leadScore: v.optional(v.number()),
+        verified: v.optional(v.boolean()),
+        // Source query that produced this lead. The latest one wins on
+        // re-scrape so the history view shows the most recent context.
+        industry: v.optional(v.string()),
+        searchLocation: v.optional(v.string()),
+        firstSeenAt: v.number(),
+        lastSeenAt: v.number(),
+        // True once the user imports the lead into the contacts table.
+        imported: v.optional(v.boolean()),
+    })
+        .index("by_user", ["userId"])
+        .index("by_user_email", ["userId", "email"]),
 
     // List memberships (many-to-many)
     listMembers: defineTable({
